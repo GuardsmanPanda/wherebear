@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+    box-sizing: border-box;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+body {
+    font-family: system-ui, sans-serif;
+}
+
+.sidebar-active {
+    background-color: rgb(17 24 39) !important;
+    color: rgb(220 220 220) !important;
+    font-weight: 500 !important;
+}

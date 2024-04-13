@@ -1,0 +1,44 @@
+{
+  "name": "laravel/laravel",
+  "type": "project",
+  "description": "The Laravel Framework.",
+  "license": "MIT",
+  "require": {
+    "php": "^8.3",
+    "guardsmanpanda/larabear": "dev-main",
+    "guzzlehttp/guzzle": "^7.8",
+    "laravel/framework": "^v11.0"
+  },
+  "require-dev": {
+    "ergebnis/phpstan-rules": "^2.2",
+    "phpstan/phpstan": "^1.10",
+    "phpstan/phpstan-deprecation-rules": "^1.1",
+    "phpstan/phpstan-strict-rules": "^1.5",
+    "roave/security-advisories": "dev-latest",
+    "thecodingmachine/phpstan-strict-rules": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Domain\\": "Domain/",
+      "Integration\\": "Integration/",
+      "Infrastructure\\": "Infrastructure/",
+      "Web\\": "Web/"
+    }
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump"
+    ]
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "allow-plugins": {
+      "pestphp/pest-plugin": true,
+      "php-http/discovery": true
+    }
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}

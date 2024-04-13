@@ -1,0 +1,11 @@
+#!/usr/bin/env php
+<?php declare(strict_types=1);
+
+define(constant_name: 'LARAVEL_START', value: microtime(as_float: true));
+require __DIR__.'/vendor/autoload.php';
+$app = require __DIR__.'/bootstrap/app.php';
+
+$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+$status = $kernel->handle($input = new Symfony\Component\Console\Input\ArgvInput, new GuardsmanPanda\Larabear\Infrastructure\Console\Service\ConsoleOutputFilter);
+$kernel->terminate($input, $status);
+exit($status);
