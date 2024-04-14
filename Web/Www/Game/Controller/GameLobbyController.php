@@ -45,7 +45,7 @@ final class GameLobbyController extends Controller {
             ", bindings: [$game->id, $user_id]);
 
         if ($user_id === null) {
-            return Resp::view(view: "game::lobby.guest" , data: [
+            return Resp::view(view: "game::lobby.guest", data: [
                 'game' => $game,
                 'players' => $players,
             ]);
@@ -65,7 +65,7 @@ final class GameLobbyController extends Controller {
             'user' => DB::selectOne(query: "
                 SELECT 
                     bu.user_display_name, bu.map_marker_file_name,
-                    gu.is_ready, mm.map_marker_name, ms.map_style_name,
+                    gu.is_ready, mm.map_marker_name, ms.map_style_name, ms.map_style_enum,
                     bc.country_name, bc.country_iso2_code
                 FROM bear_user bu
                 LEFT JOIN game_user gu ON gu.user_id = bu.id AND gu.game_id = ?
@@ -116,13 +116,29 @@ final class GameLobbyController extends Controller {
 
 
     public function dialogMapMarker(string $gameId): View {
-        $markers = DB::select(query: "SELECT file_name, map_marker_name, map_marker_group FROM map_marker ORDER BY map_marker.map_marker_group, file_name");
+        $markers = DB::select(query: "SELECT file_name, map_marker_name, map_marker_group FROM map_marker ORDER BY map_marker_group, file_name");
         return Htmx::dialogView(
             view: 'game::lobby.dialog.map-marker',
             title: 'Select Map Marker',
             data: [
                 'game_id' => $gameId,
                 'grouped_map_markers' => BearArrayService::groupArrayBy(array: $markers, key: 'map_marker_group'),
+            ]
+        );
+    }
+
+
+    public function dialogMapStyle(string $gameId): View {
+        return Htmx::dialogView(
+            view: 'game::lobby.dialog.map-style',
+            title: 'Select Map Style',
+            data: [
+                'game_id' => $gameId,
+                'map_styles' => DB::select(query: "
+                    SELECT
+                        map_style_enum, map_style_name
+                    FROM map_style
+                "),
             ]
         );
     }

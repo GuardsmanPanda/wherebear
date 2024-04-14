@@ -24,7 +24,6 @@ const tippyFunction = function (el) {
 
 
 
-
 htmx.config.historyCacheSize = 0;
 window.onload = () => {
     document.querySelectorAll('[tippy]').forEach(tippyFunction);

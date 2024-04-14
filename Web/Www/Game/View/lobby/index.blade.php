@@ -31,39 +31,51 @@
 @endif
 <div class="grid place-items-center flex-1 overflow-auto">
     <div class="grid lg:grid-cols-3 grid-cols-1 gap-8">
-        <div class="flex flex-col gap-4">
-            <button class="hover:scale-110 hover:-rotate-3 transition-all duration-75" hx-get="/game/{{$game->id}}/lobby/dialog/name-flag">
-                <div class="flex justify-center items-center">
-                    <img class="h-6 mr-2 ring-1 ring-gray-800" src="/static/flag/svg/{{$user->country_iso2_code}}.svg" alt="{{$user->country_name}}">
-                    <div class="text-gray-200 text-3xl font-bold">{{$user->user_display_name}}</div>
-                </div>
-                @if(str_starts_with(haystack: $user->user_display_name, needle: 'Guest-'))
-                    <div class="text-lime-300 font-medium text-xs">Click to Change</div>
-                @endif
-            </button>
-            <button class="hover:scale-110 hover:rotate-3 transition-all duration-75" hx-get="/game/{{$game->id}}/lobby/dialog/map-marker">
-                <div class="text-gray-400 text-xl font-bold">Marker: <span class="text-gray-300">{{$user->map_marker_name}}</span></div>
-                <div class="flex justify-center mt-1">
-                    <img class="h-12 w-12" src="/static/img/map-marker/{{$user->map_marker_file_name}}" alt="{{$user->map_marker_name}}">
-                    <img class="h-12 w-12" src="/static/img/map-marker/{{$user->map_marker_file_name}}" alt="{{$user->map_marker_name}}">
-                    <img class="h-12 w-12" src="/static/img/map-marker/{{$user->map_marker_file_name}}" alt="{{$user->map_marker_name}}">
-                </div>
-                @if($user->map_marker_file_name === 'default.png')
-                    <div class="text-lime-300 font-medium text-xs">Click to Change</div>
-                @endif
-            </button>
-            <button class="hover:scale-110 hover:-rotate-3 transition-all duration-75">
-                <div class="text-gray-400 text-xl font-bold">Map: <span class="text-gray-300">{{$user->map_style_name}}</span></div>
-                <div class="flex justify-center">
-                    <img class="h-24 w-96 object-none" src="/static/files/tile/0/11/1614/1016.png" alt="Example map tile">
-                </div>
-            </button>
+        <div class="bg-gray-900 px-4 py-4 rounded-md">
+            <div class="flex items-center">
+                <x-bear::icon name="cog-6-tooth" size="6" class=" opacity-50 mr-2"/>
+                <h2 class="text-xl font-bold">Settings</h2>
+            </div>
+            <hr class="mx-1 mt-1 mb-3 pb-0.5 border-gray-700 border-b-2 border-dashed">
+            <div class="flex flex-col gap-4">
+                <button class="hover:scale-110 hover:-rotate-3 transition-all duration-75" hx-get="/game/{{$game->id}}/lobby/dialog/name-flag">
+                    <div class="flex justify-center items-center">
+                        <img class="h-6 mr-2 ring-1 ring-gray-800" src="/static/flag/svg/{{$user->country_iso2_code}}.svg" alt="{{$user->country_name}}">
+                        <div class="text-gray-200 text-3xl font-bold">{{$user->user_display_name}}</div>
+                    </div>
+                    @if(str_starts_with(haystack: $user->user_display_name, needle: 'Guest-'))
+                        <div class="text-lime-300 font-medium text-xs">Click to Change</div>
+                    @endif
+                </button>
+                <button class="hover:scale-110 hover:rotate-3 transition-all duration-75" hx-get="/game/{{$game->id}}/lobby/dialog/map-marker">
+                    <div class="text-gray-400 text-xl font-bold">Marker: <span class="text-gray-300">{{$user->map_marker_name}}</span></div>
+                    <div class="flex justify-center mt-1">
+                        <img class="h-12 w-12" src="/static/img/map-marker/{{$user->map_marker_file_name}}" alt="{{$user->map_marker_name}}">
+                        <img class="h-12 w-12" src="/static/img/map-marker/{{$user->map_marker_file_name}}" alt="{{$user->map_marker_name}}">
+                        <img class="h-12 w-12" src="/static/img/map-marker/{{$user->map_marker_file_name}}" alt="{{$user->map_marker_name}}">
+                    </div>
+                    @if($user->map_marker_file_name === 'default.png')
+                        <div class="text-lime-300 font-medium text-xs">Click to Change</div>
+                    @endif
+                </button>
+                <button class="hover:scale-110 hover:-rotate-3 transition-all duration-75" hx-get="/game/{{$game->id}}/lobby/dialog/map-style">
+                    <div class="text-gray-400 text-xl font-bold">Map: <span class="text-gray-300">{{$user->map_style_name}}</span></div>
+                    <div class="flex justify-center">
+                        <img class="h-24 w-96 object-none" src="/static/files/tile/{{$user->map_style_enum}}/11/1614/1016.png" alt="Example map tile">
+                    </div>
+                </button>
+            </div>
         </div>
-        <div class="w-80">
+        <div class="w-80 bg-gray-900 px-4 py-4 rounded-md">
+            <div class="flex items-center">
+                <x-bear::icon name="users" size="6" class=" opacity-50 mr-2"/>
+                <h2 class="text-xl font-bold">Players</h2>
+            </div>
+            <hr class="mx-1 mt-1 mb-3 pb-0.5 border-gray-700 border-b-2 border-dashed">
             <ul id="player-list">
                 @foreach($players as $player)
                     @if(!$loop->first)
-                        <hr class="mx-5 mt-1 mb-1 pb-0.5 border-gray-700 border-dashed"></hr>
+                        <hr class="mx-5 mt-1 mb-1 pb-0.5 border-gray-700 border-dashed">
                     @endif
                     <li class="flex items-center">
                         <img class="h-8 w-8 mr-2" src="/static/img/map-marker/{{$player->map_marker_file_name}}" alt="{{$player->map_marker_file_name}}" >

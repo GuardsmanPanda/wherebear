@@ -27,6 +27,7 @@ return [
         'pgsql' => [
             'bear_user' => ['class' => 'WhereBearUser', 'location' => 'Domain/User/Model'],
             'game' => ['location' => 'Domain/Game/Model'],
+            'game_round' => ['location' => 'Domain/Game/Model'],
             'game_state' => ['location' => 'Domain/Game/Model'],
             'game_user' => ['location' => 'Domain/Game/Model'],
             'map_marker' => ['location' => 'Domain/Map/Model'],
