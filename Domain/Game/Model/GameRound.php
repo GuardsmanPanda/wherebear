@@ -4,6 +4,7 @@ namespace Domain\Game\Model;
 
 use Carbon\CarbonInterface;
 use Closure;
+use Domain\Panorama\Model\Panorama;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearLogDatabaseChanges;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Collection;
@@ -58,6 +59,7 @@ use RuntimeException;
  * @property string $panorama_pick_strategy
  * @property string|null $panorama_id
  *
+ * @property Panorama|null $panorama
  * @property Game $game
  *
  * AUTO GENERATED FILE DO NOT MODIFY
@@ -72,6 +74,10 @@ final class GameRound extends Model {
     protected $keyType = 'array';
     public $incrementing = false;
     protected $dateFormat = 'Y-m-d\TH:i:sP';
+
+    public function panorama(): BelongsTo|null {
+        return $this->belongsTo(related: Panorama::class, foreignKey: 'panorama_id', ownerKey: 'id');
+    }
 
     public function game(): BelongsTo {
         return $this->belongsTo(related: Game::class, foreignKey: 'game_id', ownerKey: 'id');

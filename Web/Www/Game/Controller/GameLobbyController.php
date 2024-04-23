@@ -3,6 +3,7 @@
 namespace Web\Www\Game\Controller;
 
 use Domain\Game\Crud\GameUserCreator;
+use Domain\Game\Crud\GameUserDeleter;
 use Domain\Game\Crud\GameUserUpdater;
 use Domain\User\Crud\WhereBearUserUpdater;
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearArrayService;
@@ -64,7 +65,7 @@ final class GameLobbyController extends Controller {
             'map_markers' => DB::select(query: "SELECT file_name, map_marker_name FROM map_marker ORDER BY file_name"),
             'user' => DB::selectOne(query: "
                 SELECT 
-                    bu.user_display_name, bu.map_marker_file_name,
+                    bu.user_display_name, bu.map_marker_file_name, bu.user_email,
                     gu.is_ready, mm.map_marker_name, ms.map_style_name, ms.map_style_enum,
                     bc.country_name, bc.country_iso2_code
                 FROM bear_user bu
@@ -99,6 +100,11 @@ final class GameLobbyController extends Controller {
         $updater->setIsReady(is_ready: Req::getBoolOrDefault(key: 'is_ready'));
         $updater->update();
         return $this->index($gameId);
+    }
+
+    public function leaveGame(string $gameId): Response {
+        GameUserDeleter::deleteFromGameAndUserId(gameId: $gameId, userId: BearAuthService::getUserId());
+        return Htmx::redirect(url: '/', message: 'Left Game.');
     }
 
     public function dialogNameFlag(string $gameId): View {

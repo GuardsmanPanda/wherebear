@@ -8,15 +8,16 @@ use Web\Www\Game\Controller\GameLobbyController;
 
 Route::get(uri: "create", action: [GameController::class, 'createDialog'])->middleware([BearPermissionMiddleware::using(permission: 'game::create')]);
 Route::post(uri: "", action: [GameController::class, 'create'])->middleware([BearPermissionMiddleware::using(permission: 'game::create')]);
+Route::delete(uri: "{gameId}", action: [GameController::class, 'delete']);
 
-Route::prefix("{gameId}")->middleware(BearHtmxMiddleware::using(layout_location: 'layout.layout'))->group(callback: function () {
-    Route::delete(uri: "", action: [GameController::class, 'delete']);
-    Route::get(uri: "lobby", action: [GameLobbyController::class, 'index']);
-    Route::get(uri: "lobby/dialog/map-marker", action: [GameLobbyController::class, 'dialogMapMarker']);
-    Route::get(uri: "lobby/dialog/map-style", action: [GameLobbyController::class, 'dialogMapStyle']);
-    Route::get(uri: "lobby/dialog/name-flag", action: [GameLobbyController::class, 'dialogNameFlag']);
-    Route::patch(uri: "lobby/update-user", action: [GameLobbyController::class, 'updateUser']);
-    Route::patch(uri: "lobby/update-game-user", action: [GameLobbyController::class, 'updateGameUser']);
+Route::prefix("{gameId}/lobby")->middleware(BearHtmxMiddleware::using(layout_location: 'layout.layout'))->group(callback: function () {
+    Route::get(uri: "", action: [GameLobbyController::class, 'index']);
+    Route::get(uri: "dialog/map-marker", action: [GameLobbyController::class, 'dialogMapMarker']);
+    Route::get(uri: "dialog/map-style", action: [GameLobbyController::class, 'dialogMapStyle']);
+    Route::get(uri: "dialog/name-flag", action: [GameLobbyController::class, 'dialogNameFlag']);
+    Route::patch(uri: "update-user", action: [GameLobbyController::class, 'updateUser']);
+    Route::patch(uri: "update-game-user", action: [GameLobbyController::class, 'updateGameUser']);
+    Route::delete(uri: "leave", action: [GameLobbyController::class, 'leaveGame']);
 });
 
 
