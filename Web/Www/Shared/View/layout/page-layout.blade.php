@@ -13,6 +13,7 @@
     <script src="/static/leaflet/leaflet.js"></script>
     <link rel="stylesheet" href="{!! config('bear.ui.app_css') !!}">
     <link rel="stylesheet" href="/static/leaflet/leaflet.css" />
+    <link rel="stylesheet" href="/static/dist/app.css" />
 </head>
 <body class="min-h-screen bg-gray-950 text-gray-300" hx-target="#primary">
 <div style="display: grid; grid-template-columns: 16rem auto;" class="min-h-screen">

@@ -23,6 +23,7 @@ return new class extends Migration {
             external_api_slug: 'openstreetmap',
             external_api_description: 'OpenStreetMap used for the default map tiles',
             external_api_type: BearExternalApiTypeEnum::NO_AUTH,
+            id: 'e9f8e665-ca90-4f3d-b7f4-d9a811eb4754',
             external_api_base_url: 'https://c.tile.openstreetmap.org/'
         );
         MapStyleCreator::create(

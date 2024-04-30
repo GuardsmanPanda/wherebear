@@ -7,10 +7,12 @@ use Domain\Panorama\Command\PanoramaScraperCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel;
 use Illuminate\Support\Facades\Artisan;
+use Infrastructure\Database\Command\DatabaseInitializeCommand;
 
 final class ConsoleKernel extends Kernel {
     /** @var array<int, string> $commands @phpstan-ignore-next-line */
     protected $commands = [
+        DatabaseInitializeCommand::class,
         MapMarkerSynchronizeCommand::class,
         PanoramaScraperCommand::class,
     ];
