@@ -84,6 +84,9 @@ final class GameLobbyController extends Controller {
         if (Req::has(key: 'map_marker_file_name')) {
             $updater->setMapMarkerFileName(map_marker_file_name: Req::getStringOrDefault(key: 'map_marker_file_name'));
         }
+        if (Req::has(key: 'map_style_enum')) {
+            $updater->setMapStyleEnum(map_style_enum: Req::getStringOrDefault(key: 'map_style_enum'));
+        }
         if (Req::has(key: 'user_display_name')) {
             $updater->setUserDisplayName(user_display_name: Req::getStringOrDefault(key: 'user_display_name'));
         }

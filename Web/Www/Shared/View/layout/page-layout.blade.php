@@ -10,7 +10,7 @@
     @if(App::isLocal())
         <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     @endif
-    <script src="/static/leaflet/leaflet.js"></script>
+    <script src="{!! config('bear.ui.app_js') !!}"></script>
     <link rel="stylesheet" href="{!! config('bear.ui.app_css') !!}">
     <link rel="stylesheet" href="/static/leaflet/leaflet.css" />
     <link rel="stylesheet" href="/static/dist/app.css" />
@@ -30,7 +30,5 @@
     </div>
     <div id="primary" class="max-w-full min-w-full px-2 md:px-4 pt-2">{!! $content !!}</div>
 </div>
-
-<script src="{!! config('bear.ui.app_js') !!}" defer></script>
 </body>
 </html>

@@ -1,8 +1,5 @@
 <?php declare(strict_types=1);
 
-use Domain\Map\Crud\MapStyleCreator;
-use GuardsmanPanda\Larabear\Integration\ExternalApi\Crud\BearExternalApiCreator;
-use GuardsmanPanda\Larabear\Integration\ExternalApi\Enum\BearExternalApiTypeEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -19,19 +16,6 @@ return new class extends Migration {
             $table->timestampTz(column: 'created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->foreign(columns: 'external_api_id')->references('id')->on('bear_external_api');
         });
-        $external = BearExternalApiCreator::create(
-            external_api_slug: 'openstreetmap',
-            external_api_description: 'OpenStreetMap used for the default map tiles',
-            external_api_type: BearExternalApiTypeEnum::NO_AUTH,
-            id: 'e9f8e665-ca90-4f3d-b7f4-d9a811eb4754',
-            external_api_base_url: 'https://c.tile.openstreetmap.org/'
-        );
-        MapStyleCreator::create(
-            map_style_enum: 'OSM',
-            map_style_name: 'OpenStreetMap',
-            map_style_url: '{z}/{x}/{y}.png',
-            external_api_id: $external->id
-        );
     }
 
     public function down(): void {

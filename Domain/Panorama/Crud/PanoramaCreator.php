@@ -7,6 +7,7 @@ use Carbon\CarbonInterface;
 use Domain\Panorama\Model\Panorama;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
+use Illuminate\Support\Facades\DB;
 use Integration\Nominatim\Client\NominatimClient;
 
 final class PanoramaCreator {
@@ -16,39 +17,36 @@ final class PanoramaCreator {
         float $longitude,
         CarbonInterface $captured_date,
         bool $is_retired = false,
-        string $country_iso_2_code = null,
-        string $state_name = null,
-        string $city_name = null,
         string $added_by_user_id = null,
-        string $panorama_location = null,
-        string $region_name = null,
-        string $state_district_name = null,
-        string $county_name = null,
         string $jpg_name = null
     ): Panorama {
         BearDatabaseService::mustBeInTransaction();
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST']);
 
+        $added_by_user_id ??= BearAuthService::getUserId();
         $data = NominatimClient::reverseLookup(latitude: $latitude, longitude: $longitude);
-        dd($data);
 
-        $model = new Panorama();
-
-        $model->id = $id;
-        $model->captured_date = $captured_date;
-        $model->is_retired = $is_retired;
-        $model->country_iso_2_code = $country_iso_2_code;
-        $model->state_name = $state_name;
-        $model->city_name = $city_name;
-        $model->added_by_user_id = $added_by_user_id ?? BearAuthService::getUserId();
-        $model->panorama_location = $panorama_location;
-        $model->region_name = $region_name;
-        $model->state_district_name = $state_district_name;
-        $model->county_name = $county_name;
-        $model->jpg_name = $jpg_name;
-
-        $model->save();
-        return $model;
+        DB::insert(query: "
+            INSERT INTO panorama (
+                id, captured_date, country_iso_2_code, state_name, city_name, added_by_user_id,
+                panorama_location, region_name, state_district_name, county_name, jpg_name,
+                created_at, updated_at, is_retired
+            ) VALUES (?, ?, ?, ?, ?, ?, public.ST_MakePoint(?::double precision, ?::double precision), ?, ?, ?, ?, NOW(), NOW(), ?)
+        ", bindings: [
+            $id,
+            $captured_date,
+            $data->country_iso2_code,
+            $data->state_name,
+            $data->city_name,
+            $added_by_user_id,
+            $longitude, $latitude,
+            $data->region_name,
+            $data->state_district_name,
+            $data->county_name,
+            $jpg_name,
+            $is_retired
+        ]);
+        return Panorama::findOrFail(id: $id);
     }
 
     public static function createFromStreetViewData(array $data): Panorama {

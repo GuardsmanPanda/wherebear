@@ -6,12 +6,12 @@ final class NominatimLocationData {
     public string $country_iso2_code;
     public float $latitude;
     public float $longitude;
-    public readonly string $state_name;
-    public readonly string $state_district_name;
-    public readonly string $region_name;
-    public readonly string $county_name;
-    public readonly string $city_name;
-    public readonly string $city_district_name;
+    public readonly string|null $state_name;
+    public readonly string|null $state_district_name;
+    public readonly string|null $region_name;
+    public readonly string|null $county_name;
+    public readonly string|null $city_name;
+    public readonly string|null $city_district_name;
 
     public function __construct(
         string $country_iso2_code,

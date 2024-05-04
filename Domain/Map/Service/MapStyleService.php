@@ -6,6 +6,6 @@ use Domain\Map\Model\MapStyle;
 
 final class MapStyleService {
     public static function mapStyleExists(string $mapStyleEnum): bool {
-        return MapStyle::find(id: $mapStyleEnum, columns: ['id']) !== null;
+        return MapStyle::find(id: $mapStyleEnum, columns: ['map_style_enum']) !== null;
     }
 }

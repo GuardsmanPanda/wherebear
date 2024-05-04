@@ -92,11 +92,14 @@
                 <button class="hover:scale-110 hover:-rotate-3 transition-all duration-75"
                         hx-get="/game/{{$game->id}}/lobby/dialog/map-style">
                     <div class="text-gray-400 text-xl font-bold">Map: <span
-                                class="text-gray-300">{{$user->map_style_name}}</span></div>
+                                class="text-gray-300">{{$user->map_style_name ?? 'OpenStreetMap'}}</span></div>
                     <div class="flex justify-center">
                         <img class="h-24 w-96 object-none"
-                             src="/static/files/tile/{{$user->map_style_enum}}/11/1614/1016.png" alt="Example map tile">
+                             src="/static/files/tile/{{$user->map_style_enum ?? 'OSM'}}/11/1614/1016.png" alt="Example map tile">
                     </div>
+                    @if($user->map_style_enum === null)
+                        <div class="text-lime-300 font-medium text-xs">Click to Change</div>
+                    @endif
                 </button>
             </div>
         </div>

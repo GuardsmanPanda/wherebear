@@ -71,7 +71,7 @@ final class NominatimClient {
         }
 
 
-        if ($d->country_iso2_code === 'FI' && ($d->county_name  === 'Åland' || $d->county_name  === 'Landskapet Åland')) {
+        if ($d->country_iso2_code === 'FI' && ($d->county_name === 'Åland' || $d->county_name === 'Landskapet Åland')) {
             $d->country_iso2_code = 'AX';
         }
 
@@ -118,7 +118,7 @@ final class NominatimClient {
         }
 
 
-        if ($d->country_iso2_code === 'NO' && ($d->county_name  === 'Jan Mayen' || $d->region_name  === 'Svalbard')) {
+        if ($d->country_iso2_code === 'NO' && ($d->county_name === 'Jan Mayen' || $d->region_name === 'Svalbard')) {
             $d->country_iso2_code = 'SJ';
         }
 

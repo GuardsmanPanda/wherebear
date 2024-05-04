@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void {
-        Schema::dropIfExists(table: 'game_user');
         Schema::create(table: 'game_user', callback: static function (Blueprint $table): void {
             $table->uuid(column: 'game_id')->comment(comment: "Game ID.");
             $table->uuid(column: 'user_id')->comment(comment: "User ID. This is the user who is playing the game. This is not the user who created the game.");

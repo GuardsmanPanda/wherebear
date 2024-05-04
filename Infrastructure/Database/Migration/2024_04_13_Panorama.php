@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void {
-        Schema::dropIfExists(table: 'panorama');
         DB::statement(query: "
             create table panorama(
                 id           text not null  primary key,

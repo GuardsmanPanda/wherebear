@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void {
         Schema::table(table: 'bear_user', callback: function (Blueprint $table) {
             $table->text(column: 'map_marker_file_name')->default(value: 'default.png');
-            $table->text(column: 'map_style_enum')->default(value: 'OSM');
+            $table->text(column: 'map_style_enum')->nullable();
             $table->foreign('map_marker_file_name')->references('file_name')->on('map_marker');
             $table->foreign('map_style_enum')->references('map_style_enum')->on('map_style');
         });

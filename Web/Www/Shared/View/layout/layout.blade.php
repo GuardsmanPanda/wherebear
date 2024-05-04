@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="WhereBear">
     <title>{{$title ?? 'WhereBear'}}</title>
+    <script src="{!! config('bear.ui.app_js') !!}"></script>
     @if(App::isLocal())
         <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     @endif
@@ -16,6 +17,5 @@
 <div id="primary" hx-target="#primary" class="min-h-screen bg-gray-950 text-gray-300 flex flex-col">
     {!! $content !!}
 </div>
-<script src="{!! config('bear.ui.app_js') !!}" defer></script>
 </body>
 </html>

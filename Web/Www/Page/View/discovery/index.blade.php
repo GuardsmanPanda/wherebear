@@ -13,13 +13,13 @@
     });
 
     const map_icon = L.icon({
-        iconUrl: '/static/img/markers/bobdino.png',
+        iconUrl: '/static/img/map-marker/bobdino.png',
         iconSize: [48, 48],
         iconAnchor: [24, 48],
         tooltipAnchor: [0, -48],
     });
     const small_icon = L.icon({
-        iconUrl: '/static/img/markers/standard.png',
+        iconUrl: '/static/img/map-marker/default.png',
         iconSize: [24, 24],
         iconAnchor: [12, 24],
     });
@@ -70,6 +70,11 @@
                                 type: "warning",
                                 message: "This location has already been discovered!",
                             });
+                        } else {
+                            window.notify.open({
+                                type: "success",
+                                message: "Location added to the game!",
+                            });
                         }
                         //addGuesses(json)
                     });
@@ -83,4 +88,13 @@
             add_panorama();
         }
     });
+
+
+    const markLayer = L.markerClusterGroup({maxClusterRadius: 35});
+    const markers = [];
+    @foreach($markers as $marker)
+        markers.push(L.marker([{{$marker->lat}}, {{$marker->lng}}], {icon: small_icon}));
+    @endforeach
+    markLayer.addLayers(markers);
+    map.addLayer(markLayer);
 </script>
