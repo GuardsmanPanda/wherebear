@@ -16,6 +16,16 @@ final class DatabaseInitializeBearCountry {
                 'country_iso3_code' => 'PIRATE',
                 'country_name' => 'Pirate',
             ],
+            [
+                'country_iso2_code' => 'RAINBOW',
+                'country_iso3_code' => 'RAINBOW',
+                'country_name' => 'Rainbow',
+            ],
+            [
+                'country_iso2_code' => 'UNKNOWN',
+                'country_iso3_code' => 'UNKNOWN',
+                'country_name' => 'Unknown',
+            ],
         ];
 
         foreach ($extra_countries as $country) {

@@ -65,7 +65,7 @@
                 <button class="hover:scale-110 hover:-rotate-3 transition-all duration-75"
                         hx-get="/game/{{$game->id}}/lobby/dialog/name-flag">
                     <div class="flex justify-center items-center">
-                        <img class="h-6 mr-2 ring-1 ring-gray-800"
+                        <img class="h-6 mr-2"
                              src="/static/flag/svg/{{$user->country_iso2_code}}.svg" alt="{{$user->country_name}}">
                         <div class="text-gray-200 text-3xl font-bold">{{$user->user_display_name}}</div>
                     </div>
@@ -117,7 +117,7 @@
                     <li class="flex items-center">
                         <img class="h-8 w-8 mr-2" src="/static/img/map-marker/{{$player->map_marker_file_name}}"
                              alt="{{$player->map_marker_file_name}}">
-                        <img class="w-8 mr-2 ring-1 ring-gray-800"
+                        <img class="w-8 mr-2"
                              src="/static/flag/svg/{{$player->user_country_iso2_code}}.svg"
                              alt="{{$player->country_name}}" tippy="{{$player->country_name}}">
                         <div>

@@ -5,8 +5,8 @@ namespace Domain\Map\Crud;
 use Domain\Map\Model\MapMarker;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 
-final class MapMarkerUpdater {
-    public function __construct(private readonly MapMarker $model) {
+final readonly class MapMarkerUpdater {
+    public function __construct(private MapMarker $model) {
         BearDatabaseService::mustBeInTransaction();
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST', 'PATCH']);
     }

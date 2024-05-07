@@ -1,16 +1,39 @@
 <?php declare(strict_types=1); ?>
 @php use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService; @endphp
 <x-bear::dialog.basic>
-    <form class="flex gap-4 items-end" hx-patch="/game/{{$game_id}}/lobby/update-user" autocomplete="off" hx-target="#primary">
-        <x-bear::form.text id="user_display_name" maxlength="32">{{BearAuthService::getUser()->user_display_name}}</x-bear::form.text>
+    <form class="flex gap-4 items-end" hx-patch="/game/{{$game_id}}/lobby/update-user" autocomplete="off"
+          hx-target="#primary">
+        <x-bear::form.text id="user_display_name"
+                           maxlength="32">{{BearAuthService::getUser()->user_display_name}}</x-bear::form.text>
         <x-bear::button.dark type="submit">Update</x-bear::button.dark>
     </form>
 
-    <form class="mt-6" hx-target="#primary">
-        <x-bear::form.select id="user_country_iso2_code" label="Country" hx-patch="/game/{{$game_id}}/lobby/update-user">
-            @foreach($countries as $country)
-                <option value="{{$country->country_iso2_code}}" @if($country->country_iso2_code === BearAuthService::getUser()->user_country_iso2_code) selected @endif>{{$country->country_name}}</option>
+    <h2 class="mt-4 font-bold text-xl">Flag Choice</h2>
+    <div class="ml-1">
+        <form class="" hx-target="#primary">
+            <x-bear::form.select id="user_country_iso2_code" label="Country"
+                                 hx-patch="/game/{{$game_id}}/lobby/update-user">
+                <option value="" disabled selected></option>
+                @foreach($countries as $country)
+                    <option value="{{$country->country_iso2_code}}"
+                            @if($country->country_iso2_code === BearAuthService::getUser()->user_country_iso2_code) selected @endif>{{$country->country_name}}</option>
+                @endforeach
+            </x-bear::form.select>
+        </form>
+
+
+        <h3 class="mt-2 font-medium">Novelty</h3>
+        <div class="flex" hx-target="#primary">
+            @foreach($novelty_flags as $flag)
+                <button class="px-1 hover:scale-110 transition-transform duration-75" hx-dialog-close
+                        hx-patch="/game/{{$game_id}}/lobby/update-user"
+                        hx-vals='{"user_country_iso2_code": "{{$flag->country_iso2_code}}"}'
+                        tippy="{{$flag->country_name}}">
+                    <img class="h-8" src="/static/flag/svg/{{$flag->country_iso2_code}}.svg?"
+                         alt="{{$flag->country_name}}">
+                </button>
             @endforeach
-        </x-bear::form.select>
-    </form>
+        </div>
+    </div>
+
 </x-bear::dialog.basic>

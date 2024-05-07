@@ -55,12 +55,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $round_duration
  * @property int $number_of_rounds
  * @property int|null $current_round
+ * @property bool $is_public
+ * @property bool $is_forced_start
  * @property string $id
  * @property string $created_at
  * @property string $updated_at
  * @property string $game_state_enum
  * @property string $created_by_user_id
- * @property CarbonInterface|null $next_update_at
+ * @property CarbonInterface|null $next_round_at
+ * @property CarbonInterface|null $round_ends_at
  *
  * @property BearUser $createdByUser
  * @property GameState $gameStateEnum
@@ -77,7 +80,8 @@ final class Game extends Model {
 
     /** @var array<string, string> $casts */
     protected $casts = [
-        'next_update_at' => 'immutable_datetime',
+        'next_round_at' => 'immutable_datetime',
+        'round_ends_at' => 'immutable_datetime',
     ];
 
     public function createdByUser(): BelongsTo {

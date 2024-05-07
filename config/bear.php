@@ -30,7 +30,7 @@ return [
             'game' => ['location' => 'Domain/Game/Model'],
             'game_round' => ['location' => 'Domain/Game/Model'],
             'game_state' => ['location' => 'Domain/Game/Model'],
-            'game_user' => ['location' => 'Domain/Game/Model'],
+            'game_user' => ['location' => 'Domain/Game/Model', 'log_exclude_columns' => ['is_ready']],
             'map_marker' => ['location' => 'Domain/Map/Model'],
             'map_style' => ['location' => 'Domain/Map/Model'],
             'panorama' => ['location' => 'Domain/Panorama/Model'],

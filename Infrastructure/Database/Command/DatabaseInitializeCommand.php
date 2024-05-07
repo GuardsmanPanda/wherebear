@@ -5,6 +5,7 @@ namespace Infrastructure\Database\Command;
 use GuardsmanPanda\Larabear\Infrastructure\Console\Service\BearTransactionCommand;
 use Infrastructure\Database\Initialize\DatabaseInitializeBearCountry;
 use Infrastructure\Database\Initialize\DatabaseInitializeExternalApi;
+use Infrastructure\Database\Initialize\DatabaseInitializeGameState;
 use Infrastructure\Database\Initialize\DatabaseInitializeMapStyle;
 
 final class DatabaseInitializeCommand extends BearTransactionCommand {
@@ -14,6 +15,7 @@ final class DatabaseInitializeCommand extends BearTransactionCommand {
     protected function handleInTransaction(): void {
         DatabaseInitializeBearCountry::initialize();
         DatabaseInitializeExternalApi::initialize();
+        DatabaseInitializeGameState::initialize();
 
         DatabaseInitializeMapStyle::initialize(); // Requires External API.
 

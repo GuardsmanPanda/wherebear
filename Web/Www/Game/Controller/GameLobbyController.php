@@ -2,9 +2,11 @@
 
 namespace Web\Www\Game\Controller;
 
+use Domain\Game\Action\GamePlaceInQueueAction;
 use Domain\Game\Crud\GameUserCreator;
 use Domain\Game\Crud\GameUserDeleter;
 use Domain\Game\Crud\GameUserUpdater;
+use Domain\Game\Service\GameService;
 use Domain\User\Crud\WhereBearUserUpdater;
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearArrayService;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
@@ -32,18 +34,21 @@ final class GameLobbyController extends Controller {
         } catch (Throwable) {
             return Resp::redirect(url: '/', message: 'Game not found');
         }
+        if ($game === null) {
+            return Resp::redirect(url: '/', message: 'Game not found');
+        }
 
         $user_id = BearAuthService::getUserId();
         $players = DB::select(query: "
-                SELECT 
-                    bu.user_display_name, bu.map_marker_file_name, bu.user_country_iso2_code,
-                    gu.is_ready, bc.country_name
-                FROM game_user gu
-                LEFT JOIN bear_user bu ON bu.id = gu.user_id
-                LEFT JOIN bear_country bc ON bc.country_iso2_code = bu.user_country_iso2_code
-                WHERE gu.game_id = ?
-                ORDER BY bu.id = ? DESC, bu.user_display_name, bu.user_country_iso2_code, bu.id
-            ", bindings: [$game->id, $user_id]);
+            SELECT 
+                bu.user_display_name, bu.map_marker_file_name, bu.user_country_iso2_code,
+                gu.is_ready, bc.country_name
+            FROM game_user gu
+            LEFT JOIN bear_user bu ON bu.id = gu.user_id
+            LEFT JOIN bear_country bc ON bc.country_iso2_code = bu.user_country_iso2_code
+            WHERE gu.game_id = ?
+            ORDER BY bu.id = ? DESC, bu.user_display_name, bu.user_country_iso2_code, bu.id
+        ", bindings: [$game->id, $user_id]);
 
         if ($user_id === null) {
             return Resp::view(view: "game::lobby.guest", data: [
@@ -99,9 +104,15 @@ final class GameLobbyController extends Controller {
 
 
     public function updateGameUser(string $gameId): Response|View {
+        $ready = Req::getBoolOrDefault(key: 'is_ready');
         $updater = GameUserUpdater::fromGameIdAndUserId(game_id: $gameId, user_id: BearAuthService::getUserId());
-        $updater->setIsReady(is_ready: Req::getBoolOrDefault(key: 'is_ready'));
+        $updater->setIsReady(is_ready: $ready);
         $updater->update();
+
+        if ($ready && GameService::canGameStart(gameId: $gameId)) {
+            GamePlaceInQueueAction::placeInQueue(gameId: $gameId);
+        }
+
         return $this->index($gameId);
     }
 
@@ -115,10 +126,21 @@ final class GameLobbyController extends Controller {
             view: 'game::lobby.dialog.name-flag',
             title: 'Edit Name and Flag',
             data: [
-                'countries' => DB::select(query: "SELECT country_name, country_iso2_code FROM bear_country ORDER BY country_name"),
+                'countries' => DB::select(query: "
+                    SELECT country_name, country_iso2_code
+                    FROM bear_country
+                    WHERE country_dependency_status != 'Fictive' OR country_dependency_status IS NULL
+                    ORDER BY country_name
+                "),
                 'display_name' => BearAuthService::getUser()->user_display_name,
                 'flag_selected' => BearAuthService::getUser()->user_country_iso2_code,
                 'game_id' => $gameId,
+                'novelty_flags' => DB::select(query: "
+                    SELECT country_name, country_iso2_code
+                    FROM bear_country bc
+                    WHERE bc.country_dependency_status = 'Fictive'
+                    ORDER BY country_name
+                "),
             ]
         );
     }

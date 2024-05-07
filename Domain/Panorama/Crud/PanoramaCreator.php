@@ -16,7 +16,6 @@ final class PanoramaCreator {
         float $latitude,
         float $longitude,
         CarbonInterface $captured_date,
-        bool $is_retired = false,
         string $added_by_user_id = null,
         string $jpg_name = null
     ): Panorama {
@@ -29,9 +28,8 @@ final class PanoramaCreator {
         DB::insert(query: "
             INSERT INTO panorama (
                 id, captured_date, country_iso_2_code, state_name, city_name, added_by_user_id,
-                panorama_location, region_name, state_district_name, county_name, jpg_name,
-                created_at, updated_at, is_retired
-            ) VALUES (?, ?, ?, ?, ?, ?, public.ST_MakePoint(?::double precision, ?::double precision), ?, ?, ?, ?, NOW(), NOW(), ?)
+                panorama_location, jpg_name, nominatim_json, created_at, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, public.ST_MakePoint(?::double precision, ?::double precision), ?, ?, NOW(), NOW())
         ", bindings: [
             $id,
             $captured_date,
@@ -40,11 +38,8 @@ final class PanoramaCreator {
             $data->city_name,
             $added_by_user_id,
             $longitude, $latitude,
-            $data->region_name,
-            $data->state_district_name,
-            $data->county_name,
             $jpg_name,
-            $is_retired
+            json_encode($data->nominatim_json)
         ]);
         return Panorama::findOrFail(id: $id);
     }

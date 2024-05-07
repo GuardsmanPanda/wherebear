@@ -18,12 +18,11 @@ final class NominatimClient {
             country_iso2_code: Str::upper(value: $result['address']['country_code']) ?? 'XX',
             latitude: $latitude,
             longitude: $longitude,
-            state_name: $result['address']['state'] ?? null,
-            state_district_name: $result['address']['state_district'] ?? null,
-            region_name: $result['address']['state'] ?? null,
+            nominatim_json: $result,
+            state_name: $result['address']['state'] ?? $result['address']['county'] ?? $result['address']['municipality'] ?? null,
+            region_name: $result['address']['region'] ?? null,
             county_name: $result['address']['county'] ?? null,
-            city_name: $result['address']['city'] ?? $result['address']['municipality'] ?? $result['address']['town'] ?? $result['address']['village'] ?? null,
-            city_district_name: $result['address']['city_district'] ?? null
+            city_name: $result['address']['city'] ?? $result['address']['town'] ?? $result['address']['hamlet'] ?? $result['address']['village'] ?? null
         );
         return self::fixData(d: $data);
     }

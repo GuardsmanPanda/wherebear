@@ -61,12 +61,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $id
  * @property string $created_at
  * @property string $updated_at
- * @property string $map_style_enum
  * @property string $user_display_name
  * @property string $map_marker_file_name
  * @property string|null $password
  * @property string|null $user_city
  * @property string|null $user_email
+ * @property string|null $map_style_enum
  * @property string|null $remember_token
  * @property string|null $user_last_name
  * @property string|null $user_first_name
@@ -82,7 +82,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property BearLanguage|null $userLanguageIso2Code
  * @property BearCountry|null $userCountryIso2Code
  * @property MapMarker $mapMarkerFileName
- * @property MapStyle $mapStyleEnum
+ * @property MapStyle|null $mapStyleEnum
  *
  * AUTO GENERATED FILE DO NOT MODIFY
  */
@@ -114,7 +114,7 @@ final class WhereBearUser extends Model {
         return $this->belongsTo(related: MapMarker::class, foreignKey: 'map_marker_file_name', ownerKey: 'file_name');
     }
 
-    public function mapStyleEnum(): BelongsTo {
+    public function mapStyleEnum(): BelongsTo|null {
         return $this->belongsTo(related: MapStyle::class, foreignKey: 'map_style_enum', ownerKey: 'map_style_enum');
     }
 

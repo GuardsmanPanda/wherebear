@@ -1,14 +1,14 @@
 <?php declare(strict_types=1);
 
 return [
-    'default' => env(key: 'QUEUE_CONNECTION', default: 'sync'),
+    'default' => 'database',
     'connections' => [
         'sync' => [
             'driver' => 'sync',
         ],
         'database' => [
             'driver' => 'database',
-            'table' => 'bear_jobs',
+            'table' => 'jobs',
             'queue' => 'default',
             'retry_after' => 90,
             'after_commit' => false,

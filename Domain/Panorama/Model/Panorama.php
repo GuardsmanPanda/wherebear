@@ -7,6 +7,8 @@ use Closure;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearUser;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearLogDatabaseChanges;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Model\BearCountry;
+use Illuminate\Database\Eloquent\Casts\ArrayObject;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -53,20 +55,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static mixed sum(string $column)
  * @method static bool exists()
  *
- * @property bool $is_retired
  * @property string $id
  * @property string $created_at
  * @property string $updated_at
  * @property string|null $jpg_name
  * @property string|null $city_name
  * @property string|null $state_name
- * @property string|null $county_name
- * @property string|null $region_name
+ * @property string|null $retired_reason
  * @property string|null $added_by_user_id
  * @property string|null $panorama_location
  * @property string|null $country_iso_2_code
- * @property string|null $state_district_name
+ * @property ArrayObject|null $nominatim_json
  * @property CarbonInterface $captured_date
+ * @property CarbonInterface|null $retired_at
  *
  * @property BearUser|null $addedByUser
  * @property BearCountry|null $countryIso2Code
@@ -84,6 +85,8 @@ final class Panorama extends Model {
     /** @var array<string, string> $casts */
     protected $casts = [
         'captured_date' => 'immutable_date',
+        'nominatim_json' => AsArrayObject::class,
+        'retired_at' => 'immutable_datetime',
     ];
 
     public function addedByUser(): BelongsTo|null {

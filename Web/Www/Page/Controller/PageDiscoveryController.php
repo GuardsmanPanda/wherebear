@@ -23,15 +23,64 @@ final class PageDiscoveryController extends Controller {
     }
 
     public function addFromStreetViewLocation(): array {
-        $lat = Req::getFloat(key: 'lat');
-        $lng = Req::getFloat(key: 'lng');
+        $lat = Req::getFloatOrDefault(key: 'lat');
+        $lng = Req::getFloatOrDefault(key: 'lng');
         $data = StreetViewClient::findByLocation(latitude: $lat, longitude: $lng);
-        $exists = PanoramaService::panoramaExists(id: $data['pano_id']);
-        if (!$exists) {
+        if (!PanoramaService::panoramaExists(id: $data['pano_id'])) {
             $panorama = PanoramaCreator::createFromStreetViewData(data: $data);
+            return [
+                'country_iso2_code' => $panorama->country_iso_2_code,
+                'state_name' => $panorama->state_name,
+                'city_name' => $panorama->city_name,
+                'lat' => $data['location']['lat'],
+                'lng' => $data['location']['lng'],
+                'date' => $data['date'],
+                'exists' => false,
+            ];
         }
         return [
-            'exists' => $exists,
+            'exists' => true,
         ];
+    }
+
+    public function searchFromStreetViewLocation(): array {
+        $offset = Req::getFloatOrDefault(key: 'distance') / 111320.0;
+        $retries = Req::getIntOrDefault(key: 'retries');
+        $retries = min(max($retries, 0), 50);
+        $lat = Req::getFloatOrDefault(key: 'lat');
+        $lng = Req::getFloatOrDefault(key: 'lng');
+        $results = [];
+        for ($i = 0; $i <= $retries; $i++) {
+            $newLat = $lat + (rand(-100_000, 100_000) / 100_000.0) * $offset;
+            $newLng = $lng + $offset / cos(deg2rad($lat)) * (rand(-100_000, 100_000) / 100_000.0);
+            $data = StreetViewClient::findByLocation(latitude: $newLat, longitude: $newLng);
+            if ($data === null) {
+                $results[] = [
+                    'lat' => $newLat,
+                    'lng' => $newLng,
+                    'status' => 'failed',
+                ];
+                continue;
+            }
+            if (!PanoramaService::panoramaExists(id: $data['pano_id'])) {
+                $panorama = PanoramaCreator::createFromStreetViewData(data: $data);
+                $results[] = [
+                    'country_iso2_code' => $panorama->country_iso_2_code,
+                    'state_name' => $panorama->state_name,
+                    'city_name' => $panorama->city_name,
+                    'lat' => $data['location']['lat'],
+                    'lng' => $data['location']['lng'],
+                    'date' => $data['date'],
+                    'status' => 'new',
+                ];
+                break;
+            } else {
+                $results[] = [
+                    'statue' => 'exists',
+                ];
+            }
+        }
+        return $results;
+
     }
 }

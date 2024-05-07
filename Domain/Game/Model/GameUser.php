@@ -56,6 +56,7 @@ use RuntimeException;
  * @property float $game_points
  * @property string $game_id
  * @property string $user_id
+ * @property string $created_at
  *
  * @property Game $game
  * @property BearUser $user
@@ -73,6 +74,8 @@ final class GameUser extends Model {
     public $incrementing = false;
     protected $dateFormat = 'Y-m-d\TH:i:sP';
     public $timestamps = false;
+    /** @var array<string> $log_exclude_columns */
+    public array $log_exclude_columns = ['is_ready'];
 
     public function game(): BelongsTo {
         return $this->belongsTo(related: Game::class, foreignKey: 'game_id', ownerKey: 'id');

@@ -3,23 +3,31 @@
 namespace Domain\Game\Crud;
 
 use Carbon\CarbonInterface;
+use Domain\Game\Enum\GameStateEnum;
 use Domain\Game\Model\Game;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 
-final class GameUpdater {
-    public function __construct(private readonly Game $model) {
+final readonly class GameUpdater {
+    public function __construct(private Game $model) {
         BearDatabaseService::mustBeInTransaction();
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['PATCH']);
     }
 
-    public static function fromId(string $id): self {
+    public static function fromId(string $id, bool $lockForUpdate = false): self {
+        if ($lockForUpdate) {
+            return new self(model: Game::lockForUpdate()->findOrFail(id: $id));
+        }
         return new self(model: Game::findOrFail(id: $id));
     }
 
 
-    public function setGameStateEnum(string $game_state_enum): self {
-        $this->model->game_state_enum = $game_state_enum;
+    public function setGameStateEnum(GameStateEnum $game_state_enum): self {
+        $this->model->game_state_enum = $game_state_enum->value;
         return $this;
+    }
+
+    public function getGameStateEnum(): string {
+        return $this->model->game_state_enum;
     }
 
     public function setNumberOfRounds(int $number_of_rounds): self {
@@ -37,11 +45,19 @@ final class GameUpdater {
         return $this;
     }
 
-    public function setNextUpdateAt(CarbonInterface|null $next_update_at): self {
-        if ($next_update_at?->toIso8601String() === $this->model->next_update_at?->toIso8601String()) {
+    public function setRoundEndsAt(CarbonInterface|null $round_ends_at): self {
+        if ($round_ends_at?->toIso8601String() === $this->model->round_ends_at?->toIso8601String()) {
             return $this;
         }
-        $this->model->next_update_at = $next_update_at;
+        $this->model->round_ends_at = $round_ends_at;
+        return $this;
+    }
+
+    public function setNextRoundAt(CarbonInterface|null $next_round_at): self {
+        if ($next_round_at?->toIso8601String() === $this->model->next_round_at?->toIso8601String()) {
+            return $this;
+        }
+        $this->model->next_round_at = $next_round_at;
         return $this;
     }
 
