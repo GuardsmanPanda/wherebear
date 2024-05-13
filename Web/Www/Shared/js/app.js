@@ -1,3 +1,4 @@
+import Pusher from 'pusher-js';
 import {Notyf} from 'notyf';
 import tippy from 'tippy.js';
 
@@ -5,6 +6,7 @@ import L from "leaflet";
 require('leaflet.markercluster');
 
 window.htmx = require('htmx.org/dist/htmx.cjs.js');
+window.pusher = Pusher
 window.tippy = tippy;
 
 const tippyFunction = function (el) {

@@ -2,7 +2,7 @@
 @php use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService; @endphp
 <x-bear::dialog.basic>
     <form class="flex gap-4 items-end" hx-patch="/game/{{$game_id}}/lobby/update-user" autocomplete="off"
-          hx-target="#primary">
+          hx-target="#lobby">
         <x-bear::form.text id="user_display_name"
                            maxlength="32">{{BearAuthService::getUser()->user_display_name}}</x-bear::form.text>
         <x-bear::button.dark type="submit">Update</x-bear::button.dark>
@@ -10,7 +10,7 @@
 
     <h2 class="mt-4 font-bold text-xl">Flag Choice</h2>
     <div class="ml-1">
-        <form class="" hx-target="#primary">
+        <form class="" hx-target="#lobby">
             <x-bear::form.select id="user_country_iso2_code" label="Country"
                                  hx-patch="/game/{{$game_id}}/lobby/update-user">
                 <option value="" disabled selected></option>
@@ -23,7 +23,7 @@
 
 
         <h3 class="mt-2 font-medium">Novelty</h3>
-        <div class="flex" hx-target="#primary">
+        <div class="flex" hx-target="#lobby">
             @foreach($novelty_flags as $flag)
                 <button class="px-1 hover:scale-110 transition-transform duration-75" hx-dialog-close
                         hx-patch="/game/{{$game_id}}/lobby/update-user"

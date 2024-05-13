@@ -17,6 +17,7 @@ use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Resp;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Infrastructure\Broadcast\Service\BroadcastGameService;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -61,16 +62,17 @@ final class GameLobbyController extends Controller {
         $in_game = BearDatabaseService::exists(sql: "SELECT 1 FROM game_user WHERE game_id = ? AND user_id = ?", bindings: [$game->id, $user_id]);
         if ($in_game === false) {
             GameUserCreator::create(game_id: $game->id, user_id: $user_id);
+            BroadcastGameService::broadcastPlayerUpdate(gameId: $gameId); // Broadcast to all players
             return $this->index($gameId);
         }
-
-        return Resp::view(view: 'game::lobby.index', data: [
+        $template = Req::hxRequest() ? 'game::lobby.content' : 'game::lobby.index';
+        return Resp::view(view: $template, data: [
             'game' => $game,
             'players' => $players,
             'map_markers' => DB::select(query: "SELECT file_name, map_marker_name FROM map_marker ORDER BY file_name"),
             'user' => DB::selectOne(query: "
                 SELECT 
-                    bu.user_display_name, bu.map_marker_file_name, bu.user_email,
+                    bu.id, bu.user_display_name, bu.map_marker_file_name, bu.user_email,
                     gu.is_ready, mm.map_marker_name, ms.map_style_name, ms.map_style_enum,
                     bc.country_name, bc.country_iso2_code
                 FROM bear_user bu
@@ -99,6 +101,7 @@ final class GameLobbyController extends Controller {
             $updater->setUserCountryIso2Code(user_country_iso2_code: Req::getStringOrDefault(key: 'user_country_iso2_code'));
         }
         $updater->update();
+        BroadcastGameService::broadcastPlayerUpdate(gameId: $gameId, playerId: BearAuthService::getUserId()); // Broadcast to all players
         return $this->index($gameId);
     }
 
@@ -112,12 +115,13 @@ final class GameLobbyController extends Controller {
         if ($ready && GameService::canGameStart(gameId: $gameId)) {
             GamePlaceInQueueAction::placeInQueue(gameId: $gameId);
         }
-
+        BroadcastGameService::broadcastPlayerUpdate(gameId: $gameId, playerId: BearAuthService::getUserId()); // Broadcast to all players
         return $this->index($gameId);
     }
 
     public function leaveGame(string $gameId): Response {
         GameUserDeleter::deleteFromGameAndUserId(gameId: $gameId, userId: BearAuthService::getUserId());
+        BroadcastGameService::broadcastPlayerUpdate(gameId: $gameId, playerId: BearAuthService::getUserId()); // Broadcast to all players
         return Htmx::redirect(url: '/', message: 'Left Game.');
     }
 

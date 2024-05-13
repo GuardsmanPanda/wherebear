@@ -5,7 +5,7 @@
         <div>
             <div class="text-gray-700 text-xl font-bold border-b-2 @if(!$loop->first) mt-4 @endif">{{$group_name}}</div>
         </div>
-        <div class="grid grid-cols-6 md:grid-cols-9" hx-target="#primary">
+        <div class="grid grid-cols-6 md:grid-cols-9" hx-target="#lobby">
             @foreach($map_markers as $marker)
                 <button class="px-0.5 py-1 hover:scale-110 transition-transform duration-75" hx-dialog-close
                         hx-patch="/game/{{$game_id}}/lobby/update-user"

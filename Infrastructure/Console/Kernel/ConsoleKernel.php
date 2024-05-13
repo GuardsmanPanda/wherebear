@@ -4,6 +4,7 @@ namespace Infrastructure\Console\Kernel;
 
 use Domain\Map\Command\MapMarkerSynchronizeCommand;
 use Domain\Panorama\Command\PanoramaScraperCommand;
+use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearBroadcastService;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel;
 use Illuminate\Support\Facades\Artisan;
@@ -23,7 +24,11 @@ final class ConsoleKernel extends Kernel {
 
     protected function commands(): void {
         Artisan::command('zz', function () {
-
+            BearBroadcastService::broadcastNow(
+                channel: 'test',
+                event: 'test',
+                data: ['test' => 'test']
+            );
         });
     }
 }

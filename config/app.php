@@ -2,6 +2,7 @@
 
 use GuardsmanPanda\Larabear\Infrastructure\Integrity\Service\ValidateAndParseValue;
 use GuardsmanPanda\Larabear\Infrastructure\Laravel\Provider\BearServiceProvider;
+use Illuminate\Broadcasting\BroadcastServiceProvider;
 use Infrastructure\App\Provider\AppServiceProvider;
 use Infrastructure\Http\Provider\RouteServiceProvider;
 
@@ -10,7 +11,7 @@ return [
     'debug' => ValidateAndParseValue::parseBool(value: env(key: 'APP_DEBUG', default: false), errorMessage: 'APP_DEBUG must be a boolean value'),
     'key' =>ValidateAndParseValue::parseString(value: env(key: 'APP_KEY'), errorMessage: 'APP_KEY must be set and be a string.'),
     'url' => ValidateAndParseValue::parseString(value: env(key: 'APP_URL'), errorMessage: 'APP_URL must be a string'),
-    'name' => 'Awesome Funtime Game',
+    'name' => 'WhereBear',
     'timezone' => 'UTC',
     'locale' => 'en',
     'fallback_locale' => 'en',
@@ -22,6 +23,7 @@ return [
     'providers' => [
         Illuminate\Bus\BusServiceProvider::class,
         Illuminate\Cache\CacheServiceProvider::class,
+        BroadcastServiceProvider::class,
         Illuminate\Foundation\Providers\ConsoleSupportServiceProvider::class,
         Illuminate\Cookie\CookieServiceProvider::class,
         Illuminate\Database\DatabaseServiceProvider::class,

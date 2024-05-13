@@ -8,7 +8,7 @@ return [
         ],
         'database' => [
             'driver' => 'database',
-            'table' => 'jobs',
+            'table' => 'job_queue',
             'queue' => 'default',
             'retry_after' => 90,
             'after_commit' => false,
@@ -18,6 +18,6 @@ return [
     'failed' => [
         'driver' => 'database-uuids',
         'database' => 'pgsql',
-        'table' => 'failed_jobs',
+        'table' => 'job_queue_failed',
     ],
 ];

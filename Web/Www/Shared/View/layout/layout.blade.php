@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="{!! config('bear.ui.app_css') !!}">
 </head>
 <body>
-<div id="primary" hx-target="#primary" class="min-h-screen bg-gray-950 text-gray-300 flex flex-col">
+<div id="primary" hx-target="#primary" class="min-h-screen bg-gray-950 text-gray-300">
     {!! $content !!}
 </div>
 </body>

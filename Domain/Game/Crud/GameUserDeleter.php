@@ -24,7 +24,7 @@ final class GameUserDeleter {
     }
 
     public static function deleteFromGameId(string $gameId): void {
-        $games = GameUser::where('game_id', $gameId);
+        $games = GameUser::where('game_id', $gameId)->get();
         foreach ($games as $game) {
             self::delete(model: $game);
         }
