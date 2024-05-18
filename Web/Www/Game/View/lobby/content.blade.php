@@ -1,38 +1,5 @@
 <?php declare(strict_types=1); ?>
 @php use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService; @endphp
-<div class="flex justify-center h-9 bg-gray-900 items-center shadow z-10">
-    @if($user->is_ready)
-        <div class=" text-gray-500 font-medium text-xl">Waiting For Players..</div>
-        <button class="flex items-center ml-4 text-gray-500 hover:text-gray-400 ring-1 ring-gray-500 font-medium pl-2 pr-3 py-0.5 my-0.5 rounded duration-75 hover:scale-110 transition-transform"
-                hx-patch="/game/{{$game->id}}/lobby/update-game-user" hx-vals='{"is_ready": false}'>
-            <x-bear::icon name="x-mark" size="4" class="opacity-70 mr-0.5"/>
-            Wait
-        </button>
-    @else
-        <div class=" text-gray-500 font-medium text-xl animate-pulse">Click When Ready..</div>
-        <button class="flex items-center ml-4 bg-yellow-400 text-yellow-800 hover:text-yellow-900 font-medium pl-2 pr-3 py-0.5 my-0.5 rounded duration-75 hover:scale-110 transition-transform"
-                hx-patch="/game/{{$game->id}}/lobby/update-game-user" hx-vals='{"is_ready": true}'>
-            <x-bear::icon name="check" size="4" class="opacity-70 mr-0.5"/>
-            Ready
-        </button>
-    @endif
-</div>
-@if($game->created_by_user_id === BearAuthService::getUserId())
-    <div class="flex justify-center h-7 bg-gray-800 items-center">
-        <button class="flex items-center ml-4 bg-red-400 text-red-800 hover:text-red-900 text-xs font-medium pl-2 pr-3 py-0.5 my-0.5 rounded duration-75 hover:scale-110 transition-transform"
-                hx-delete="/game/{{$game->id}}" hx-confirm="DELETE the game?">
-            <x-bear::icon name="x-mark" size="4" class="opacity-70 mr-0.5"/>
-            Delete Game
-        </button>
-        <button class="flex items-center ml-4 bg-blue-400 text-blue-800 hover:text-blue-900 text-xs font-medium pl-2 pr-3 py-0.5 my-0.5 rounded duration-75 hover:scale-110 transition-transform"
-                hx-post="/game/{{$game->id}}/start" hx-confirm="Start The Game Now?">
-            <x-bear::icon name="play-circle" size="4" class="opacity-70 mr-0.5"/>
-            Force Start
-        </button>
-    </div>
-@else
-    <div class="h-7"></div>
-@endif
 <div class="grid place-items-center flex-1 overflow-auto">
     <div class="grid lg:grid-cols-3 grid-cols-1 gap-8">
         <div class="bg-gray-900 px-4 py-4 rounded-md">
@@ -104,10 +71,28 @@
                 </button>
             </div>
         </div>
-        <div class="w-80 bg-gray-900 px-4 py-4 rounded-md">
-            <div class="flex items-center">
-                <x-bear::icon name="users" size="6" class=" opacity-50 mr-2"/>
-                <h2 class="text-xl font-bold">Players</h2>
+        <div class="w-96 bg-gray-900 px-4 py-4 rounded-md">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <x-bear::icon name="users" size="6" class=" opacity-50 mr-2"/>
+                    <h2 class="text-xl font-bold">Players</h2>
+                </div>
+                <div class="flex">
+                    @if($user->is_ready)
+                        <button class="flex items-center ml-4 text-gray-500 hover:text-gray-400 ring-1 ring-gray-500 font-medium pl-2 pr-3 py-0.5 my-0.5 rounded duration-75 hover:scale-110 transition-transform"
+                                hx-patch="/game/{{$game->id}}/lobby/update-game-user" hx-vals='{"is_ready": false}'>
+                            <x-bear::icon name="x-mark" size="4" class="opacity-70 mr-0.5"/>
+                            Wait
+                        </button>
+                    @else
+                        <div id="game-state-text" class="text-gray-500 font-medium text-xl animate-pulse">Click Ready</div>
+                        <button class="flex items-center ml-4 bg-yellow-400 text-yellow-800 hover:text-yellow-900 font-medium pl-2 pr-3 py-0.5 my-0.5 rounded duration-75 hover:scale-110 transition-transform"
+                                hx-patch="/game/{{$game->id}}/lobby/update-game-user" hx-vals='{"is_ready": true}'>
+                            <x-bear::icon name="check" size="4" class="opacity-70 mr-0.5"/>
+                            Ready
+                        </button>
+                    @endif
+                </div>
             </div>
             <hr class="mx-1 mt-1 mb-3 pb-0.5 border-gray-700 border-b-2 border-dashed">
             <ul id="player-list">

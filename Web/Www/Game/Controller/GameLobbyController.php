@@ -2,7 +2,8 @@
 
 namespace Web\Www\Game\Controller;
 
-use Domain\Game\Action\GamePlaceInQueueAction;
+use Domain\Game\Action\GameStartAction;
+use Domain\Game\Broadcast\GameBroadcastService;
 use Domain\Game\Crud\GameUserCreator;
 use Domain\Game\Crud\GameUserDeleter;
 use Domain\Game\Crud\GameUserUpdater;
@@ -17,7 +18,6 @@ use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Resp;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
-use Infrastructure\Broadcast\Service\BroadcastGameService;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -62,7 +62,7 @@ final class GameLobbyController extends Controller {
         $in_game = BearDatabaseService::exists(sql: "SELECT 1 FROM game_user WHERE game_id = ? AND user_id = ?", bindings: [$game->id, $user_id]);
         if ($in_game === false) {
             GameUserCreator::create(game_id: $game->id, user_id: $user_id);
-            BroadcastGameService::broadcastPlayerUpdate(gameId: $gameId); // Broadcast to all players
+            GameBroadcastService::playerUpdate(gameId: $gameId); // Broadcast to all players
             return $this->index($gameId);
         }
         $template = Req::hxRequest() ? 'game::lobby.content' : 'game::lobby.index';
@@ -101,7 +101,7 @@ final class GameLobbyController extends Controller {
             $updater->setUserCountryIso2Code(user_country_iso2_code: Req::getStringOrDefault(key: 'user_country_iso2_code'));
         }
         $updater->update();
-        BroadcastGameService::broadcastPlayerUpdate(gameId: $gameId, playerId: BearAuthService::getUserId()); // Broadcast to all players
+        GameBroadcastService::playerUpdate(gameId: $gameId, playerId: BearAuthService::getUserId()); // Broadcast to all players
         return $this->index($gameId);
     }
 
@@ -111,17 +111,14 @@ final class GameLobbyController extends Controller {
         $updater = GameUserUpdater::fromGameIdAndUserId(game_id: $gameId, user_id: BearAuthService::getUserId());
         $updater->setIsReady(is_ready: $ready);
         $updater->update();
-
-        if ($ready && GameService::canGameStart(gameId: $gameId)) {
-            GamePlaceInQueueAction::placeInQueue(gameId: $gameId);
-        }
-        BroadcastGameService::broadcastPlayerUpdate(gameId: $gameId, playerId: BearAuthService::getUserId()); // Broadcast to all players
+        GameStartAction::placeInQueueIfAble(gameId: $gameId);
+        GameBroadcastService::playerUpdate(gameId: $gameId, playerId: BearAuthService::getUserId()); // Broadcast to all players
         return $this->index($gameId);
     }
 
     public function leaveGame(string $gameId): Response {
         GameUserDeleter::deleteFromGameAndUserId(gameId: $gameId, userId: BearAuthService::getUserId());
-        BroadcastGameService::broadcastPlayerUpdate(gameId: $gameId, playerId: BearAuthService::getUserId()); // Broadcast to all players
+        GameBroadcastService::playerUpdate(gameId: $gameId, playerId: BearAuthService::getUserId()); // Broadcast to all players
         return Htmx::redirect(url: '/', message: 'Left Game.');
     }
 

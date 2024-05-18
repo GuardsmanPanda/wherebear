@@ -17,12 +17,11 @@ final class PanoramaCreator {
         float $longitude,
         CarbonInterface $captured_date,
         string $added_by_user_id = null,
-        string $jpg_name = null
+        string $jpg_name = null,
     ): Panorama {
         BearDatabaseService::mustBeInTransaction();
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST']);
 
-        $added_by_user_id ??= BearAuthService::getUserId();
         $data = NominatimClient::reverseLookup(latitude: $latitude, longitude: $longitude);
 
         DB::insert(query: "
@@ -44,12 +43,13 @@ final class PanoramaCreator {
         return Panorama::findOrFail(id: $id);
     }
 
-    public static function createFromStreetViewData(array $data): Panorama {
+    public static function createFromStreetViewData(array $data, string $added_by_user_id = null): Panorama {
         return PanoramaCreator::create(
             id: $data['pano_id'],
             latitude: $data['location']['lat'],
             longitude: $data['location']['lng'],
-            captured_date: Carbon::parse($data['date'] . "-01")
+            captured_date: Carbon::parse($data['date'] . "-01"),
+            added_by_user_id: $added_by_user_id,
         );
     }
 }

@@ -21,5 +21,14 @@ Route::prefix("{gameId}/lobby")->middleware(BearHtmxMiddleware::using(layout_loc
 });
 
 
+Route::prefix("{gameId}/play")->middleware(BearHtmxMiddleware::using(layout_location: 'layout.layout'))->group(callback: function () {
+
+});
+
+Route::prefix("{gameId}/result")->middleware(BearHtmxMiddleware::using(layout_location: 'layout.layout'))->group(callback: function () {
+
+});
+
+
 
 Route::view(uri: "experiments/popups", view: "game::experiments.popup");

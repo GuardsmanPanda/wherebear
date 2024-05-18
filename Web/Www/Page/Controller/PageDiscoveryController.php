@@ -4,6 +4,7 @@ namespace Web\Www\Page\Controller;
 
 use Domain\Panorama\Crud\PanoramaCreator;
 use Domain\Panorama\Service\PanoramaService;
+use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Resp;
 use Illuminate\Routing\Controller;
@@ -27,7 +28,7 @@ final class PageDiscoveryController extends Controller {
         $lng = Req::getFloatOrDefault(key: 'lng');
         $data = StreetViewClient::findByLocation(latitude: $lat, longitude: $lng);
         if (!PanoramaService::panoramaExists(id: $data['pano_id'])) {
-            $panorama = PanoramaCreator::createFromStreetViewData(data: $data);
+            $panorama = PanoramaCreator::createFromStreetViewData(data: $data, added_by_user_id: BearAuthService::getUserId());
             return [
                 'country_iso2_code' => $panorama->country_iso_2_code,
                 'state_name' => $panorama->state_name,

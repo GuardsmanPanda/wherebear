@@ -9,6 +9,7 @@ final class DatabaseInitializeGameState {
     public static function initialize(): void {
         $game_states = [
             'WAITING_FOR_PLAYERS',
+            'STARTING',
             'QUEUED',
             'IN_PROGRESS',
             'IN_PROGRESS_RESULT',
