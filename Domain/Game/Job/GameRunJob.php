@@ -2,12 +2,12 @@
 
 namespace Domain\Game\Job;
 
-use Domain\Game\Broadcast\GameBroadcastService;
+use Domain\Game\Action\GameRoundCreatorAction;
+use Domain\Game\Broadcast\GameBroadcast;
 use Domain\Game\Enum\GameStateEnum;
 use Domain\Game\Model\Game;
 use Domain\Game\Service\GameService;
 use GuardsmanPanda\Larabear\Infrastructure\Error\Crud\BearErrorCreator;
-use GuardsmanPanda\Larabear\Infrastructure\Error\Model\BearError;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -45,31 +45,37 @@ final class GameRunJob implements ShouldQueue, ShouldBeUnique {
     }
 
     private function ensureReady(Game $game): Game {
-        GameBroadcastService::prep(gameId: $game->id, message: 'Starting..', stage: 1);
+        GameBroadcast::prep(gameId: $game->id, message: 'Game Starting', stage: 1);
         sleep(seconds: 8); // Wait for all players to confirm they are ready.
-        if (GameService::canGameStart(gameId: $game->id)) {
+        if (GameService::canGameStart(gameId: $game->id, expectState: GameStateEnum::QUEUED)) {
             return GameService::setGameState(gameId: $game->id, state: GameStateEnum::STARTING);
         }
         $game = GameService::setGameState(gameId: $game->id, state: GameStateEnum::WAITING_FOR_PLAYERS);
-        GameBroadcastService::prep(gameId: $this->gameId, message: 'Waiting For Players..', stage: -1);
+        GameBroadcast::prep(gameId: $this->gameId, message: 'Waiting For Players..', stage: -1);
         $this->exitJob = true;
         return $game;
     }
 
     private function startGame(Game $game): Game {
-        //todo: Select Panoramas
+        GameBroadcast::prep(gameId: $game->id, message: 'Selecting Panoramas..', stage: 2);
+        $round_creator = new GameRoundCreatorAction(game: $game);
+        $round_creator->createAllRounds();
+        $game = GameService::setGameState(gameId: $game->id, state: GameStateEnum::IN_PROGRESS);
+        GameBroadcast::prep(gameId: $game->id, message: 'Loading First Round', stage: 3 + $game->number_of_rounds);
         //todo: Transition to round 1
         return $game;
     }
 
     private function runRound(Game $game): Game {
         // TODO: wait until round is over then calculate the round results
+        throw new RuntimeException(message: "Not Implemented");
         return $game;
     }
 
     private function nextRoundOrEnd(Game $game): Game {
         // TODO: wait until round results have been displayed.
         // Then transition to the next round or calculate the game results.
+        throw new RuntimeException(message: "Not Implemented");
         return $game;
     }
 

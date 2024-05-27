@@ -81,7 +81,6 @@
                 year: document.getElementById('year').value,
             }),
         }).then(resp => {
-            map.panTo([lat, lng]);
             if (!resp.ok) {
                 resp.text().then(text => {
                     window.notify.error(text);

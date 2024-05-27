@@ -2,6 +2,7 @@
 
 namespace Domain\Game\Service;
 
+use Carbon\CarbonImmutable;
 use Domain\Game\Crud\GameUpdater;
 use Domain\Game\Enum\GameStateEnum;
 use Domain\Game\Model\Game;
@@ -12,10 +13,10 @@ use RuntimeException;
 use Throwable;
 
 final class GameService {
-    public static function canGameStart(String $gameId): bool {
+    public static function canGameStart(string $gameId, GameStateEnum $expectState = GameStateEnum::WAITING_FOR_PLAYERS): bool {
         return DB::selectOne(query: "
             SELECT
-                g.game_state_enum = 'WAITING_FOR_PLAYERS' AND
+                g.game_state_enum = ? AND
                 (g.is_forced_start OR NOT EXISTS (
                     SELECT 1
                     FROM game_user gu
@@ -23,22 +24,46 @@ final class GameService {
                 )) as can_start
             FROM game g
             WHERE g.id = ?
-        ", bindings: [$gameId])->can_start;
+        ", bindings: [$expectState->value, $gameId])->can_start;
     }
 
 
     public static function setGameState(string $gameId, GameStateEnum $state): Game {
         try {
             DB::beginTransaction();
-            $updater = GameUpdater::fromId(id: $gameId, lockForUpdate: true);
-            $updater->setGameStateEnum(game_state_enum: $state);
-            $game = $updater->update();
+            $game = GameUpdater::fromId(id: $gameId, lockForUpdate: true)
+                ->setGameStateEnum(game_state_enum: $state)
+                ->update();
             DB::commit();
             return $game;
         } catch (Throwable $e) {
             DB::rollBack();
-            BearErrorCreator::create(message: 'Failed to update game state', severity: BearSeverityEnum::CRITICAL, exception: $e);
-            throw new RuntimeException(message: 'Failed to update game state', previous: $e);
+            BearErrorCreator::create(message: "Failed to update game state [{$e->getMessage()}]", severity: BearSeverityEnum::CRITICAL, exception: $e);
+            throw new RuntimeException(message: "Failed to update game state [{$e->getMessage()}]", previous: $e);
+        }
+    }
+
+
+    public static function nextGameRound(Game $game): Game {
+        if ($game->current_round >= $game->number_of_rounds) {
+            throw new RuntimeException(message: "Game [$game->id] has already reached the maximum number of rounds [$game->number_of_rounds]");
+        }
+        try {
+            $roundEndTime = CarbonImmutable::now()->addSeconds(value: $game->round_duration_seconds);
+            $nextRoundAt = CarbonImmutable::now()->addSeconds(value: $game->round_duration_seconds + 22);
+            DB::beginTransaction();
+            $game = GameUpdater::fromId(id: $game->id, lockForUpdate: true)
+                ->setGameStateEnum(game_state_enum: GameStateEnum::IN_PROGRESS)
+                ->setCurrentRound(current_round: ($game->current_round ?? 0) + 1)
+                ->setRoundEndsAt(round_ends_at: $roundEndTime)
+                ->setNextRoundAt(next_round_at: $nextRoundAt)
+                ->update();
+            DB::commit();
+            return $game;
+        } catch (Throwable $e) {
+            DB::rollBack();
+            BearErrorCreator::create(message: "Failed to update game state [{$e->getMessage()}]", severity: BearSeverityEnum::CRITICAL, exception: $e);
+            throw new RuntimeException(message: "Failed to update game state [{$e->getMessage()}]", previous: $e);
         }
     }
 }

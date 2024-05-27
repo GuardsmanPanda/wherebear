@@ -4,7 +4,7 @@ namespace Domain\Game\Broadcast;
 
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearBroadcastService;
 
-final class GameBroadcastService {
+final class GameBroadcast {
     public static function playerUpdate(string $gameId, string $playerId = null): void {
         BearBroadcastService::broadcastNow(
             channel: 'game.' . $gameId,

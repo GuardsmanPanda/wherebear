@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->boolean(column: 'is_public')->default(true)->comment(comment: 'Whether the game is public or private');
             $table->boolean(column: 'is_forced_start')->default(false)->comment(comment: 'Whether the game is forced to start');
             $table->integer(column: 'number_of_rounds')->comment(comment: 'Number of rounds in the game');
-            $table->integer(column: 'round_duration')->comment(comment: 'Duration of each round in seconds');
+            $table->integer(column: 'round_duration_seconds')->comment(comment: 'Duration of each round in seconds');
             $table->integer(column: 'current_round')->nullable()->comment(comment: 'The current round of the game');
             $table->timestampTz(column: 'round_ends_at')->nullable()->comment(comment: 'When the current round ends');
             $table->timestampTz(column: 'next_round_at')->nullable()->comment(comment: 'When the next round starts');

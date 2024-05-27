@@ -5,8 +5,8 @@ namespace Domain\Game\Crud;
 use Domain\Game\Model\GameState;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 
-final class GameStateUpdater {
-    public function __construct(private readonly GameState $model) {
+final readonly class GameStateUpdater {
+    public function __construct(private GameState $model) {
         BearDatabaseService::mustBeInTransaction();
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST', 'PATCH']);
     }

@@ -3,24 +3,16 @@
 namespace Infrastructure\Database\Initialize;
 
 use Domain\Game\Crud\GameStateCreator;
+use Domain\Game\Enum\GameStateEnum;
 use Domain\Game\Service\GameStateService;
 
 final class DatabaseInitializeGameState {
     public static function initialize(): void {
-        $game_states = [
-            'WAITING_FOR_PLAYERS',
-            'STARTING',
-            'QUEUED',
-            'IN_PROGRESS',
-            'IN_PROGRESS_RESULT',
-            'FINISHED'
-        ];
-
-        foreach ($game_states as $game_state) {
-            if (GameStateService::gameStateExists(game_state_enum: $game_state)) {
+        foreach (GameStateEnum::cases() as $enum) {
+            if (GameStateService::gameStateExists(game_state_enum: $enum->value)) {
                 continue;
             }
-            GameStateCreator::create(game_state_enum: $game_state);
+            GameStateCreator::create(game_state_enum: $enum->value);
         }
     }
 }

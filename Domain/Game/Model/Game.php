@@ -52,8 +52,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static mixed sum(string $column)
  * @method static bool exists()
  *
- * @property int $round_duration
  * @property int $number_of_rounds
+ * @property int $round_duration_seconds
  * @property int|null $current_round
  * @property bool $is_public
  * @property bool $is_forced_start

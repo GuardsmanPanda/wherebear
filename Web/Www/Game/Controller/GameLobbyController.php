@@ -3,11 +3,10 @@
 namespace Web\Www\Game\Controller;
 
 use Domain\Game\Action\GameStartAction;
-use Domain\Game\Broadcast\GameBroadcastService;
+use Domain\Game\Broadcast\GameBroadcast;
 use Domain\Game\Crud\GameUserCreator;
 use Domain\Game\Crud\GameUserDeleter;
 use Domain\Game\Crud\GameUserUpdater;
-use Domain\Game\Service\GameService;
 use Domain\User\Crud\WhereBearUserUpdater;
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearArrayService;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
@@ -26,7 +25,7 @@ final class GameLobbyController extends Controller {
         try {
             $game = DB::selectOne(query: "
                 SELECT
-                    g.id, g.number_of_rounds, g.round_duration, g.created_by_user_id,
+                    g.id, g.number_of_rounds, g.round_duration_seconds, g.created_by_user_id,
                     bu.user_display_name
                 FROM game g
                 LEFT JOIN bear_user bu ON bu.id = g.created_by_user_id
@@ -40,21 +39,19 @@ final class GameLobbyController extends Controller {
         }
 
         $user_id = BearAuthService::getUserId();
-        $players = DB::select(query: "
-            SELECT 
-                bu.user_display_name, bu.map_marker_file_name, bu.user_country_iso2_code,
-                gu.is_ready, bc.country_name
-            FROM game_user gu
-            LEFT JOIN bear_user bu ON bu.id = gu.user_id
-            LEFT JOIN bear_country bc ON bc.country_iso2_code = bu.user_country_iso2_code
-            WHERE gu.game_id = ?
-            ORDER BY bu.id = ? DESC, bu.user_display_name, bu.user_country_iso2_code, bu.id
-        ", bindings: [$game->id, $user_id]);
-
         if ($user_id === null) {
             return Resp::view(view: "game::lobby.guest", data: [
                 'game' => $game,
-                'players' => $players,
+                'players' => DB::select(query: "
+                    SELECT 
+                        bu.user_display_name, bu.map_marker_file_name, bu.user_country_iso2_code,
+                        gu.is_ready, bc.country_name
+                    FROM game_user gu
+                    LEFT JOIN bear_user bu ON bu.id = gu.user_id
+                    LEFT JOIN bear_country bc ON bc.country_iso2_code = bu.user_country_iso2_code
+                    WHERE gu.game_id = ?
+                    ORDER BY bu.id = ? DESC, bu.user_display_name, bu.user_country_iso2_code, bu.id
+                ", bindings: [$game->id, $user_id]),
             ]);
         }
 
@@ -62,13 +59,12 @@ final class GameLobbyController extends Controller {
         $in_game = BearDatabaseService::exists(sql: "SELECT 1 FROM game_user WHERE game_id = ? AND user_id = ?", bindings: [$game->id, $user_id]);
         if ($in_game === false) {
             GameUserCreator::create(game_id: $game->id, user_id: $user_id);
-            GameBroadcastService::playerUpdate(gameId: $gameId); // Broadcast to all players
+            GameBroadcast::playerUpdate(gameId: $gameId); // Broadcast to all players
             return $this->index($gameId);
         }
         $template = Req::hxRequest() ? 'game::lobby.content' : 'game::lobby.index';
         return Resp::view(view: $template, data: [
             'game' => $game,
-            'players' => $players,
             'map_markers' => DB::select(query: "SELECT file_name, map_marker_name FROM map_marker ORDER BY file_name"),
             'user' => DB::selectOne(query: "
                 SELECT 
@@ -82,6 +78,24 @@ final class GameLobbyController extends Controller {
                 LEFT JOIN bear_country bc ON bc.country_iso2_code = bu.user_country_iso2_code
                 WHERE bu.id = ?
             ", bindings: [$game->id, $user_id]),
+        ]);
+    }
+
+
+    public function playerList(string $gameId): View {
+        return Resp::view(view: 'game::lobby.player-list', data: [
+            'players' => DB::select(query: "
+                SELECT 
+                    bu.user_display_name, bu.map_marker_file_name, bu.user_country_iso2_code,
+                    gu.is_ready, bc.country_name,
+                    bu.user_email IS NULL AS is_guest,
+                    (SELECT COUNT(*) FROM game_user WHERE user_id = bu.id) as game_count
+                FROM game_user gu
+                LEFT JOIN bear_user bu ON bu.id = gu.user_id
+                LEFT JOIN bear_country bc ON bc.country_iso2_code = bu.user_country_iso2_code
+                WHERE gu.game_id = ?
+                ORDER BY bu.id = ? DESC, bu.user_display_name, bu.user_country_iso2_code, bu.id
+            ", bindings: [$gameId, BearAuthService::getUserId()]),
         ]);
     }
 
@@ -101,7 +115,7 @@ final class GameLobbyController extends Controller {
             $updater->setUserCountryIso2Code(user_country_iso2_code: Req::getStringOrDefault(key: 'user_country_iso2_code'));
         }
         $updater->update();
-        GameBroadcastService::playerUpdate(gameId: $gameId, playerId: BearAuthService::getUserId()); // Broadcast to all players
+        GameBroadcast::playerUpdate(gameId: $gameId, playerId: BearAuthService::getUserId()); // Broadcast to all players
         return $this->index($gameId);
     }
 
@@ -112,15 +126,17 @@ final class GameLobbyController extends Controller {
         $updater->setIsReady(is_ready: $ready);
         $updater->update();
         GameStartAction::placeInQueueIfAble(gameId: $gameId);
-        GameBroadcastService::playerUpdate(gameId: $gameId, playerId: BearAuthService::getUserId()); // Broadcast to all players
+        GameBroadcast::playerUpdate(gameId: $gameId, playerId: BearAuthService::getUserId()); // Broadcast to all players
         return $this->index($gameId);
     }
 
+
     public function leaveGame(string $gameId): Response {
         GameUserDeleter::deleteFromGameAndUserId(gameId: $gameId, userId: BearAuthService::getUserId());
-        GameBroadcastService::playerUpdate(gameId: $gameId, playerId: BearAuthService::getUserId()); // Broadcast to all players
+        GameBroadcast::playerUpdate(gameId: $gameId, playerId: BearAuthService::getUserId()); // Broadcast to all players
         return Htmx::redirect(url: '/', message: 'Left Game.');
     }
+
 
     public function dialogNameFlag(string $gameId): View {
         return Htmx::dialogView(

@@ -30,13 +30,13 @@ final readonly class GameUpdater {
         return $this->model->game_state_enum;
     }
 
-    public function setNumberOfRounds(int $number_of_rounds): self {
-        $this->model->number_of_rounds = $number_of_rounds;
+    public function setRoundDurationSeconds(int $round_duration_seconds): self {
+        $this->model->round_duration_seconds = $round_duration_seconds;
         return $this;
     }
 
-    public function setCreatedByUserId(string $created_by_user_id): self {
-        $this->model->created_by_user_id = $created_by_user_id;
+    public function setNumberOfRounds(int $number_of_rounds): self {
+        $this->model->number_of_rounds = $number_of_rounds;
         return $this;
     }
 

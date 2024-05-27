@@ -12,6 +12,7 @@ Route::delete(uri: "{gameId}", action: [GameController::class, 'delete']);
 
 Route::prefix("{gameId}/lobby")->middleware(BearHtmxMiddleware::using(layout_location: 'layout.layout'))->group(callback: function () {
     Route::get(uri: "", action: [GameLobbyController::class, 'index']);
+    Route::get(uri: "player-list", action: [GameLobbyController::class, 'playerList']);
     Route::get(uri: "dialog/map-marker", action: [GameLobbyController::class, 'dialogMapMarker']);
     Route::get(uri: "dialog/map-style", action: [GameLobbyController::class, 'dialogMapStyle']);
     Route::get(uri: "dialog/name-flag", action: [GameLobbyController::class, 'dialogNameFlag']);

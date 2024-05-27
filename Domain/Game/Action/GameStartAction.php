@@ -2,7 +2,7 @@
 
 namespace Domain\Game\Action;
 
-use Domain\Game\Broadcast\GameBroadcastService;
+use Domain\Game\Broadcast\GameBroadcast;
 use Domain\Game\Crud\GameUpdater;
 use Domain\Game\Enum\GameStateEnum;
 use Domain\Game\Job\GameRunJob;
@@ -21,6 +21,6 @@ final class GameStartAction {
         $updater->setGameStateEnum(game_state_enum: GameStateEnum::QUEUED);
         $updater->update();
         GameRunJob::dispatch($gameId);
-        GameBroadcastService::prep(gameId: $gameId, message: 'Queued..', stage: 0);
+        GameBroadcast::prep(gameId: $gameId, message: 'Game Queued', stage: 0);
     }
 }

@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 final readonly class GameCreator {
     public static function create(
         int $number_of_rounds,
-        int $round_duration
+        int $round_duration_seconds
     ): Game {
         BearDatabaseService::mustBeInTransaction();
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST']);
@@ -21,7 +21,7 @@ final readonly class GameCreator {
 
         $model->game_state_enum = GameStateEnum::WAITING_FOR_PLAYERS->value;
         $model->number_of_rounds = $number_of_rounds;
-        $model->round_duration = $round_duration;
+        $model->round_duration_seconds = $round_duration_seconds;
         $model->created_by_user_id = BearAuthService::getUser()->id;
 
         $model->save();
