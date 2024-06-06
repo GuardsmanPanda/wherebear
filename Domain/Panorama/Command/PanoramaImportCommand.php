@@ -16,7 +16,7 @@ final class PanoramaImportCommand extends Command {
     protected $description = 'Import all Panorama files.';
 
     public function handle(): void {
-        foreach (Storage::allFiles(directory: 'panorama') as $file) {
+        foreach (Storage::allFiles(directory: 'panorama-imports') as $file) {
             $id = pathinfo($file)['filename'];
             $panorama = Panorama::find(id: $id);
             if ($panorama !== null) {
@@ -29,13 +29,16 @@ final class PanoramaImportCommand extends Command {
 
 
     private function importPanorama(string $fileName, string $id, Panorama $panorama): void {
-        $newFileName = Str::random(length: 32) . '.jpg';
         try {
             DB::beginTransaction();
+            $yearFolder = $panorama->captured_date->format(format: 'Y');
+            $monthFolder = $panorama->captured_date->format(format: 'm');
+            $newFileName = "$yearFolder/$monthFolder/" . Str::random(length: 32) . '.jpg';
             PanoramaUpdater::fromId(id: $id)
-                ->setJpgName(jpg_name: $newFileName)
+                ->setJpgPath(jpg_path: $newFileName)
                 ->update();
-            Storage::move(from: $fileName, to: 'panorama-jpg/' . $newFileName);
+            Storage::put(path: 'panorama/' . $newFileName, contents: Storage::get(path: $fileName));
+            Storage::delete(paths: $fileName);
             DB::commit();
         } catch (Throwable $e) {
             DB::rollBack();

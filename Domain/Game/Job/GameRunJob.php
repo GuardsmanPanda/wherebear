@@ -38,6 +38,7 @@ final class GameRunJob implements ShouldQueue, ShouldBeUnique {
                 GameStateEnum::QUEUED->value => $this->ensureReady(game: $this->game),
                 GameStateEnum::STARTING->value => $this->startGame(game: $this->game),
                 GameStateEnum::IN_PROGRESS->value => $this->runRound(game: $this->game),
+                GameStateEnum::IN_PROGRESS_CALCULATING->value => $this->calculateRoundResults(game: $this->game),
                 GameStateEnum::IN_PROGRESS_RESULT->value => $this->nextRoundOrEnd(game: $this->game),
                 default => $this->logWierdState(game:$this->game),
             };
@@ -60,14 +61,17 @@ final class GameRunJob implements ShouldQueue, ShouldBeUnique {
         GameBroadcast::prep(gameId: $game->id, message: 'Selecting Panoramas..', stage: 2);
         $round_creator = new GameRoundCreatorAction(game: $game);
         $round_creator->createAllRounds();
-        $game = GameService::setGameState(gameId: $game->id, state: GameStateEnum::IN_PROGRESS);
         GameBroadcast::prep(gameId: $game->id, message: 'Loading First Round', stage: 3 + $game->number_of_rounds);
-        //todo: Transition to round 1
-        return $game;
+        return GameService::nextGameRound(game: $game);
     }
 
     private function runRound(Game $game): Game {
         // TODO: wait until round is over then calculate the round results
+        throw new RuntimeException(message: "Not Implemented");
+        return $game;
+    }
+
+    private function calculateRoundResults(Game $game): Game {
         throw new RuntimeException(message: "Not Implemented");
         return $game;
     }

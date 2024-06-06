@@ -7,6 +7,7 @@ use Domain\Game\Broadcast\GameBroadcast;
 use Domain\Game\Crud\GameUserCreator;
 use Domain\Game\Crud\GameUserDeleter;
 use Domain\Game\Crud\GameUserUpdater;
+use Domain\Game\Enum\GameStateEnum;
 use Domain\User\Crud\WhereBearUserUpdater;
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearArrayService;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
@@ -26,6 +27,7 @@ final class GameLobbyController extends Controller {
             $game = DB::selectOne(query: "
                 SELECT
                     g.id, g.number_of_rounds, g.round_duration_seconds, g.created_by_user_id,
+                    g.game_state_enum, g.current_round,
                     bu.user_display_name
                 FROM game g
                 LEFT JOIN bear_user bu ON bu.id = g.created_by_user_id
@@ -37,6 +39,10 @@ final class GameLobbyController extends Controller {
         if ($game === null) {
             return Resp::redirect(url: '/', message: 'Game not found');
         }
+        if ($game->current_round === $game->number_of_rounds) {
+            return Resp::redirect(url: '/', message: 'Game is over');
+        }
+
 
         $user_id = BearAuthService::getUserId();
         if ($user_id === null) {
@@ -62,6 +68,16 @@ final class GameLobbyController extends Controller {
             GameBroadcast::playerUpdate(gameId: $gameId); // Broadcast to all players
             return $this->index($gameId);
         }
+
+        // If the game is in progress, then redirect to the game play page
+
+        if (GameStateEnum::from($game->game_state_enum)->isInProgress()) {
+            if (Req::hxRequest()) {
+                return Htmx::redirect(url: "/game/$gameId/play");
+            }
+            return Resp::redirect(url: "/game/$gameId/play");
+        }
+
         $template = Req::hxRequest() ? 'game::lobby.content' : 'game::lobby.index';
         return Resp::view(view: $template, data: [
             'game' => $game,

@@ -1,3 +1,4 @@
+@import "pannellum/build/pannellum.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

@@ -12,12 +12,12 @@ use Integration\Nominatim\Client\NominatimClient;
 
 final class PanoramaCreator {
     public static function create(
-        string $id,
-        float $latitude,
-        float $longitude,
+        string          $id,
+        float           $latitude,
+        float           $longitude,
         CarbonInterface $captured_date,
-        string $added_by_user_id = null,
-        string $jpg_name = null,
+        string          $added_by_user_id = null,
+        string          $jpg_path = null,
     ): Panorama {
         BearDatabaseService::mustBeInTransaction();
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST']);
@@ -27,7 +27,7 @@ final class PanoramaCreator {
         DB::insert(query: "
             INSERT INTO panorama (
                 id, captured_date, country_iso_2_code, state_name, city_name, added_by_user_id,
-                panorama_location, jpg_name, nominatim_json, created_at, updated_at
+                panorama_location, jpg_path, nominatim_json, created_at, updated_at
             ) VALUES (?, ?, ?, ?, ?, ?, public.ST_MakePoint(?::double precision, ?::double precision), ?, ?, NOW(), NOW())
         ", bindings: [
             $id,
@@ -37,7 +37,7 @@ final class PanoramaCreator {
             $data->city_name,
             $added_by_user_id,
             $longitude, $latitude,
-            $jpg_name,
+            $jpg_path,
             json_encode($data->nominatim_json)
         ]);
         return Panorama::findOrFail(id: $id);

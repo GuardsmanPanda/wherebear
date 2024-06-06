@@ -2,6 +2,7 @@ import Pusher from 'pusher-js';
 import {Notyf} from 'notyf';
 import tippy from 'tippy.js';
 
+require('pannellum/build/pannellum.js');
 import L from "leaflet";
 require('leaflet.markercluster');
 

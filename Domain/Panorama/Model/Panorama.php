@@ -58,7 +58,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $id
  * @property string $created_at
  * @property string $updated_at
- * @property string|null $jpg_name
+ * @property string|null $jpg_path
  * @property string|null $city_name
  * @property string|null $state_name
  * @property string|null $retired_reason

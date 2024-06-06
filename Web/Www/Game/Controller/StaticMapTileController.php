@@ -13,7 +13,7 @@ final class StaticMapTileController extends Controller {
         $y =  str_replace('.png', '', $file_name);
         $data = MapTileClient::getMapTile(MapStyleEnum::from(value: $map_style_enum), $z, $x, $y);
         $rel_loc = "tile/$map_style_enum/$z/$x/$file_name";
-        Storage::disk(name: 'public')->put(path: $rel_loc, contents: $data);
+        Storage::put(path: $rel_loc, contents: $data);
         return new BinaryFileResponse(storage_path('app/public/' . $rel_loc));
     }
 }

@@ -5,6 +5,7 @@ use GuardsmanPanda\Larabear\Infrastructure\Http\Middleware\BearPermissionMiddlew
 use Illuminate\Support\Facades\Route;
 use Web\Www\Game\Controller\GameController;
 use Web\Www\Game\Controller\GameLobbyController;
+use Web\Www\Game\Controller\GamePlayController;
 
 Route::get(uri: "create", action: [GameController::class, 'createDialog'])->middleware([BearPermissionMiddleware::using(permission: 'game::create')]);
 Route::post(uri: "", action: [GameController::class, 'create'])->middleware([BearPermissionMiddleware::using(permission: 'game::create')]);
@@ -23,7 +24,7 @@ Route::prefix("{gameId}/lobby")->middleware(BearHtmxMiddleware::using(layout_loc
 
 
 Route::prefix("{gameId}/play")->middleware(BearHtmxMiddleware::using(layout_location: 'layout.layout'))->group(callback: function () {
-
+    Route::get(uri: "", action: [GamePlayController::class, 'index']);
 });
 
 Route::prefix("{gameId}/result")->middleware(BearHtmxMiddleware::using(layout_location: 'layout.layout'))->group(callback: function () {

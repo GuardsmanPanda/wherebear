@@ -6,8 +6,8 @@ use Carbon\CarbonInterface;
 use Domain\Panorama\Model\Panorama;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 
-final class PanoramaUpdater {
-    public function __construct(private readonly Panorama $model) {
+final readonly class PanoramaUpdater {
+    public function __construct(private Panorama $model) {
         BearDatabaseService::mustBeInTransaction();
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST', 'PATCH']);
     }
@@ -22,11 +22,6 @@ final class PanoramaUpdater {
             return $this;
         }
         $this->model->captured_date = $captured_date;
-        return $this;
-    }
-
-    public function setIsRetired(bool $is_retired): self {
-        $this->model->is_retired = $is_retired;
         return $this;
     }
 
@@ -55,23 +50,8 @@ final class PanoramaUpdater {
         return $this;
     }
 
-    public function setRegionName(string|null $region_name): self {
-        $this->model->region_name = $region_name;
-        return $this;
-    }
-
-    public function setStateDistrictName(string|null $state_district_name): self {
-        $this->model->state_district_name = $state_district_name;
-        return $this;
-    }
-
-    public function setCountyName(string|null $county_name): self {
-        $this->model->county_name = $county_name;
-        return $this;
-    }
-
-    public function setJpgName(string|null $jpg_name): self {
-        $this->model->jpg_name = $jpg_name;
+    public function setJpgPath(string|null $jpg_path): self {
+        $this->model->jpg_path = $jpg_path;
         return $this;
     }
 
