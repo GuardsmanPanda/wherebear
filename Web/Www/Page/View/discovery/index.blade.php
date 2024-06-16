@@ -54,7 +54,7 @@
         iconAnchor: [12, 24],
     });
 
-    L.tileLayer('/static/files/tile/OSM/{z}/{x}/{y}.png', {
+    L.tileLayer('https://tile.gman.bot/OSM/{z}/{x}/{y}.png', {
         maxNativeZoom: 17,
         minZoom: 1,
     }).addTo(map);

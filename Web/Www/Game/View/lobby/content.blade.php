@@ -1,5 +1,5 @@
 <?php declare(strict_types=1); ?>
-@php use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService; @endphp
+@php use Domain\Map\Enum\MapStyleEnum;use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService; @endphp
 <div class="grid place-items-center flex-1 overflow-auto">
     <div class="grid lg:grid-cols-3 grid-cols-1 gap-8">
         <div class="bg-gray-900 px-4 py-4 rounded-md">
@@ -75,10 +75,10 @@
                 <button class="hover:scale-110 hover:-rotate-3 transition-all duration-75"
                         hx-get="/game/{{$game->id}}/lobby/dialog/map-style">
                     <div class="text-gray-400 text-xl font-bold">Map: <span
-                                class="text-gray-300">{{$user->map_style_name ?? 'OpenStreetMap'}}</span></div>
+                                class="text-gray-300">{{$user->map_style_name}}</span></div>
                     <div class="flex justify-center">
                         <img class="h-24 w-96 object-none"
-                             src="/static/files/tile/{{$user->map_style_enum ?? 'OSM'}}/11/1614/1016.png"
+                             src="{{MapStyleEnum::from($user->map_style_enum)->mapTileUrl(z: 11, x: 1614, y: 1016)}}"
                              alt="Example map tile">
                     </div>
                     @if($user->map_style_enum === null)

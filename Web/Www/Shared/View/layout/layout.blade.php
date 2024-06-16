@@ -12,6 +12,27 @@
         <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     @endif
     <link rel="stylesheet" href="{!! config('bear.ui.app_css') !!}">
+    <script>
+        let targetTime = null;
+        let countdownInterval;
+        countdownStart = function(seconds) {
+            clearInterval(countdownInterval);
+            targetTime = new Date(new Date().getTime() + seconds*1000);
+            document.getElementById("countdown").setAttribute("style", "display: block;");
+            countdownInterval = setInterval(countdownUpdate, 100);
+        }
+
+        function countdownUpdate() {
+            let value = Math.round((targetTime - new Date())/1000);
+            document.getElementById("countdown").innerText = '' + Math.max(value, 0);
+            if (value <= 0) {
+                document.getElementById("countdown").setAttribute("style", "display: none;");
+            }
+            if (value < -5) {
+                location.reload();
+            }
+        }
+    </script>
 </head>
 <body>
 <div id="primary" hx-target="#primary" class="min-h-screen bg-gray-950 text-gray-300">

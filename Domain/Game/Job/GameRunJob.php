@@ -66,6 +66,8 @@ final class GameRunJob implements ShouldQueue, ShouldBeUnique {
     }
 
     private function runRound(Game $game): Game {
+        $microSecondUntilRoundEnd = (int)$game->round_ends_at->diffInMicroseconds(date: now(), absolute: true);
+        usleep(microseconds: $microSecondUntilRoundEnd);
         // TODO: wait until round is over then calculate the round results
         throw new RuntimeException(message: "Not Implemented");
         return $game;

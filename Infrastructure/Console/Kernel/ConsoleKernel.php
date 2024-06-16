@@ -2,6 +2,7 @@
 
 namespace Infrastructure\Console\Kernel;
 
+use Domain\Game\Crud\GameRoundDeleter;
 use Domain\Game\Crud\GameUpdater;
 use Domain\Game\Enum\GameStateEnum;
 use Domain\Map\Command\MapMarkerSynchronizeCommand;
@@ -41,7 +42,7 @@ final class ConsoleKernel extends Kernel {
             $gameId = '02e8d81e-fbce-4bfc-9723-59a7abf8a12d';
             try {
                 DB::beginTransaction();
-                DB::delete(query: "DELETE FROM game_round WHERE game_id = ?", bindings: [$gameId]);
+                GameRoundDeleter::deleteAllGameRounds(gameId: $gameId);
                 GameUpdater::fromId(id: $gameId)
                     ->setCurrentRound(current_round: 0)
                     ->setGameStateEnum(GameStateEnum::WAITING_FOR_PLAYERS)

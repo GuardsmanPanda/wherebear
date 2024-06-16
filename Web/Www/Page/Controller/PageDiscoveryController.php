@@ -19,9 +19,17 @@ final class PageDiscoveryController extends Controller {
                 SELECT public.ST_Y(p.panorama_location::public.geometry) as lat, public.ST_X(p.panorama_location::public.geometry) as lng
                 FROM panorama p
                 WHERE p.panorama_location IS NOT NULL
-            ")
+            "),
+            'user' => DB::selectOne(query: "
+                SELECT
+                    u.map_marker_file_name,
+                    COALESCE(u.map_style_enum, 'OSM') as map_style_enum
+                FROM bear_user u
+                WHERE u.id = ?
+            ", bindings: [BearAuthService::getUserId()]),
         ]);
     }
+
 
     public function addFromStreetViewLocation(): array {
         $lat = Req::getFloatOrDefault(key: 'lat');
@@ -43,6 +51,7 @@ final class PageDiscoveryController extends Controller {
             'exists' => true,
         ];
     }
+
 
     public function searchFromStreetViewLocation(): array {
         $offset = Req::getFloatOrDefault(key: 'distance') / 111320.0;

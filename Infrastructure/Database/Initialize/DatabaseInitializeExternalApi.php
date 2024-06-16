@@ -6,9 +6,8 @@ use GuardsmanPanda\Larabear\Integration\ExternalApi\Crud\BearExternalApiCreator;
 use GuardsmanPanda\Larabear\Integration\ExternalApi\Enum\BearExternalApiTypeEnum;
 use GuardsmanPanda\Larabear\Integration\ExternalApi\Service\BearExternalApiService;
 use Illuminate\Database\Eloquent\Casts\ArrayObject;
-use Illuminate\Database\Seeder;
 
-final class DatabaseInitializeExternalApi extends Seeder {
+final class DatabaseInitializeExternalApi  {
     public static function initialize(): void {
         $external_api = [
             [
@@ -16,7 +15,7 @@ final class DatabaseInitializeExternalApi extends Seeder {
                 'external_api_slug' => 'openstreetmap',
                 'external_api_description' => 'OpenStreetMap used for the default map tiles',
                 'external_api_type' => BearExternalApiTypeEnum::NO_AUTH,
-                'external_api_base_url' => 'https://c.tile.openstreetmap.org/'
+                'external_api_base_url' => 'https://tile.openstreetmap.org/'
             ],
             [
                 'id' => '384be8aa-a197-425f-80c3-e63f398525d6',

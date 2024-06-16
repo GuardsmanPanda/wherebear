@@ -11,4 +11,11 @@ final class GameRoundDeleter {
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['DELETE']);
         $model->delete();
     }
+
+    public static function deleteAllGameRounds(string $gameId): void {
+        BearDatabaseService::mustBeInTransaction();
+        BearDatabaseService::mustBeProperHttpMethod(verbs: ['DELETE']);
+        GameRoundUserCrud::deleteAllGameRoundUsersByGameId(game_id: $gameId);
+        GameRound::where('game_id', $gameId)->delete();
+    }
 }

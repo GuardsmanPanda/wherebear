@@ -17,12 +17,21 @@ final class GameRoundUserCrud {
         ", bindings: [$game_id, $round_number, $user_id, $lng, $lat]);
     }
 
-    public static function deleteUserFromGame(String $game_id, String $user_id): void {
+    public static function deleteUserFromAllGameRounds(String $game_id, String $user_id): void {
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['DELETE']);
         BearDatabaseService::mustBeInTransaction();
         DB::delete(query: "
             DELETE FROM game_round_user
             WHERE game_id = ? AND user_id = ?
         ", bindings: [$game_id, $user_id]);
+    }
+
+    public static function deleteAllGameRoundUsersByGameId(String $game_id): void {
+        BearDatabaseService::mustBeProperHttpMethod(verbs: ['DELETE']);
+        BearDatabaseService::mustBeInTransaction();
+        DB::delete(query: "
+            DELETE FROM game_round_user
+            WHERE game_id = ?
+        ", bindings: [$game_id]);
     }
 }

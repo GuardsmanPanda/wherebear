@@ -85,7 +85,9 @@ final class GameLobbyController extends Controller {
             'user' => DB::selectOne(query: "
                 SELECT 
                     bu.id, bu.user_display_name, bu.map_marker_file_name, bu.user_email,
-                    gu.is_ready, mm.map_marker_name, ms.map_style_name, ms.map_style_enum,
+                    gu.is_ready, mm.map_marker_name,
+                    COALESCE(ms.map_style_name, 'OpenStreetMap') as map_style_name,
+                    COALESCE(ms.map_style_enum, 'OSM') as map_style_enum,
                     bc.country_name, bc.country_iso2_code
                 FROM bear_user bu
                 LEFT JOIN game_user gu ON gu.user_id = bu.id AND gu.game_id = ?
@@ -117,7 +119,7 @@ final class GameLobbyController extends Controller {
 
 
     public function updateUser(string $gameId): Response|View {
-        $updater = WhereBearUserUpdater::fromId(id: BearAuthService::getUserId());
+        $updater = WhereBearUserUpdater::fromId(id: BearAuthService::getUserIdOrFail());
         if (Req::has(key: 'map_marker_file_name')) {
             $updater->setMapMarkerFileName(map_marker_file_name: Req::getStringOrDefault(key: 'map_marker_file_name'));
         }
@@ -138,7 +140,7 @@ final class GameLobbyController extends Controller {
 
     public function updateGameUser(string $gameId): Response|View {
         $ready = Req::getBoolOrDefault(key: 'is_ready');
-        $updater = GameUserUpdater::fromGameIdAndUserId(game_id: $gameId, user_id: BearAuthService::getUserId());
+        $updater = GameUserUpdater::fromGameIdAndUserId(game_id: $gameId, user_id: BearAuthService::getUserIdOrFail());
         $updater->setIsReady(is_ready: $ready);
         $updater->update();
         GameStartAction::placeInQueueIfAble(gameId: $gameId);
@@ -148,7 +150,7 @@ final class GameLobbyController extends Controller {
 
 
     public function leaveGame(string $gameId): Response {
-        GameUserDeleter::deleteFromGameAndUserId(gameId: $gameId, userId: BearAuthService::getUserId());
+        GameUserDeleter::deleteFromGameAndUserId(gameId: $gameId, userId: BearAuthService::getUserIdOrFail());
         GameBroadcast::playerUpdate(gameId: $gameId, playerId: BearAuthService::getUserId()); // Broadcast to all players
         return Htmx::redirect(url: '/', message: 'Left Game.');
     }

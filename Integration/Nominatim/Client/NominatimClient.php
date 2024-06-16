@@ -15,7 +15,7 @@ final class NominatimClient {
             'lon' => sprintf("%.15f", $longitude),
         ])->json();
         $data = new NominatimLocationData(
-            country_iso2_code: Str::upper(value: $result['address']['country_code']) ?? 'XX',
+            country_iso2_code: Str::upper(value: $result['address']['country_code'] ?? 'XX'),
             latitude: $latitude,
             longitude: $longitude,
             nominatim_json: $result,

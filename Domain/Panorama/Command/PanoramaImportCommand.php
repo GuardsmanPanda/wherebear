@@ -29,6 +29,10 @@ final class PanoramaImportCommand extends Command {
 
 
     private function importPanorama(string $fileName, string $id, Panorama $panorama): void {
+        $content = Storage::get(path: $fileName);
+        if ($content === null) {
+            throw new RuntimeException(message: "Failed to read panorama file $fileName.");
+        }
         try {
             DB::beginTransaction();
             $yearFolder = $panorama->captured_date->format(format: 'Y');
@@ -37,7 +41,7 @@ final class PanoramaImportCommand extends Command {
             PanoramaUpdater::fromId(id: $id)
                 ->setJpgPath(jpg_path: $newFileName)
                 ->update();
-            Storage::put(path: 'panorama/' . $newFileName, contents: Storage::get(path: $fileName));
+            Storage::put(path: 'panorama/' . $newFileName, contents: $content);
             Storage::delete(paths: $fileName);
             DB::commit();
         } catch (Throwable $e) {

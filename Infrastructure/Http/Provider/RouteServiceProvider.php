@@ -19,7 +19,7 @@ final class RouteServiceProvider extends ServiceProvider {
                 ->middleware([BearSessionAuthMiddleware::onlyAuthenticated(), BearTransactionMiddleware::class, BearHtmxMiddleware::using(layout_location: 'layout.page-layout')])
                 ->group(base_path(path: 'Web/Www/Page/routes.php'));
 
-            Route::get(uri: "static/files/tile/{style}/{z}/{x}/{filename}", action: [StaticMapTileController::class, 'getMapTile']);
+            Route::get(uri: "tile/{style}/{z}/{x}/{filename}", action: [StaticMapTileController::class, 'getMapTile']);
         });
     }
 }

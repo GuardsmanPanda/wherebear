@@ -30,8 +30,8 @@
 <script>
     pusher = new Pusher('6csm0edgczin2onq92lm', {
         cluster: 'eu',
-        wsHost: 'ws.gman.bot',
-        wsPort: 80,
+        wsHost: 'socket.gman.bot',
+        wsPort: 443,
     });
     channel = pusher.subscribe('game.{{$game->id}}');
     channel.bind('player.update', function (data) {
@@ -43,5 +43,8 @@
         } else {
 
         }
+    });
+    channel.bind('round.event', function (data) {
+        window.location.href = '/game/{{$game->id}}/play';
     });
 </script>

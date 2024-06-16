@@ -69,28 +69,28 @@ final class GameRoundCreatorAction {
             if (random_int(0, 99) < self::TIER1_COUNTRY_CHANCE) {
                 $country = $this->selectCountry($this->CL1);
                 if ($country !== null) {
-                    $id = $this->selectPanoramaId($country);
+                    $id = $this->selectPanoramaId(countryCode: $country);
                     $strategy = 'Tier 1 Country';
                 }
             }
             if ($id === null && random_int(0, 99) < self::TIER2_COUNTRY_CHANCE) {
                 $country = $this->selectCountry($this->CL2);
                 if ($country !== null) {
-                    $id = $this->selectPanoramaId($country);
+                    $id = $this->selectPanoramaId(countryCode: $country);
                     $strategy = 'Tier 2 Country';
                 }
             }
             if ($id === null && random_int(0, 99) < self::FILLER_COUNTRY_CHANCE) {
                 $country = $this->selectCountry($this->filler);
                 if ($country !== null) {
-                    $id = $this->selectPanoramaId($country);
+                    $id = $this->selectPanoramaId(countryCode: $country);
                     $strategy = 'Filler Country';
                 }
             }
             if ($id === null && random_int(0, 99) < self::RANDOM_COUNTRY_CHANCE) {
                 $country = $this->selectCountry($this->all_countries);
                 if ($country !== null) {
-                    $id = $this->selectPanoramaId($country);
+                    $id = $this->selectPanoramaId(countryCode: $country);
                     $strategy = 'Random Country';
                 }
             }
@@ -150,6 +150,7 @@ final class GameRoundCreatorAction {
                 p.retired_at IS NULL
                 AND used_countries.country_iso_2_code IS NULL -- Country not seen in this game
                 AND used_panoramas.panorama_id IS NULL        -- Panorama not seen by any user in this game
+                AND p.jpg_path IS NOT NULL                    -- Panorama has a jpg
                 $where
             ORDER BY RANDOM() -- Slow, problematic with a high number of panoramas
             LIMIT 1

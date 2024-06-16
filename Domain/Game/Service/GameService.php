@@ -3,6 +3,7 @@
 namespace Domain\Game\Service;
 
 use Carbon\CarbonImmutable;
+use Domain\Game\Broadcast\GameBroadcast;
 use Domain\Game\Crud\GameUpdater;
 use Domain\Game\Enum\GameStateEnum;
 use Domain\Game\Model\Game;
@@ -49,16 +50,16 @@ final class GameService {
             throw new RuntimeException(message: "Game [$game->id] has already reached the maximum number of rounds [$game->number_of_rounds]");
         }
         try {
-            $roundEndTime = CarbonImmutable::now()->addSeconds(value: $game->round_duration_seconds);
-            $nextRoundAt = CarbonImmutable::now()->addSeconds(value: $game->round_duration_seconds + 22);
             DB::beginTransaction();
+            $roundEndTime = CarbonImmutable::now()->addSeconds(value: $game->round_duration_seconds);
+            $nextRound = ($game->current_round ?? 0) + 1;
             $game = GameUpdater::fromId(id: $game->id, lockForUpdate: true)
                 ->setGameStateEnum(game_state_enum: GameStateEnum::IN_PROGRESS)
-                ->setCurrentRound(current_round: ($game->current_round ?? 0) + 1)
+                ->setCurrentRound(current_round: $nextRound)
                 ->setRoundEndsAt(round_ends_at: $roundEndTime)
-                ->setNextRoundAt(next_round_at: $nextRoundAt)
                 ->update();
             DB::commit();
+            GameBroadcast::roundEvent(gameId: $game->id, roundNumber: $nextRound);
             return $game;
         } catch (Throwable $e) {
             DB::rollBack();

@@ -1,4 +1,6 @@
 @import "pannellum/build/pannellum.css";
+@import "leaflet/dist/leaflet.css";
+@import "fonts.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

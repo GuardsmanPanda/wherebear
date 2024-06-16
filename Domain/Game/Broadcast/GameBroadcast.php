@@ -23,4 +23,12 @@ final class GameBroadcast {
             ]
         );
     }
+
+    public static function roundEvent(string $gameId, int $roundNumber): void {
+        BearBroadcastService::broadcastNow(
+            channel: 'game.' . $gameId,
+            event: 'round.event',
+            data: ['roundNumber' => $roundNumber]
+        );
+    }
 }

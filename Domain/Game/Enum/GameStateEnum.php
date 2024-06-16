@@ -11,6 +11,11 @@ enum GameStateEnum: string {
     case IN_PROGRESS_RESULT = 'IN_PROGRESS_RESULT';
     case FINISHED = 'FINISHED';
 
+
+    public function isStarting(): bool {
+        return $this === self::WAITING_FOR_PLAYERS || $this === self::QUEUED || $this === self::STARTING;
+    }
+
     public function isInProgress(): bool {
         return $this === self::IN_PROGRESS || $this === self::IN_PROGRESS_CALCULATING || $this === self::IN_PROGRESS_RESULT;
     }
