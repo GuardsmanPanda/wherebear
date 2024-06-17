@@ -2,6 +2,7 @@
 
 namespace Domain\Game\Broadcast;
 
+use Domain\Game\Enum\GameStateEnum;
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearBroadcastService;
 
 final class GameBroadcast {
@@ -24,11 +25,11 @@ final class GameBroadcast {
         );
     }
 
-    public static function roundEvent(string $gameId, int $roundNumber): void {
+    public static function roundEvent(string $gameId, int $roundNumber, GameStateEnum $gameStateEnum): void {
         BearBroadcastService::broadcastNow(
             channel: 'game.' . $gameId,
             event: 'round.event',
-            data: ['roundNumber' => $roundNumber]
+            data: ['roundNumber' => $roundNumber, 'gameStateEnum' => $gameStateEnum->value]
         );
     }
 }

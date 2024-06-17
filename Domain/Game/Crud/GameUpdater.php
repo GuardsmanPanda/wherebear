@@ -40,7 +40,7 @@ final readonly class GameUpdater {
         return $this;
     }
 
-    public function setCurrentRound(int|null $current_round): self {
+    public function setCurrentRound(int $current_round): self {
         $this->model->current_round = $current_round;
         return $this;
     }

@@ -21,8 +21,7 @@
             </x-bear::form.select>
         </form>
 
-
-        <h3 class="mt-2 font-medium">Novelty</h3>
+        <h3 class="mt-2 font-medium">Other Flags</h3>
         <div class="flex" hx-target="#lobby">
             @foreach($novelty_flags as $flag)
                 <button class="px-1 hover:scale-110 transition-transform duration-75" hx-dialog-close

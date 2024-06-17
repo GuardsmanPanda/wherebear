@@ -19,12 +19,11 @@ final class GameRunJob implements ShouldQueue, ShouldBeUnique {
     use Dispatchable, InteractsWithQueue, Queueable;
 
     public int|float $uniqueFor = 60 * 60 * 24;
+    public int $tries = 1;
     private bool $exitJob = false;
     private Game $game;
 
-    public function __construct(
-        private readonly string $gameId
-    ) {
+    public function __construct(private readonly string $gameId) {
         $this->game = Game::findOrFail(id: $this->gameId);
     }
 
@@ -40,7 +39,7 @@ final class GameRunJob implements ShouldQueue, ShouldBeUnique {
                 GameStateEnum::IN_PROGRESS->value => $this->runRound(game: $this->game),
                 GameStateEnum::IN_PROGRESS_CALCULATING->value => $this->calculateRoundResults(game: $this->game),
                 GameStateEnum::IN_PROGRESS_RESULT->value => $this->nextRoundOrEnd(game: $this->game),
-                default => $this->logWierdState(game:$this->game),
+                default => $this->logWierdState(game: $this->game),
             };
         }
     }
@@ -66,10 +65,13 @@ final class GameRunJob implements ShouldQueue, ShouldBeUnique {
     }
 
     private function runRound(Game $game): Game {
+        if ($game->round_ends_at === null) {
+            throw new RuntimeException(message: "Round ends at is null when trying to run round.");
+        }
         $microSecondUntilRoundEnd = (int)$game->round_ends_at->diffInMicroseconds(date: now(), absolute: true);
         usleep(microseconds: $microSecondUntilRoundEnd);
-        // TODO: wait until round is over then calculate the round results
-        throw new RuntimeException(message: "Not Implemented");
+        $game = GameService::setGameState(gameId: $game->id, state: GameStateEnum::IN_PROGRESS_CALCULATING);
+        GameBroadcast::roundEvent(gameId: $game->id, roundNumber: $game->current_round, gameStateEnum: GameStateEnum::IN_PROGRESS_CALCULATING);
         return $game;
     }
 
@@ -79,10 +81,15 @@ final class GameRunJob implements ShouldQueue, ShouldBeUnique {
     }
 
     private function nextRoundOrEnd(Game $game): Game {
-        // TODO: wait until round results have been displayed.
-        // Then transition to the next round or calculate the game results.
-        throw new RuntimeException(message: "Not Implemented");
-        return $game;
+        if ($game->current_round >= $game->number_of_rounds) {
+            throw new RuntimeException(message: "Not Implemented");
+        }
+        if ($game->next_round_at === null) {
+            throw new RuntimeException(message: "Next round at is null when trying to go to next round.");
+        }
+        $microSecondUntilNextRound = (int)$game->next_round_at->diffInMicroseconds(date: now(), absolute: true);
+        usleep(microseconds: $microSecondUntilNextRound);
+        return GameService::nextGameRound(game: $game);
     }
 
     private function logWierdState(Game $game) {

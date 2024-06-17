@@ -52,14 +52,13 @@ final class GameService {
         try {
             DB::beginTransaction();
             $roundEndTime = CarbonImmutable::now()->addSeconds(value: $game->round_duration_seconds);
-            $nextRound = ($game->current_round ?? 0) + 1;
             $game = GameUpdater::fromId(id: $game->id, lockForUpdate: true)
                 ->setGameStateEnum(game_state_enum: GameStateEnum::IN_PROGRESS)
-                ->setCurrentRound(current_round: $nextRound)
+                ->setCurrentRound(current_round: $game->current_round + 1)
                 ->setRoundEndsAt(round_ends_at: $roundEndTime)
                 ->update();
             DB::commit();
-            GameBroadcast::roundEvent(gameId: $game->id, roundNumber: $nextRound);
+            GameBroadcast::roundEvent(gameId: $game->id, roundNumber: $game->current_round, gameStateEnum: GameStateEnum::IN_PROGRESS);
             return $game;
         } catch (Throwable $e) {
             DB::rollBack();

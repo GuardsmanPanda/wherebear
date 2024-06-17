@@ -39,7 +39,7 @@ final class GameLobbyController extends Controller {
         if ($game === null) {
             return Resp::redirect(url: '/', message: 'Game not found');
         }
-        if ($game->current_round === $game->number_of_rounds) {
+        if ($game->current_round >= $game->number_of_rounds) {
             return Resp::redirect(url: '/', message: 'Game is over');
         }
 

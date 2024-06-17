@@ -29,11 +29,15 @@ final class GamePlayController extends Controller {
         ", bindings: [$gameId]);
 
         $enum = GameStateEnum::from(value: $game->game_state_enum);
-
         if ($enum->isStarting()) {
             return Resp::redirect(url: "/game/$gameId/lobby", message: 'Game is not in progress');
         }
-
+        if ($enum->isFinished()) {
+            return Resp::redirect(url: '/', message: 'Game is over');
+        }
+        if ($enum === GameStateEnum::IN_PROGRESS_CALCULATING) {
+            // TODO: handle round calculation state -> send user to tmp page that does self redirect after a few seconds.
+        }
         return Resp::view(view: 'game::play.index', data: [
             'game' => $game,
             'user' => DB::selectOne(query: "

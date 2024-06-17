@@ -90,12 +90,10 @@
                 resp.json().then(json => {
                     for (let i = 0; i < json.length; i++) {
                         let cur = json[i];
-                        console.log(cur);
                         if (cur.status === 'failed') {
                             L.marker([cur.lat, cur.lng], {icon: small_icon}).addTo(map);
                         }
                         if (cur.status === 'new') {
-
                             L.marker([cur.lat, cur.lng], {icon: map_icon}).addTo(map);
                         }
                     }
