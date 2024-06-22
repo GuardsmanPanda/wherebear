@@ -2,6 +2,8 @@
 
 namespace Domain\Game\Job;
 
+use Carbon\CarbonImmutable;
+use Domain\Game\Action\GameRoundCalculateResultAction;
 use Domain\Game\Action\GameRoundCreatorAction;
 use Domain\Game\Broadcast\GameBroadcast;
 use Domain\Game\Enum\GameStateEnum;
@@ -18,13 +20,13 @@ use RuntimeException;
 final class GameRunJob implements ShouldQueue, ShouldBeUnique {
     use Dispatchable, InteractsWithQueue, Queueable;
 
+    const int RESULT_TIME_SECONDS = 1000;
+
     public int|float $uniqueFor = 60 * 60 * 24;
     public int $tries = 1;
     private bool $exitJob = false;
-    private Game $game;
 
     public function __construct(private readonly string $gameId) {
-        $this->game = Game::findOrFail(id: $this->gameId);
     }
 
     public function uniqueId(): string {
@@ -32,14 +34,15 @@ final class GameRunJob implements ShouldQueue, ShouldBeUnique {
     }
 
     public function handle(): void {
-        while (!$this->exitJob && $this->game->game_state_enum !== GameStateEnum::FINISHED->value) {
-            $this->game = match ($this->game->game_state_enum) {
-                GameStateEnum::QUEUED->value => $this->ensureReady(game: $this->game),
-                GameStateEnum::STARTING->value => $this->startGame(game: $this->game),
-                GameStateEnum::IN_PROGRESS->value => $this->runRound(game: $this->game),
-                GameStateEnum::IN_PROGRESS_CALCULATING->value => $this->calculateRoundResults(game: $this->game),
-                GameStateEnum::IN_PROGRESS_RESULT->value => $this->nextRoundOrEnd(game: $this->game),
-                default => $this->logWierdState(game: $this->game),
+        $game = Game::findOrFail(id: $this->gameId);
+        while (!$this->exitJob && $game->game_state_enum !== GameStateEnum::FINISHED->value) {
+            $game = match ($game->game_state_enum) {
+                GameStateEnum::QUEUED->value => $this->ensureReady(game: $game),
+                GameStateEnum::STARTING->value => $this->startGame(game: $game),
+                GameStateEnum::IN_PROGRESS->value => $this->runRound(game: $game),
+                GameStateEnum::IN_PROGRESS_CALCULATING->value => $this->calculateRoundResults(game: $game),
+                GameStateEnum::IN_PROGRESS_RESULT->value => $this->nextRoundOrEnd(game: $game),
+                default => $this->logWierdState(game: $game),
             };
         }
     }
@@ -76,6 +79,13 @@ final class GameRunJob implements ShouldQueue, ShouldBeUnique {
     }
 
     private function calculateRoundResults(Game $game): Game {
+        GameRoundCalculateResultAction::calculate(game: $game);
+        $game = GameService::setGameState(
+            gameId: $game->id,
+            state: GameStateEnum::IN_PROGRESS_RESULT,
+            nextRoundAt: CarbonImmutable::now()->addSeconds(value: self::RESULT_TIME_SECONDS)
+        );
+        GameBroadcast::roundEvent(gameId: $game->id, roundNumber: $game->current_round, gameStateEnum: GameStateEnum::IN_PROGRESS_RESULT);
         throw new RuntimeException(message: "Not Implemented");
         return $game;
     }

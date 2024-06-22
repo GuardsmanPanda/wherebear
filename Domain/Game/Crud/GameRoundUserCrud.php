@@ -11,9 +11,9 @@ final class GameRoundUserCrud {
         BearDatabaseService::mustBeInTransaction();
         DB::insert(query: "
             INSERT INTO game_round_user (game_id, round_number, user_id, location)
-            VALUES (?, ?, ?, public.ST_MakePoint(?, ?))
+            VALUES (?, ?, ?, ST_MakePoint(?, ?))
             ON CONFLICT (game_id, round_number, user_id) DO UPDATE
-            SET location = excluded.location
+            SET location = excluded.location, updated_at = CURRENT_TIMESTAMP
         ", bindings: [$game_id, $round_number, $user_id, $lng, $lat]);
     }
 

@@ -1,4 +1,5 @@
 <?php declare(strict_types=1); ?>
+@php use Domain\Map\Enum\MapStyleEnum; @endphp
 <div class="h-full w-full flex flex-col">
     <x-bear::form.text id="map-url" required="" class="text-gray-700"></x-bear::form.text>
     <div class="mt-1">
@@ -54,7 +55,7 @@
         iconAnchor: [12, 24],
     });
 
-    L.tileLayer('https://tile.gman.bot/OSM/{z}/{x}/{y}.png', {
+    L.tileLayer('{{MapStyleEnum::OSM->mapTileUrl()}}', {
         maxNativeZoom: 17,
         minZoom: 1,
     }).addTo(map);

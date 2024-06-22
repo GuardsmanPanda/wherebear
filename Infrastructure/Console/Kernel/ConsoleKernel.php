@@ -8,7 +8,6 @@ use Domain\Game\Enum\GameStateEnum;
 use Domain\Map\Command\MapMarkerSynchronizeCommand;
 use Domain\Panorama\Command\PanoramaImportCommand;
 use Domain\Panorama\Command\PanoramaScraperCommand;
-use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearBroadcastService;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel;
 use Illuminate\Support\Facades\Artisan;
@@ -31,11 +30,7 @@ final class ConsoleKernel extends Kernel {
 
     protected function commands(): void {
         Artisan::command('zz', function () {
-            BearBroadcastService::broadcastNow(
-                channel: 'test',
-                event: 'test',
-                data: ['test' => 'test']
-            );
+            dd(DB::select("SHOW SEARCH_PATH"));
         });
 
         Artisan::command('reset:game', function () {
@@ -49,6 +44,7 @@ final class ConsoleKernel extends Kernel {
                     ->setRoundEndsAt(round_ends_at: null)
                     ->setNextRoundAt(next_round_at: null)
                     ->update();
+                DB::update("UPDATE game_user SET game_points = 0 WHERE game_id = ?", [$gameId]);
                 DB::commit();
             } catch (Throwable $e) {
                 DB::rollBack();

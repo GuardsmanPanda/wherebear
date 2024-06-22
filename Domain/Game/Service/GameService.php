@@ -29,11 +29,13 @@ final class GameService {
     }
 
 
-    public static function setGameState(string $gameId, GameStateEnum $state): Game {
+    public static function setGameState(string $gameId, GameStateEnum $state, CarbonImmutable $nextRoundAt = null): Game {
         try {
             DB::beginTransaction();
             $game = GameUpdater::fromId(id: $gameId, lockForUpdate: true)
                 ->setGameStateEnum(game_state_enum: $state)
+                ->setNextRoundAt(next_round_at: $nextRoundAt)
+                ->setRoundEndsAt(round_ends_at: null)
                 ->update();
             DB::commit();
             return $game;
@@ -56,6 +58,7 @@ final class GameService {
                 ->setGameStateEnum(game_state_enum: GameStateEnum::IN_PROGRESS)
                 ->setCurrentRound(current_round: $game->current_round + 1)
                 ->setRoundEndsAt(round_ends_at: $roundEndTime)
+                ->setNextRoundAt(next_round_at: null)
                 ->update();
             DB::commit();
             GameBroadcast::roundEvent(gameId: $game->id, roundNumber: $game->current_round, gameStateEnum: GameStateEnum::IN_PROGRESS);

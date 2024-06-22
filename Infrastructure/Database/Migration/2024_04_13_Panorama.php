@@ -14,7 +14,7 @@ return new class extends Migration {
                 state_name            text,
                 city_name             text,
                 added_by_user_id      uuid references bear_user,
-                panorama_location     public.geography(Point, 4326),
+                panorama_location     geography(Point, 4326),
                 jpg_path              text unique,
                 nominatim_json        jsonb,
                 retired_at            timestamp with time zone,

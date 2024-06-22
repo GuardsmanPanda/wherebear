@@ -55,9 +55,10 @@ use RuntimeException;
  * @method static bool exists()
  *
  * @property int $round_number
- * @property float|null $distance_m
+ * @property int|null $round_rank
  * @property float|null $round_points
- * @property float|null $approximate_country_distance_m
+ * @property float|null $distance_meters
+ * @property float|null $approximate_country_distance_meters
  * @property string $game_id
  * @property string $user_id
  * @property string $location
