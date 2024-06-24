@@ -53,7 +53,8 @@ final class GameService {
         }
         try {
             DB::beginTransaction();
-            $roundEndTime = CarbonImmutable::now()->addSeconds(value: $game->round_duration_seconds);
+            $extraTime = max(0, 18 - $game->current_round * 5);
+            $roundEndTime = CarbonImmutable::now()->addSeconds(value: $game->round_duration_seconds + $extraTime);
             $game = GameUpdater::fromId(id: $game->id, lockForUpdate: true)
                 ->setGameStateEnum(game_state_enum: GameStateEnum::IN_PROGRESS)
                 ->setCurrentRound(current_round: $game->current_round + 1)

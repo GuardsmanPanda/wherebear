@@ -1,6 +1,6 @@
 <?php declare(strict_types=1); ?>
 @php use Domain\Map\Enum\MapStyleEnum; @endphp
-<div class="hover:z-50 z-30 filter drop-shadow-xl absolute h-64 hover:h-2/3 hover:opacity-100 hover:w-2/3 opacity-75 right-0 rounded-bl overflow-hidden w-96">
+<div class="z-30 filter drop-shadow-xl absolute h-64 hover:h-2/3 hover:opacity-100 hover:w-2/3 opacity-75 right-0 rounded-bl overflow-hidden w-96">
     <div id="map-container" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 55% 100%);" class="w-full h-full">
         <div id="map" class="h-full w-full"></div>
     </div>
@@ -18,13 +18,11 @@
         <img src="/static/img/pengu-sign.png" class="h-52" style="transform: scaleX(-1)" alt="Cutest pengu around">
         <div class="absolute capitalize opacity-70 rotate-1 text-xl text-center top-1 transform w-full">Round Ends In
         </div>
-        <div id="countdown" class=" text-3xl leading-7 tabular-nums absolute top-6 w-full text-center">
-
-        </div>
+        <div id="countdown" class=" text-3xl leading-7 tabular-nums absolute top-6 w-full text-center"> </div>
     </div>
 </div>
 
-<div class="invisible md:visible absolute bottom-7 drop-shadow-lg filter font-bold origin-bottom-left pointer-events-none scale-75 transform z-20">
+<div class="invisible md:visible absolute bottom-7 drop-shadow-lg filter font-bold origin-bottom-left pointer-events-none scale-75 transform" style="z-index: 520;">
     <div class="relative text-gray-800" style="font-family: 'Inkwell Sans', system-ui, sans-serif;">
         <img src="/static/img/pengu-sign.png" class="h-52" alt="Cutest pengu around">
         <div class="absolute opacity-70 rotate-1 text-xl text-center top-1 transform w-full">Game Round</div>
@@ -33,7 +31,7 @@
         </div>
     </div>
 </div>
-
+@include('game::play.countries-used')
 <script>
     countdownStart({{$game->round_seconds_remaining}});
     //Make pengu bouncy if no guess made in time

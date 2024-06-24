@@ -23,7 +23,7 @@ final class GameRoundResultRender {
 
 
     public static function renderDistance(string $distanceMeters): string {
-        $value = (float)$distanceMeters * 2;
+        $value = (float)$distanceMeters;
         $value =  round(num: $value/1000);
         return <<<HTML
             <div class="text-right">

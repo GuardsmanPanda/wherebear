@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Web\Www\Game\Controller\GameController;
 use Web\Www\Game\Controller\GameLobbyController;
 use Web\Www\Game\Controller\GamePlayController;
+use Web\Www\Game\Controller\GameResultController;
 
 Route::get(uri: "create", action: [GameController::class, 'createDialog'])->middleware([BearPermissionMiddleware::using(permission: 'game::create')]);
 Route::post(uri: "", action: [GameController::class, 'create'])->middleware([BearPermissionMiddleware::using(permission: 'game::create')]);
@@ -27,6 +28,7 @@ Route::prefix("{gameId}")->middleware(BearHtmxMiddleware::using(layout_location:
         Route::put(uri: "guess", action: [GamePlayController::class, 'guess']);
     });
     Route::prefix("result")->group(callback: function () {
+        Route::get(uri: "", action: [GameResultController::class, 'index']);
     });
 });
 

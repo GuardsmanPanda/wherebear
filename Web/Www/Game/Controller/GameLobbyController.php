@@ -39,10 +39,18 @@ final class GameLobbyController extends Controller {
         if ($game === null) {
             return Resp::redirect(url: '/', message: 'Game not found');
         }
+
+        $enum = GameStateEnum::from($game->game_state_enum);
+        if ($enum->isFinished()) {
+            if (Req::hxRequest()) {
+                return Htmx::redirect(url: "/game/$gameId/result");
+            }
+            return Resp::redirect(url: "/game/$gameId/result");
+        }
+
         if ($game->current_round >= $game->number_of_rounds) {
             return Resp::redirect(url: '/', message: 'Game is over');
         }
-
 
         $user_id = BearAuthService::getUserId();
         if ($user_id === null) {
@@ -71,7 +79,7 @@ final class GameLobbyController extends Controller {
 
         // If the game is in progress, then redirect to the game play page
 
-        if (GameStateEnum::from($game->game_state_enum)->isInProgress()) {
+        if ($enum->isInProgress()) {
             if (Req::hxRequest()) {
                 return Htmx::redirect(url: "/game/$gameId/play");
             }

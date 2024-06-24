@@ -10,11 +10,11 @@ use Illuminate\Support\Facades\DB;
 
 final class GameRoundCreatorAction {
     const string SAFETY_PANORAMA_ID = 'CAoSLEFGMVFpcE9pZ3JUek55Um80bkhsR2VoWHZkX2tTaDFlNTBLYmpBVVRNTUFx';
-    const float MIN_DELAY_PER_ROUND_MS = 1000;
+    const int DELAY_PER_ROUND_MS = 1000;
     const int TIER1_COUNTRY_CHANCE = 10;
     const int TIER2_COUNTRY_CHANCE = 10;
-    CONST int FILLER_COUNTRY_CHANCE = 40;
-    CONST int RANDOM_COUNTRY_CHANCE = 30;
+    const int FILLER_COUNTRY_CHANCE = 40;
+    const int RANDOM_COUNTRY_CHANCE = 30;
 
     private array $CL1 = ['AT', 'BE', 'CH', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GB-ENG', 'GB-SCT', 'GB-WLS', 'GR', 'IE', 'IT', 'LT', 'LV', 'NL', 'NO', 'PL', 'PT', 'SE', 'US'];
     private array $CL2 = ['AL', 'AU', 'BA', 'BG', 'BY', 'CA', 'CN', 'CZ', 'GB-NIR', 'GE', 'HR', 'JP', 'KR', 'LU', 'NZ', 'RS', 'RU', 'SI', 'SK', 'UA', 'VA', 'XK'];
@@ -50,7 +50,9 @@ final class GameRoundCreatorAction {
                 LIMIT 100
             ) as latest_countries
         ");
-        $this->filler = array_filter($this->filler, static function ($ele) use ($recent_countries) {return !in_array($ele, $recent_countries, true);});
+        $this->filler = array_filter($this->filler, static function ($ele) use ($recent_countries) {
+            return !in_array($ele, $recent_countries, true);
+        });
 
         shuffle($this->all_countries);
         shuffle($this->CL1);
@@ -62,7 +64,6 @@ final class GameRoundCreatorAction {
     public function createAllRounds(): void {
         $rounds = $this->game->number_of_rounds;
         for ($i = 1; $i <= $rounds; $i++) {
-            $startTimestamp = microtime(as_float: true);
             $strategy = 'UNSPECIFIED';
             $id = null;
 
@@ -113,12 +114,8 @@ final class GameRoundCreatorAction {
                 panorama_id: $id
             );
 
-            $endTimestamp = microtime(as_float: true);
-            $delay = self::MIN_DELAY_PER_ROUND_MS - ($endTimestamp - $startTimestamp) * 1000;
-            if ($delay > 0) {
-                usleep(microseconds: (int)($delay * 1000));
-            }
             GameBroadcast::prep(gameId: $this->game->id, message: 'Round ' . $i . ' of ' . $rounds . ' selected', stage: 2 + $i);
+            usleep(microseconds: self::DELAY_PER_ROUND_MS * 1000);
         }
     }
 

@@ -3,6 +3,7 @@
 namespace Domain\Game\Job;
 
 use Carbon\CarbonImmutable;
+use Domain\Game\Action\GameEndAction;
 use Domain\Game\Action\GameRoundCalculateResultAction;
 use Domain\Game\Action\GameRoundCreatorAction;
 use Domain\Game\Broadcast\GameBroadcast;
@@ -20,7 +21,7 @@ use RuntimeException;
 final class GameRunJob implements ShouldQueue, ShouldBeUnique {
     use Dispatchable, InteractsWithQueue, Queueable;
 
-    const int RESULT_TIME_SECONDS = 1000;
+    const int RESULT_TIME_SECONDS = 22;
 
     public int|float $uniqueFor = 60 * 60 * 24;
     public int $tries = 1;
@@ -86,19 +87,18 @@ final class GameRunJob implements ShouldQueue, ShouldBeUnique {
             nextRoundAt: CarbonImmutable::now()->addSeconds(value: self::RESULT_TIME_SECONDS)
         );
         GameBroadcast::roundEvent(gameId: $game->id, roundNumber: $game->current_round, gameStateEnum: GameStateEnum::IN_PROGRESS_RESULT);
-        throw new RuntimeException(message: "Not Implemented");
         return $game;
     }
 
     private function nextRoundOrEnd(Game $game): Game {
-        if ($game->current_round >= $game->number_of_rounds) {
-            throw new RuntimeException(message: "Not Implemented");
-        }
         if ($game->next_round_at === null) {
             throw new RuntimeException(message: "Next round at is null when trying to go to next round.");
         }
         $microSecondUntilNextRound = (int)$game->next_round_at->diffInMicroseconds(date: now(), absolute: true);
         usleep(microseconds: $microSecondUntilNextRound);
+        if ($game->current_round >= $game->number_of_rounds) {
+            return GameEndAction::end(game: $game);
+        }
         return GameService::nextGameRound(game: $game);
     }
 

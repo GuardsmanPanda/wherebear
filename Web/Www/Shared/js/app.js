@@ -13,11 +13,10 @@ window.tippy = tippy;
 const tippyFunction = function (el) {
     tippy(el, {
         content: el.getAttribute('tippy'),
-        appendTo: 'parent',
+        appendTo: () => document.body,
         duration: [250, 250],
         hideOnClick: false,
         inertia: true,
-        theme: 'material',
     });
 }
 

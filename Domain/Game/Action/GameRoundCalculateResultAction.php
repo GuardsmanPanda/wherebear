@@ -159,15 +159,14 @@ final class GameRoundCalculateResultAction {
                         CASE 
                             WHEN gru.approximate_country_iso_2_code = p.country_iso_2_code THEN 20 
                             ELSE 0
-                        END) / rr_rank.round_number,
-                    round_rank = rr_rank.round_rank
+                        END) / rr_rank.round_number
                 FROM 
                     panorama p,
                     (SELECT
                         ru2.game_id, ru2.round_number, ru2.user_id,
                         rank() OVER (PARTITION BY ru2.game_id, ru2.round_number ORDER BY ru2.distance_meters) as round_rank
-                        FROM game_round_user ru2
-                        WHERE ru2.game_id = ? AND ru2.round_number = ?
+                    FROM game_round_user ru2
+                    WHERE ru2.game_id = ? AND ru2.round_number = ?
                     ) rr_rank
                 WHERE
                     p.id = ? AND gru.game_id = ? AND gru.round_number = ?
@@ -177,10 +176,17 @@ final class GameRoundCalculateResultAction {
             ", bindings: [$round->game_id, $round->round_number, $round->panorama_id, $round->game_id, $round->round_number]);
 
             DB::update(query: "
-                UPDATE game_user gu SET
-                    game_points = gu.game_points + gru.round_points 
-                FROM game_round_user gru
-                WHERE gru.game_id = ? AND gru.round_number = ? AND gu.user_id = gru.user_id
+                UPDATE game_round_user gru SET
+                    round_rank = player_rank.round_rank
+                FROM
+                    (SELECT
+                        ru2.game_id, ru2.round_number, ru2.user_id,
+                        rank() OVER (PARTITION BY ru2.game_id, ru2.round_number ORDER BY ru2.round_points DESC) as round_rank
+                        FROM game_round_user ru2
+                        WHERE ru2.game_id = ? AND ru2.round_number = ?
+                    ) player_rank
+                WHERE
+                    gru.game_id = player_rank.game_id AND gru.round_number = player_rank.round_number AND gru.user_id = player_rank.user_id
             ", bindings: [$round->game_id, $round->round_number]);
             DB::commit();
         } catch (Throwable $t) {

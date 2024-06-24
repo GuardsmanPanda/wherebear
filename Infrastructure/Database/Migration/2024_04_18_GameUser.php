@@ -13,6 +13,7 @@ return new class extends Migration {
             $table->double(column: 'game_points')->default(0)->comment(comment: "The number of points the user has in the game, only calculated at the end of the game.");
             $table->boolean(column: 'is_ready')->default(false)->comment(comment: "Is the user ready to start the game.");
             $table->timestampTz(column: 'created_at')->default(DB::raw('CURRENT_TIMESTAMP'))->comment(comment: 'When the user joined the game');
+            $table->timestampTz(column: 'updated_at')->default(DB::raw('CURRENT_TIMESTAMP'))->comment(comment: 'When the user was last updated in the game');
             $table->primary(['game_id', 'user_id']);
             $table->foreign("game_id")->references('id')->on('game');
             $table->foreign("user_id")->references('id')->on('bear_user');
