@@ -159,13 +159,14 @@ final class GameRoundCalculateResultAction {
                         CASE 
                             WHEN gru.approximate_country_iso_2_code = p.country_iso_2_code THEN 20 
                             ELSE 0
-                        END) / rr_rank.round_number
+                        END) / rr_rank.number_of_rounds
                 FROM 
                     panorama p,
                     (SELECT
-                        ru2.game_id, ru2.round_number, ru2.user_id,
+                        ru2.game_id, ru2.round_number, ru2.user_id, g2.number_of_rounds,
                         rank() OVER (PARTITION BY ru2.game_id, ru2.round_number ORDER BY ru2.distance_meters) as round_rank
                     FROM game_round_user ru2
+                    LEFT JOIN game g2 ON g2.id = ru2.game_id
                     WHERE ru2.game_id = ? AND ru2.round_number = ?
                     ) rr_rank
                 WHERE

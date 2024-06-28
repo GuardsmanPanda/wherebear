@@ -29,10 +29,6 @@ final class ConsoleKernel extends Kernel {
     }
 
     protected function commands(): void {
-        Artisan::command('zz', function () {
-            dd(DB::select("SHOW SEARCH_PATH"));
-        });
-
         Artisan::command('reset:game', function () {
             $gameId = '02e8d81e-fbce-4bfc-9723-59a7abf8a12d';
             try {

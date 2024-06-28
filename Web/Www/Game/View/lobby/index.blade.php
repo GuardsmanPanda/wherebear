@@ -31,7 +31,7 @@
     pusher = new Pusher('6csm0edgczin2onq92lm', {
         cluster: 'eu',
         wsHost: 'socket.gman.bot',
-        wsPort: 443,
+        wssPort: 443,
     });
     channel = pusher.subscribe('game.{{$game->id}}');
     channel.bind('player.update', function (data) {
@@ -46,5 +46,11 @@
     });
     channel.bind('round.event', function (data) {
         window.location.href = '/game/{{$game->id}}/play';
+    });
+    pusher.bind('error', function (error) {
+        console.error('Pusher error:', error);
+    });
+    pusher.bind('disconnected', function (error) {
+        console.error('Pusher error:', error);
     });
 </script>
