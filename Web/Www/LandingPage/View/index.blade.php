@@ -16,7 +16,7 @@
             <div class="flex">
                 @if(BearAuthService::getUserId() === null)
                     <button class="my-3 mr-1 cursor-pointer font-medium px-4 text-lg text-gray-300 transform duration-75 hover:scale-105 hover:underline hover:text-gray-200"
-                            hx-get="/auth/dialog">Login
+                            hx-get="/auth/dialog">LoginAnything
                     </button>
                 @else
                     @if(BearAuthService::hasPermission('game::create'))
