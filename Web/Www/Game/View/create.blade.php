@@ -8,4 +8,9 @@
         <label class="font-bold">65<input type="radio" name="round_duration" value="65" class="ml-1"></label>
         <label class="font-bold">85<input type="radio" name="round_duration" value="85" class="ml-1"></label>
     </fieldset>
+    <fieldset class="flex gap-3 px-3 border border-gray-400 pb-3 mt-2">
+        <legend class="px-1.5">Public Status</legend>
+        <label class="font-bold">Public<input type="radio" name="game_public_status" value="PUBLIC" class="ml-1" checked></label>
+        <label class="font-bold">Private<input type="radio" name="game_public_status" value="PRIVATE" class="ml-1"></label>
+    </fieldset>
 </x-bear::dialog.create>

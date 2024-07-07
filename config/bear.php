@@ -36,7 +36,7 @@ return [
             'map_marker' => ['location' => 'Domain/Map/Model'],
             'map_style' => ['location' => 'Domain/Map/Model'],
             'panorama' => ['location' => 'Domain/Panorama/Model'],
-            'tag' => ['location' => 'Domain/Tag/Model'],
+            'tag' => ['location' => 'Domain/Panorama/Model'],
         ]
     ],
 ];

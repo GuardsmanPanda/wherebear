@@ -32,7 +32,7 @@ final readonly class GameUpdater {
     }
 
     public function setGamePublicStatus(GamePublicStatusEnum $game_public_status): self {
-        $this->model->game_public_state_enum = $game_public_status->value;
+        $this->model->game_public_status_enum = $game_public_status->value;
         return $this;
     }
 

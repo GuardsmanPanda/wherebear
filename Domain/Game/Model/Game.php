@@ -61,13 +61,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $updated_at
  * @property string $game_state_enum
  * @property string $created_by_user_id
- * @property string $game_public_state_enum
+ * @property string $game_public_status_enum
  * @property CarbonInterface|null $next_round_at
  * @property CarbonInterface|null $round_ends_at
  *
  * @property BearUser $createdByUser
- * @property GamePublicStatus $gamePublicStateEnum
  * @property GameState $gameStateEnum
+ * @property GamePublicStatus $gamePublicStatusEnum
  *
  * AUTO GENERATED FILE DO NOT MODIFY
  */
@@ -89,12 +89,12 @@ final class Game extends Model {
         return $this->belongsTo(related: BearUser::class, foreignKey: 'created_by_user_id', ownerKey: 'id');
     }
 
-    public function gamePublicStateEnum(): BelongsTo {
-        return $this->belongsTo(related: GamePublicStatus::class, foreignKey: 'game_public_state_enum', ownerKey: 'game_public_status_enum');
-    }
-
     public function gameStateEnum(): BelongsTo {
         return $this->belongsTo(related: GameState::class, foreignKey: 'game_state_enum', ownerKey: 'game_state_enum');
+    }
+
+    public function gamePublicStatusEnum(): BelongsTo {
+        return $this->belongsTo(related: GamePublicStatus::class, foreignKey: 'game_public_status_enum', ownerKey: 'game_public_status_enum');
     }
 
     protected $guarded = ['id', 'updated_at', 'created_at', 'deleted_at'];
