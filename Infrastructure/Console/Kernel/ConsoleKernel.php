@@ -47,5 +47,10 @@ final class ConsoleKernel extends Kernel {
                 throw $e;
             }
         });
+
+        Artisan::command('zz', function () {
+            $search_path = DB::selectOne("show search_path ;");
+            dd($search_path->search_path);
+        });
     }
 }

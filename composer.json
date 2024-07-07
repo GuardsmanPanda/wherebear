@@ -7,8 +7,8 @@
     "php": "^8.3",
     "guardsmanpanda/larabear": "dev-main",
     "guzzlehttp/guzzle": "^7.8",
-    "laravel/framework": "^v11.11",
-    "laravel/reverb": "@beta"
+    "laravel/framework": "^v11.14",
+    "laravel/reverb": "^v1.0"
   },
   "require-dev": {
     "ergebnis/phpstan-rules": "^2.2",

@@ -11,9 +11,10 @@ window.pusher = Pusher
 window.tippy = tippy;
 
 const tippyFunction = function (el) {
+    const inDialog = document.getElementById('dialog').contains(el);
     tippy(el, {
         content: el.getAttribute('tippy'),
-        appendTo: () => document.body,
+        appendTo: () => inDialog ? document.getElementById('dialog') : document.body,
         duration: [250, 250],
         hideOnClick: false,
         inertia: true,

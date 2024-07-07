@@ -57,6 +57,7 @@ use RuntimeException;
  * @property string $game_id
  * @property string $user_id
  * @property string $created_at
+ * @property string $updated_at
  *
  * @property Game $game
  * @property BearUser $user
@@ -73,7 +74,6 @@ final class GameUser extends Model {
     protected $keyType = 'array';
     public $incrementing = false;
     protected $dateFormat = 'Y-m-d\TH:i:sP';
-    public $timestamps = false;
     /** @var array<string> $log_exclude_columns */
     public array $log_exclude_columns = ['is_ready'];
 

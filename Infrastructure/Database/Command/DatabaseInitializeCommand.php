@@ -8,8 +8,10 @@ use Infrastructure\Database\Initialize\DatabaseInitializeBearPermission;
 use Infrastructure\Database\Initialize\DatabaseInitializeBearRole;
 use Infrastructure\Database\Initialize\DatabaseInitializeBearRolePermission;
 use Infrastructure\Database\Initialize\DatabaseInitializeExternalApi;
+use Infrastructure\Database\Initialize\DatabaseInitializeGamePublicStatusEnum;
 use Infrastructure\Database\Initialize\DatabaseInitializeGameState;
 use Infrastructure\Database\Initialize\DatabaseInitializeMapStyle;
+use Infrastructure\Database\Initialize\DatabaseInitializeTag;
 
 final class DatabaseInitializeCommand extends BearTransactionCommand {
     protected $signature = 'database:initialize';
@@ -20,7 +22,9 @@ final class DatabaseInitializeCommand extends BearTransactionCommand {
         DatabaseInitializeBearRole::initialize();
         DatabaseInitializeBearCountry::initialize();
         DatabaseInitializeExternalApi::initialize();
+        DatabaseInitializeGamePublicStatusEnum::initialize();
         DatabaseInitializeGameState::initialize();
+        DatabaseInitializeTag::initialize();
 
         DatabaseInitializeMapStyle::initialize(); // Requires External API.
         DatabaseInitializeBearRolePermission::initialize(); // Requires Bear Role and Bear Permission.

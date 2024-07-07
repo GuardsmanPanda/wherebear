@@ -1,7 +1,8 @@
 <?php
 
 return [
-    'default' => 'reverb',
+    'default' => env('REVERB_SERVER', 'reverb'),
+
     /*
     |--------------------------------------------------------------------------
     | Reverb Servers
@@ -12,11 +13,12 @@ return [
     | the array below. You should ensure all the options are present.
     |
     */
+
     'servers' => [
         'reverb' => [
-            'host' => "0.0.0.0",
-            'port' => 8080,
-            'hostname' => "localhost",
+            'host' => env('REVERB_SERVER_HOST', '0.0.0.0'),
+            'port' => env('REVERB_SERVER_PORT', 8585),
+            'hostname' => 'socket.gman.bot',
             'options' => [
                 'tls' => [],
             ],
@@ -48,18 +50,19 @@ return [
     | your server will support, including their connection credentials.
     |
     */
+
     'apps' => [
         'provider' => 'config',
         'apps' => [
             [
-                'app_id' => env('REVERB_APP_ID'),
                 'key' => env('REVERB_APP_KEY'),
                 'secret' => env('REVERB_APP_SECRET'),
+                'app_id' => env('REVERB_APP_ID'),
                 'options' => [
-                    'host' => "localhost",
-                    'port' => 8080,
-                    'scheme' => "http",
-                    'useTLS' => false,
+                    'host' => env('REVERB_HOST'),
+                    'port' => env('REVERB_PORT', 443),
+                    'scheme' => env('REVERB_SCHEME', 'https'),
+                    'useTLS' => env('REVERB_SCHEME', 'https') === 'https',
                 ],
                 'allowed_origins' => ['*'],
                 'ping_interval' => env('REVERB_APP_PING_INTERVAL', 60),

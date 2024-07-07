@@ -28,6 +28,7 @@ return [
         'pgsql' => [
             'bear_user' => ['class' => 'WhereBearUser', 'location' => 'Domain/User/Model'],
             'game' => ['location' => 'Domain/Game/Model'],
+            'game_public_status' => ['location' => 'Domain/Game/Model'],
             'game_round' => ['location' => 'Domain/Game/Model'],
             'game_round_user' => ['location' => 'Domain/Game/Model'],
             'game_state' => ['location' => 'Domain/Game/Model'],
@@ -35,6 +36,7 @@ return [
             'map_marker' => ['location' => 'Domain/Map/Model'],
             'map_style' => ['location' => 'Domain/Map/Model'],
             'panorama' => ['location' => 'Domain/Panorama/Model'],
+            'tag' => ['location' => 'Domain/Tag/Model'],
         ]
     ],
 ];

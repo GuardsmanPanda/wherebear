@@ -4,6 +4,7 @@ namespace Domain\Game\Model;
 
 use Carbon\CarbonInterface;
 use Closure;
+use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearUser;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearLogDatabaseChanges;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Model\BearCountry;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -69,7 +70,7 @@ use RuntimeException;
  * @property ArrayObject|null $nominatim_json
  *
  * @property GameUser $game
- * @property GameUser $user
+ * @property BearUser $user
  * @property BearCountry|null $approximateCountryIso2Code
  * @property BearCountry|null $correctCountryIso2Code
  * @property GameRound $roundNumber
@@ -93,11 +94,11 @@ final class GameRoundUser extends Model {
     ];
 
     public function game(): BelongsTo {
-        return $this->belongsTo(related: GameUser::class, foreignKey: 'game_id', ownerKey: 'user_id');
+        return $this->belongsTo(related: GameUser::class, foreignKey: 'game_id', ownerKey: 'game_id');
     }
 
     public function user(): BelongsTo {
-        return $this->belongsTo(related: GameUser::class, foreignKey: 'user_id', ownerKey: 'user_id');
+        return $this->belongsTo(related: BearUser::class, foreignKey: 'user_id', ownerKey: 'id');
     }
 
     public function approximateCountryIso2Code(): BelongsTo|null {

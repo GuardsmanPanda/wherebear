@@ -11,7 +11,7 @@
     "dependencies": {
         "@tailwindcss/forms": "^0.5.7",
         "canvas-confetti": "^1.9.2",
-        "esbuild": "^0.21",
+        "esbuild": "^0.23",
         "htmx.org": "^2.0",
         "leaflet": "^1.9.4",
         "leaflet.markercluster": "^1.5.3",

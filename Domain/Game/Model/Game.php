@@ -55,17 +55,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $current_round
  * @property int $number_of_rounds
  * @property int $round_duration_seconds
- * @property bool $is_public
  * @property bool $is_forced_start
  * @property string $id
  * @property string $created_at
  * @property string $updated_at
  * @property string $game_state_enum
  * @property string $created_by_user_id
+ * @property string $game_public_state_enum
  * @property CarbonInterface|null $next_round_at
  * @property CarbonInterface|null $round_ends_at
  *
  * @property BearUser $createdByUser
+ * @property GamePublicStatus $gamePublicStateEnum
  * @property GameState $gameStateEnum
  *
  * AUTO GENERATED FILE DO NOT MODIFY
@@ -86,6 +87,10 @@ final class Game extends Model {
 
     public function createdByUser(): BelongsTo {
         return $this->belongsTo(related: BearUser::class, foreignKey: 'created_by_user_id', ownerKey: 'id');
+    }
+
+    public function gamePublicStateEnum(): BelongsTo {
+        return $this->belongsTo(related: GamePublicStatus::class, foreignKey: 'game_public_state_enum', ownerKey: 'game_public_status_enum');
     }
 
     public function gameStateEnum(): BelongsTo {

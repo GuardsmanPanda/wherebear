@@ -3,6 +3,7 @@
 namespace Domain\Game\Crud;
 
 use Carbon\CarbonInterface;
+use Domain\Game\Enum\GamePublicStatusEnum;
 use Domain\Game\Enum\GameStateEnum;
 use Domain\Game\Model\Game;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
@@ -28,6 +29,11 @@ final readonly class GameUpdater {
 
     public function getGameStateEnum(): string {
         return $this->model->game_state_enum;
+    }
+
+    public function setGamePublicStatus(GamePublicStatusEnum $game_public_status): self {
+        $this->model->game_public_state_enum = $game_public_status->value;
+        return $this;
     }
 
     public function setRoundDurationSeconds(int $round_duration_seconds): self {
