@@ -1,4 +1,5 @@
 <?php declare(strict_types=1); ?>
+@php use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService; @endphp
 <x-bear::dialog.create hx-post="/game">
     <x-bear::form.number id="number_of_rounds" required>7</x-bear::form.number>
     <fieldset class="flex gap-3 px-3 border border-gray-400 pb-3 mt-2">
@@ -11,6 +12,9 @@
     <fieldset class="flex gap-3 px-3 border border-gray-400 pb-3 mt-2">
         <legend class="px-1.5">Public Status</legend>
         <label class="font-bold">Public<input type="radio" name="game_public_status" value="PUBLIC" class="ml-1" checked></label>
+        @if(BearAuthService::hasPermission(permission: 'is-bob'))
+            <label class="font-bold">Google<input type="radio" name="game_public_status" value="GOOGLE" class="ml-1"></label>
+        @endif
         <label class="font-bold">Private<input type="radio" name="game_public_status" value="PRIVATE" class="ml-1"></label>
     </fieldset>
 </x-bear::dialog.create>

@@ -4,9 +4,11 @@ namespace Web\Www\Game\Controller;
 
 use Domain\Game\Action\GameStartAction;
 use Domain\Game\Broadcast\GameBroadcast;
+use Domain\Game\Crud\GameUpdater;
 use Domain\Game\Crud\GameUserCreator;
 use Domain\Game\Crud\GameUserDeleter;
 use Domain\Game\Crud\GameUserUpdater;
+use Domain\Game\Enum\GamePublicStatusEnum;
 use Domain\Game\Enum\GameStateEnum;
 use Domain\User\Crud\WhereBearUserUpdater;
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearArrayService;
@@ -18,7 +20,9 @@ use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Resp;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Nette\Utils\Json;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Throwable;
 
 final class GameLobbyController extends Controller {
@@ -156,6 +160,16 @@ final class GameLobbyController extends Controller {
         return $this->index($gameId);
     }
 
+    public function updateSettings(string $gameId): Response|View {
+        $enum = GamePublicStatusEnum::from(Req::getStringOrDefault(key: 'game_public_status'));
+        GameUpdater::fromId(id: $gameId)
+            ->setNumberOfRounds(number_of_rounds: Req::getIntOrDefault(key: 'number_of_rounds'))
+            ->setRoundDurationSeconds(round_duration_seconds: Req::getIntOrDefault(key: 'round_duration_seconds'))
+            ->setGamePublicStatus(game_public_status: $enum)
+            ->update();
+        return $this->index($gameId);
+    }
+
 
     public function leaveGame(string $gameId): Response {
         GameUserDeleter::deleteFromGameAndUserId(gameId: $gameId, userId: BearAuthService::getUserIdOrFail());
@@ -213,6 +227,28 @@ final class GameLobbyController extends Controller {
                         map_style_enum, map_style_name
                     FROM map_style
                 "),
+            ]
+        );
+    }
+
+    public function dialogSettings(string $gameId): View {
+        $is_allowed = BearDatabaseService::exists(sql: "
+            SELECT 1 FROM game WHERE id = ? AND created_by_user_id = ?
+            ", bindings: [$gameId, BearAuthService::getUserIdOrFail()]
+        );
+        if ($is_allowed === false) {
+            return throw new UnauthorizedHttpException("You are not allowed to edit this game.");
+        }
+        return Htmx::dialogView(
+            view: 'game::lobby.dialog.game-settings',
+            title: 'Game Settings',
+            data: [
+                'game' => DB::selectOne(query: "
+                    SELECT
+                        g.id, g.number_of_rounds, g.round_duration_seconds, g.game_public_status_enum
+                    FROM game g
+                    WHERE g.id = ?
+                ", bindings: [$gameId]),
             ]
         );
     }

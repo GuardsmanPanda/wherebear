@@ -19,8 +19,10 @@ Route::prefix("{gameId}")->middleware(BearHtmxMiddleware::using(layout_location:
         Route::get(uri: "dialog/map-marker", action: [GameLobbyController::class, 'dialogMapMarker']);
         Route::get(uri: "dialog/map-style", action: [GameLobbyController::class, 'dialogMapStyle']);
         Route::get(uri: "dialog/name-flag", action: [GameLobbyController::class, 'dialogNameFlag']);
+        Route::get(uri: "dialog/settings", action: [GameLobbyController::class, 'dialogSettings']);
         Route::patch(uri: "update-user", action: [GameLobbyController::class, 'updateUser']);
         Route::patch(uri: "update-game-user", action: [GameLobbyController::class, 'updateGameUser']);
+        Route::patch(uri: "settings", action: [GameLobbyController::class, 'updateSettings']);
         Route::delete(uri: "leave", action: [GameLobbyController::class, 'leaveGame']);
     });
     Route::prefix("play")->group(callback: function () {

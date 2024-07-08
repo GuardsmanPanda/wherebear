@@ -38,8 +38,8 @@
                         Delete Game
                     </button>
                     <button class="flex items-center ml-4 bg-amber-400 text-amber-800 hover:text-amber-900 text-xs font-medium pl-2 pr-3 py-0.5 my-0.5 rounded duration-75 hover:scale-110 transition-transform"
-                            hx-delete="/game/{{$game->id}}" hx-confirm="DELETE the game?">
-                        <x-bear::icon name="x-mark" size="4" class="opacity-70 mr-0.5"/>
+                            hx-get="/game/{{$game->id}}/lobby/dialog/settings">
+                        <x-bear::icon name="cog-6-tooth" size="4" class="opacity-70 mr-0.5"/>
                         Game Settings
                     </button>
                     <button class="flex items-center ml-4 bg-blue-400 text-blue-800 hover:text-blue-900 text-xs font-medium pl-2 pr-3 py-0.5 my-0.5 rounded duration-75 hover:scale-110 transition-transform"
