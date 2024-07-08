@@ -25,7 +25,7 @@ final readonly class GameCreator {
         $model->number_of_rounds = $number_of_rounds;
         $model->round_duration_seconds = $round_duration_seconds;
         $model->created_by_user_id = BearAuthService::getUser()->id;
-        $model->game_public_state_enum = $game_public_status->value;
+        $model->game_public_status_enum = $game_public_status->value;
 
         $model->save();
         return $model;

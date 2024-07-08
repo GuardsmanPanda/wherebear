@@ -4,6 +4,7 @@ namespace Web\Www\Game\Controller;
 
 use Domain\Game\Crud\GameCreator;
 use Domain\Game\Crud\GameDeleter;
+use Domain\Game\Enum\GamePublicStatusEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Htmx;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 use Illuminate\Routing\Controller;
@@ -19,6 +20,7 @@ final class GameController extends Controller {
         $game = GameCreator::create(
             number_of_rounds: Req::getIntOrDefault(key: 'number_of_rounds'),
             round_duration_seconds: Req::getIntOrDefault(key: 'round_duration'),
+            game_public_status: GamePublicStatusEnum::from(value: Req::getStringOrDefault(key: 'game_public_status')),
         );
         return Htmx::redirect(url: "/game/$game->id/lobby");
     }
