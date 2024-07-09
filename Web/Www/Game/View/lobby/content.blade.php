@@ -64,7 +64,7 @@
                         <td class="px-6 py-4">{{$game->number_of_rounds}} rounds</td>
                         <td class="px-6 py-4">{{$game->round_duration_seconds}} seconds</td>
                         <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-gray-100">
-                            ~{{ round(num: ($game->number_of_rounds * ($game->round_duration_seconds  + 23) + 90) / 60) }}
+                            ~{{ round(num: ($game->number_of_rounds * ($game->round_duration_seconds + $game->round_result_duration_seconds + 1) + 90) / 60) }}
                             minutes
                         </td>
                     </tr>
@@ -96,7 +96,6 @@
                         </button>
                     @endif
                 </div>
-
             </div>
 
             <hr class="mx-1 mt-1 mb-3 pb-0.5 border-gray-700 border-b-2 border-dashed">

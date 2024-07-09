@@ -7,20 +7,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void {
-        Schema::create(table: 'game_round', callback: static function (Blueprint $table): void {
-            $table->uuid(column: 'game_id');
-            $table->integer(column: 'round_number');
-            $table->text(column: 'panorama_id')->nullable();
-            $table->text(column: 'panorama_pick_strategy')->default('Unknown');
+        Schema::create(table: 'panorama_user_rating', callback: static function (Blueprint $table): void {
+            $table->text(column: 'panorama_id');
+            $table->uuid(column: 'user_id');
+            $table->integer(column: 'rating');
             $table->timestampTz(column: 'created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestampTz(column: 'updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->foreign("game_id")->references('id')->on('game');
+            $table->primary(['panorama_id', 'user_id']);
             $table->foreign("panorama_id")->references('id')->on('panorama');
-            $table->primary(columns: ['game_id', 'round_number']);
+            $table->foreign("user_id")->references('id')->on('bear_user');
         });
     }
 
     public function down(): void {
-        Schema::dropIfExists(table: 'game_round');
+        Schema::dropIfExists(table: 'panorama_user_rating');
     }
 };

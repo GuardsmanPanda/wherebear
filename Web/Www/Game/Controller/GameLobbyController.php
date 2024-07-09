@@ -31,7 +31,7 @@ final class GameLobbyController extends Controller {
             $game = DB::selectOne(query: "
                 SELECT
                     g.id, g.number_of_rounds, g.round_duration_seconds, g.created_by_user_id,
-                    g.game_state_enum, g.current_round,
+                    g.game_state_enum, g.current_round, g.round_result_duration_seconds,
                     bu.user_display_name
                 FROM game g
                 LEFT JOIN bear_user bu ON bu.id = g.created_by_user_id
@@ -165,6 +165,7 @@ final class GameLobbyController extends Controller {
         GameUpdater::fromId(id: $gameId)
             ->setNumberOfRounds(number_of_rounds: Req::getIntOrDefault(key: 'number_of_rounds'))
             ->setRoundDurationSeconds(round_duration_seconds: Req::getIntOrDefault(key: 'round_duration_seconds'))
+            ->setRoundResultDurationSeconds(round_result_duration_seconds: Req::getIntOrDefault(key: 'round_result_duration_seconds'))
             ->setGamePublicStatus(game_public_status: $enum)
             ->update();
         return $this->index($gameId);
@@ -245,7 +246,8 @@ final class GameLobbyController extends Controller {
             data: [
                 'game' => DB::selectOne(query: "
                     SELECT
-                        g.id, g.number_of_rounds, g.round_duration_seconds, g.game_public_status_enum
+                        g.id, g.number_of_rounds, g.round_duration_seconds,
+                        g.round_result_duration_seconds, g.game_public_status_enum
                     FROM game g
                     WHERE g.id = ?
                 ", bindings: [$gameId]),

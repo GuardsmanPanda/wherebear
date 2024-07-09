@@ -13,6 +13,7 @@ final readonly class GameCreator {
     public static function create(
         int $number_of_rounds,
         int $round_duration_seconds,
+        int $round_result_duration_seconds,
         GamePublicStatusEnum $game_public_status = GamePublicStatusEnum::PUBLIC
     ): Game {
         BearDatabaseService::mustBeInTransaction();
@@ -24,6 +25,7 @@ final readonly class GameCreator {
         $model->game_state_enum = GameStateEnum::WAITING_FOR_PLAYERS->value;
         $model->number_of_rounds = $number_of_rounds;
         $model->round_duration_seconds = $round_duration_seconds;
+        $model->round_result_duration_seconds = $round_result_duration_seconds;
         $model->created_by_user_id = BearAuthService::getUser()->id;
         $model->game_public_status_enum = $game_public_status->value;
 

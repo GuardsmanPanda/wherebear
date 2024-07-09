@@ -19,7 +19,8 @@ final class GameController extends Controller {
     public function create(): Response {
         $game = GameCreator::create(
             number_of_rounds: Req::getIntOrDefault(key: 'number_of_rounds'),
-            round_duration_seconds: Req::getIntOrDefault(key: 'round_duration'),
+            round_duration_seconds: Req::getIntOrDefault(key: 'round_duration_seconds'),
+            round_result_duration_seconds: Req::getIntOrDefault(key: 'round_result_duration_seconds'),
             game_public_status: GamePublicStatusEnum::from(value: Req::getStringOrDefault(key: 'game_public_status')),
         );
         return Htmx::redirect(url: "/game/$game->id/lobby");

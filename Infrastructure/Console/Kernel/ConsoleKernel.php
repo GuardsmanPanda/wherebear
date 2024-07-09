@@ -30,21 +30,27 @@ final class ConsoleKernel extends Kernel {
 
     protected function commands(): void {
         Artisan::command('reset:game', function () {
-            $gameId = '02e8d81e-fbce-4bfc-9723-59a7abf8a12d';
-            try {
-                DB::beginTransaction();
-                GameRoundDeleter::deleteAllGameRounds(gameId: $gameId);
-                GameUpdater::fromId(id: $gameId)
-                    ->setCurrentRound(current_round: 0)
-                    ->setGameStateEnum(GameStateEnum::WAITING_FOR_PLAYERS)
-                    ->setRoundEndsAt(round_ends_at: null)
-                    ->setNextRoundAt(next_round_at: null)
-                    ->update();
-                DB::update("UPDATE game_user SET game_points = 0 WHERE game_id = ?", [$gameId]);
-                DB::commit();
-            } catch (Throwable $e) {
-                DB::rollBack();
-                throw $e;
+            $ids = [
+                '02e8d81e-fbce-4bfc-9723-59a7abf8a12d',
+                '5e83a45b-d53e-4793-b514-b404eb42827f',
+                '9a89f2c3-50cb-49d8-9130-3662de447be1',
+            ];
+            foreach ($ids as $gameId) {
+                try {
+                    DB::beginTransaction();
+                    GameRoundDeleter::deleteAllGameRounds(gameId: $gameId);
+                    GameUpdater::fromId(id: $gameId)
+                        ->setCurrentRound(current_round: 0)
+                        ->setGameStateEnum(GameStateEnum::WAITING_FOR_PLAYERS)
+                        ->setRoundEndsAt(round_ends_at: null)
+                        ->setNextRoundAt(next_round_at: null)
+                        ->update();
+                    DB::update("UPDATE game_user SET game_points = 0 WHERE game_id = ?", [$gameId]);
+                    DB::commit();
+                } catch (Throwable $e) {
+                    DB::rollBack();
+                    throw $e;
+                }
             }
         });
 

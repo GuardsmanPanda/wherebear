@@ -21,8 +21,6 @@ use RuntimeException;
 final class GameRunJob implements ShouldQueue, ShouldBeUnique {
     use Dispatchable, InteractsWithQueue, Queueable;
 
-    const int RESULT_TIME_SECONDS = 22;
-
     public int|float $uniqueFor = 60 * 60 * 24;
     public int $tries = 1;
     private bool $exitJob = false;
@@ -84,7 +82,7 @@ final class GameRunJob implements ShouldQueue, ShouldBeUnique {
         $game = GameService::setGameState(
             gameId: $game->id,
             state: GameStateEnum::IN_PROGRESS_RESULT,
-            nextRoundAt: CarbonImmutable::now()->addSeconds(value: self::RESULT_TIME_SECONDS)
+            nextRoundAt: CarbonImmutable::now()->addSeconds(value: $game->round_result_duration_seconds)
         );
         GameBroadcast::roundEvent(gameId: $game->id, roundNumber: $game->current_round, gameStateEnum: GameStateEnum::IN_PROGRESS_RESULT);
         return $game;

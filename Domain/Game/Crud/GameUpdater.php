@@ -41,6 +41,11 @@ final readonly class GameUpdater {
         return $this;
     }
 
+    public function setRoundResultDurationSeconds(int $round_result_duration_seconds): self {
+        $this->model->round_result_duration_seconds = $round_result_duration_seconds;
+        return $this;
+    }
+
     public function setNumberOfRounds(int $number_of_rounds): self {
         $this->model->number_of_rounds = $number_of_rounds;
         return $this;
