@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'default' => env('REVERB_SERVER', 'reverb'),
+    'default' => 'reverb',
 
     /*
     |--------------------------------------------------------------------------
@@ -17,7 +17,7 @@ return [
     'servers' => [
         'reverb' => [
             'host' => env('REVERB_SERVER_HOST', '0.0.0.0'),
-            'port' => env('REVERB_SERVER_PORT', 8585),
+            'port' => 8585,
             'hostname' => 'socket.gman.bot',
             'options' => [
                 'tls' => [],
@@ -35,8 +35,8 @@ return [
                     'database' => env('REDIS_DB', '0'),
                 ],
             ],
-            'pulse_ingest_interval' => env('REVERB_PULSE_INGEST_INTERVAL', 15),
-            'telescope_ingest_interval' => env('REVERB_TELESCOPE_INGEST_INTERVAL', 15),
+            'pulse_ingest_interval' => 15,
+            'telescope_ingest_interval' => 15,
         ],
     ],
 
@@ -59,10 +59,10 @@ return [
                 'secret' => env('REVERB_APP_SECRET'),
                 'app_id' => env('REVERB_APP_ID'),
                 'options' => [
-                    'host' => env('REVERB_HOST'),
-                    'port' => env('REVERB_PORT', 443),
-                    'scheme' => env('REVERB_SCHEME', 'https'),
-                    'useTLS' => env('REVERB_SCHEME', 'https') === 'https',
+                    'host' => 'localhost',
+                    'port' => 8585,
+                    'scheme' => 'http',
+                    'useTLS' => false,
                 ],
                 'allowed_origins' => ['*'],
                 'ping_interval' => env('REVERB_APP_PING_INTERVAL', 60),

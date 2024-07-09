@@ -28,7 +28,7 @@
             if (value <= 0) {
                 document.getElementById("countdown").setAttribute("style", "display: none;");
             }
-            if (value < -5) {
+            if (value < -4) {
                 location.reload();
             }
         }

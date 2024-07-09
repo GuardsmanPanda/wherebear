@@ -14,11 +14,7 @@
          hx-trigger="load" hx-target="this"></div>
 </div>
 <script>
-    pusher = new Pusher('6csm0edgczin2onq92lm', {
-        cluster: 'eu',
-        wsHost: 'socket.gman.bot',
-        wssPort: 443,
-    });
+    pusher = new Pusher('6csm0edgczin2onq92lm', window.pusher_data);
     channel = pusher.subscribe('game.{{$game->id}}');
     channel.bind('player.update', function (data) {
         window.htmx.ajax('GET', '/game/{{$game->id}}/lobby/player-list', '#player-list');

@@ -5,11 +5,7 @@
 </div>
 <script>
     const currentRound = {{ $game->current_round }};
-    pusher = new Pusher('6csm0edgczin2onq92lm', {
-        cluster: 'eu',
-        wsHost: 'socket.gman.bot',
-        wsPort: 443,
-    });
+    pusher = new Pusher('6csm0edgczin2onq92lm', window.pusher_data);
     channel = pusher.subscribe('game.{{$game->id}}');
     channel.bind('round.event', function (data) {
         if (data.GameStateEnum === '{{GameStateEnum::IN_PROGRESS_CALCULATING->value}}') {

@@ -7,8 +7,16 @@ import L from "leaflet";
 require('leaflet.markercluster');
 
 window.htmx = require('htmx.org/dist/htmx.cjs.js');
-window.pusher = Pusher
+window.pusher = Pusher;
 window.tippy = tippy;
+
+window.pusher_data = {
+    cluster: 'eu',
+    wsHost: 'socket.gman.bot',
+    wsPort: 80,
+    wssPort: 443,
+    enabledTransports: ['ws', 'wss']
+}
 
 const tippyFunction = function (el) {
     const inDialog = document.getElementById('dialog').contains(el);
