@@ -2,11 +2,9 @@
 
 namespace Infrastructure\Console\Kernel;
 
-use Domain\Game\Broadcast\GameBroadcast;
 use Domain\Game\Crud\GameRoundDeleter;
 use Domain\Game\Crud\GameUpdater;
 use Domain\Game\Enum\GameStateEnum;
-use Domain\Game\Service\GameService;
 use Domain\Map\Command\MapMarkerSynchronizeCommand;
 use Domain\Panorama\Command\PanoramaImportCommand;
 use Domain\Panorama\Command\PanoramaScraperCommand;
@@ -57,8 +55,7 @@ final class ConsoleKernel extends Kernel {
         });
 
         Artisan::command('zz', function () {
-            $search_path = DB::selectOne("show search_path ;");
-            GameBroadcast::roundEvent(gameId: '5e83a45b-d53e-4793-b514-b404eb42827f', roundNumber: 0, gameStateEnum: GameStateEnum::WAITING_FOR_PLAYERS);
+
         });
     }
 }

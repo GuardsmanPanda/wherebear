@@ -4,9 +4,11 @@ import tippy from 'tippy.js';
 
 require('pannellum/build/pannellum.js');
 import L from "leaflet";
+
 require('leaflet.markercluster');
 
 window.htmx = require('htmx.org/dist/htmx.cjs.js');
+window.confetti = require('canvas-confetti');
 window.pusher = Pusher;
 window.tippy = tippy;
 
@@ -32,21 +34,6 @@ const tippyFunction = function (el) {
 
 htmx.config.historyCacheSize = 0;
 window.onload = () => {
-    document.querySelectorAll('[tippy]').forEach(tippyFunction);
-
-    // ----------------------------------------------------------------------------------
-    // Add event listener to open and close the dialog element.
-    // ----------------------------------------------------------------------------------
-    document.body.addEventListener('dialog:open', function (evt) {
-        const title = document.getElementById('dialog-title');
-        title.innerHTML = decodeURIComponent(evt.detail.value);
-        const el = document.getElementById('dialog');
-        if (!el.hasAttribute('open')) {
-            el.showModal();
-        }
-    });
-
-
     // ----------------------------------------------------------------------------------
     // Check to see if an element with id 'dialog' doesn't exist, and inject it if it doesn't.
     // ----------------------------------------------------------------------------------
@@ -64,6 +51,20 @@ window.onload = () => {
             <div id="dialog-content" style="padding: 0.75rem 1.25rem 0.75rem 1.25rem;"></div>
         </dialog>
     `);
+
+        // ----------------------------------------------------------------------------------
+        // Add event listener to open and close the dialog element.
+        // ----------------------------------------------------------------------------------
+        document.body.addEventListener('dialog:open', function (evt) {
+            const title = document.getElementById('dialog-title');
+            title.innerHTML = decodeURIComponent(evt.detail.value);
+            const el = document.getElementById('dialog');
+            if (!el.hasAttribute('open')) {
+                el.showModal();
+            }
+        });
+
+        document.querySelectorAll('[tippy]').forEach(tippyFunction);
     }
 
     window.notify = new Notyf({

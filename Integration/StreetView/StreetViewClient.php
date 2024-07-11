@@ -4,6 +4,7 @@ namespace Integration\StreetView;
 
 use Domain\Panorama\Crud\PanoramaCreator;
 use Domain\Panorama\Model\Panorama;
+use GuardsmanPanda\Larabear\Integration\ExternalApi\Client\BearExternalApiClient;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 
@@ -31,7 +32,8 @@ final class StreetViewClient {
             'location' => "$latitude,$longitude",
             'key' => config('bear.street_view_key'),
         ];
-        $resp = Http::get(url: "https://maps.googleapis.com/maps/api/streetview/metadata", query: $query);
+        $client = BearExternalApiClient::fromSlug(slug: 'google-street-view-static-api');
+        $resp = $client->request(path: 'metadata', query: $query);
         if ($resp->failed()) {
             throw new RuntimeException("Failed street view request: {$resp->status()}");
         }

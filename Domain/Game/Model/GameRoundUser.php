@@ -68,7 +68,7 @@ use RuntimeException;
  * @property string|null $approximate_country_iso_2_code
  * @property ArrayObject|null $nominatim_json
  *
- * @property GameUser $game
+ * @property GameRound $game
  * @property GameUser $user
  * @property BearCountry|null $approximateCountryIso2Code
  * @property BearCountry|null $correctCountryIso2Code
@@ -93,11 +93,11 @@ final class GameRoundUser extends Model {
     ];
 
     public function game(): BelongsTo {
-        return $this->belongsTo(related: GameUser::class, foreignKey: 'game_id', ownerKey: 'user_id');
+        return $this->belongsTo(related: GameRound::class, foreignKey: 'game_id', ownerKey: 'round_number');
     }
 
     public function user(): BelongsTo {
-        return $this->belongsTo(related: GameUser::class, foreignKey: 'user_id', ownerKey: 'game_id');
+        return $this->belongsTo(related: GameUser::class, foreignKey: 'user_id', ownerKey: 'user_id');
     }
 
     public function approximateCountryIso2Code(): BelongsTo|null {
@@ -109,7 +109,7 @@ final class GameRoundUser extends Model {
     }
 
     public function roundNumber(): BelongsTo {
-        return $this->belongsTo(related: GameRound::class, foreignKey: 'round_number', ownerKey: 'round_number');
+        return $this->belongsTo(related: GameRound::class, foreignKey: 'round_number', ownerKey: 'game_id');
     }
 
     protected $guarded = ['game_id', 'round_number', 'user_id', 'updated_at', 'created_at', 'deleted_at'];

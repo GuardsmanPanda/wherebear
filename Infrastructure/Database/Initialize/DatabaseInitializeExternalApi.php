@@ -27,6 +27,20 @@ final class DatabaseInitializeExternalApi  {
                     'User-Agent' => 'WhereBear (guardsmanpanda@gmail.com)'
                 ])
             ],
+            [
+                'id' => 'ce41bedb-0879-4e03-b5ce-c9473515524e',
+                'external_api_slug' => 'google-map-tiles-api',
+                'external_api_description' => 'Google Maps used for map tiles',
+                'external_api_type' => BearExternalApiTypeEnum::X_GOOG_API_KEY,
+                'external_api_base_url' => 'https://tile.googleapis.com/'
+            ],
+            [
+                'id' => '29494542-70bf-49c2-885b-e405ce8ca492',
+                'external_api_slug' => 'google-street-view-static-api',
+                'external_api_description' => 'Google Street View used for street view images',
+                'external_api_type' => BearExternalApiTypeEnum::X_GOOG_API_KEY,
+                'external_api_base_url' => 'https://maps.googleapis.com/maps/api/streetview/'
+            ],
         ];
 
         foreach ($external_api as $api) {

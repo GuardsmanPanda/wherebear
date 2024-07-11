@@ -56,4 +56,10 @@
         @endforeach
     </div>
 </div>
-
+<script>
+    @if($user->id === $players[0]->user_id)
+    window.confetti({
+        particleCount: 150,
+    });
+    @endif
+</script>

@@ -56,7 +56,8 @@ final class GameResultController extends Controller {
             'game' => $game,
             'players' => DB::select(query: <<<SQL
                 SELECT
-                    u.user_display_name, u.user_country_iso2_code, u.map_marker_file_name, bc.country_name,
+                    u.id as user_id, u.user_display_name, u.user_country_iso2_code, u.map_marker_file_name,
+                    bc.country_name,
                     gu.game_points,
                     RANK() OVER (ORDER BY gu.game_points DESC) as rank
                 FROM game_user gu
