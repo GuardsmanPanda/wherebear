@@ -2,6 +2,9 @@
 
 namespace Domain\Game\Enum;
 
+use Domain\Game\Crud\GameStateCreator;
+use Domain\Game\Service\GameStateService;
+
 enum GameStateEnum: string {
     case WAITING_FOR_PLAYERS = 'WAITING_FOR_PLAYERS';
     case QUEUED = 'QUEUED';
@@ -21,5 +24,15 @@ enum GameStateEnum: string {
 
     public function isFinished(): bool {
         return $this === self::FINISHED;
+    }
+
+
+    public static function syncToDatabase(): void {
+        foreach (GameStateEnum::cases() as $enum) {
+            if (GameStateService::gameStateExists(game_state_enum: $enum->value)) {
+                continue;
+            }
+            GameStateCreator::create(game_state_enum: $enum->value);
+        }
     }
 }

@@ -2,10 +2,11 @@
 
 namespace Domain\Map\Service;
 
+use Domain\Map\Enum\MapStyleEnum;
 use Domain\Map\Model\MapStyle;
 
 final class MapStyleService {
-    public static function mapStyleExists(string $mapStyleEnum): bool {
-        return MapStyle::find(id: $mapStyleEnum, columns: ['map_style_enum']) !== null;
+    public static function mapStyleExists(MapStyleEnum $mapStyle): bool {
+        return MapStyle::find(id: $mapStyle->value, columns: ['map_style_enum']) !== null;
     }
 }

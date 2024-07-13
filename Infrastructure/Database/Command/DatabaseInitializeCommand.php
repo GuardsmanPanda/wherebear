@@ -2,32 +2,33 @@
 
 namespace Infrastructure\Database\Command;
 
+use Domain\Game\Enum\GamePublicStatusEnum;
+use Domain\Game\Enum\GameStateEnum;
+use Domain\Map\Enum\MapStyleEnum;
+use Domain\Panorama\Enum\TagEnum;
+use Domain\User\Enum\BearPermissionEnum;
+use Domain\User\Enum\BearRoleEnum;
+use Domain\User\Service\WhereBearRolePermissionService;
 use GuardsmanPanda\Larabear\Infrastructure\Console\Service\BearTransactionCommand;
+use Infrastructure\App\Enum\BearExternalApiEnum;
 use Infrastructure\Database\Initialize\DatabaseInitializeBearCountry;
-use Infrastructure\Database\Initialize\DatabaseInitializeBearPermission;
-use Infrastructure\Database\Initialize\DatabaseInitializeBearRole;
 use Infrastructure\Database\Initialize\DatabaseInitializeBearRolePermission;
-use Infrastructure\Database\Initialize\DatabaseInitializeExternalApi;
-use Infrastructure\Database\Initialize\DatabaseInitializeGamePublicStatusEnum;
-use Infrastructure\Database\Initialize\DatabaseInitializeGameState;
-use Infrastructure\Database\Initialize\DatabaseInitializeMapStyle;
-use Infrastructure\Database\Initialize\DatabaseInitializeTag;
 
 final class DatabaseInitializeCommand extends BearTransactionCommand {
     protected $signature = 'database:initialize';
     protected $description = 'Initialize the database.';
 
     protected function handleInTransaction(): void {
-        DatabaseInitializeBearPermission::initialize();
-        DatabaseInitializeBearRole::initialize();
+        BearPermissionEnum::syncToDatabase();
+        BearRoleEnum::syncToDatabase();
         DatabaseInitializeBearCountry::initialize();
-        DatabaseInitializeExternalApi::initialize();
-        DatabaseInitializeGamePublicStatusEnum::initialize();
-        DatabaseInitializeGameState::initialize();
-        DatabaseInitializeTag::initialize();
+        BearExternalApiEnum::syncToDatabase();
+        GamePublicStatusEnum::syncToDatabase();
+        GameStateEnum::syncToDatabase();
+        TagEnum::syncToDatabase();
 
-        DatabaseInitializeMapStyle::initialize(); // Requires External API.
-        DatabaseInitializeBearRolePermission::initialize(); // Requires Bear Role and Bear Permission.
+        MapStyleEnum::syncToDatabase(); // Requires BearExternalApiEnum.
+        WhereBearRolePermissionService::syncRolePermissionsToDatabase(); // Requires Bear Role and Bear Permission.
 
         $this->call(command: 'map:marker-synchronize');
     }
