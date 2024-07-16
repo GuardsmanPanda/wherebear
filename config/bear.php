@@ -20,7 +20,6 @@ return [
         'app_css' => file_get_contents(filename: storage_path(path: 'app/app-css-path.txt')),
         'app_js' => file_get_contents(filename: storage_path(path: 'app/app-js-path.txt')),
     ],
-    'street_view_key' => env(key: 'STREETVIEW_KEY'),
     //------------------------------------------------------------------------------------------------------------------
     // Config for generating eloquent models, the "eloquent-models" array has en entry for each connection that wants models generated,as defined in config/database.php
     //------------------------------------------------------------------------------------------------------------------

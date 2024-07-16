@@ -2,25 +2,21 @@
 
 namespace Domain\Map\Crud;
 
+use Domain\Map\Enum\MapStyleEnum;
 use Domain\Map\Model\MapStyle;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 
 final class MapStyleCreator {
-    public static function create(
-        string $map_style_enum,
-        string $map_style_name,
-        string $map_style_url,
-        string $external_api_id
-    ): MapStyle {
+    public static function create(MapStyleEnum $enum): MapStyle {
         BearDatabaseService::mustBeInTransaction();
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST']);
 
         $model = new MapStyle();
 
-        $model->map_style_enum = $map_style_enum;
-        $model->map_style_name = $map_style_name;
-        $model->map_style_url = $map_style_url;
-        $model->external_api_id = $external_api_id;
+        $model->map_style_enum = $enum->value;
+        $model->map_style_name = $enum->getMapStyleName();
+        $model->map_style_url = $enum->getRemoteSystemPath();
+        $model->external_api_id = $enum->getExternalApi()->getId();
 
         $model->save();
         return $model;

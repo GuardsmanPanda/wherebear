@@ -5,7 +5,6 @@ namespace Infrastructure\Console\Kernel;
 use Domain\Game\Crud\GameRoundDeleter;
 use Domain\Game\Crud\GameUpdater;
 use Domain\Game\Enum\GameStateEnum;
-use Domain\Map\Command\MapMarkerSynchronizeCommand;
 use Domain\Panorama\Command\PanoramaImportCommand;
 use Domain\Panorama\Command\PanoramaScraperCommand;
 use Illuminate\Console\Scheduling\Schedule;
@@ -19,7 +18,6 @@ final class ConsoleKernel extends Kernel {
     /** @var array<int, string> $commands @phpstan-ignore-next-line */
     protected $commands = [
         DatabaseInitializeCommand::class,
-        MapMarkerSynchronizeCommand::class,
         PanoramaScraperCommand::class,
         PanoramaImportCommand::class,
     ];

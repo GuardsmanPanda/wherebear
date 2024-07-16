@@ -14,4 +14,9 @@ enum UserLevelEnum: int {
             self::LEVEL_2 => 20,
         };
     }
+
+
+    public static function syncToDatabase(): void {
+
+    }
 }

@@ -26,10 +26,7 @@ enum TagEnum: string {
             if (TagService::tagExists(tag_enum: $enum->value)) {
                 continue;
             }
-            TagCreator::create(
-                tag_enum: $enum->value,
-                tag_description: $enum->description()
-            );
+            TagCreator::create(tag_enum: $enum);
         }
     }
 }

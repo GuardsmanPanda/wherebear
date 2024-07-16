@@ -963,12 +963,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/GuardsmanPanda/larabear.git",
-                "reference": "b64226a91f3906cb8c872ab9b75ead1ca4bd1de0"
+                "reference": "4fd6f67b26de374c4f3c14e242234962f1e30be8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/GuardsmanPanda/larabear/zipball/b64226a91f3906cb8c872ab9b75ead1ca4bd1de0",
-                "reference": "b64226a91f3906cb8c872ab9b75ead1ca4bd1de0",
+                "url": "https://api.github.com/repos/GuardsmanPanda/larabear/zipball/4fd6f67b26de374c4f3c14e242234962f1e30be8",
+                "reference": "4fd6f67b26de374c4f3c14e242234962f1e30be8",
                 "shasum": ""
             },
             "require": {
@@ -1016,7 +1016,7 @@
                 "issues": "https://github.com/GuardsmanPanda/larabear/issues",
                 "source": "https://github.com/GuardsmanPanda/larabear/tree/main"
             },
-            "time": "2024-07-12T21:20:10+00:00"
+            "time": "2024-07-15T23:17:17+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -1431,16 +1431,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v11.15.0",
+            "version": "v11.16.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "ba85f1c019bed59b3c736c9c4502805efd0ba84b"
+                "reference": "bd4808aaf103ccb5cb4b00bcee46140c070c0ec4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/ba85f1c019bed59b3c736c9c4502805efd0ba84b",
-                "reference": "ba85f1c019bed59b3c736c9c4502805efd0ba84b",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/bd4808aaf103ccb5cb4b00bcee46140c070c0ec4",
+                "reference": "bd4808aaf103ccb5cb4b00bcee46140c070c0ec4",
                 "shasum": ""
             },
             "require": {
@@ -1633,7 +1633,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2024-07-09T15:38:12+00:00"
+            "time": "2024-07-16T14:33:07+00:00"
         },
         {
             "name": "laravel/prompts",
@@ -7060,12 +7060,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "c31e886d98723c528ab99e920e7903ccb7391bd0"
+                "reference": "d44cb505c9515db5ff905ec510d69a0f80b366a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/c31e886d98723c528ab99e920e7903ccb7391bd0",
-                "reference": "c31e886d98723c528ab99e920e7903ccb7391bd0",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/d44cb505c9515db5ff905ec510d69a0f80b366a2",
+                "reference": "d44cb505c9515db5ff905ec510d69a0f80b366a2",
                 "shasum": ""
             },
             "conflict": {
@@ -7703,7 +7703,7 @@
                 "topthink/framework": "<6.0.17|>=6.1,<6.1.5|>=8,<8.0.4",
                 "topthink/think": "<=6.1.1",
                 "topthink/thinkphp": "<=3.2.3",
-                "torrentpier/torrentpier": "<=2.4.1",
+                "torrentpier/torrentpier": "<=2.4.3",
                 "tpwd/ke_search": "<4.0.3|>=4.1,<4.6.6|>=5,<5.0.2",
                 "tribalsystems/zenario": "<9.5.60602",
                 "truckersmp/phpwhois": "<=4.3.1",
@@ -7745,7 +7745,8 @@
                 "wallabag/tcpdf": "<6.2.22",
                 "wallabag/wallabag": "<2.6.7",
                 "wanglelecc/laracms": "<=1.0.3",
-                "web-auth/webauthn-framework": ">=3.3,<3.3.4",
+                "web-auth/webauthn-framework": ">=3.3,<3.3.4|>=4.5,<4.9",
+                "web-auth/webauthn-lib": ">=4.5,<4.9",
                 "web-feet/coastercms": "==5.5",
                 "webbuilders-group/silverstripe-kapost-bridge": "<0.4",
                 "webcoast/deferred-image-processing": "<1.0.2",
@@ -7861,7 +7862,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-07-11T20:05:10+00:00"
+            "time": "2024-07-15T18:05:53+00:00"
         },
         {
             "name": "thecodingmachine/phpstan-strict-rules",

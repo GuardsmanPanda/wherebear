@@ -30,7 +30,6 @@ final class StreetViewClient {
     private static function queryStreetView(float $latitude, float $longitude): array {
         $query = [
             'location' => "$latitude,$longitude",
-            'key' => config('bear.street_view_key'),
         ];
         $client = BearExternalApiClient::fromSlug(slug: 'google-street-view-static-api');
         $resp = $client->request(path: 'metadata', query: $query);

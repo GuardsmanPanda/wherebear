@@ -17,7 +17,7 @@ final class PanoramaScraperCommand extends BearTransactionCommand {
             if ($panorama === null) {
                 continue;
             }
-            $this->info("Created panorama $panorama->id");
+            $this->info(string: "Created panorama $panorama->id");
             break;
         }
     }

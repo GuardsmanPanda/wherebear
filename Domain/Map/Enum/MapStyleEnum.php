@@ -4,8 +4,10 @@ namespace Domain\Map\Enum;
 
 use Domain\Map\Crud\MapStyleCreator;
 use Domain\Map\Service\MapStyleService;
+use Infrastructure\App\Enum\BearExternalApiEnum;
 
 enum MapStyleEnum: string {
+    case DEFAULT_UNCHANGED = 'DEFAULT_UNCHANGED';
     case OSM = 'OSM';
     //case STREETS = 'STREETS';
     //case GOOGLE_STREET_VIEW = 'GOOGLE_STREET_VIEW';
@@ -20,21 +22,21 @@ enum MapStyleEnum: string {
 
     public function getMapStyleName(): string {
         return match ($this) {
-            self::OSM => 'OpenStreetMap',
+            self::DEFAULT_UNCHANGED, self::OSM => 'OpenStreetMap',
         };
     }
 
 
     public function getRemoteSystemPath(): string {
         return match ($this) {
-            self::OSM => '{z}/{x}/{y}.png',
+            self::DEFAULT_UNCHANGED, self::OSM => '{z}/{x}/{y}.png',
         };
     }
 
 
-    public function getExternalApiId(): string {
+    public function getExternalApi(): BearExternalApiEnum {
         return match ($this) {
-            self::OSM => 'e9f8e665-ca90-4f3d-b7f4-d9a811eb4754',
+            self::DEFAULT_UNCHANGED, self::OSM => BearExternalApiEnum::OPENSTREETMAP,
         };
     }
 
@@ -43,6 +45,7 @@ enum MapStyleEnum: string {
         return match ($this) {
             default => 0,
             self::OSM => 1,
+            self::DEFAULT_UNCHANGED => 99999,
         };
     }
 
@@ -52,12 +55,7 @@ enum MapStyleEnum: string {
             if (MapStyleService::mapStyleExists(mapStyle: $style)) {
                 continue;
             }
-            MapStyleCreator::create(
-                map_style_enum: $style->value,
-                map_style_name: $style->getMapStyleName(),
-                map_style_url: $style->getRemoteSystemPath(),
-                external_api_id: $style->getExternalApiId()
-            );
+            MapStyleCreator::create(enum: $style);
         }
     }
 }

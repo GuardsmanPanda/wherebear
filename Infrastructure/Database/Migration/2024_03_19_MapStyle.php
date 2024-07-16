@@ -13,8 +13,10 @@ return new class extends Migration {
             $table->text(column: 'map_style_name');
             $table->text(column: 'map_style_url');
             $table->uuid(column: 'external_api_id')->unique();
+            $table->integer(column: 'user_level_requirement');
             $table->timestampTz(column: 'created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->foreign(columns: 'external_api_id')->references('id')->on('bear_external_api');
+            $table->foreign(columns: 'user_level_requirement')->references('id')->on('user_level');
         });
     }
 
