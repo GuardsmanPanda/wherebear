@@ -4,6 +4,7 @@ namespace Domain\Game\Model;
 
 use Carbon\CarbonInterface;
 use Closure;
+use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearUser;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearLogDatabaseChanges;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Model\BearCountry;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -64,12 +65,12 @@ use RuntimeException;
  * @property string $location
  * @property string $created_at
  * @property string $updated_at
- * @property string|null $correct_country_iso_2_code
- * @property string|null $approximate_country_iso_2_code
+ * @property string|null $correct_country_iso2_code
+ * @property string|null $approximate_country_iso2_code
  * @property ArrayObject|null $nominatim_json
  *
- * @property GameRound $game
- * @property GameUser $user
+ * @property GameUser $game
+ * @property BearUser $user
  * @property BearCountry|null $approximateCountryIso2Code
  * @property BearCountry|null $correctCountryIso2Code
  * @property GameRound $roundNumber
@@ -93,19 +94,19 @@ final class GameRoundUser extends Model {
     ];
 
     public function game(): BelongsTo {
-        return $this->belongsTo(related: GameRound::class, foreignKey: 'game_id', ownerKey: 'round_number');
+        return $this->belongsTo(related: GameUser::class, foreignKey: 'game_id', ownerKey: 'user_id');
     }
 
     public function user(): BelongsTo {
-        return $this->belongsTo(related: GameUser::class, foreignKey: 'user_id', ownerKey: 'user_id');
+        return $this->belongsTo(related: BearUser::class, foreignKey: 'user_id', ownerKey: 'id');
     }
 
     public function approximateCountryIso2Code(): BelongsTo|null {
-        return $this->belongsTo(related: BearCountry::class, foreignKey: 'approximate_country_iso_2_code', ownerKey: 'country_iso2_code');
+        return $this->belongsTo(related: BearCountry::class, foreignKey: 'approximate_country_iso2_code', ownerKey: 'country_iso2_code');
     }
 
     public function correctCountryIso2Code(): BelongsTo|null {
-        return $this->belongsTo(related: BearCountry::class, foreignKey: 'correct_country_iso_2_code', ownerKey: 'country_iso2_code');
+        return $this->belongsTo(related: BearCountry::class, foreignKey: 'correct_country_iso2_code', ownerKey: 'country_iso2_code');
     }
 
     public function roundNumber(): BelongsTo {

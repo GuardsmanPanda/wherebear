@@ -32,7 +32,7 @@ final class GamePlayController extends Controller {
             FROM game g
             LEFT JOIN game_round gr ON gr.game_id = g.id AND gr.round_number = g.current_round
             LEFT JOIN panorama p ON p.id = gr.panorama_id
-            LEFT JOIN bear_country bc ON bc.country_iso2_code = p.country_iso_2_code
+            LEFT JOIN bear_country bc ON bc.country_iso2_code = p.country_iso2_code
             WHERE g.id = ?
         ", bindings: [$gameId]);
 
@@ -67,7 +67,7 @@ final class GamePlayController extends Controller {
                     gru.distance_meters, gru.round_points, gru.round_rank,
                     ST_Y(gru.location::geometry) as lat,
                     ST_X(gru.location::geometry) as lng,
-                    p.country_iso_2_code = gru.approximate_country_iso_2_code as country_match
+                    p.country_iso2_code = gru.approximate_country_iso2_code as country_match
                 FROM game_round_user gru
                 LEFT JOIN bear_user bu ON bu.id = gru.user_id
                 LEFT JOIN bear_country bc ON bc.country_iso2_code = bu.user_country_iso2_code
@@ -85,7 +85,7 @@ final class GamePlayController extends Controller {
                 FROM game_round gr
                 LEFT JOIN game g ON g.id = gr.game_id
                 LEFT JOIN panorama p ON p.id = gr.panorama_id
-                LEFT JOIN bear_country bc ON bc.country_iso2_code = p.country_iso_2_code
+                LEFT JOIN bear_country bc ON bc.country_iso2_code = p.country_iso2_code
                 WHERE 
                     gr.game_id = ?
                     AND (gr.round_number < g.current_round OR (gr.round_number = g.current_round AND g.game_state_enum = 'IN_PROGRESS_RESULT'))

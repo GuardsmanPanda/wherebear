@@ -10,7 +10,7 @@ enum GamePublicStatusEnum: string {
     case GOOGLE = 'GOOGLE';
     case PRIVATE = 'PRIVATE';
 
-    public function description(): string {
+    public function getDescription(): string {
         return match ($this) {
             self::PUBLIC => 'Public Game, anyone can join.',
             self::GOOGLE => 'Google Game, only players with a Google account can join.',
@@ -24,10 +24,7 @@ enum GamePublicStatusEnum: string {
             if (GamePublicStatusService::gamePublicStatusExists(game_public_status_enum: $enum->value)) {
                 continue;
             }
-            GamePublicStatusCreator::create(
-                game_public_status_enum: $enum->value,
-                game_public_status_description: $enum->description()
-            );
+            GamePublicStatusCreator::create(enum: $enum);
         }
     }
 }

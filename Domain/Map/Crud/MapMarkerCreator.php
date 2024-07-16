@@ -15,6 +15,7 @@ final class MapMarkerCreator {
 
         $model->map_marker_enum = $enum->value;
         $model->map_marker_file_name = $enum->getMapMarkerFileName();
+        $model->user_level_requirement = $enum->getUserLevelRequirement();
         $model->map_marker_name = $enum->getMapMarkerName();
         $model->map_marker_group = $enum->getMapMarkerGroup();
         $model->height_rem = $enum->getMapMarkerHeightRem();

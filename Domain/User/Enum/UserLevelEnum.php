@@ -2,21 +2,43 @@
 
 namespace Domain\User\Enum;
 
-enum UserLevelEnum: int {
-    case LEVEL_0 = 0;
-    case LEVEL_1 = 1;
-    case LEVEL_2 = 2;
+use Domain\User\Crud\UserLevelCreator;
+use Domain\User\Model\UserLevel;
+use Domain\User\Service\UserLevelService;
 
-    public function getLevelXPRequirement(): int {
+enum UserLevelEnum: int {
+    case L0 = 0;
+    case L1 = 1;
+    case L2 = 2;
+    case L3 = 3;
+    case L4 = 4;
+    case L5 = 5;
+
+    public function getLevelExperienceRequirement(): int {
         return match ($this) {
-            self::LEVEL_0 => 0,
-            self::LEVEL_1 => 1,
-            self::LEVEL_2 => 20,
+            self::L0 => 0,
+            self::L1 => 1,
+            self::L2 => 20,
+            self::L3 => 40,
+            self::L4 => 60,
+            self::L5 => 85,
+        };
+    }
+
+    public function getFeatureUnlock(): String|null {
+        return match ($this) {
+            self::L5 => 'Panorama Rating',
+            default => null,
         };
     }
 
 
     public static function syncToDatabase(): void {
-
+        foreach (UserLevelEnum::cases() as $level) {
+            if (UserLevelService::userLevelExists(id: $level->value)) {
+                continue;
+            }
+            UserLevelCreator::create(enum: $level);
+        }
     }
 }

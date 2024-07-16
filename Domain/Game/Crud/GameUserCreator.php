@@ -3,7 +3,6 @@
 namespace Domain\Game\Crud;
 
 use Domain\Game\Model\GameUser;
-use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 
 final class GameUserCreator {
     public static function create(

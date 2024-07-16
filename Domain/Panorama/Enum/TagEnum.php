@@ -11,7 +11,7 @@ enum TagEnum: string {
     case FUNNY = 'FUNNY';
     case GOOGLE = 'GOOGLE';
 
-    public function description(): string {
+    public function getDescription(): string {
         return match ($this) {
             self::AWESOME => 'Great Panorama, S-Tier.',
             self::FUNNY => 'At least amusing.',

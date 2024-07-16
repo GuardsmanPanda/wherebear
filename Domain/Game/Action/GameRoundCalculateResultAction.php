@@ -110,22 +110,22 @@ final class GameRoundCalculateResultAction {
                 distance_meters = ST_distance(gru.location, (
                     SELECT p.panorama_location FROM panorama p WHERE p.id = ?
                 )),
-                approximate_country_iso_2_code = (
-                    SELECT close.country_iso_2_code
+                approximate_country_iso2_code = (
+                    SELECT close.country_iso2_code
                     FROM ((
                         SELECT 
-                            p2.country_iso_2_code,
+                            p2.country_iso2_code,
                             ST_distance(gru.location, p2.panorama_location) as distance
                         FROM panorama p2
-                        WHERE p2.country_iso_2_code IS NOT NULL AND p2.country_iso_2_code != 'XX'
+                        WHERE p2.country_iso2_code IS NOT NULL AND p2.country_iso2_code != 'XX'
                         ORDER BY gru.location <-> p2.panorama_location
                         LIMIT 1
                     ) UNION (
                         SELECT 
-                            r3.correct_country_iso_2_code,
+                            r3.correct_country_iso2_code,
                             ST_distance(gru.location, r3.location) as distance
                         FROM game_round_user r3
-                        WHERE r3.correct_country_iso_2_code IS NOT NULL AND r3.correct_country_iso_2_code != 'XX'
+                        WHERE r3.correct_country_iso2_code IS NOT NULL AND r3.correct_country_iso2_code != 'XX'
                         ORDER BY gru.location <-> r3.location
                         LIMIT 1
                     ) 
@@ -134,17 +134,17 @@ final class GameRoundCalculateResultAction {
                 approximate_country_distance_meters = (
                     SELECT close.distance  FROM ((
                         SELECT 
-                            p2.country_iso_2_code,
+                            p2.country_iso2_code,
                             ST_distance(gru.location, p2.panorama_location) as distance FROM panorama p2
-                        WHERE p2.country_iso_2_code IS NOT NULL
+                        WHERE p2.country_iso2_code IS NOT NULL
                         ORDER BY gru.location <-> p2.panorama_location
                         LIMIT 1
                     ) UNION (
                         SELECT 
-                            r3.correct_country_iso_2_code,
+                            r3.correct_country_iso2_code,
                             ST_distance(gru.location, r3.location) as distance
                         FROM game_round_user r3
-                        WHERE r3.correct_country_iso_2_code IS NOT NULL
+                        WHERE r3.correct_country_iso2_code IS NOT NULL
                         ORDER BY gru.location <-> r3.location
                         LIMIT 1
                         ) 
@@ -157,7 +157,7 @@ final class GameRoundCalculateResultAction {
                 UPDATE game_round_user gru SET
                     round_points = (100 * pow(0.90, rr_rank.round_rank - 1) + 
                         CASE 
-                            WHEN gru.approximate_country_iso_2_code = p.country_iso_2_code THEN 20 
+                            WHEN gru.approximate_country_iso2_code = p.country_iso2_code THEN 20 
                             ELSE 0
                         END) / rr_rank.number_of_rounds
                 FROM 

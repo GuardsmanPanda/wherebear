@@ -37,7 +37,7 @@ enum BearExternalApiEnum: string {
     public function getType(): BearExternalApiTypeEnum {
         return match ($this) {
             self::OPENSTREETMAP, self::NOMINATIM => BearExternalApiTypeEnum::NO_AUTH,
-            self::GOOGLE_MAP_TILES_API, self::GOOGLE_STREET_VIEW_STATIC_API => BearExternalApiTypeEnum::X_GOOG_API_KEY,
+            self::GOOGLE_MAP_TILES_API, self::GOOGLE_STREET_VIEW_STATIC_API => BearExternalApiTypeEnum::KEY_QUERY,
             self::MAPBOX => BearExternalApiTypeEnum::ACCESS_TOKEN_QUERY,
         };
     }

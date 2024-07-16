@@ -133,7 +133,7 @@ final class GameLobbyController extends Controller {
     public function updateUser(string $gameId): Response|View {
         $updater = WhereBearUserUpdater::fromId(id: BearAuthService::getUserIdOrFail());
         if (Req::has(key: 'map_marker_file_name')) {
-            $updater->setMapMarkerFileName(map_marker_file_name: Req::getStringOrDefault(key: 'map_marker_file_name'));
+            $updater->setMapMarkerFileName(map_marker_enum: Req::getStringOrDefault(key: 'map_marker_file_name'));
         }
         if (Req::has(key: 'map_style_enum')) {
             $updater->setMapStyleEnum(map_style_enum: Req::getStringOrDefault(key: 'map_style_enum'));

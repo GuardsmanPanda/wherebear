@@ -7,8 +7,8 @@ use Domain\User\Model\WhereBearUser;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 use Illuminate\Database\Eloquent\Casts\ArrayObject;
 
-final class WhereBearUserUpdater {
-    public function __construct(private readonly WhereBearUser $model) {
+final readonly class WhereBearUserUpdater {
+    public function __construct(private WhereBearUser $model) {
         BearDatabaseService::mustBeInTransaction();
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST', 'PATCH']);
     }
@@ -33,8 +33,8 @@ final class WhereBearUserUpdater {
         return $this;
     }
 
-    public function setMapMarkerFileName(string $map_marker_file_name): self {
-        $this->model->map_marker_file_name = $map_marker_file_name;
+    public function setMapMarkerFileName(string $map_marker_enum): self {
+        $this->model->map_marker_enum = $map_marker_enum;
         return $this;
     }
 

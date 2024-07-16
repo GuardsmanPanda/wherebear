@@ -11,8 +11,8 @@ return new class extends Migration {
         Schema::create(table: 'map_style', callback: static function (Blueprint $table): void {
             $table->text(column: 'map_style_enum')->primary();
             $table->text(column: 'map_style_name');
-            $table->text(column: 'map_style_url');
-            $table->uuid(column: 'external_api_id')->unique();
+            $table->uuid(column: 'external_api_id');
+            $table->text(column: 'external_path');
             $table->integer(column: 'user_level_requirement');
             $table->timestampTz(column: 'created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->foreign(columns: 'external_api_id')->references('id')->on('bear_external_api');

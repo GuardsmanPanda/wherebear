@@ -6,35 +6,36 @@ use Domain\Map\Crud\MapMarkerCreator;
 use Domain\Map\Service\MapMarkerService;
 
 enum MapMarkerEnum: string {
-    case DEFAULT_UNCHANGED = 'DEFAULT_UNCHANGED';
+    case DEFAULT = 'DEFAULT';
     case ONE_UP = '1UP';
     case BOB_DINO = 'BOB_DINO';
-    case DEFAULT = 'DEFAULT';
+    case WINDMILL = 'Windmill';
 
 
     public function getMapMarkerName(): string {
         return match ($this) {
-            self::DEFAULT_UNCHANGED, self::DEFAULT => 'Default',
+            self::DEFAULT => 'Default',
             self::ONE_UP => '1UP',
             self::BOB_DINO => 'BobDino',
+            self::WINDMILL => 'Windmill',
         };
     }
 
 
     public function getMapMarkerFileName(): string {
         return match ($this) {
-            self::DEFAULT_UNCHANGED, self::DEFAULT => 'default.png',
+            self::DEFAULT => 'default.png',
             self::ONE_UP => '1up.webp',
             self::BOB_DINO => 'bobdino.webp',
+            self::WINDMILL => 'windmill.webp',
         };
     }
 
 
-    public function getMapMarkerLevelRequirement(): int {
+    public function getUserLevelRequirement(): int {
         return match ($this) {
             default => 0,
             self::ONE_UP => 1,
-            self::DEFAULT_UNCHANGED => 99999,
         };
     }
 

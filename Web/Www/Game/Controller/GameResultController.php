@@ -27,7 +27,7 @@ final class GameResultController extends Controller {
             FROM game g
             LEFT JOIN game_round gr ON gr.game_id = g.id AND gr.round_number = g.current_round
             LEFT JOIN panorama p ON p.id = gr.panorama_id
-            LEFT JOIN bear_country bc ON bc.country_iso2_code = p.country_iso_2_code
+            LEFT JOIN bear_country bc ON bc.country_iso2_code = p.country_iso2_code
             WHERE g.id = ?
         ", bindings: [$gameId]);
 
@@ -72,7 +72,7 @@ final class GameResultController extends Controller {
                     bc.country_iso2_code, bc.country_name
                 FROM game_round gr
                 LEFT JOIN panorama p ON p.id = gr.panorama_id
-                LEFT JOIN bear_country bc ON bc.country_iso2_code = p.country_iso_2_code
+                LEFT JOIN bear_country bc ON bc.country_iso2_code = p.country_iso2_code
                 WHERE gr.game_id = ?
                 ORDER BY gr.round_number
                 SQL, bindings: [$gameId]),

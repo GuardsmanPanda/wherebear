@@ -4,6 +4,7 @@ namespace Domain\Map\Model;
 
 use Carbon\CarbonInterface;
 use Closure;
+use Domain\User\Model\UserLevel;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearLogDatabaseChanges;
 use GuardsmanPanda\Larabear\Integration\ExternalApi\Model\BearExternalApi;
 use Illuminate\Database\Eloquent\Collection;
@@ -52,13 +53,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static mixed sum(string $column)
  * @method static bool exists()
  *
+ * @property int $user_level_requirement
  * @property string $created_at
- * @property string $map_style_url
+ * @property string $external_path
  * @property string $map_style_enum
  * @property string $map_style_name
  * @property string $external_api_id
  *
  * @property BearExternalApi $externalApi
+ * @property UserLevel $userLevelRequirement
  *
  * AUTO GENERATED FILE DO NOT MODIFY
  */
@@ -74,6 +77,10 @@ final class MapStyle extends Model {
 
     public function externalApi(): BelongsTo {
         return $this->belongsTo(related: BearExternalApi::class, foreignKey: 'external_api_id', ownerKey: 'id');
+    }
+
+    public function userLevelRequirement(): BelongsTo {
+        return $this->belongsTo(related: UserLevel::class, foreignKey: 'user_level_requirement', ownerKey: 'id');
     }
 
     protected $guarded = ['map_style_enum', 'updated_at', 'created_at', 'deleted_at'];

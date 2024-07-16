@@ -38,6 +38,7 @@ return [
             'panorama_tag' => ['location' => 'Domain/Panorama/Model'],
             'panorama_user_rating' => ['location' => 'Domain/Panorama/Model'],
             'tag' => ['location' => 'Domain/Panorama/Model'],
+            'user_level' => ['location' => 'Domain/User/Model'],
         ]
     ],
 ];

@@ -32,7 +32,7 @@ enum GameStateEnum: string {
             if (GameStateService::gameStateExists(game_state_enum: $enum->value)) {
                 continue;
             }
-            GameStateCreator::create(game_state_enum: $enum->value);
+            GameStateCreator::create(enum: $enum);
         }
     }
 }

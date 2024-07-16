@@ -39,7 +39,7 @@ final class PageDiscoveryController extends Controller {
         if (!PanoramaService::panoramaExists(id: $data['pano_id'])) {
             $panorama = PanoramaCreator::createFromStreetViewData(data: $data, added_by_user_id: BearAuthService::getUserId());
             return [
-                'country_iso2_code' => $panorama->country_iso_2_code,
+                'country_iso2_code' => $panorama->country_iso2_code,
                 'state_name' => $panorama->state_name,
                 'city_name' => $panorama->city_name,
                 'lat' => $data['location']['lat'],
@@ -74,7 +74,7 @@ final class PageDiscoveryController extends Controller {
             if (!PanoramaService::panoramaExists(id: $data['pano_id'])) {
                 $panorama = PanoramaCreator::createFromStreetViewData(data: $data);
                 $results[] = [
-                    'country_iso2_code' => $panorama->country_iso_2_code,
+                    'country_iso2_code' => $panorama->country_iso2_code,
                     'state_name' => $panorama->state_name,
                     'city_name' => $panorama->city_name,
                     'lat' => $data['location']['lat'],

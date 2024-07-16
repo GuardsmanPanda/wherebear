@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void {
         Schema::table(table: 'bear_user', callback: function (Blueprint $table) {
-            $table->text(column: 'map_marker_enum')->default(value: 'DEFAULT_UNCHANGED');
-            $table->text(column: 'map_style_enum')->nullable();
+            $table->text(column: 'map_marker_enum');
+            $table->text(column: 'map_style_enum');
             $table->integer(column: 'user_experience');
             $table->integer(column: 'user_level_id');
             $table->foreign('map_marker_enum')->references('map_marker_enum')->on('map_marker');

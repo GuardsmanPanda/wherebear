@@ -4,6 +4,7 @@ namespace Infrastructure\Database\Command;
 
 use Domain\Game\Enum\GamePublicStatusEnum;
 use Domain\Game\Enum\GameStateEnum;
+use Domain\Map\Enum\MapMarkerEnum;
 use Domain\Map\Enum\MapStyleEnum;
 use Domain\Panorama\Enum\TagEnum;
 use Domain\User\Enum\BearPermissionEnum;
@@ -25,13 +26,15 @@ final class DatabaseInitializeCommand extends BearTransactionCommand {
         BearRoleEnum::syncToDatabase();
         DatabaseInitializeBearCountry::initialize();
         BearExternalApiEnum::syncToDatabase();
+        GamePublicStatusEnum::syncToDatabase();
         TagEnum::syncToDatabase();
         UserLevelEnum::syncToDatabase();
 
-        GamePublicStatusEnum::syncToDatabase(); // Requires UserLevelEnum.
-        GameStateEnum::syncToDatabase(); // Requires UserLevelEnum.
-
-        MapStyleEnum::syncToDatabase(); // Requires BearExternalApiEnum.
         WhereBearRolePermissionService::syncRolePermissionsToDatabase(); // Requires Bear Role and Bear Permission.
+
+        GameStateEnum::syncToDatabase(); // Requires UserLevelEnum.
+        MapMarkerEnum::syncToDatabase(); // Requires UserLevelEnum.
+        MapStyleEnum::syncToDatabase(); // Requires BearExternalApiEnum && UserLevelEnum.
+
     }
 }

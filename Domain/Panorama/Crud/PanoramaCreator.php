@@ -5,7 +5,6 @@ namespace Domain\Panorama\Crud;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Domain\Panorama\Model\Panorama;
-use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 use Illuminate\Support\Facades\DB;
 use Integration\Nominatim\Client\NominatimClient;
@@ -26,7 +25,7 @@ final class PanoramaCreator {
 
         DB::insert(query: "
             INSERT INTO panorama (
-                id, captured_date, country_iso_2_code, state_name, city_name, added_by_user_id,
+                id, captured_date, country_iso2_code, state_name, city_name, added_by_user_id,
                 panorama_location, jpg_path, nominatim_json, created_at, updated_at
             ) VALUES (?, ?, ?, ?, ?, ?, ST_MakePoint(?::double precision, ?::double precision), ?, ?, NOW(), NOW())
         ", bindings: [

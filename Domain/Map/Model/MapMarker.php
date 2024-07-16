@@ -4,9 +4,11 @@ namespace Domain\Map\Model;
 
 use Carbon\CarbonInterface;
 use Closure;
+use Domain\User\Model\UserLevel;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearLogDatabaseChanges;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * AUTO GENERATED FILE DO NOT MODIFY
@@ -52,10 +54,14 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $width_rem
  * @property int $height_rem
- * @property string $file_name
+ * @property int $user_level_requirement
  * @property string $created_at
+ * @property string $map_marker_enum
  * @property string $map_marker_name
  * @property string $map_marker_group
+ * @property string $map_marker_file_name
+ *
+ * @property UserLevel $userLevelRequirement
  *
  * AUTO GENERATED FILE DO NOT MODIFY
  */
@@ -64,10 +70,14 @@ final class MapMarker extends Model {
 
     protected $connection = 'pgsql';
     protected $table = 'map_marker';
-    protected $primaryKey = 'file_name';
+    protected $primaryKey = 'map_marker_enum';
     protected $keyType = 'string';
     protected $dateFormat = 'Y-m-d\TH:i:sP';
     public $timestamps = false;
 
-    protected $guarded = ['file_name', 'updated_at', 'created_at', 'deleted_at'];
+    public function userLevelRequirement(): BelongsTo {
+        return $this->belongsTo(related: UserLevel::class, foreignKey: 'user_level_requirement', ownerKey: 'id');
+    }
+
+    protected $guarded = ['map_marker_enum', 'updated_at', 'created_at', 'deleted_at'];
 }

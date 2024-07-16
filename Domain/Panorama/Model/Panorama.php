@@ -63,8 +63,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $state_name
  * @property string|null $retired_reason
  * @property string|null $added_by_user_id
+ * @property string|null $country_iso2_code
  * @property string|null $panorama_location
- * @property string|null $country_iso_2_code
  * @property ArrayObject|null $nominatim_json
  * @property CarbonInterface $captured_date
  * @property CarbonInterface|null $retired_at
@@ -94,7 +94,7 @@ final class Panorama extends Model {
     }
 
     public function countryIso2Code(): BelongsTo|null {
-        return $this->belongsTo(related: BearCountry::class, foreignKey: 'country_iso_2_code', ownerKey: 'country_iso2_code');
+        return $this->belongsTo(related: BearCountry::class, foreignKey: 'country_iso2_code', ownerKey: 'country_iso2_code');
     }
 
     protected $guarded = ['id', 'updated_at', 'created_at', 'deleted_at'];

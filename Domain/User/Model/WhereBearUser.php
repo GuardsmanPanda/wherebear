@@ -57,12 +57,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static mixed sum(string $column)
  * @method static bool exists()
  *
+ * @property int $user_level_id
+ * @property int $user_experience
  * @property bool $is_user_activated
  * @property string $id
  * @property string $created_at
  * @property string $updated_at
+ * @property string $map_marker_enum
  * @property string $user_display_name
- * @property string $map_marker_file_name
  * @property string|null $password
  * @property string|null $user_city
  * @property string|null $user_email
@@ -79,10 +81,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property CarbonInterface|null $email_verified_at
  * @property CarbonInterface|null $password_reset_expires_at
  *
+ * @property UserLevel $userLevel
  * @property BearLanguage|null $userLanguageIso2Code
  * @property BearCountry|null $userCountryIso2Code
- * @property MapMarker $mapMarkerFileName
  * @property MapStyle|null $mapStyleEnum
+ * @property MapMarker $mapMarkerEnum
  *
  * AUTO GENERATED FILE DO NOT MODIFY
  */
@@ -102,6 +105,10 @@ final class WhereBearUser extends Model {
         'user_data_json' => AsArrayObject::class,
     ];
 
+    public function userLevel(): BelongsTo {
+        return $this->belongsTo(related: UserLevel::class, foreignKey: 'user_level_id', ownerKey: 'id');
+    }
+
     public function userLanguageIso2Code(): BelongsTo|null {
         return $this->belongsTo(related: BearLanguage::class, foreignKey: 'user_language_iso2_code', ownerKey: 'language_iso2_code');
     }
@@ -110,12 +117,12 @@ final class WhereBearUser extends Model {
         return $this->belongsTo(related: BearCountry::class, foreignKey: 'user_country_iso2_code', ownerKey: 'country_iso2_code');
     }
 
-    public function mapMarkerFileName(): BelongsTo {
-        return $this->belongsTo(related: MapMarker::class, foreignKey: 'map_marker_file_name', ownerKey: 'file_name');
-    }
-
     public function mapStyleEnum(): BelongsTo|null {
         return $this->belongsTo(related: MapStyle::class, foreignKey: 'map_style_enum', ownerKey: 'map_style_enum');
+    }
+
+    public function mapMarkerEnum(): BelongsTo {
+        return $this->belongsTo(related: MapMarker::class, foreignKey: 'map_marker_enum', ownerKey: 'map_marker_enum');
     }
 
     protected $guarded = ['id', 'updated_at', 'created_at', 'deleted_at'];

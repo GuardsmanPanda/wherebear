@@ -10,7 +10,7 @@ return new class extends Migration {
             create table panorama(
                 id                    text not null primary key,
                 captured_date         date not null,
-                country_iso_2_code    text references bear_country,
+                country_iso2_code    text references bear_country,
                 state_name            text,
                 city_name             text,
                 added_by_user_id      uuid references bear_user,

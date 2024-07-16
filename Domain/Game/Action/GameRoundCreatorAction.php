@@ -29,21 +29,21 @@ final class GameRoundCreatorAction {
     ];
 
     private array $countries_used = ['XX'];
-    private array $all_countries = [];
+    private array $all_countries;
 
 
     public function __construct(private readonly Game $game) {
         $countries = DB::select(query: "
-            SELECT DISTINCT country_iso_2_code
+            SELECT DISTINCT country_iso2_code
             FROM panorama
             WHERE retired_at IS NULL
         ");
-        $this->all_countries = array_map(fn($c) => $c->country_iso_2_code, $countries);
+        $this->all_countries = array_map(fn($c) => $c->country_iso2_code, $countries);
 
         $recent_countries = DB::select(query: "
-            SELECT DISTINCT latest_countries.country_iso_2_code
+            SELECT DISTINCT latest_countries.country_iso2_code
             FROM (
-                SELECT p.country_iso_2_code
+                SELECT p.country_iso2_code
                 FROM game_round gr
                 LEFT JOIN panorama p ON gr.panorama_id = p.id
                 ORDER BY gr.created_at DESC
@@ -124,18 +124,18 @@ final class GameRoundCreatorAction {
         $bindings = [$this->game->id, $this->game->id];
         $where = '';
         if ($countryCode !== null) {
-            $where = 'AND p.country_iso_2_code = ?';
+            $where = 'AND p.country_iso2_code = ?';
             $bindings[] = $countryCode;
         }
         $result = DB::selectOne(query: "
-            SELECT p.id, p.country_iso_2_code
+            SELECT p.id, p.country_iso2_code
             FROM panorama p
             LEFT JOIN (
-                SELECT p2.country_iso_2_code
+                SELECT p2.country_iso2_code
                 FROM game_round gr2
                 LEFT JOIN panorama p2 ON gr2.panorama_id = p2.id
                 WHERE gr2.game_id = ?
-            ) as used_countries ON p.country_iso_2_code = used_countries.country_iso_2_code
+            ) as used_countries ON p.country_iso2_code = used_countries.country_iso2_code
             LEFT JOIN (
                 SELECT gr2.panorama_id
                 FROM game_user g2
@@ -145,7 +145,7 @@ final class GameRoundCreatorAction {
             ) as used_panoramas ON p.id = used_panoramas.panorama_id
             WHERE
                 p.retired_at IS NULL
-                AND used_countries.country_iso_2_code IS NULL -- Country not seen in this game
+                AND used_countries.country_iso2_code IS NULL -- Country not seen in this game
                 AND used_panoramas.panorama_id IS NULL        -- Panorama not seen by any user in this game
                 AND p.jpg_path IS NOT NULL                    -- Panorama has a jpg
                 $where
@@ -153,7 +153,7 @@ final class GameRoundCreatorAction {
             LIMIT 1
         ", bindings: $bindings);
         if ($result !== null) {
-            $this->countries_used[] = $result->country_iso_2_code;
+            $this->countries_used[] = $result->country_iso2_code;
         }
         return $result?->id;
     }

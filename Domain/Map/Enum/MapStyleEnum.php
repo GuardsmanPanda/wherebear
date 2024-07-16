@@ -7,7 +7,7 @@ use Domain\Map\Service\MapStyleService;
 use Infrastructure\App\Enum\BearExternalApiEnum;
 
 enum MapStyleEnum: string {
-    case DEFAULT_UNCHANGED = 'DEFAULT_UNCHANGED';
+    case DEFAULT = 'DEFAULT';
     case OSM = 'OSM';
     //case STREETS = 'STREETS';
     //case GOOGLE_STREET_VIEW = 'GOOGLE_STREET_VIEW';
@@ -22,30 +22,29 @@ enum MapStyleEnum: string {
 
     public function getMapStyleName(): string {
         return match ($this) {
-            self::DEFAULT_UNCHANGED, self::OSM => 'OpenStreetMap',
+            self::DEFAULT, self::OSM => 'OpenStreetMap',
         };
     }
 
 
-    public function getRemoteSystemPath(): string {
+    public function getExternalPath(): string {
         return match ($this) {
-            self::DEFAULT_UNCHANGED, self::OSM => '{z}/{x}/{y}.png',
+            self::DEFAULT, self::OSM => '{z}/{x}/{y}.png',
         };
     }
 
 
     public function getExternalApi(): BearExternalApiEnum {
         return match ($this) {
-            self::DEFAULT_UNCHANGED, self::OSM => BearExternalApiEnum::OPENSTREETMAP,
+            self::DEFAULT, self::OSM => BearExternalApiEnum::OPENSTREETMAP,
         };
     }
 
 
-    public function getMapStyleLevelRequirement(): int {
+    public function getUserLevelRequirement(): int {
         return match ($this) {
             default => 0,
             self::OSM => 1,
-            self::DEFAULT_UNCHANGED => 99999,
         };
     }
 

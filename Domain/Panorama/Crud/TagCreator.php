@@ -7,16 +7,14 @@ use Domain\Panorama\Model\Tag;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 
 final class TagCreator {
-    public static function create(
-        TagEnum $tag_enum,
-    ): Tag {
+    public static function create(TagEnum $tag_enum,): Tag {
         BearDatabaseService::mustBeInTransaction();
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST']);
 
         $model = new Tag();
 
         $model->tag_enum = $tag_enum->value;
-        $model->tag_description = $tag_enum->description();
+        $model->tag_description = $tag_enum->getDescription();
 
         $model->save();
         return $model;
