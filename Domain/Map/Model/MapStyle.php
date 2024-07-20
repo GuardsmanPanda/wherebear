@@ -57,7 +57,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $created_at
  * @property string $external_path
  * @property string $map_style_enum
- * @property string $map_style_name
+ * @property string $name
  * @property string $external_api_id
  *
  * @property BearExternalApi $externalApi

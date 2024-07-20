@@ -52,7 +52,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property string $created_at
  * @property string $game_public_status_enum
- * @property string $game_public_status_description
+ * @property string $description
  *
  * AUTO GENERATED FILE DO NOT MODIFY
  */

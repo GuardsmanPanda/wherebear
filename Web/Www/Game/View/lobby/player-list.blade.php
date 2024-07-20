@@ -13,8 +13,8 @@
                 <hr class="mx-5 mt-1 mb-1 pb-0.5 border-gray-700 border-dashed">
             @endif
             <li class="flex items-center gap-2">
-                <img class="h-8 w-8 flex-shrink-0" src="/static/img/map-marker/{{$player->map_marker_file_name}}"
-                     alt="{{$player->map_marker_file_name}}">
+                <img class="h-8 w-8 flex-shrink-0" src="/static/img/map-marker/{{$player->file_name}}"
+                     alt="{{$player->file_name}}">
                 <img class="w-8 flex-shrink-0"
                      src="/static/flag/svg/{{$player->user_country_iso2_code}}.svg"
                      alt="{{$player->country_name}}" tippy="{{$player->country_name}}">

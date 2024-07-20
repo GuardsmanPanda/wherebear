@@ -33,7 +33,7 @@ final readonly class WhereBearUserUpdater {
         return $this;
     }
 
-    public function setMapMarkerFileName(string $map_marker_enum): self {
+    public function setMapMarkerEnum(string $map_marker_enum): self {
         $this->model->map_marker_enum = $map_marker_enum;
         return $this;
     }

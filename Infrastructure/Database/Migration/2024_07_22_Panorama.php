@@ -10,12 +10,13 @@ return new class extends Migration {
             create table panorama(
                 id                    text not null primary key,
                 captured_date         date not null,
-                country_iso2_code    text references bear_country,
+                country_cca2          text references bear_country,
                 state_name            text,
                 city_name             text,
                 added_by_user_id      uuid references bear_user,
-                panorama_location     geography(Point, 4326),
+                location              geography(Point, 4326),
                 jpg_path              text unique,
+                avif_path             text unique,
                 nominatim_json        jsonb,
                 retired_at            timestamp with time zone,
                 retired_reason        text,
@@ -25,6 +26,7 @@ return new class extends Migration {
         ");
         DB::statement(query: "create index panorama_panorama_location_gist_idx on panorama using gist(panorama_location);");
     }
+
 
     public function down(): void {
         Schema::dropIfExists(table: 'panorama');

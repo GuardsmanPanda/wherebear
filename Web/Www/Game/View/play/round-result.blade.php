@@ -56,7 +56,7 @@
             @foreach($guesses as $guess)
                 <div class="flex items-center px-4 py-2 rounded-md shadow-xl bg-gray-800">
                     <div class="text-center font-medium text-gray-500 text-2xl">{{$guess->round_rank}}</div>
-                    <img class="h-12 ml-1" src="/static/img/map-marker/{{$guess->map_marker_file_name}}"
+                    <img class="h-12 ml-1" src="/static/img/map-marker/{{$guess->file_name}}"
                          alt="Map Marker">
                     <img class="w-12 shadow-md mx-1" src="/static/flag/svg/{{$guess->user_country_iso2_code}}.svg"
                          alt="Country Flag" tippy="{{$guess->country_name}}">
@@ -114,7 +114,7 @@
         {
             lat: {{$guess->lat}},
             lng: {{$guess->lng}},
-            file: '{{$guess->map_marker_file_name}}',
+            file: '{{$guess->file_name}}',
             name: '{{$guess->user_display_name}}'
         },
         @endforeach

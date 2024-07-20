@@ -14,11 +14,12 @@ return new class extends Migration {
             $table->text(column: 'panorama_pick_strategy')->default('Unknown');
             $table->timestampTz(column: 'created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestampTz(column: 'updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->foreign("game_id")->references('id')->on('game');
-            $table->foreign("panorama_id")->references('id')->on('panorama');
+            $table->foreign("game_id")->references('id')->on(table: 'game');
+            $table->foreign("panorama_id")->references('id')->on(table: 'panorama');
             $table->primary(columns: ['game_id', 'round_number']);
         });
     }
+
 
     public function down(): void {
         Schema::dropIfExists(table: 'game_round');

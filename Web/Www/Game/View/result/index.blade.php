@@ -40,7 +40,7 @@
             @endif
             <div class="flex items-center px-4 py-2 rounded-md shadow-xl">
                 <div class="text-center font-medium text-gray-500 text-2xl">{{$player->rank}}</div>
-                <img class="h-12 ml-1" src="/static/img/map-marker/{{$player->map_marker_file_name}}"
+                <img class="h-12 ml-1" src="/static/img/map-marker/{{$player->file_name}}"
                      alt="Map Marker">
                 <img class="w-12 shadow-md mx-1" src="/static/flag/svg/{{$player->user_country_iso2_code}}.svg"
                      alt="Country Flag" tippy="{{$player->country_name}}">

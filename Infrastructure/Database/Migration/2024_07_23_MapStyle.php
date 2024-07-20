@@ -7,16 +7,15 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void {
-        Schema::dropIfExists(table: 'map_style');
         Schema::create(table: 'map_style', callback: static function (Blueprint $table): void {
-            $table->text(column: 'map_style_enum')->primary();
-            $table->text(column: 'map_style_name');
-            $table->uuid(column: 'external_api_id');
-            $table->text(column: 'external_path');
-            $table->integer(column: 'user_level_requirement');
+            $table->text(column: 'enum')->primary();
+            $table->text(column: 'name');
+            $table->uuid(column: 'external_api_enum');
+            $table->text(column: 'http_path');
+            $table->integer(column: 'user_level_enum');
             $table->timestampTz(column: 'created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->foreign(columns: 'external_api_id')->references('id')->on('bear_external_api');
-            $table->foreign(columns: 'user_level_requirement')->references('id')->on('user_level');
+            $table->foreign(columns: 'external_api_enum')->references('enum')->on(table: 'bear_external_api');
+            $table->foreign(columns: 'user_level_enum')->references('enum')->on(table: 'user_level');
         });
     }
 

@@ -7,17 +7,18 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void {
-        Schema::dropIfExists(table: 'map_marker');
         Schema::create(table: 'map_marker', callback: static function (Blueprint $table): void {
-            $table->text(column: 'map_marker_enum')->primary();
-            $table->text(column: 'map_marker_file_name')->unique();
-            $table->text(column: 'map_marker_name')->unique();
-            $table->text(column: 'map_marker_group');
+            $table->text(column: 'enum')->primary();
+            $table->text(column: 'name')->unique();
+            $table->text(column: 'grouping');
+            $table->text(column: 'file_name')->unique();
             $table->integer(column: 'height_rem');
             $table->integer(column: 'width_rem');
-            $table->integer(column: 'user_level_requirement');
+            $table->integer(column: 'user_level_enum');
+            $table->text(column: 'permission_slug')->nullable();
             $table->timestampTz(column: 'created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->foreign(columns: 'user_level_requirement')->references('id')->on('user_level');
+            $table->foreign(columns: 'user_level_enum')->references('enum')->on(table: 'user_level');
+            $table->foreign(columns: 'permission_enum')->references('enum')->on(table: 'bear_permission');
         });
     }
 

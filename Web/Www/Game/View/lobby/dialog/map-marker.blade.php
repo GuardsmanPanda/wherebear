@@ -9,7 +9,7 @@
             @foreach($map_markers as $marker)
                 <button class="px-0.5 py-1 hover:scale-110 transition-transform duration-75" hx-dialog-close
                         hx-patch="/game/{{$game_id}}/lobby/update-user"
-                        hx-vals='{"map_marker_file_name": "{{$marker->file_name}}"}'
+                        hx-vals='{"file_name": "{{$marker->file_name}}"}'
                         tippy="{{$marker->map_marker_name}}">
                     <img class="h-14 w-14" src="/static/img/map-marker/{{$marker->file_name}}"
                          alt="{{$marker->map_marker_name}}">

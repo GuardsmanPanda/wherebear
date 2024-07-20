@@ -20,7 +20,7 @@ enum MapStyleEnum: string {
     }
 
 
-    public function getMapStyleName(): string {
+    public function getName(): string {
         return match ($this) {
             self::DEFAULT, self::OSM => 'OpenStreetMap',
         };

@@ -23,7 +23,7 @@ final class PageDiscoveryController extends Controller {
             "),
             'user' => DB::selectOne(query: "
                 SELECT
-                    u.map_marker_file_name,
+                    u.file_name,
                     COALESCE(u.map_style_enum, 'OSM') as map_style_enum
                 FROM bear_user u
                 WHERE u.id = ?

@@ -14,7 +14,7 @@ final class MapStyleCreator {
         $model = new MapStyle();
 
         $model->map_style_enum = $enum->value;
-        $model->map_style_name = $enum->getMapStyleName();
+        $model->name = $enum->getName();
         $model->external_api_id = $enum->getExternalApi()->getId();
         $model->external_path = $enum->getExternalPath();
         $model->user_level_requirement = $enum->getUserLevelRequirement();

@@ -13,9 +13,9 @@ return new class extends Migration {
             $table->uuid(column: 'created_by_user_id');
             $table->timestampTz(column: 'created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->primary(['panorama_id', 'tag_enum']);
-            $table->foreign("panorama_id")->references('id')->on('panorama');
-            $table->foreign("tag_enum")->references('tag_enum')->on('tag');
-            $table->foreign("created_by_user_id")->references('id')->on('bear_user');
+            $table->foreign("panorama_id")->references('id')->on(table: 'panorama');
+            $table->foreign("tag_enum")->references('enum')->on(table: 'tag');
+            $table->foreign("created_by_user_id")->references('id')->on(table: 'bear_user');
         });
     }
 

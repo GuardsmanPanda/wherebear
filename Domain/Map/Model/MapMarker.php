@@ -58,8 +58,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $created_at
  * @property string $map_marker_enum
  * @property string $map_marker_name
- * @property string $map_marker_group
- * @property string $map_marker_file_name
+ * @property string $grouping
+ * @property string $file_name
  *
  * @property UserLevel $userLevelRequirement
  *

@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void {
         Schema::create(table: 'game_public_status', callback: static function (Blueprint $table): void {
-            $table->text(column: 'game_public_status_enum')->primary();
-            $table->text(column: 'game_public_status_description');
+            $table->text(column: 'enum')->primary();
+            $table->text(column: 'description');
             $table->timestampTz(column: 'created_at')->default(DB::raw(value: 'CURRENT_TIMESTAMP'));
         });
     }

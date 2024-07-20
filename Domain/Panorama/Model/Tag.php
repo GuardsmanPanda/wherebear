@@ -52,7 +52,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property string $tag_enum
  * @property string $created_at
- * @property string $tag_description
+ * @property string $description
  *
  * AUTO GENERATED FILE DO NOT MODIFY
  */

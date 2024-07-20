@@ -22,7 +22,7 @@ enum MapMarkerEnum: string {
     }
 
 
-    public function getMapMarkerFileName(): string {
+    public function getFileName(): string {
         return match ($this) {
             self::DEFAULT => 'default.png',
             self::ONE_UP => '1up.webp',
@@ -40,7 +40,7 @@ enum MapMarkerEnum: string {
     }
 
 
-    public function getMapMarkerGroup(): string {
+    public function getGrouping(): string {
         return match ($this) {
             self::BOB_DINO => 'Bob',
             default => 'Miscellaneous',

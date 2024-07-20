@@ -62,7 +62,7 @@ final class GameLobbyController extends Controller {
                 'game' => $game,
                 'players' => DB::select(query: "
                     SELECT 
-                        bu.user_display_name, bu.map_marker_file_name, bu.user_country_iso2_code,
+                        bu.user_display_name, bu.file_name, bu.user_country_iso2_code,
                         gu.is_ready, bc.country_name
                     FROM game_user gu
                     LEFT JOIN bear_user bu ON bu.id = gu.user_id
@@ -96,14 +96,14 @@ final class GameLobbyController extends Controller {
             'map_markers' => DB::select(query: "SELECT file_name, map_marker_name FROM map_marker ORDER BY file_name"),
             'user' => DB::selectOne(query: "
                 SELECT 
-                    bu.id, bu.user_display_name, bu.map_marker_file_name, bu.user_email,
+                    bu.id, bu.user_display_name, mm.file_name, bu.user_email,
                     gu.is_ready, mm.map_marker_name,
-                    COALESCE(ms.map_style_name, 'OpenStreetMap') as map_style_name,
+                    COALESCE(ms.name, 'OpenStreetMap') as map_style_name,
                     COALESCE(ms.map_style_enum, 'OSM') as map_style_enum,
                     bc.country_name, bc.country_iso2_code
                 FROM bear_user bu
                 LEFT JOIN game_user gu ON gu.user_id = bu.id AND gu.game_id = ?
-                LEFT JOIN map_marker mm ON mm.file_name = bu.map_marker_file_name
+                LEFT JOIN map_marker mm ON mm.map_marker_enum = bu.map_marker_enum
                 LEFT JOIN map_style ms ON ms.map_style_enum = bu.map_style_enum
                 LEFT JOIN bear_country bc ON bc.country_iso2_code = bu.user_country_iso2_code
                 WHERE bu.id = ?
@@ -132,8 +132,8 @@ final class GameLobbyController extends Controller {
 
     public function updateUser(string $gameId): Response|View {
         $updater = WhereBearUserUpdater::fromId(id: BearAuthService::getUserIdOrFail());
-        if (Req::has(key: 'map_marker_file_name')) {
-            $updater->setMapMarkerFileName(map_marker_enum: Req::getStringOrDefault(key: 'map_marker_file_name'));
+        if (Req::has(key: 'map_marker_enum')) {
+            $updater->setMapMarkerEnum(map_marker_enum: Req::getStringOrDefault(key: 'map_marker_enum'));
         }
         if (Req::has(key: 'map_style_enum')) {
             $updater->setMapStyleEnum(map_style_enum: Req::getStringOrDefault(key: 'map_style_enum'));
@@ -205,13 +205,13 @@ final class GameLobbyController extends Controller {
 
 
     public function dialogMapMarker(string $gameId): View {
-        $markers = DB::select(query: "SELECT file_name, map_marker_name, map_marker_group FROM map_marker ORDER BY map_marker_group, file_name");
+        $markers = DB::select(query: "SELECT file_name, map_marker_name, grouping FROM map_marker ORDER BY grouping, file_name");
         return Htmx::dialogView(
             view: 'game::lobby.dialog.map-marker',
             title: 'Select Map Marker',
             data: [
                 'game_id' => $gameId,
-                'grouped_map_markers' => BearArrayService::groupArrayBy(array: $markers, key: 'map_marker_group'),
+                'grouped_map_markers' => BearArrayService::groupArrayBy(array: $markers, key: 'grouping'),
             ]
         );
     }
