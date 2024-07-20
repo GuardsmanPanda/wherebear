@@ -18,7 +18,7 @@ final class GameStartAction {
         if ($updater->getGameStateEnum() !== GameStateEnum::WAITING_FOR_PLAYERS->value) {
             throw new InvalidArgumentException(message: 'Game must be in WAITING_FOR_PLAYERS state to be placed in queue');
         }
-        $updater->setGameStateEnum(game_state_enum: GameStateEnum::QUEUED);
+        $updater->setGameStateEnum(enum: GameStateEnum::QUEUED);
         $updater->update();
         GameRunJob::dispatch($gameId);
         GameBroadcast::prep(gameId: $gameId, message: 'Game Queued', stage: 0);

@@ -10,7 +10,7 @@ return new class extends Migration {
         Schema::create(table: 'map_style', callback: static function (Blueprint $table): void {
             $table->text(column: 'enum')->primary();
             $table->text(column: 'name');
-            $table->uuid(column: 'external_api_enum');
+            $table->text(column: 'external_api_enum');
             $table->text(column: 'http_path');
             $table->integer(column: 'user_level_enum');
             $table->timestampTz(column: 'created_at')->default(DB::raw('CURRENT_TIMESTAMP'));

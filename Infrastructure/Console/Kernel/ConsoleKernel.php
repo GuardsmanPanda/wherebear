@@ -39,7 +39,7 @@ final class ConsoleKernel extends Kernel {
                     GameRoundDeleter::deleteAllGameRounds(gameId: $gameId);
                     GameUpdater::fromId(id: $gameId)
                         ->setCurrentRound(current_round: 0)
-                        ->setGameStateEnum(GameStateEnum::WAITING_FOR_PLAYERS)
+                        ->setGameStateEnum(enum: GameStateEnum::WAITING_FOR_PLAYERS)
                         ->setRoundEndsAt(round_ends_at: null)
                         ->setNextRoundAt(next_round_at: null)
                         ->update();
