@@ -3,8 +3,9 @@
 namespace Infrastructure\App\Enum;
 
 use GuardsmanPanda\Larabear\Infrastructure\Oauth2\Crud\BearOauth2ClientCreator;
-use GuardsmanPanda\Larabear\Infrastructure\Oauth2\Enum\BearOauth2ClientTypeEnum;
-use GuardsmanPanda\Larabear\Infrastructure\Oauth2\Service\BearOauth2ClientService;
+use GuardsmanPanda\Larabear\Infrastructure\Oauth2\Enum\LarabearOauth2ClientTypeEnum;
+use GuardsmanPanda\Larabear\Infrastructure\Oauth2\Interface\BearOauth2ClientTypeEnumInterface;
+use GuardsmanPanda\Larabear\Infrastructure\Oauth2\Model\BearOauth2Client;
 
 enum BearOauth2ClientEnum: string {
     case TWITCH = 'TWITCH';
@@ -17,7 +18,7 @@ enum BearOauth2ClientEnum: string {
         };
     }
 
-    public function getClientId(): string {
+    public function getId(): string {
         return match ($this) {
             self::TWITCH => 'q8q6jjiuc7f2ef04wmb7m653jd5ra8',
             self::GOOGLE => '730408173687-ad7cjtcq30kgm98mtndtot0dc5hv5fjn.apps.googleusercontent.com',
@@ -31,14 +32,14 @@ enum BearOauth2ClientEnum: string {
         };
     }
 
-    public function getOauth2ClientYpe(): BearOauth2ClientTypeEnum {
+    public function getOauth2ClientType(): BearOauth2ClientTypeEnumInterface {
         return match ($this) {
-            self::TWITCH => BearOauth2ClientTypeEnum::TWITCH,
-            self::GOOGLE => BearOauth2ClientTypeEnum::GOOGLE,
+            self::TWITCH => LarabearOauth2ClientTypeEnum::TWITCH,
+            self::GOOGLE => LarabearOauth2ClientTypeEnum::GOOGLE,
         };
     }
 
-    public function getRedirectPath(): string {
+    public function getUserRedirectPath(): string {
         return match ($this) {
             self::TWITCH => '/auth/oauth2-client/q8q6jjiuc7f2ef04wmb7m653jd5ra8/callback',
             self::GOOGLE => '/auth/oauth2-client/730408173687-ad7cjtcq30kgm98mtndtot0dc5hv5fjn.apps.googleusercontent.com/callback',
@@ -47,19 +48,15 @@ enum BearOauth2ClientEnum: string {
 
     public static function syncToDatabase(): void {
         foreach (self::cases() as $client) {
-            if (BearOauth2ClientService::oauth2ClientExists(clientId: $client->getClientId())) {
-                continue;
+            if (BearOauth2Client::find(id: $client->getId())) {
+                BearOauth2ClientCreator::create(
+                    id: $client->getId(),
+                    description: $client->getDescription(),
+                    oauth2_client_type: $client->getOauth2ClientType(),
+                    encrypted_secret: $client->getClientSecret(),
+                    user_redirect_path: $client->getUserRedirectPath(),
+                );
             }
-            BearOauth2ClientCreator::create(
-                oauth2_client_id: $client->getClientId(),
-                oauth2_client_description: $client->getDescription(),
-                oauth2_client_type: $client->getOauth2ClientYpe(),
-                oauth2_authorize_uri: $client->getOauth2ClientYpe()->authorizeUri(),
-                oauth2_token_uri: $client->getOauth2ClientYpe()->tokenUri(),
-                encrypted_oauth2_client_secret: $client->getClientSecret(),
-                oauth2_client_redirect_path: $client->getRedirectPath(),
-                allow_user_logins: true,
-            );
         }
     }
 }

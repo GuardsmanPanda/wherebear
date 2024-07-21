@@ -5,7 +5,8 @@ namespace Domain\Map\Model;
 use Carbon\CarbonInterface;
 use Closure;
 use Domain\User\Model\UserLevel;
-use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearLogDatabaseChanges;
+use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearPermission;
+use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -54,30 +55,38 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @property int $width_rem
  * @property int $height_rem
- * @property int $user_level_requirement
- * @property string $created_at
- * @property string $map_marker_enum
- * @property string $map_marker_name
+ * @property int $user_level_enum
+ * @property string $enum
+ * @property string $name
  * @property string $grouping
  * @property string $file_name
+ * @property string $created_at
+ * @property string|null $permission_enum
  *
- * @property UserLevel $userLevelRequirement
+ * @property UserLevel $userLevelEnum
+ * @property BearPermission|null $permissionEnum
  *
  * AUTO GENERATED FILE DO NOT MODIFY
  */
 final class MapMarker extends Model {
-    use BearLogDatabaseChanges;
+    use BearDatabaseChangeTrait;
 
     protected $connection = 'pgsql';
     protected $table = 'map_marker';
-    protected $primaryKey = 'map_marker_enum';
+    protected $primaryKey = 'enum';
     protected $keyType = 'string';
     protected $dateFormat = 'Y-m-d\TH:i:sP';
     public $timestamps = false;
 
-    public function userLevelRequirement(): BelongsTo {
-        return $this->belongsTo(related: UserLevel::class, foreignKey: 'user_level_requirement', ownerKey: 'id');
+    /** @return BelongsTo<UserLevel, self> */
+    public function userLevelEnum(): BelongsTo {
+        return $this->belongsTo(related: UserLevel::class, foreignKey: 'user_level_enum', ownerKey: 'enum');
     }
 
-    protected $guarded = ['map_marker_enum', 'updated_at', 'created_at', 'deleted_at'];
+    /** @return BelongsTo<BearPermission, self>|null */
+    public function permissionEnum(): BelongsTo|null {
+        return $this->belongsTo(related: BearPermission::class, foreignKey: 'permission_enum', ownerKey: 'enum');
+    }
+
+    protected $guarded = ['enum', 'updated_at', 'created_at', 'deleted_at'];
 }

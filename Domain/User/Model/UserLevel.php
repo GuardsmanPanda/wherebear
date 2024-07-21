@@ -4,7 +4,7 @@ namespace Domain\User\Model;
 
 use Carbon\CarbonInterface;
 use Closure;
-use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearLogDatabaseChanges;
+use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
@@ -50,7 +50,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static mixed sum(string $column)
  * @method static bool exists()
  *
- * @property int $id
+ * @property int $enum
  * @property int $experience_requirement
  * @property string $created_at
  * @property string $updated_at
@@ -59,11 +59,12 @@ use Illuminate\Database\Eloquent\Model;
  * AUTO GENERATED FILE DO NOT MODIFY
  */
 final class UserLevel extends Model {
-    use BearLogDatabaseChanges;
+    use BearDatabaseChangeTrait;
 
     protected $connection = 'pgsql';
     protected $table = 'user_level';
+    protected $primaryKey = 'enum';
     protected $dateFormat = 'Y-m-d\TH:i:sP';
 
-    protected $guarded = ['id', 'updated_at', 'created_at', 'deleted_at'];
+    protected $guarded = ['enum', 'updated_at', 'created_at', 'deleted_at'];
 }

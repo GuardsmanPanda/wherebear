@@ -25,7 +25,7 @@ enum UserLevelEnum: int {
         };
     }
 
-    public function getFeatureUnlock(): String|null {
+    public function getFeatureUnlock(): string|null {
         return match ($this) {
             self::L5 => 'Panorama Rating',
             default => null,
@@ -35,10 +35,9 @@ enum UserLevelEnum: int {
 
     public static function syncToDatabase(): void {
         foreach (UserLevelEnum::cases() as $level) {
-            if (UserLevelService::userLevelExists(id: $level->value)) {
-                continue;
+            if (UserLevel::find(id: $level->value) === null) {
+                UserLevelCreator::create(enum: $level);
             }
-            UserLevelCreator::create(enum: $level);
         }
     }
 }

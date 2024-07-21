@@ -3,7 +3,7 @@
 namespace Domain\Game\Enum;
 
 use Domain\Game\Crud\GamePublicStatusCreator;
-use Domain\Game\Service\GamePublicStatusService;
+use Domain\Game\Model\GamePublicStatus;
 
 enum GamePublicStatusEnum: string {
     case PUBLIC = 'PUBLIC';
@@ -21,10 +21,9 @@ enum GamePublicStatusEnum: string {
 
     public static function syncToDatabase(): void {
         foreach (GamePublicStatusEnum::cases() as $enum) {
-            if (GamePublicStatusService::gamePublicStatusExists(game_public_status_enum: $enum->value)) {
-                continue;
+            if (GamePublicStatus::find(id: $enum->value) === null) {
+                GamePublicStatusCreator::create(enum: $enum);
             }
-            GamePublicStatusCreator::create(enum: $enum);
         }
     }
 }

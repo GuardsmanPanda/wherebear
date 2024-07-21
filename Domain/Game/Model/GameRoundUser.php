@@ -5,7 +5,7 @@ namespace Domain\Game\Model;
 use Carbon\CarbonInterface;
 use Closure;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearUser;
-use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearLogDatabaseChanges;
+use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Model\BearCountry;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Casts\ArrayObject;
@@ -56,8 +56,8 @@ use RuntimeException;
  * @method static bool exists()
  *
  * @property int $round_number
- * @property int|null $round_rank
- * @property float|null $round_points
+ * @property int|null $rank
+ * @property float|null $points
  * @property float|null $distance_meters
  * @property float|null $approximate_country_distance_meters
  * @property string $game_id
@@ -65,20 +65,20 @@ use RuntimeException;
  * @property string $location
  * @property string $created_at
  * @property string $updated_at
- * @property string|null $correct_country_iso2_code
- * @property string|null $approximate_country_iso2_code
+ * @property string|null $correct_country_cca2
+ * @property string|null $approximate_country_cca2
  * @property ArrayObject|null $nominatim_json
  *
+ * @property BearCountry|null $approximateCountryCca2
+ * @property BearCountry|null $correctCountryCca2
  * @property GameUser $game
  * @property BearUser $user
- * @property BearCountry|null $approximateCountryIso2Code
- * @property BearCountry|null $correctCountryIso2Code
  * @property GameRound $roundNumber
  *
  * AUTO GENERATED FILE DO NOT MODIFY
  */
 final class GameRoundUser extends Model {
-    use BearLogDatabaseChanges;
+    use BearDatabaseChangeTrait;
 
     protected $connection = 'pgsql';
     protected $table = 'game_round_user';
@@ -93,24 +93,29 @@ final class GameRoundUser extends Model {
         'nominatim_json' => AsArrayObject::class,
     ];
 
-    public function game(): BelongsTo {
-        return $this->belongsTo(related: GameUser::class, foreignKey: 'game_id', ownerKey: 'user_id');
+    /** @return BelongsTo<BearCountry, self>|null */
+    public function approximateCountryCca2(): BelongsTo|null {
+        return $this->belongsTo(related: BearCountry::class, foreignKey: 'approximate_country_cca2', ownerKey: 'cca2');
     }
 
+    /** @return BelongsTo<BearCountry, self>|null */
+    public function correctCountryCca2(): BelongsTo|null {
+        return $this->belongsTo(related: BearCountry::class, foreignKey: 'correct_country_cca2', ownerKey: 'cca2');
+    }
+
+    /** @return BelongsTo<GameUser, self> */
+    public function game(): BelongsTo {
+        return $this->belongsTo(related: GameUser::class, foreignKey: 'game_id', ownerKey: 'game_id');
+    }
+
+    /** @return BelongsTo<BearUser, self> */
     public function user(): BelongsTo {
         return $this->belongsTo(related: BearUser::class, foreignKey: 'user_id', ownerKey: 'id');
     }
 
-    public function approximateCountryIso2Code(): BelongsTo|null {
-        return $this->belongsTo(related: BearCountry::class, foreignKey: 'approximate_country_iso2_code', ownerKey: 'country_iso2_code');
-    }
-
-    public function correctCountryIso2Code(): BelongsTo|null {
-        return $this->belongsTo(related: BearCountry::class, foreignKey: 'correct_country_iso2_code', ownerKey: 'country_iso2_code');
-    }
-
+    /** @return BelongsTo<GameRound, self> */
     public function roundNumber(): BelongsTo {
-        return $this->belongsTo(related: GameRound::class, foreignKey: 'round_number', ownerKey: 'game_id');
+        return $this->belongsTo(related: GameRound::class, foreignKey: 'round_number', ownerKey: 'round_number');
     }
 
     protected $guarded = ['game_id', 'round_number', 'user_id', 'updated_at', 'created_at', 'deleted_at'];

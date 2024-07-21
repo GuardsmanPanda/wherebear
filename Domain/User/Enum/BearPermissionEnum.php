@@ -2,15 +2,22 @@
 
 namespace Domain\User\Enum;
 
-use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearPermissionService;
 
-enum BearPermissionEnum: string {
+use Domain\Larabear\Model\BearPermission;
+use GuardsmanPanda\Larabear\Infrastructure\Auth\Crud\BearPermissionCrud;
+use GuardsmanPanda\Larabear\Infrastructure\Auth\Interface\BearPermissionEnumInterface;
+
+enum BearPermissionEnum: string implements BearPermissionEnumInterface {
     case GAME_CREATE = 'game::create';
     case PANORAMA_DOWNLOAD = 'panorama::download';
     case PANORAMA_CONTRIBUTE = 'panorama::contribute';
     case IS_BOB = 'is-bob';
 
-    public function getPermissionDescription(): string {
+    public function getValue(): string {
+        return $this->value;
+    }
+
+    public function getDescription(): string {
         return match ($this) {
             self::GAME_CREATE => 'Allows the user to create games.',
             self::PANORAMA_DOWNLOAD => 'For the site admin to list panoramas which are not imported into the game yet.',
@@ -19,10 +26,11 @@ enum BearPermissionEnum: string {
         };
     }
 
-
     public static function syncToDatabase(): void {
         foreach (BearPermissionEnum::cases() as $enum) {
-            BearPermissionService::createIfNotExists(permission_slug: $enum->value, permission_description: $enum->getPermissionDescription());
+            if (BearPermission::find(id: $enum->value) === null) {
+                BearPermissionCrud::create(permission: $enum);
+            }
         }
     }
 }

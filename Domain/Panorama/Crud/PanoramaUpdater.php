@@ -25,8 +25,8 @@ final readonly class PanoramaUpdater {
         return $this;
     }
 
-    public function setCountryIso2Code(string|null $country_iso2_code): self {
-        $this->model->country_iso2_code = $country_iso2_code;
+    public function setCountryCca2(string|null $country_cca2): self {
+        $this->model->country_cca2 = $country_cca2;
         return $this;
     }
 
@@ -45,8 +45,8 @@ final readonly class PanoramaUpdater {
         return $this;
     }
 
-    public function setPanoramaLocation(string|null $panorama_location): self {
-        $this->model->panorama_location = $panorama_location;
+    public function setLocation(string|null $location): self {
+        $this->model->location = $location;
         return $this;
     }
 

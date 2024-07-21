@@ -13,7 +13,7 @@ final class UserLevelCreator {
 
         $model = new UserLevel();
 
-        $model->id = $enum->value;
+        $model->enum = $enum->value;
         $model->experience_requirement = $enum->getLevelExperienceRequirement();
         $model->feature_unlock = $enum->getFeatureUnlock();
 

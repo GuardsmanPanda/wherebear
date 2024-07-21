@@ -4,7 +4,7 @@ namespace Domain\Panorama\Model;
 
 use Carbon\CarbonInterface;
 use Closure;
-use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearLogDatabaseChanges;
+use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
@@ -50,21 +50,21 @@ use Illuminate\Database\Eloquent\Model;
  * @method static mixed sum(string $column)
  * @method static bool exists()
  *
- * @property string $tag_enum
+ * @property string $enum
  * @property string $created_at
  * @property string $description
  *
  * AUTO GENERATED FILE DO NOT MODIFY
  */
 final class Tag extends Model {
-    use BearLogDatabaseChanges;
+    use BearDatabaseChangeTrait;
 
     protected $connection = 'pgsql';
     protected $table = 'tag';
-    protected $primaryKey = 'tag_enum';
+    protected $primaryKey = 'enum';
     protected $keyType = 'string';
     protected $dateFormat = 'Y-m-d\TH:i:sP';
     public $timestamps = false;
 
-    protected $guarded = ['tag_enum', 'updated_at', 'created_at', 'deleted_at'];
+    protected $guarded = ['enum', 'updated_at', 'created_at', 'deleted_at'];
 }

@@ -2,10 +2,9 @@
 
 namespace Infrastructure\Http\Kernel;
 
+use GuardsmanPanda\Larabear\Infrastructure\Http\Middleware\BearAccessTokenMiddleware;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Middleware\BearInitiateMiddleware;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Middleware\BearTransactionMiddleware;
-use GuardsmanPanda\Larabear\Infrastructure\Http\Middleware\BearAccessTokenAppMiddleware;
-use GuardsmanPanda\Larabear\Infrastructure\Http\Middleware\BearAccessTokenUserMiddleware;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Middleware\BearPermissionMiddleware;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Middleware\BearRoleMiddleware;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Middleware\BearSessionAuthMiddleware;
@@ -22,8 +21,7 @@ final class HttpKernel extends Kernel {
     /** @var array<string> $middlewarePriority Order, run always middleware always runs first. */
     protected $middlewarePriority = [
         BearInitiateMiddleware::class,
-        BearAccessTokenAppMiddleware::class,
-        BearAccessTokenUserMiddleware::class,
+        BearAccessTokenMiddleware::class,
         BearSessionAuthMiddleware::class,
         BearRoleMiddleware::class,
         BearPermissionMiddleware::class,

@@ -13,7 +13,7 @@ return [
             'password' => env(key: 'DB_PASSWORD'),
             'charset' => 'utf8',
             'prefix_indexes' => true,
-            'search_path' => ['wherebear2', 'public'], // REMOVE COMMENT WHEN MIGRATING
+            'search_path' => ['wherebear', 'public'], // REMOVE COMMENT WHEN MIGRATING
         ],
     ],
 

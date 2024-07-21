@@ -13,7 +13,7 @@ final class TagCreator {
 
         $model = new Tag();
 
-        $model->tag_enum = $tag_enum->value;
+        $model->enum = $tag_enum->value;
         $model->description = $tag_enum->getDescription();
 
         $model->save();

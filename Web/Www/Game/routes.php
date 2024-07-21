@@ -1,5 +1,6 @@
 <?php declare(strict_types=1);
 
+use Domain\User\Enum\BearPermissionEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Middleware\BearHtmxMiddleware;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Middleware\BearPermissionMiddleware;
 use Illuminate\Support\Facades\Route;
@@ -8,8 +9,8 @@ use Web\Www\Game\Controller\GameLobbyController;
 use Web\Www\Game\Controller\GamePlayController;
 use Web\Www\Game\Controller\GameResultController;
 
-Route::get(uri: "create", action: [GameController::class, 'createDialog'])->middleware([BearPermissionMiddleware::using(permission: 'game::create')]);
-Route::post(uri: "", action: [GameController::class, 'create'])->middleware([BearPermissionMiddleware::using(permission: 'game::create')]);
+Route::get(uri: "create", action: [GameController::class, 'createDialog'])->middleware([BearPermissionMiddleware::using(permission: BearPermissionEnum::GAME_CREATE)]);
+Route::post(uri: "", action: [GameController::class, 'create'])->middleware([BearPermissionMiddleware::using(permission: BearPermissionEnum::GAME_CREATE)]);
 Route::delete(uri: "{gameId}", action: [GameController::class, 'delete']);
 
 Route::prefix("{gameId}")->middleware(BearHtmxMiddleware::using(layout_location: 'layout.layout'))->group(callback: function () {

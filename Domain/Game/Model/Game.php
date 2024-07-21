@@ -5,7 +5,7 @@ namespace Domain\Game\Model;
 use Carbon\CarbonInterface;
 use Closure;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearUser;
-use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearLogDatabaseChanges;
+use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -73,7 +73,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * AUTO GENERATED FILE DO NOT MODIFY
  */
 final class Game extends Model {
-    use BearLogDatabaseChanges;
+    use BearDatabaseChangeTrait;
 
     protected $connection = 'pgsql';
     protected $table = 'game';
@@ -86,16 +86,19 @@ final class Game extends Model {
         'round_ends_at' => 'immutable_datetime',
     ];
 
+    /** @return BelongsTo<BearUser, self> */
     public function createdByUser(): BelongsTo {
         return $this->belongsTo(related: BearUser::class, foreignKey: 'created_by_user_id', ownerKey: 'id');
     }
 
+    /** @return BelongsTo<GameState, self> */
     public function gameStateEnum(): BelongsTo {
-        return $this->belongsTo(related: GameState::class, foreignKey: 'game_state_enum', ownerKey: 'game_state_enum');
+        return $this->belongsTo(related: GameState::class, foreignKey: 'game_state_enum', ownerKey: 'enum');
     }
 
+    /** @return BelongsTo<GamePublicStatus, self> */
     public function gamePublicStatusEnum(): BelongsTo {
-        return $this->belongsTo(related: GamePublicStatus::class, foreignKey: 'game_public_status_enum', ownerKey: 'game_public_status_enum');
+        return $this->belongsTo(related: GamePublicStatus::class, foreignKey: 'game_public_status_enum', ownerKey: 'enum');
     }
 
     protected $guarded = ['id', 'updated_at', 'created_at', 'deleted_at'];

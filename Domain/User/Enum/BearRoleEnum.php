@@ -2,21 +2,29 @@
 
 namespace Domain\User\Enum;
 
-use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearRoleService;
 
-enum BearRoleEnum: string {
+use GuardsmanPanda\Larabear\Infrastructure\Auth\Crud\BearRoleCrud;
+use GuardsmanPanda\Larabear\Infrastructure\Auth\Interface\BearRoleEnumInterface;
+use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearRole;
+
+enum BearRoleEnum: string implements BearRoleEnumInterface {
     case ADMIN = 'admin';
 
-    public function getRoleDescription(): string {
+    public function getValue(): string {
+        return $this->value;
+    }
+
+    public function getDescription(): string {
         return match ($this) {
             self::ADMIN => 'Allows the user to do everything.',
         };
     }
 
-
     public static function syncToDatabase(): void {
         foreach (BearRoleEnum::cases() as $enum) {
-            BearRoleService::createIfNotExists(role_slug: $enum->value, role_description: $enum->getRoleDescription());
+            if (BearRole::find(id: $enum->value) === null) {
+                 BearRoleCrud::create(role: $enum);
+            }
         }
     }
 }

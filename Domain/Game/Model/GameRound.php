@@ -5,7 +5,7 @@ namespace Domain\Game\Model;
 use Carbon\CarbonInterface;
 use Closure;
 use Domain\Panorama\Model\Panorama;
-use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearLogDatabaseChanges;
+use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -65,7 +65,7 @@ use RuntimeException;
  * AUTO GENERATED FILE DO NOT MODIFY
  */
 final class GameRound extends Model {
-    use BearLogDatabaseChanges;
+    use BearDatabaseChangeTrait;
 
     protected $connection = 'pgsql';
     protected $table = 'game_round';
@@ -75,10 +75,12 @@ final class GameRound extends Model {
     public $incrementing = false;
     protected $dateFormat = 'Y-m-d\TH:i:sP';
 
+    /** @return BelongsTo<Panorama, self>|null */
     public function panorama(): BelongsTo|null {
         return $this->belongsTo(related: Panorama::class, foreignKey: 'panorama_id', ownerKey: 'id');
     }
 
+    /** @return BelongsTo<Game, self> */
     public function game(): BelongsTo {
         return $this->belongsTo(related: Game::class, foreignKey: 'game_id', ownerKey: 'id');
     }

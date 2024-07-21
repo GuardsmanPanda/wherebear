@@ -5,7 +5,7 @@ namespace Domain\Panorama\Model;
 use Carbon\CarbonInterface;
 use Closure;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearUser;
-use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearLogDatabaseChanges;
+use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -64,7 +64,7 @@ use RuntimeException;
  * AUTO GENERATED FILE DO NOT MODIFY
  */
 final class PanoramaUserRating extends Model {
-    use BearLogDatabaseChanges;
+    use BearDatabaseChangeTrait;
 
     protected $connection = 'pgsql';
     protected $table = 'panorama_user_rating';
@@ -74,10 +74,12 @@ final class PanoramaUserRating extends Model {
     public $incrementing = false;
     protected $dateFormat = 'Y-m-d\TH:i:sP';
 
+    /** @return BelongsTo<Panorama, self> */
     public function panorama(): BelongsTo {
         return $this->belongsTo(related: Panorama::class, foreignKey: 'panorama_id', ownerKey: 'id');
     }
 
+    /** @return BelongsTo<BearUser, self> */
     public function user(): BelongsTo {
         return $this->belongsTo(related: BearUser::class, foreignKey: 'user_id', ownerKey: 'id');
     }

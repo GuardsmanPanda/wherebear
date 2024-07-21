@@ -6,11 +6,8 @@ use Carbon\CarbonInterface;
 use Closure;
 use Domain\Map\Model\MapMarker;
 use Domain\Map\Model\MapStyle;
-use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearLogDatabaseChanges;
+use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Model\BearCountry;
-use GuardsmanPanda\Larabear\Infrastructure\Locale\Model\BearLanguage;
-use Illuminate\Database\Eloquent\Casts\ArrayObject;
-use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -57,40 +54,27 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static mixed sum(string $column)
  * @method static bool exists()
  *
- * @property int $user_level_id
- * @property int $user_experience
- * @property bool $is_user_activated
+ * @property int $experience
+ * @property int $user_level_enum
  * @property string $id
  * @property string $created_at
  * @property string $updated_at
+ * @property string $country_cca2
+ * @property string $display_name
+ * @property string $map_style_enum
  * @property string $map_marker_enum
- * @property string $user_display_name
- * @property string|null $password
- * @property string|null $user_city
- * @property string|null $user_email
- * @property string|null $map_style_enum
- * @property string|null $remember_token
- * @property string|null $user_last_name
- * @property string|null $user_first_name
- * @property string|null $user_profile_image
- * @property string|null $password_reset_token
- * @property string|null $user_country_iso2_code
- * @property string|null $user_language_iso2_code
- * @property ArrayObject $user_data_json
+ * @property string|null $email
  * @property CarbonInterface|null $last_login_at
- * @property CarbonInterface|null $email_verified_at
- * @property CarbonInterface|null $password_reset_expires_at
  *
- * @property UserLevel $userLevel
- * @property BearLanguage|null $userLanguageIso2Code
- * @property BearCountry|null $userCountryIso2Code
- * @property MapStyle|null $mapStyleEnum
+ * @property BearCountry $countryCca2
+ * @property MapStyle $mapStyleEnum
+ * @property UserLevel $userLevelEnum
  * @property MapMarker $mapMarkerEnum
  *
  * AUTO GENERATED FILE DO NOT MODIFY
  */
 final class WhereBearUser extends Model {
-    use BearLogDatabaseChanges;
+    use BearDatabaseChangeTrait;
 
     protected $connection = 'pgsql';
     protected $table = 'bear_user';
@@ -99,30 +83,27 @@ final class WhereBearUser extends Model {
 
     /** @var array<string, string> $casts */
     protected $casts = [
-        'email_verified_at' => 'immutable_datetime',
         'last_login_at' => 'immutable_datetime',
-        'password_reset_expires_at' => 'immutable_datetime',
-        'user_data_json' => AsArrayObject::class,
     ];
 
-    public function userLevel(): BelongsTo {
-        return $this->belongsTo(related: UserLevel::class, foreignKey: 'user_level_id', ownerKey: 'id');
+    /** @return BelongsTo<BearCountry, self> */
+    public function countryCca2(): BelongsTo {
+        return $this->belongsTo(related: BearCountry::class, foreignKey: 'country_cca2', ownerKey: 'cca2');
     }
 
-    public function userLanguageIso2Code(): BelongsTo|null {
-        return $this->belongsTo(related: BearLanguage::class, foreignKey: 'user_language_iso2_code', ownerKey: 'language_iso2_code');
+    /** @return BelongsTo<MapStyle, self> */
+    public function mapStyleEnum(): BelongsTo {
+        return $this->belongsTo(related: MapStyle::class, foreignKey: 'map_style_enum', ownerKey: 'enum');
     }
 
-    public function userCountryIso2Code(): BelongsTo|null {
-        return $this->belongsTo(related: BearCountry::class, foreignKey: 'user_country_iso2_code', ownerKey: 'country_iso2_code');
+    /** @return BelongsTo<UserLevel, self> */
+    public function userLevelEnum(): BelongsTo {
+        return $this->belongsTo(related: UserLevel::class, foreignKey: 'user_level_enum', ownerKey: 'enum');
     }
 
-    public function mapStyleEnum(): BelongsTo|null {
-        return $this->belongsTo(related: MapStyle::class, foreignKey: 'map_style_enum', ownerKey: 'map_style_enum');
-    }
-
+    /** @return BelongsTo<MapMarker, self> */
     public function mapMarkerEnum(): BelongsTo {
-        return $this->belongsTo(related: MapMarker::class, foreignKey: 'map_marker_enum', ownerKey: 'map_marker_enum');
+        return $this->belongsTo(related: MapMarker::class, foreignKey: 'map_marker_enum', ownerKey: 'enum');
     }
 
     protected $guarded = ['id', 'updated_at', 'created_at', 'deleted_at'];

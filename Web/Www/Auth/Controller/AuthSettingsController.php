@@ -22,8 +22,8 @@ final class AuthSettingsController extends Controller {
         if (mb_strlen($newName) > 32) { //TODO :: add support for application/problem+json in larabear
             throw new RuntimeException(message: "Display name must be less than 32 characters.");
         }
-        BearUserUpdater::fromId(id: BearAuthService::getUserId() ?? throw new RuntimeException(message: "User must be logged in."))
-            ->setUserDisplayName(user_display_name: $newName)
+        BearUserUpdater::fromId(id: BearAuthService::getUserId())
+            ->setDisplayName(display_name: $newName)
             ->update();
         return $this->userSettings();
     }

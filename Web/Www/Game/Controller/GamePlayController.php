@@ -22,17 +22,17 @@ final class GamePlayController extends Controller {
                 EXTRACT(EPOCH FROM g.round_ends_at - NOW()) as round_seconds_remaining,
                 EXTRACT(EPOCH FROM g.next_round_at - NOW()) as round_result_seconds_remaining,
                 gr.panorama_id,
-                ST_Y(p.panorama_location::geometry) as panorama_lat,
-                ST_X(p.panorama_location::geometry) as panorama_lng,
+                ST_Y(p.location::geometry) as panorama_lat,
+                ST_X(p.location::geometry) as panorama_lng,
                 p.jpg_path, TO_CHAR(p.captured_date, 'Month YYYY') as captured_month,
                 p.state_name, p.city_name,
-                bc.country_iso2_code, bc.country_iso3_code,
-                bc.country_name, bc.country_tld, bc.country_calling_code, bc.country_currency_code,
-                bc.is_country_independent, bc.country_dependency_status
+                bc.cca2, bc.cca3,
+                bc.name, bc.tld, bc.calling_code, bc.currency_code,
+                bc.dependency_status
             FROM game g
             LEFT JOIN game_round gr ON gr.game_id = g.id AND gr.round_number = g.current_round
             LEFT JOIN panorama p ON p.id = gr.panorama_id
-            LEFT JOIN bear_country bc ON bc.country_iso2_code = p.country_iso2_code
+            LEFT JOIN bear_country bc ON bc.cca2 = p.country_cca2
             WHERE g.id = ?
         ", bindings: [$gameId]);
 
@@ -49,8 +49,7 @@ final class GamePlayController extends Controller {
 
         $user = DB::selectOne(query: <<<SQL
             SELECT
-                u.map_marker_file_name,
-                COALESCE(u.map_style_enum, 'OSM') as map_style_enum
+                u.map_marker_enum, u.map_style_enum
             FROM bear_user u
             LEFT JOIN game_user gu ON gu.user_id = u.id
             WHERE u.id = ? AND gu.game_id = ?
@@ -63,7 +62,7 @@ final class GamePlayController extends Controller {
         if ($enum === GameStateEnum::IN_PROGRESS_RESULT) {
             $guesses = DB::select(query: "
                 SELECT
-                    bu.user_display_name, bu.map_marker_file_name, bu.user_country_iso2_code, bc.country_name,
+                    bu.display_name, bu.map_marker_file_name, bu.user_country_iso2_code, bc.country_name,
                     gru.distance_meters, gru.round_points, gru.round_rank,
                     ST_Y(gru.location::geometry) as lat,
                     ST_X(gru.location::geometry) as lng,
@@ -81,11 +80,11 @@ final class GamePlayController extends Controller {
         return Resp::view(view: 'game::play.index', data: [
             'countries_used' => DB::select(query: "
                 SELECT
-                    bc.country_iso2_code, bc.country_name
+                    bc.cca2, bc.name
                 FROM game_round gr
                 LEFT JOIN game g ON g.id = gr.game_id
                 LEFT JOIN panorama p ON p.id = gr.panorama_id
-                LEFT JOIN bear_country bc ON bc.country_iso2_code = p.country_iso2_code
+                LEFT JOIN bear_country bc ON bc.cca2 = p.country_cca2
                 WHERE 
                     gr.game_id = ?
                     AND (gr.round_number < g.current_round OR (gr.round_number = g.current_round AND g.game_state_enum = 'IN_PROGRESS_RESULT'))
@@ -111,7 +110,7 @@ final class GamePlayController extends Controller {
         GameRoundUserCrud::createOrUpdate(
             game_id: $gameId,
             round_number: $game->current_round,
-            user_id: BearAuthService::getUserIdOrFail(),
+            user_id: BearAuthService::getUserId(),
             lng: Req::getFloatOrDefault(key: 'lng'),
             lat: Req::getFloatOrDefault(key: 'lat'),
         );

@@ -18,7 +18,7 @@ final class LandingPageController extends Controller {
             'games' => DB::select(query: "
                 SELECT
                     g.id, g.number_of_rounds, g.round_duration_seconds,
-                    bu.user_display_name,
+                    bu.display_name,
                     gu.user_id IS NOT NULL AS is_in_game
                 FROM game g
                 LEFT JOIN bear_user bu ON bu.id = g.created_by_user_id

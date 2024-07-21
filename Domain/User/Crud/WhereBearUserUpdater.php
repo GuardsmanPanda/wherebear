@@ -18,18 +18,8 @@ final readonly class WhereBearUserUpdater {
     }
 
 
-    public function setUserDisplayName(string $user_display_name): self {
-        $this->model->user_display_name = $user_display_name;
-        return $this;
-    }
-
-    public function setIsUserActivated(bool $is_user_activated): self {
-        $this->model->is_user_activated = $is_user_activated;
-        return $this;
-    }
-
-    public function setUserDataJson(ArrayObject $user_data_json): self {
-        $this->model->user_data_json = $user_data_json;
+    public function setDisplayName(string $display_name): self {
+        $this->model->display_name = $display_name;
         return $this;
     }
 
@@ -43,18 +33,13 @@ final readonly class WhereBearUserUpdater {
         return $this;
     }
 
-    public function setUserEmail(string|null $user_email): self {
-        $this->model->user_email = $user_email;
+    public function setEmail(string|null $email): self {
+        $this->model->email = $email;
         return $this;
     }
 
-    public function setUserCountryIso2Code(string|null $user_country_iso2_code): self {
-        $this->model->user_country_iso2_code = $user_country_iso2_code;
-        return $this;
-    }
-
-    public function setUserLanguageIso2Code(string|null $user_language_iso2_code): self {
-        $this->model->user_language_iso2_code = $user_language_iso2_code;
+    public function setCountryCca2(string $country_cca2): self {
+        $this->model->country_cca2 = $country_cca2;
         return $this;
     }
 
@@ -66,25 +51,6 @@ final readonly class WhereBearUserUpdater {
         return $this;
     }
 
-    public function setUserFirstName(string|null $user_first_name): self {
-        $this->model->user_first_name = $user_first_name;
-        return $this;
-    }
-
-    public function setUserLastName(string|null $user_last_name): self {
-        $this->model->user_last_name = $user_last_name;
-        return $this;
-    }
-
-    public function setUserCity(string|null $user_city): self {
-        $this->model->user_city = $user_city;
-        return $this;
-    }
-
-    public function setUserProfileImage(string|null $user_profile_image): self {
-        $this->model->user_profile_image = $user_profile_image;
-        return $this;
-    }
 
     public function update(): WhereBearUser {
         $this->model->save();

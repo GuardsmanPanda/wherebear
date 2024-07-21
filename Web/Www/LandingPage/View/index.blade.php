@@ -14,7 +14,7 @@
         <div class="flex justify-between select-none">
             <img height="33" width="166" class="my-auto ml-4" src="/static/img/logo/top.png" alt="Awesome Funtime Game">
             <div class="flex">
-                @if(BearAuthService::getUserId() === null)
+                @if(BearAuthService::getUserIdOrNull() === null)
                     <button class="my-3 mr-1 cursor-pointer font-medium px-4 text-lg text-gray-300 transform duration-75 hover:scale-105 hover:underline hover:text-gray-200"
                             hx-get="/auth/dialog">Login :D
                     </button>

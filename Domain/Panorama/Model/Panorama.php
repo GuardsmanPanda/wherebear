@@ -5,7 +5,7 @@ namespace Domain\Panorama\Model;
 use Carbon\CarbonInterface;
 use Closure;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearUser;
-use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearLogDatabaseChanges;
+use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Model\BearCountry;
 use Illuminate\Database\Eloquent\Casts\ArrayObject;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
@@ -59,23 +59,24 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $created_at
  * @property string $updated_at
  * @property string|null $jpg_path
+ * @property string|null $location
+ * @property string|null $avif_path
  * @property string|null $city_name
  * @property string|null $state_name
+ * @property string|null $country_cca2
  * @property string|null $retired_reason
  * @property string|null $added_by_user_id
- * @property string|null $country_iso2_code
- * @property string|null $panorama_location
  * @property ArrayObject|null $nominatim_json
  * @property CarbonInterface $captured_date
  * @property CarbonInterface|null $retired_at
  *
+ * @property BearCountry|null $countryCca2
  * @property BearUser|null $addedByUser
- * @property BearCountry|null $countryIso2Code
  *
  * AUTO GENERATED FILE DO NOT MODIFY
  */
 final class Panorama extends Model {
-    use BearLogDatabaseChanges;
+    use BearDatabaseChangeTrait;
 
     protected $connection = 'pgsql';
     protected $table = 'panorama';
@@ -89,12 +90,14 @@ final class Panorama extends Model {
         'retired_at' => 'immutable_datetime',
     ];
 
-    public function addedByUser(): BelongsTo|null {
-        return $this->belongsTo(related: BearUser::class, foreignKey: 'added_by_user_id', ownerKey: 'id');
+    /** @return BelongsTo<BearCountry, self>|null */
+    public function countryCca2(): BelongsTo|null {
+        return $this->belongsTo(related: BearCountry::class, foreignKey: 'country_cca2', ownerKey: 'cca2');
     }
 
-    public function countryIso2Code(): BelongsTo|null {
-        return $this->belongsTo(related: BearCountry::class, foreignKey: 'country_iso2_code', ownerKey: 'country_iso2_code');
+    /** @return BelongsTo<BearUser, self>|null */
+    public function addedByUser(): BelongsTo|null {
+        return $this->belongsTo(related: BearUser::class, foreignKey: 'added_by_user_id', ownerKey: 'id');
     }
 
     protected $guarded = ['id', 'updated_at', 'created_at', 'deleted_at'];

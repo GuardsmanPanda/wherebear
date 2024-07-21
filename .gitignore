@@ -2,6 +2,7 @@
 /.idea
 /.phpunit.cache
 /.vscode
+/Domain/Larabear
 /node_modules
 /public/build
 /public/static/dist

@@ -50,7 +50,7 @@ final class GameRoundCreator {
             return $model;
         } catch (Throwable $e) {
             DB::rollBack();
-            BearErrorCreator::create(message: "Failed to create game round [{$e->getMessage()}]", severity: BearSeverityEnum::HIGH, exception: $e);
+            BearErrorCreator::create(message: "Failed to create game round [{$e->getMessage()}]", severity: BearSeverityEnum::CRITICAL, exception: $e);
             throw new RuntimeException(message: "Failed to create game round [{$e->getMessage()}]", previous: $e);
         }
     }

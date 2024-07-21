@@ -20,7 +20,6 @@ use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Resp;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
-use Nette\Utils\Json;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Throwable;
@@ -131,7 +130,7 @@ final class GameLobbyController extends Controller {
 
 
     public function updateUser(string $gameId): Response|View {
-        $updater = WhereBearUserUpdater::fromId(id: BearAuthService::getUserIdOrFail());
+        $updater = WhereBearUserUpdater::fromId(id: BearAuthService::getUserId());
         if (Req::has(key: 'map_marker_enum')) {
             $updater->setMapMarkerEnum(map_marker_enum: Req::getStringOrDefault(key: 'map_marker_enum'));
         }
@@ -139,10 +138,10 @@ final class GameLobbyController extends Controller {
             $updater->setMapStyleEnum(map_style_enum: Req::getStringOrDefault(key: 'map_style_enum'));
         }
         if (Req::has(key: 'user_display_name')) {
-            $updater->setUserDisplayName(user_display_name: Req::getStringOrDefault(key: 'user_display_name'));
+            $updater->setDisplayName(display_name: Req::getStringOrDefault(key: 'user_display_name'));
         }
         if (Req::has(key: 'user_country_iso2_code')) {
-            $updater->setUserCountryIso2Code(user_country_iso2_code: Req::getStringOrDefault(key: 'user_country_iso2_code'));
+            $updater->setCountryCca2(country_cca2: Req::getStringOrDefault(key: 'user_country_iso2_code'));
         }
         $updater->update();
         GameBroadcast::playerUpdate(gameId: $gameId, playerId: BearAuthService::getUserId()); // Broadcast to all players
@@ -152,7 +151,7 @@ final class GameLobbyController extends Controller {
 
     public function updateGameUser(string $gameId): Response|View {
         $ready = Req::getBoolOrDefault(key: 'is_ready');
-        $updater = GameUserUpdater::fromGameIdAndUserId(game_id: $gameId, user_id: BearAuthService::getUserIdOrFail());
+        $updater = GameUserUpdater::fromGameIdAndUserId(game_id: $gameId, user_id: BearAuthService::getUserId());
         $updater->setIsReady(is_ready: $ready);
         $updater->update();
         GameStartAction::placeInQueueIfAble(gameId: $gameId);
@@ -173,7 +172,7 @@ final class GameLobbyController extends Controller {
 
 
     public function leaveGame(string $gameId): Response {
-        GameUserDeleter::deleteFromGameAndUserId(gameId: $gameId, userId: BearAuthService::getUserIdOrFail());
+        GameUserDeleter::deleteFromGameAndUserId(gameId: $gameId, userId: BearAuthService::getUserId());
         GameBroadcast::playerUpdate(gameId: $gameId, playerId: BearAuthService::getUserId()); // Broadcast to all players
         return Htmx::redirect(url: '/', message: 'Left Game.');
     }
@@ -235,7 +234,7 @@ final class GameLobbyController extends Controller {
     public function dialogSettings(string $gameId): View {
         $is_allowed = BearDatabaseService::exists(sql: "
             SELECT 1 FROM game WHERE id = ? AND created_by_user_id = ?
-            ", bindings: [$gameId, BearAuthService::getUserIdOrFail()]
+            ", bindings: [$gameId, BearAuthService::getUserId()]
         );
         if ($is_allowed === false) {
             return throw new UnauthorizedHttpException("You are not allowed to edit this game.");

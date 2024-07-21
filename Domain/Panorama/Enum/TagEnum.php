@@ -3,7 +3,7 @@
 namespace Domain\Panorama\Enum;
 
 use Domain\Panorama\Crud\TagCreator;
-use Domain\Panorama\Service\TagService;
+use Domain\Panorama\Model\Tag;
 
 enum TagEnum: string {
     case AWESOME = 'AWESOME';
@@ -23,10 +23,9 @@ enum TagEnum: string {
 
     public static function syncToDatabase(): void {
         foreach (TagEnum::cases() as $enum) {
-            if (TagService::tagExists(tag_enum: $enum->value)) {
-                continue;
+            if (Tag::find(id: $enum->value) === null) {
+                TagCreator::create(tag_enum: $enum);
             }
-            TagCreator::create(tag_enum: $enum);
         }
     }
 }

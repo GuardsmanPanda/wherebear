@@ -25,7 +25,7 @@ return [
     //------------------------------------------------------------------------------------------------------------------
     'eloquent-model-generator' => [
         'pgsql' => [
-            'bear_user' => ['class' => 'WhereBearUser', 'location' => 'Domain/User/Model'],
+            //'bear_user' => ['class' => 'WhereBearUser', 'location' => 'Domain/User/Model'],
             'game' => ['location' => 'Domain/Game/Model'],
             'game_public_status' => ['location' => 'Domain/Game/Model'],
             'game_round' => ['location' => 'Domain/Game/Model'],
@@ -39,6 +39,25 @@ return [
             'panorama_user_rating' => ['location' => 'Domain/Panorama/Model'],
             'tag' => ['location' => 'Domain/Panorama/Model'],
             'user_level' => ['location' => 'Domain/User/Model'],
+
+            'bear_access_token' => ['location' => 'Domain/Larabear/Model'],
+            'bear_config' => ['location' => 'Domain/Larabear/Model'],
+            'bear_console_event' => ['location' => 'Domain/Larabear/Model'],
+            'bear_country' => ['location' => 'Domain/Larabear/Model'],
+            'bear_database_change' => ['location' => 'Domain/Larabear/Model'],
+            'bear_error' => ['location' => 'Domain/Larabear/Model'],
+            'bear_error_response' => ['location' => 'Domain/Larabear/Model'],
+            'bear_external_api' => ['location' => 'Domain/Larabear/Model'],
+            'bear_idempotency' => ['location' => 'Domain/Larabear/Model'],
+            'bear_oauth2_client' => ['location' => 'Domain/Larabear/Model'],
+            'bear_oauth2_client_type' => ['location' => 'Domain/Larabear/Model'],
+            'bear_oauth2_user' => ['location' => 'Domain/Larabear/Model'],
+            'bear_permission' => ['location' => 'Domain/Larabear/Model'],
+            'bear_permission_user' => ['location' => 'Domain/Larabear/Model'],
+            'bear_role_permission' => ['location' => 'Domain/Larabear/Model'],
+            'bear_role_user' => ['location' => 'Domain/Larabear/Model'],
+            'bear_route_usage' => ['location' => 'Domain/Larabear/Model'],
+            'bear_user' => ['location' => 'Domain/Larabear/Model'],
         ]
     ],
 ];

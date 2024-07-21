@@ -13,7 +13,7 @@ final class GamePublicStatusCreator {
 
         $model = new GamePublicStatus();
 
-        $model->game_public_status_enum = $enum->value;
+        $model->enum = $enum->value;
         $model->description = $enum->getDescription();
 
         $model->save();

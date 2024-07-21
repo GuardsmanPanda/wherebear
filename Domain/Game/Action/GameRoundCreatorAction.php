@@ -16,8 +16,11 @@ final class GameRoundCreatorAction {
     const int FILLER_COUNTRY_CHANCE = 40;
     const int RANDOM_COUNTRY_CHANCE = 30;
 
+    /** @var array<string> $CL1 */
     private array $CL1 = ['AT', 'BE', 'CH', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GB-ENG', 'GB-SCT', 'GB-WLS', 'GR', 'IE', 'IT', 'LT', 'LV', 'NL', 'NO', 'PL', 'PT', 'SE', 'US'];
+    /** @var array<string> $CL2 */
     private array $CL2 = ['AL', 'AU', 'BA', 'BG', 'BY', 'CA', 'CN', 'CZ', 'GB-NIR', 'GE', 'HR', 'JP', 'KR', 'LU', 'NZ', 'RS', 'RU', 'SI', 'SK', 'UA', 'VA', 'XK'];
+    /** @var array<string> $filler */
     private array $filler = [
         'CA', 'US', 'MX', 'CU',
         'AR', 'CL', 'UY', 'BR', 'PY', 'PE', 'BO', 'EC', 'CO', 'VE',
@@ -28,7 +31,9 @@ final class GameRoundCreatorAction {
         'GL', 'IS', 'NO', 'SE', 'FI', 'FO', 'AX', 'ET', 'LV', 'EE', 'DK', 'GB-NIR', 'GB-ENG', 'GB-SCT', 'GB-WLS', 'IE', 'PT', 'ES', 'FR', 'LU', 'BE', 'NL', 'AD', 'MC', 'DE', 'CH', 'AT', 'CZ', 'SK', 'PL', 'LI', 'VA', 'BY', 'UA', 'MD', 'HU', 'RO', 'SI', 'HR', 'BA', 'ME', 'RS', 'BG', 'GR', 'AL', 'XK', 'MK',
     ];
 
+    /** @var array<string> $countries_used */
     private array $countries_used = ['XX'];
+    /** @var array<string> $all_countries */
     private array $all_countries;
 
 

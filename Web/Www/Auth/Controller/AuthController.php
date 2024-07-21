@@ -37,10 +37,10 @@ final class AuthController extends Controller {
     public function createGuest(): Response {
         $gameId = Req::getStringOrDefault(key: "game_id");
         $user = WhereBearUserCreator::create(
-            user_display_name: "Guest-" . BearShortCodeService::generateNextCode(),
-            user_experience: 0,
-            user_level_id: 0,
-            user_country_iso2_code: Req::ipCountry()
+            display_name: "Guest-" . BearShortCodeService::generateNextCode(),
+            experience: 0,
+            user_level_enum: 0,
+            country_cca2: Req::ipCountry()
         );
         BearAuthCookieLoginAction::login(user: BearUser::findOrFail($user->id), login_type: BearUserLoginTypeEnum::WEB_FORM);
         return Htmx::redirect(url: "/game/$gameId/lobby");
@@ -56,11 +56,11 @@ final class AuthController extends Controller {
             $user = $oauth2User->user;
             if ($user === null && $oauth2User->oauth2_user_email !== null) {
                 $user = WhereBearUserCreator::create(
-                    user_display_name: $oauth2User->oauth2_user_name,
-                    user_experience: 1,
-                    user_level_id: 1,
-                    user_email: $oauth2User->oauth2_user_email,
-                    user_country_iso2_code: Req::ipCountry()
+                    display_name: $oauth2User->oauth2_user_name,
+                    experience: 1,
+                    user_level_enum: 1,
+                    email: $oauth2User->oauth2_user_email,
+                    country_cca2: Req::ipCountry()
                 );
                 $updater = new BearOauth2UserUpdater($oauth2User);
                 $oauth2User = $updater->setUserId(user_id: $user->id)->update();

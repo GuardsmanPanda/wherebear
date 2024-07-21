@@ -5,7 +5,7 @@ namespace Domain\Game\Model;
 use Carbon\CarbonInterface;
 use Closure;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearUser;
-use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearLogDatabaseChanges;
+use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -53,7 +53,7 @@ use RuntimeException;
  * @method static bool exists()
  *
  * @property bool $is_ready
- * @property float $game_points
+ * @property float $points
  * @property string $game_id
  * @property string $user_id
  * @property string $created_at
@@ -65,7 +65,7 @@ use RuntimeException;
  * AUTO GENERATED FILE DO NOT MODIFY
  */
 final class GameUser extends Model {
-    use BearLogDatabaseChanges;
+    use BearDatabaseChangeTrait;
 
     protected $connection = 'pgsql';
     protected $table = 'game_user';
@@ -77,10 +77,12 @@ final class GameUser extends Model {
     /** @var array<string> $log_exclude_columns */
     public array $log_exclude_columns = ['is_ready'];
 
+    /** @return BelongsTo<Game, self> */
     public function game(): BelongsTo {
         return $this->belongsTo(related: Game::class, foreignKey: 'game_id', ownerKey: 'id');
     }
 
+    /** @return BelongsTo<BearUser, self> */
     public function user(): BelongsTo {
         return $this->belongsTo(related: BearUser::class, foreignKey: 'user_id', ownerKey: 'id');
     }
