@@ -111,8 +111,8 @@ final class GamePlayController extends Controller {
             game_id: $gameId,
             round_number: $game->current_round,
             user_id: BearAuthService::getUserId(),
-            lng: Req::getFloatOrDefault(key: 'lng'),
-            lat: Req::getFloatOrDefault(key: 'lat'),
+            lng: Req::getFloat(key: 'lng'),
+            lat: Req::getFloat(key: 'lat'),
         );
         return Resp::ok();
     }

@@ -8,7 +8,7 @@ use GuardsmanPanda\Larabear\Infrastructure\Auth\Interface\BearRoleEnumInterface;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearRole;
 
 enum BearRoleEnum: string implements BearRoleEnumInterface {
-    case ADMIN = 'admin';
+    case ADMIN = 'ADMIN';
 
     public function getValue(): string {
         return $this->value;

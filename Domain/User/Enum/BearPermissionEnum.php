@@ -8,10 +8,10 @@ use GuardsmanPanda\Larabear\Infrastructure\Auth\Crud\BearPermissionCrud;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Interface\BearPermissionEnumInterface;
 
 enum BearPermissionEnum: string implements BearPermissionEnumInterface {
-    case GAME_CREATE = 'game::create';
-    case PANORAMA_DOWNLOAD = 'panorama::download';
-    case PANORAMA_CONTRIBUTE = 'panorama::contribute';
-    case IS_BOB = 'is-bob';
+    case GAME_CREATE = 'GAME::CREATE';
+    case PANORAMA_DOWNLOAD = 'PANORAMA::DOWNLOAD';
+    case PANORAMA_CONTRIBUTE = 'PANORAMA::CONTRIBUTE';
+    case IS_BOB = 'IS_BOB';
 
     public function getValue(): string {
         return $this->value;

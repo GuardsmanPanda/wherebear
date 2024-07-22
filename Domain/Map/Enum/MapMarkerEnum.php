@@ -3,7 +3,9 @@
 namespace Domain\Map\Enum;
 
 use Domain\Map\Crud\MapMarkerCreator;
+use Domain\Map\Model\MapMarker;
 use Domain\Map\Service\MapMarkerService;
+use Domain\User\Enum\UserLevelEnum;
 
 enum MapMarkerEnum: string {
     case DEFAULT = 'DEFAULT';
@@ -12,11 +14,11 @@ enum MapMarkerEnum: string {
     case WINDMILL = 'Windmill';
 
 
-    public function getMapMarkerName(): string {
+    public function getName(): string {
         return match ($this) {
             self::DEFAULT => 'Default',
             self::ONE_UP => '1UP',
-            self::BOB_DINO => 'BobDino',
+            self::BOB_DINO => 'Bob Dino',
             self::WINDMILL => 'Windmill',
         };
     }
@@ -32,10 +34,10 @@ enum MapMarkerEnum: string {
     }
 
 
-    public function getUserLevelRequirement(): int {
+    public function getUserLevelRequirement(): UserLevelEnum {
         return match ($this) {
-            default => 0,
-            self::ONE_UP => 1,
+            default => UserLevelEnum::L0,
+            self::ONE_UP => UserLevelEnum::L1,
         };
     }
 
@@ -48,22 +50,21 @@ enum MapMarkerEnum: string {
     }
 
 
-    public function getMapMarkerWidthRem(): int {
+    public function getWidthRem(): int {
         return 4;
     }
 
 
-    public function getMapMarkerHeightRem(): int {
+    public function getHeightRem(): int {
         return 4;
     }
 
 
     public static function syncToDatabase(): void {
         foreach (MapMarkerEnum::cases() as $marker) {
-            if (MapMarkerService::mapMarkerExists(mapMarker: $marker)) {
-                continue;
+            if (MapMarker::find(id: $marker->value) === null) {
+                MapMarkerCreator::create(enum: $marker);
             }
-            MapMarkerCreator::create(enum: $marker);
         }
     }
 }

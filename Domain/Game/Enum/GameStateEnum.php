@@ -3,6 +3,7 @@
 namespace Domain\Game\Enum;
 
 use Domain\Game\Crud\GameStateCreator;
+use Domain\Game\Model\GameState;
 use Domain\Game\Service\GameStateService;
 
 enum GameStateEnum: string {
@@ -13,6 +14,18 @@ enum GameStateEnum: string {
     case IN_PROGRESS_CALCULATING = 'IN_PROGRESS_CALCULATING';
     case IN_PROGRESS_RESULT = 'IN_PROGRESS_RESULT';
     case FINISHED = 'FINISHED';
+
+    public function getDescription(): string {
+        return match ($this) {
+            self::WAITING_FOR_PLAYERS => 'Waiting for players',
+            self::QUEUED => 'Queued',
+            self::STARTING => 'Starting',
+            self::IN_PROGRESS => 'In progress',
+            self::IN_PROGRESS_CALCULATING => 'In progress calculating',
+            self::IN_PROGRESS_RESULT => 'In progress result',
+            self::FINISHED => 'Finished',
+        };
+    }
 
     public function isStarting(): bool {
         return $this === self::WAITING_FOR_PLAYERS || $this === self::QUEUED || $this === self::STARTING;
@@ -29,10 +42,9 @@ enum GameStateEnum: string {
 
     public static function syncToDatabase(): void {
         foreach (GameStateEnum::cases() as $enum) {
-            if (GameStateService::gameStateExists(game_state_enum: $enum->value)) {
-                continue;
+            if (GameState::find(id: $enum->value) === null) {
+                GameStateCreator::create(enum: $enum);
             }
-            GameStateCreator::create(enum: $enum);
         }
     }
 }

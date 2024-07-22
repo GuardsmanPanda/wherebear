@@ -1,6 +1,6 @@
 <?php declare(strict_types=1); ?>
 <div class="grid-cols-1 grid container mx-auto w-96 mt-2">
-    <h1 class="text-center font-bold text-xl">{{$game->user_display_name}}'s Game</h1>
+    <h1 class="text-center font-bold text-xl">{{$game->display_name}}'s Game</h1>
     <div class="text-center text-sm text-gray-400 -mt-1">{{$game->number_of_rounds}} rounds, {{count($players)}} players.</div>
     <hr class="mx-5 mt-3 mb-3 pb-0.5 border-gray-700 border-dashed border-b-2">
     <div class="mx-auto text-lime-300 font-medium text-xl">
@@ -19,7 +19,7 @@
                 <img class="w-8 mr-2" src="/static/flag/svg/{{$player->user_country_iso2_code}}.svg" alt="{{$player->country_name}}" tippy="{{$player->country_name}}">
                 <div>
                     <p class="font-semibold">
-                        {{$player->user_display_name}}
+                        {{$player->display_name}}
                     </p>
                     @if($player->is_ready)
                         <p class="text-green-400 text-xs -mt-1 font-medium">ready</p>

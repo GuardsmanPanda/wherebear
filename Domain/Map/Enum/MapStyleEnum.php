@@ -3,7 +3,9 @@
 namespace Domain\Map\Enum;
 
 use Domain\Map\Crud\MapStyleCreator;
+use Domain\Map\Model\MapStyle;
 use Domain\Map\Service\MapStyleService;
+use Domain\User\Enum\UserLevelEnum;
 use Infrastructure\App\Enum\BearExternalApiEnum;
 
 enum MapStyleEnum: string {
@@ -41,20 +43,19 @@ enum MapStyleEnum: string {
     }
 
 
-    public function getUserLevelRequirement(): int {
+    public function getUserLevelRequirement(): UserLevelEnum {
         return match ($this) {
-            default => 0,
-            self::OSM => 1,
+            default => UserLevelEnum::L0,
+            self::OSM => UserLevelEnum::L1,
         };
     }
 
 
     public static function syncToDatabase(): void {
         foreach (MapStyleEnum::cases() as $style) {
-            if (MapStyleService::mapStyleExists(mapStyle: $style)) {
-                continue;
+            if (MapStyle::find(id: $style->value) === null) {
+                MapStyleCreator::create(enum: $style);
             }
-            MapStyleCreator::create(enum: $style);
         }
     }
 }

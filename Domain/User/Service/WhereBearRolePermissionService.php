@@ -4,7 +4,8 @@ namespace Domain\User\Service;
 
 use Domain\User\Enum\BearPermissionEnum;
 use Domain\User\Enum\BearRoleEnum;
-use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearRolePermissionService;
+use GuardsmanPanda\Larabear\Infrastructure\Auth\Crud\BearRolePermissionCreator;
+use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearRolePermission;
 
 final class WhereBearRolePermissionService {
     public static function syncRolePermissionsToDatabase(): void {
@@ -15,7 +16,9 @@ final class WhereBearRolePermissionService {
         ];
 
         foreach ($roles as $role) {
-            BearRolePermissionService::createIfNotExists(role_slug: $role['role']->value, permission_slug: $role['permission']->value);
+            if (BearRolePermission::find(ids: ['role_enum' => $role['role']->getValue(), 'permission_enum' => $role['permission']->getValue()]) === null) {
+                BearRolePermissionCreator::create(role: $role['role'], permission: $role['permission']);
+            }
         }
     }
 }

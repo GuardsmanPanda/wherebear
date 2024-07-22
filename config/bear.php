@@ -25,7 +25,7 @@ return [
     //------------------------------------------------------------------------------------------------------------------
     'eloquent-model-generator' => [
         'pgsql' => [
-            //'bear_user' => ['class' => 'WhereBearUser', 'location' => 'Domain/User/Model'],
+            'bear_user' => ['class' => 'WhereBearUser', 'location' => 'Domain/User/Model'],
             'game' => ['location' => 'Domain/Game/Model'],
             'game_public_status' => ['location' => 'Domain/Game/Model'],
             'game_round' => ['location' => 'Domain/Game/Model'],
@@ -57,7 +57,7 @@ return [
             'bear_role_permission' => ['location' => 'Domain/Larabear/Model'],
             'bear_role_user' => ['location' => 'Domain/Larabear/Model'],
             'bear_route_usage' => ['location' => 'Domain/Larabear/Model'],
-            'bear_user' => ['location' => 'Domain/Larabear/Model'],
+          //  'bear_user' => ['location' => 'Domain/Larabear/Model'],
         ]
     ],
 ];

@@ -105,9 +105,9 @@
                     <div class="flex justify-center items-center">
                         <img class="h-6 mr-2"
                              src="/static/flag/svg/{{$user->country_iso2_code}}.svg" alt="{{$user->country_name}}">
-                        <div class="text-gray-200 text-3xl font-bold">{{$user->user_display_name}}</div>
+                        <div class="text-gray-200 text-3xl font-bold">{{$user->display_name}}</div>
                     </div>
-                    @if(str_starts_with(haystack: $user->user_display_name, needle: 'Guest-'))
+                    @if(str_starts_with(haystack: $user->display_name, needle: 'Guest-'))
                         <div class="text-lime-300 font-medium text-xs">Click to Change</div>
                     @endif
                 </button>

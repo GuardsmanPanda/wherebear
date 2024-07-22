@@ -18,7 +18,7 @@ final class AuthSettingsController extends Controller {
     }
 
     public function userSettingsPatch(): View {
-        $newName = Req::getStringOrDefault(key: 'user_display_name');
+        $newName = Req::getString(key: 'display_name');
         if (mb_strlen($newName) > 32) { //TODO :: add support for application/problem+json in larabear
             throw new RuntimeException(message: "Display name must be less than 32 characters.");
         }

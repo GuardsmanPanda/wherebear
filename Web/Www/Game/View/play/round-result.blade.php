@@ -62,7 +62,7 @@
                          alt="Country Flag" tippy="{{$guess->country_name}}">
                     <div class="text-gray-300 ml-2 flex-grow">
                         <div class="font-bold text-lg">
-                            {{$guess->user_display_name}}
+                            {{$guess->display_name}}
                         </div>
                         <div class="font-medium text-gray-400 flex justify-between items-center">
                             {!! GameRoundResultRender::renderPoints(points: $guess->round_points) !!}
@@ -115,7 +115,7 @@
             lat: {{$guess->lat}},
             lng: {{$guess->lng}},
             file: '{{$guess->file_name}}',
-            name: '{{$guess->user_display_name}}'
+            name: '{{$guess->display_name}}'
         },
         @endforeach
     ];

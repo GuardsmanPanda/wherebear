@@ -59,14 +59,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $id
  * @property string $created_at
  * @property string $updated_at
- * @property string $country_cca2
  * @property string $display_name
  * @property string $map_style_enum
  * @property string $map_marker_enum
  * @property string|null $email
+ * @property string|null $country_cca2
  * @property CarbonInterface|null $last_login_at
  *
- * @property BearCountry $countryCca2
+ * @property BearCountry|null $countryCca2
  * @property MapStyle $mapStyleEnum
  * @property UserLevel $userLevelEnum
  * @property MapMarker $mapMarkerEnum
@@ -86,8 +86,8 @@ final class WhereBearUser extends Model {
         'last_login_at' => 'immutable_datetime',
     ];
 
-    /** @return BelongsTo<BearCountry, self> */
-    public function countryCca2(): BelongsTo {
+    /** @return BelongsTo<BearCountry, self>|null */
+    public function countryCca2(): BelongsTo|null {
         return $this->belongsTo(related: BearCountry::class, foreignKey: 'country_cca2', ownerKey: 'cca2');
     }
 

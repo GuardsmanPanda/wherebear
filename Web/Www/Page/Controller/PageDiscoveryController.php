@@ -33,8 +33,8 @@ final class PageDiscoveryController extends Controller {
 
 
     public function addFromStreetViewLocation(): array {
-        $lat = Req::getFloatOrDefault(key: 'lat');
-        $lng = Req::getFloatOrDefault(key: 'lng');
+        $lat = Req::getFloat(key: 'lat');
+        $lng = Req::getFloat(key: 'lng');
         $data = StreetViewClient::findByLocation(latitude: $lat, longitude: $lng);
         if (!PanoramaService::panoramaExists(id: $data['pano_id'])) {
             $panorama = PanoramaCreator::createFromStreetViewData(data: $data, added_by_user_id: BearAuthService::getUserId());
@@ -55,13 +55,13 @@ final class PageDiscoveryController extends Controller {
 
 
     public function searchFromStreetViewLocation(): array {
-        $retries = Req::getIntOrDefault(key: 'retries');
+        $retries = Req::getInt(key: 'retries');
         $retries = min(max($retries, 0), 50);
-        $lat = Req::getFloatOrDefault(key: 'lat');
-        $lng = Req::getFloatOrDefault(key: 'lng');
+        $lat = Req::getFloat(key: 'lat');
+        $lng = Req::getFloat(key: 'lng');
         $results = [];
         for ($i = 0; $i <= $retries; $i++) {
-            $newPos = MapService::offsetLatLng(lat: $lat, lng: $lng, meters: Req::getFloatOrDefault(key: 'distance'));
+            $newPos = MapService::offsetLatLng(lat: $lat, lng: $lng, meters: Req::getFloat(key: 'distance'));
             $data = StreetViewClient::findByLocation(latitude: $newPos->lat, longitude: $newPos->lng);
             if ($data === null) {
                 $results[] = [

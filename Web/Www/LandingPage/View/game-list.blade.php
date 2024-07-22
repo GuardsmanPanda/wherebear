@@ -10,7 +10,7 @@
             @endif
             <a class="hover:text-white hover:scale-102 duration-75 transition-transform"
                href="/game/{{$game->id}}/lobby">
-                <h3 class="text-lg font-medium">{{$game->user_display_name}}'s Game
+                <h3 class="text-lg font-medium">{{$game->display_name}}'s Game
                     @if($game->is_in_game)
                         <span class="text-yellow-400">(Playing)</span>
                     @endif

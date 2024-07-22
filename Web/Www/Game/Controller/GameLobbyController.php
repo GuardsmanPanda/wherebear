@@ -31,7 +31,7 @@ final class GameLobbyController extends Controller {
                 SELECT
                     g.id, g.number_of_rounds, g.round_duration_seconds, g.created_by_user_id,
                     g.game_state_enum, g.current_round, g.round_result_duration_seconds,
-                    bu.user_display_name
+                    bu.display_name
                 FROM game g
                 LEFT JOIN bear_user bu ON bu.id = g.created_by_user_id
                 WHERE g.id = ?
@@ -55,19 +55,19 @@ final class GameLobbyController extends Controller {
             return Resp::redirect(url: '/', message: 'Game is over');
         }
 
-        $user_id = BearAuthService::getUserId();
+        $user_id = BearAuthService::getUserIdOrNull();
         if ($user_id === null) {
             return Resp::view(view: "game::lobby.guest", data: [
                 'game' => $game,
                 'players' => DB::select(query: "
                     SELECT 
-                        bu.user_display_name, bu.file_name, bu.user_country_iso2_code,
+                        bu.display_name, bu.file_name, bu.user_country_iso2_code,
                         gu.is_ready, bc.country_name
                     FROM game_user gu
                     LEFT JOIN bear_user bu ON bu.id = gu.user_id
                     LEFT JOIN bear_country bc ON bc.country_iso2_code = bu.user_country_iso2_code
                     WHERE gu.game_id = ?
-                    ORDER BY bu.id = ? DESC, bu.user_display_name, bu.user_country_iso2_code, bu.id
+                    ORDER BY bu.id = ? DESC, bu.display_name, bu.user_country_iso2_code, bu.id
                 ", bindings: [$game->id, $user_id]),
             ]);
         }
@@ -81,7 +81,6 @@ final class GameLobbyController extends Controller {
         }
 
         // If the game is in progress, then redirect to the game play page
-
         if ($enum->isInProgress()) {
             if (Req::hxRequest()) {
                 return Htmx::redirect(url: "/game/$gameId/play");
@@ -95,7 +94,7 @@ final class GameLobbyController extends Controller {
             'map_markers' => DB::select(query: "SELECT file_name, map_marker_name FROM map_marker ORDER BY file_name"),
             'user' => DB::selectOne(query: "
                 SELECT 
-                    bu.id, bu.user_display_name, mm.file_name, bu.user_email,
+                    bu.id, bu.display_name, mm.file_name, bu.user_email,
                     gu.is_ready, mm.map_marker_name,
                     COALESCE(ms.name, 'OpenStreetMap') as map_style_name,
                     COALESCE(ms.map_style_enum, 'OSM') as map_style_enum,
@@ -115,7 +114,7 @@ final class GameLobbyController extends Controller {
         return Resp::view(view: 'game::lobby.player-list', data: [
             'players' => DB::select(query: "
                 SELECT 
-                    bu.user_display_name, bu.map_marker_file_name, bu.user_country_iso2_code,
+                    bu.display_name, bu.map_marker_file_name, bu.user_country_iso2_code,
                     gu.is_ready, bc.country_name,
                     bu.user_email IS NULL AS is_guest,
                     (SELECT COUNT(*) FROM game_user WHERE user_id = bu.id) as game_count
@@ -123,7 +122,7 @@ final class GameLobbyController extends Controller {
                 LEFT JOIN bear_user bu ON bu.id = gu.user_id
                 LEFT JOIN bear_country bc ON bc.country_iso2_code = bu.user_country_iso2_code
                 WHERE gu.game_id = ?
-                ORDER BY bu.id = ? DESC, bu.user_display_name, bu.user_country_iso2_code, bu.id
+                ORDER BY bu.id = ? DESC, bu.display_name, bu.user_country_iso2_code, bu.id
             ", bindings: [$gameId, BearAuthService::getUserId()]),
         ]);
     }
@@ -132,16 +131,16 @@ final class GameLobbyController extends Controller {
     public function updateUser(string $gameId): Response|View {
         $updater = WhereBearUserUpdater::fromId(id: BearAuthService::getUserId());
         if (Req::has(key: 'map_marker_enum')) {
-            $updater->setMapMarkerEnum(map_marker_enum: Req::getStringOrDefault(key: 'map_marker_enum'));
+            $updater->setMapMarkerEnum(map_marker_enum: Req::getString(key: 'map_marker_enum'));
         }
         if (Req::has(key: 'map_style_enum')) {
-            $updater->setMapStyleEnum(map_style_enum: Req::getStringOrDefault(key: 'map_style_enum'));
+            $updater->setMapStyleEnum(map_style_enum: Req::getString(key: 'map_style_enum'));
         }
-        if (Req::has(key: 'user_display_name')) {
-            $updater->setDisplayName(display_name: Req::getStringOrDefault(key: 'user_display_name'));
+        if (Req::has(key: 'display_name')) {
+            $updater->setDisplayName(display_name: Req::getString(key: 'display_name'));
         }
         if (Req::has(key: 'user_country_iso2_code')) {
-            $updater->setCountryCca2(country_cca2: Req::getStringOrDefault(key: 'user_country_iso2_code'));
+            $updater->setCountryCca2(country_cca2: Req::getString(key: 'user_country_iso2_code'));
         }
         $updater->update();
         GameBroadcast::playerUpdate(gameId: $gameId, playerId: BearAuthService::getUserId()); // Broadcast to all players
@@ -150,9 +149,8 @@ final class GameLobbyController extends Controller {
 
 
     public function updateGameUser(string $gameId): Response|View {
-        $ready = Req::getBoolOrDefault(key: 'is_ready');
         $updater = GameUserUpdater::fromGameIdAndUserId(game_id: $gameId, user_id: BearAuthService::getUserId());
-        $updater->setIsReady(is_ready: $ready);
+        $updater->setIsReady(is_ready: Req::getBool(key: 'is_ready'));
         $updater->update();
         GameStartAction::placeInQueueIfAble(gameId: $gameId);
         GameBroadcast::playerUpdate(gameId: $gameId, playerId: BearAuthService::getUserId()); // Broadcast to all players
@@ -160,12 +158,12 @@ final class GameLobbyController extends Controller {
     }
 
     public function updateSettings(string $gameId): Response|View {
-        $enum = GamePublicStatusEnum::from(Req::getStringOrDefault(key: 'game_public_status'));
+        $enum = GamePublicStatusEnum::from(Req::getString(key: 'game_public_status'));
         GameUpdater::fromId(id: $gameId)
-            ->setNumberOfRounds(number_of_rounds: Req::getIntOrDefault(key: 'number_of_rounds'))
-            ->setRoundDurationSeconds(round_duration_seconds: Req::getIntOrDefault(key: 'round_duration_seconds'))
-            ->setRoundResultDurationSeconds(round_result_duration_seconds: Req::getIntOrDefault(key: 'round_result_duration_seconds'))
-            ->setGamePublicStatus(game_public_status: $enum)
+            ->setNumberOfRounds(number_of_rounds: Req::getInt(key: 'number_of_rounds'))
+            ->setRoundDurationSeconds(round_duration_seconds: Req::getInt(key: 'round_duration_seconds'))
+            ->setRoundResultDurationSeconds(round_result_duration_seconds: Req::getInt(key: 'round_result_duration_seconds'))
+            ->setGamePublicStatusEnum(enum: $enum)
             ->update();
         return $this->index($gameId);
     }
@@ -189,7 +187,7 @@ final class GameLobbyController extends Controller {
                     WHERE country_dependency_status != 'Fictive' OR country_dependency_status IS NULL
                     ORDER BY country_name
                 "),
-                'display_name' => BearAuthService::getUser()->user_display_name,
+                'display_name' => BearAuthService::getUser()->display_name,
                 'flag_selected' => BearAuthService::getUser()->user_country_iso2_code,
                 'game_id' => $gameId,
                 'novelty_flags' => DB::select(query: "

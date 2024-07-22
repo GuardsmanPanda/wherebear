@@ -6,10 +6,9 @@ use Domain\Game\Crud\GameUserDeleter;
 use Domain\User\Crud\WhereBearUserCreator;
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearShortCodeService;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Action\BearAuthCookieLoginAction;
-use GuardsmanPanda\Larabear\Infrastructure\Auth\Crud\BearUserCreator;
-use GuardsmanPanda\Larabear\Infrastructure\Auth\Enum\BearUserLoginTypeEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearUser;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
+use GuardsmanPanda\Larabear\Infrastructure\Config\Enum\LarabearConfigEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Config\Service\BearConfigService;
 use GuardsmanPanda\Larabear\Infrastructure\Error\Crud\BearErrorCreator;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Htmx;
@@ -35,14 +34,14 @@ final class AuthController extends Controller {
     }
 
     public function createGuest(): Response {
-        $gameId = Req::getStringOrDefault(key: "game_id");
+        $gameId = Req::getString(key: "game_id");
         $user = WhereBearUserCreator::create(
             display_name: "Guest-" . BearShortCodeService::generateNextCode(),
             experience: 0,
             user_level_enum: 0,
             country_cca2: Req::ipCountry()
         );
-        BearAuthCookieLoginAction::login(user: BearUser::findOrFail($user->id), login_type: BearUserLoginTypeEnum::WEB_FORM);
+        BearAuthCookieLoginAction::login(user: BearUser::findOrFail($user->id));
         return Htmx::redirect(url: "/game/$gameId/lobby");
     }
 
@@ -51,15 +50,15 @@ final class AuthController extends Controller {
             DB::beginTransaction();
             $oauth2User = BearOauth2ClientService::getUserFromCallback(
                 client: BearOauth2Client::findOrFail(id: $oauth2ClientId),
-                code: Req::getStringOrDefault(key: "code")
+                code: Req::getString(key: "code")
             );
             $user = $oauth2User->user;
-            if ($user === null && $oauth2User->oauth2_user_email !== null) {
+            if ($user === null && $oauth2User->email !== null) {
                 $user = WhereBearUserCreator::create(
-                    display_name: $oauth2User->oauth2_user_name,
+                    display_name: $oauth2User->email,
                     experience: 1,
                     user_level_enum: 1,
-                    email: $oauth2User->oauth2_user_email,
+                    email: $oauth2User->email,
                     country_cca2: Req::ipCountry()
                 );
                 $updater = new BearOauth2UserUpdater($oauth2User);
@@ -68,17 +67,17 @@ final class AuthController extends Controller {
                 throw new LogicException(message: "User not found.");
             }
             // Remove guest from game that are not yet finished.
-            if (BearAuthService::getUserId() !== null && BearAuthService::getUser()->user_email === null) {
+            if (BearAuthService::getUserId() !== null && BearAuthService::getUser()->email === null) {
                 GameUserDeleter::deleteGuestUserFromUnfinishedGames(user: BearAuthService::getUser());
             }
-            BearAuthCookieLoginAction::login($oauth2User->user, BearUserLoginTypeEnum::OAUTH2);
+            BearAuthCookieLoginAction::login($oauth2User->user);
             DB::commit();
         } catch (LogicException $t) {
             DB::rollBack();
             BearErrorCreator::create(message: "Error logging in with oauth2 client id: $oauth2ClientId", exception: $t);
             Session::flash(key: 'error', value: "Login Failed.");
         }
-        $afterLoginRedirect = Session::get(key: 'oauth2_redirect_path') ?? BearConfigService::getString(config_key: 'larabear::path-to-redirect-after-login');
+        $afterLoginRedirect = Session::get(key: 'oauth2_redirect_path') ?? BearConfigService::getString(enum: LarabearConfigEnum::LARABEAR_PATH_TO_REDIRECT_AFTER_LOGIN);
         return new RedirectResponse(url: $afterLoginRedirect);
     }
 }

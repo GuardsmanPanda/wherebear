@@ -13,7 +13,8 @@ final class GameStateCreator {
 
         $model = new GameState();
 
-        $model->game_state_enum = $enum->value;
+        $model->enum = $enum->value;
+        $model->description = $enum->getDescription();
 
         $model->save();
         return $model;

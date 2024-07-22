@@ -3,17 +3,21 @@
 namespace Domain\Game\Crud;
 
 use Carbon\CarbonInterface;
+use Domain\Game\Enum\GamePublicStatusEnum;
 use Domain\Game\Enum\GameStateEnum;
 use Domain\Game\Model\Game;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 
-final class GameUpdater {
-    public function __construct(private readonly Game $model) {
+final readonly class GameUpdater {
+    public function __construct(private Game $model) {
         BearDatabaseService::mustBeInTransaction();
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST', 'PATCH']);
     }
 
-    public static function fromId(string $id): self {
+    public static function fromId(string $id, bool $lockForUpdate = false): self {
+        if ($lockForUpdate) {
+            return new self(model: Game::lockForUpdate()->findOrFail(id: $id));
+        }
         return new self(model: Game::findOrFail(id: $id));
     }
 
@@ -23,8 +27,8 @@ final class GameUpdater {
         return $this;
     }
 
-    public function setGamePublicStatusEnum(string $game_public_status_enum): self {
-        $this->model->game_public_status_enum = $game_public_status_enum;
+    public function setGamePublicStatusEnum(GamePublicStatusEnum $enum): self {
+        $this->model->game_public_status_enum = $enum->value;
         return $this;
     }
 

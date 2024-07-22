@@ -20,7 +20,7 @@
                      alt="{{$player->country_name}}" tippy="{{$player->country_name}}">
                 <div class="w-full truncate md:max-w-48">
                     <span class="font-semibold">
-                        {{$player->user_display_name}}
+                        {{$player->display_name}}
                     </span>
                     <div class="flex justify-between">
                         @if($player->is_ready)

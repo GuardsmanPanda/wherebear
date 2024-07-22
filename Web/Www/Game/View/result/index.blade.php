@@ -14,14 +14,14 @@
                          alt="Wavy flag">
                     <div class="pl-2 flex flex-col justify-between leading-4">
                         @foreach(DB::select(<<<SQL
-                            SELECT u.user_display_name, u.id FROM game_round_user gru
+                            SELECT u.display_name, u.id FROM game_round_user gru
                             LEFT JOIN bear_user u ON u.id = gru.user_id
                             WHERE gru.game_id = ? AND gru.round_number = ? ORDER BY gru.round_points DESC LIMIT 3
                         SQL, [$game->id, $round->round_number]) as $ru)
                             <div class="flex gap-1">
                                 <img width="20" alt="rank icon"
                                      src="/static/img/icon/{{$loop->index === 0 ? '1st' : ($loop->index === 1 ? '2nd' :'3rd')}}.webp">
-                                <div class="truncate @if($user->id === $ru->id) text-green-500 font-medium @endif">{{$ru->user_display_name}}</div>
+                                <div class="truncate @if($user->id === $ru->id) text-green-500 font-medium @endif">{{$ru->display_name}}</div>
                             </div>
                         @endforeach
                     </div>
@@ -46,7 +46,7 @@
                      alt="Country Flag" tippy="{{$player->country_name}}">
                 <div class="text-gray-300 ml-2 flex-grow">
                     <div class="font-bold text-lg">
-                        {{$player->user_display_name}}
+                        {{$player->display_name}}
                     </div>
                     <div class="font-medium text-gray-400 flex justify-between items-center">
                         {!! GameRoundResultRender::renderPoints(points: $player->game_points) !!}
