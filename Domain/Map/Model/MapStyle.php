@@ -4,6 +4,7 @@ namespace Domain\Map\Model;
 
 use Carbon\CarbonInterface;
 use Closure;
+use Domain\User\Enum\UserLevelEnum;
 use Domain\User\Model\UserLevel;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use GuardsmanPanda\Larabear\Integration\ExternalApi\Model\BearExternalApi;
@@ -53,15 +54,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static mixed sum(string $column)
  * @method static bool exists()
  *
- * @property int $user_level_enum
  * @property string $enum
  * @property string $name
  * @property string $http_path
  * @property string $created_at
  * @property string $external_api_enum
+ * @property UserLevelEnum $user_level_enum
  *
- * @property BearExternalApi $externalApiEnum
- * @property UserLevel $userLevelEnum
+ * @property BearExternalApi $externalApi
+ * @property UserLevel $userLevel
  *
  * AUTO GENERATED FILE DO NOT MODIFY
  */
@@ -75,13 +76,18 @@ final class MapStyle extends Model {
     protected $dateFormat = 'Y-m-d\TH:i:sP';
     public $timestamps = false;
 
+    /** @var array<string, string> $casts */
+    protected $casts = [
+        'user_level_enum' => UserLevelEnum::class,
+    ];
+
     /** @return BelongsTo<BearExternalApi, self> */
-    public function externalApiEnum(): BelongsTo {
+    public function externalApi(): BelongsTo {
         return $this->belongsTo(related: BearExternalApi::class, foreignKey: 'external_api_enum', ownerKey: 'enum');
     }
 
     /** @return BelongsTo<UserLevel, self> */
-    public function userLevelEnum(): BelongsTo {
+    public function userLevel(): BelongsTo {
         return $this->belongsTo(related: UserLevel::class, foreignKey: 'user_level_enum', ownerKey: 'enum');
     }
 

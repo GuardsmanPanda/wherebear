@@ -28,7 +28,7 @@ final readonly class GameUpdater {
     }
 
     public function setGamePublicStatusEnum(GamePublicStatusEnum $enum): self {
-        $this->model->game_public_status_enum = $enum->value;
+        $this->model->game_public_status_enum = $enum;
         return $this;
     }
 
@@ -76,6 +76,10 @@ final readonly class GameUpdater {
         }
         $this->model->next_round_at = $next_round_at;
         return $this;
+    }
+
+    public function getGameStateEnum(): GameStateEnum {
+        return $this->model->game_state_enum;
     }
 
     public function update(): Game {

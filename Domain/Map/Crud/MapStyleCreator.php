@@ -17,7 +17,7 @@ final class MapStyleCreator {
         $model->name = $enum->getName();
         $model->external_api_enum = $enum->getExternalApi()->value;
         $model->http_path = $enum->getExternalPath();
-        $model->user_level_enum = $enum->getUserLevelRequirement()->value;
+        $model->user_level_enum = $enum->getUserLevelRequirement();
 
         $model->save();
         return $model;

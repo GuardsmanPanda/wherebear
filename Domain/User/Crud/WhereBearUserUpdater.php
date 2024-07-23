@@ -3,6 +3,8 @@
 namespace Domain\User\Crud;
 
 use Carbon\CarbonInterface;
+use Domain\Map\Enum\MapMarkerEnum;
+use Domain\Map\Enum\MapStyleEnum;
 use Domain\User\Model\WhereBearUser;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 use Illuminate\Database\Eloquent\Casts\ArrayObject;
@@ -23,12 +25,12 @@ final readonly class WhereBearUserUpdater {
         return $this;
     }
 
-    public function setMapMarkerEnum(string $map_marker_enum): self {
+    public function setMapMarkerEnum(MapMarkerEnum $map_marker_enum): self {
         $this->model->map_marker_enum = $map_marker_enum;
         return $this;
     }
 
-    public function setMapStyleEnum(string $map_style_enum): self {
+    public function setMapStyleEnum(MapStyleEnum $map_style_enum): self {
         $this->model->map_style_enum = $map_style_enum;
         return $this;
     }

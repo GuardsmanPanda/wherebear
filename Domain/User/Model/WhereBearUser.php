@@ -4,8 +4,11 @@ namespace Domain\User\Model;
 
 use Carbon\CarbonInterface;
 use Closure;
+use Domain\Map\Enum\MapMarkerEnum;
+use Domain\Map\Enum\MapStyleEnum;
 use Domain\Map\Model\MapMarker;
 use Domain\Map\Model\MapStyle;
+use Domain\User\Enum\UserLevelEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Model\BearCountry;
 use Illuminate\Database\Eloquent\Collection;
@@ -55,21 +58,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static bool exists()
  *
  * @property int $experience
- * @property int $user_level_enum
  * @property string $id
  * @property string $created_at
  * @property string $updated_at
  * @property string $display_name
- * @property string $map_style_enum
- * @property string $map_marker_enum
  * @property string|null $email
  * @property string|null $country_cca2
  * @property CarbonInterface|null $last_login_at
+ * @property MapStyleEnum $map_style_enum
+ * @property MapMarkerEnum $map_marker_enum
+ * @property UserLevelEnum $user_level_enum
  *
  * @property BearCountry|null $countryCca2
- * @property MapStyle $mapStyleEnum
- * @property UserLevel $userLevelEnum
- * @property MapMarker $mapMarkerEnum
+ * @property MapStyle $mapStyle
+ * @property UserLevel $userLevel
+ * @property MapMarker $mapMarker
  *
  * AUTO GENERATED FILE DO NOT MODIFY
  */
@@ -84,6 +87,9 @@ final class WhereBearUser extends Model {
     /** @var array<string, string> $casts */
     protected $casts = [
         'last_login_at' => 'immutable_datetime',
+        'map_marker_enum' => MapMarkerEnum::class,
+        'map_style_enum' => MapStyleEnum::class,
+        'user_level_enum' => UserLevelEnum::class,
     ];
 
     /** @return BelongsTo<BearCountry, self>|null */
@@ -92,17 +98,17 @@ final class WhereBearUser extends Model {
     }
 
     /** @return BelongsTo<MapStyle, self> */
-    public function mapStyleEnum(): BelongsTo {
+    public function mapStyle(): BelongsTo {
         return $this->belongsTo(related: MapStyle::class, foreignKey: 'map_style_enum', ownerKey: 'enum');
     }
 
     /** @return BelongsTo<UserLevel, self> */
-    public function userLevelEnum(): BelongsTo {
+    public function userLevel(): BelongsTo {
         return $this->belongsTo(related: UserLevel::class, foreignKey: 'user_level_enum', ownerKey: 'enum');
     }
 
     /** @return BelongsTo<MapMarker, self> */
-    public function mapMarkerEnum(): BelongsTo {
+    public function mapMarker(): BelongsTo {
         return $this->belongsTo(related: MapMarker::class, foreignKey: 'map_marker_enum', ownerKey: 'enum');
     }
 

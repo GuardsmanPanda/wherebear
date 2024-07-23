@@ -11,7 +11,7 @@
                     <h2 class="text-xl font-medium text-gray-700 dark:text-gray-100">Game Settings</h2>
                 </div>
                 <div class="flex">
-                    @if($user->is_ready)
+                    @if($user->user_level_enum === 0)
                         <button class="flex items-center ml-4 text-gray-500 hover:text-gray-400 ring-1 ring-gray-500 font-medium pl-2 pr-3 py-0.5 my-0.5 rounded duration-75 hover:scale-110 transition-transform"
                                 hx-patch="/game/{{$game->id}}/lobby/update-game-user" hx-vals='{"is_ready": false}'>
                             <x-bear::icon name="x-mark" size="4" class="opacity-70 mr-0.5"/>
@@ -80,7 +80,7 @@
                     <h2 class="text-xl font-bold">Player Settings</h2>
                 </div>
                 <div class="flex">
-                    @if($user->user_email === null)
+                    @if($user->user_level_enum === 0)
                         <button class="flex items-center ml-2 bg-blue-700 text-blue-100 hover:text-blue-50 hover:-rotate-2 font-medium pl-2 pr-3 py-0.5 my-0.5 rounded duration-75 hover:scale-110 transition-transform"
                                 hx-get="/auth/dialog?redirect_path=/game/{{$game->id}}/lobby">
                             <x-bear::icon name="user" size="4" class="opacity-70 mr-0.5"/>
@@ -104,7 +104,7 @@
                         hx-get="/game/{{$game->id}}/lobby/dialog/name-flag">
                     <div class="flex justify-center items-center">
                         <img class="h-6 mr-2"
-                             src="/static/flag/svg/{{$user->country_iso2_code}}.svg" alt="{{$user->country_name}}">
+                             src="/static/flag/svg/{{$user->cca2}}.svg" alt="{{$user->country_name}}">
                         <div class="text-gray-200 text-3xl font-bold">{{$user->display_name}}</div>
                     </div>
                     @if(str_starts_with(haystack: $user->display_name, needle: 'Guest-'))
@@ -116,11 +116,11 @@
                     <div class="text-gray-400 text-xl font-bold">Marker: <span
                                 class="text-gray-300">{{$user->map_marker_name}}</span></div>
                     <div class="flex justify-center mt-1">
-                        <img class="h-12 w-12" src="/static/img/map-marker/{{$user->file_name}}"
+                        <img class="h-12 w-12" src="/static/img/map-marker/{{$user->map_marker_file_name}}"
                              alt="{{$user->map_marker_name}}">
-                        <img class="h-12 w-12" src="/static/img/map-marker/{{$user->file_name}}"
+                        <img class="h-12 w-12" src="/static/img/map-marker/{{$user->map_marker_file_name}}"
                              alt="{{$user->map_marker_name}}">
-                        <img class="h-12 w-12" src="/static/img/map-marker/{{$user->file_name}}"
+                        <img class="h-12 w-12" src="/static/img/map-marker/{{$user->map_marker_file_name}}"
                              alt="{{$user->map_marker_name}}">
                     </div>
                     @if($user->map_marker_enum === 'DEFAULT')

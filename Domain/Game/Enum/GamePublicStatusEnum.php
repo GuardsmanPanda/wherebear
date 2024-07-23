@@ -4,11 +4,17 @@ namespace Domain\Game\Enum;
 
 use Domain\Game\Crud\GamePublicStatusCreator;
 use Domain\Game\Model\GamePublicStatus;
+use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 
 enum GamePublicStatusEnum: string {
     case PUBLIC = 'PUBLIC';
     case GOOGLE = 'GOOGLE';
     case PRIVATE = 'PRIVATE';
+
+    public static function fromRequest(): self {
+        return self::from(value: Req::getString(key: 'game_public_status_enum'));
+    }
+
 
     public function getDescription(): string {
         return match ($this) {

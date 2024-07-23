@@ -4,7 +4,9 @@ namespace Domain\Map\Model;
 
 use Carbon\CarbonInterface;
 use Closure;
+use Domain\User\Enum\UserLevelEnum;
 use Domain\User\Model\UserLevel;
+use GuardsmanPanda\Larabear\Infrastructure\Auth\Enum\LarabearPermissionEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearPermission;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use Illuminate\Database\Eloquent\Collection;
@@ -55,16 +57,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @property int $width_rem
  * @property int $height_rem
- * @property int $user_level_enum
  * @property string $enum
  * @property string $name
  * @property string $grouping
  * @property string $file_name
  * @property string $created_at
- * @property string|null $permission_enum
+ * @property LarabearPermissionEnum|null $permission_enum
+ * @property UserLevelEnum $user_level_enum
  *
- * @property UserLevel $userLevelEnum
- * @property BearPermission|null $permissionEnum
+ * @property UserLevel $userLevel
+ * @property BearPermission|null $permission
  *
  * AUTO GENERATED FILE DO NOT MODIFY
  */
@@ -78,13 +80,19 @@ final class MapMarker extends Model {
     protected $dateFormat = 'Y-m-d\TH:i:sP';
     public $timestamps = false;
 
+    /** @var array<string, string> $casts */
+    protected $casts = [
+        'permission_enum' => LarabearPermissionEnum::class,
+        'user_level_enum' => UserLevelEnum::class,
+    ];
+
     /** @return BelongsTo<UserLevel, self> */
-    public function userLevelEnum(): BelongsTo {
+    public function userLevel(): BelongsTo {
         return $this->belongsTo(related: UserLevel::class, foreignKey: 'user_level_enum', ownerKey: 'enum');
     }
 
     /** @return BelongsTo<BearPermission, self>|null */
-    public function permissionEnum(): BelongsTo|null {
+    public function permission(): BelongsTo|null {
         return $this->belongsTo(related: BearPermission::class, foreignKey: 'permission_enum', ownerKey: 'enum');
     }
 

@@ -4,6 +4,7 @@ namespace Domain\Panorama\Model;
 
 use Carbon\CarbonInterface;
 use Closure;
+use Domain\Panorama\Enum\TagEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearUser;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -52,14 +53,14 @@ use RuntimeException;
  * @method static mixed sum(string $column)
  * @method static bool exists()
  *
- * @property string $tag_enum
  * @property string $created_at
  * @property string $panorama_id
  * @property string $created_by_user_id
+ * @property TagEnum $tag_enum
  *
  * @property Panorama $panorama
  * @property BearUser $createdByUser
- * @property Tag $tagEnum
+ * @property Tag $tag
  *
  * AUTO GENERATED FILE DO NOT MODIFY
  */
@@ -75,6 +76,11 @@ final class PanoramaTag extends Model {
     protected $dateFormat = 'Y-m-d\TH:i:sP';
     public $timestamps = false;
 
+    /** @var array<string, string> $casts */
+    protected $casts = [
+        'tag_enum' => TagEnum::class,
+    ];
+
     /** @return BelongsTo<Panorama, self> */
     public function panorama(): BelongsTo {
         return $this->belongsTo(related: Panorama::class, foreignKey: 'panorama_id', ownerKey: 'id');
@@ -86,7 +92,7 @@ final class PanoramaTag extends Model {
     }
 
     /** @return BelongsTo<Tag, self> */
-    public function tagEnum(): BelongsTo {
+    public function tag(): BelongsTo {
         return $this->belongsTo(related: Tag::class, foreignKey: 'tag_enum', ownerKey: 'enum');
     }
 

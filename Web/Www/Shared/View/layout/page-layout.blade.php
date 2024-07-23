@@ -1,5 +1,7 @@
 <?php declare(strict_types=1); ?>
 @php
+    use Domain\User\Enum\BearPermissionEnum;
+    use Domain\User\Enum\BearRoleEnum;
     use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
     use Illuminate\Support\Facades\App;
 @endphp
@@ -24,13 +26,13 @@
             <div class="flex-grow flex flex-col">
                 <nav class="flex-1 px-2 pb-4">
                     <x-bear::sidebar.link path="/" icon="home">Where Bear</x-bear::sidebar.link>
-                    @if(BearAuthService::hasPermission(permission: 'panorama::contribute'))
+                    @if(BearAuthService::hasPermission(permission: BearPermissionEnum::PANORAMA_CONTRIBUTE))
                         <x-bear::sidebar.divider color="gray-800">Contribute</x-bear::sidebar.divider>
                         <x-bear::sidebar.link path="/page/discovery" icon="key">Add Panorama</x-bear::sidebar.link>
                     @endif
-                    @if(BearAuthService::hasRole(role: 'admin'))
+                    @if(BearAuthService::hasRole(role: BearRoleEnum::ADMIN))
                         <x-bear::sidebar.divider color="gray-800">Admin</x-bear::sidebar.divider>
-                        @if(BearAuthService::hasPermission(permission: 'panorama::download'))
+                        @if(BearAuthService::hasPermission(permission: BearPermissionEnum::PANORAMA_DOWNLOAD))
                             <x-bear::sidebar.link path="/page/download" icon="key">Download Missing</x-bear::sidebar.link>
                         @endif
                     @endif

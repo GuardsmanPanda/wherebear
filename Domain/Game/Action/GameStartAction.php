@@ -15,7 +15,7 @@ final class GameStartAction {
             return;
         }
         $updater = GameUpdater::fromId(id: $gameId, lockForUpdate: true);
-        if ($updater->getGameStateEnum() !== GameStateEnum::WAITING_FOR_PLAYERS->value) {
+        if ($updater->getGameStateEnum() !== GameStateEnum::WAITING_FOR_PLAYERS) {
             throw new InvalidArgumentException(message: 'Game must be in WAITING_FOR_PLAYERS state to be placed in queue');
         }
         $updater->setGameStateEnum(enum: GameStateEnum::QUEUED);

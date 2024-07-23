@@ -10,6 +10,8 @@ use Domain\Game\Crud\GameUserDeleter;
 use Domain\Game\Crud\GameUserUpdater;
 use Domain\Game\Enum\GamePublicStatusEnum;
 use Domain\Game\Enum\GameStateEnum;
+use Domain\Map\Enum\MapMarkerEnum;
+use Domain\Map\Enum\MapStyleEnum;
 use Domain\User\Crud\WhereBearUserUpdater;
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearArrayService;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
@@ -60,14 +62,14 @@ final class GameLobbyController extends Controller {
             return Resp::view(view: "game::lobby.guest", data: [
                 'game' => $game,
                 'players' => DB::select(query: "
-                    SELECT 
-                        bu.display_name, bu.file_name, bu.user_country_iso2_code,
-                        gu.is_ready, bc.country_name
+                    SELECT
+                        bu.display_name, bu.country_cca2,
+                        gu.is_ready, bc.name
                     FROM game_user gu
                     LEFT JOIN bear_user bu ON bu.id = gu.user_id
-                    LEFT JOIN bear_country bc ON bc.country_iso2_code = bu.user_country_iso2_code
+                    LEFT JOIN bear_country bc ON bc.cca2 = bu.country_cca2
                     WHERE gu.game_id = ?
-                    ORDER BY bu.id = ? DESC, bu.display_name, bu.user_country_iso2_code, bu.id
+                    ORDER BY bu.id = ? DESC, bu.display_name, bu.country_cca2, bu.id
                 ", bindings: [$game->id, $user_id]),
             ]);
         }
@@ -91,19 +93,18 @@ final class GameLobbyController extends Controller {
         $template = Req::hxRequest() ? 'game::lobby.content' : 'game::lobby.index';
         return Resp::view(view: $template, data: [
             'game' => $game,
-            'map_markers' => DB::select(query: "SELECT file_name, map_marker_name FROM map_marker ORDER BY file_name"),
             'user' => DB::selectOne(query: "
                 SELECT 
-                    bu.id, bu.display_name, mm.file_name, bu.user_email,
-                    gu.is_ready, mm.map_marker_name,
-                    COALESCE(ms.name, 'OpenStreetMap') as map_style_name,
-                    COALESCE(ms.map_style_enum, 'OSM') as map_style_enum,
-                    bc.country_name, bc.country_iso2_code
+                    bu.id, bu.display_name, bu.user_level_enum, bu.map_marker_enum, bu.map_style_enum,
+                    gu.is_ready,
+                    mm.file_name as map_marker_file_name, mm.name as map_marker_name,
+                    ms.name as map_style_name,
+                    bc.cca2, bc.name as country_name
                 FROM bear_user bu
                 LEFT JOIN game_user gu ON gu.user_id = bu.id AND gu.game_id = ?
-                LEFT JOIN map_marker mm ON mm.map_marker_enum = bu.map_marker_enum
-                LEFT JOIN map_style ms ON ms.map_style_enum = bu.map_style_enum
-                LEFT JOIN bear_country bc ON bc.country_iso2_code = bu.user_country_iso2_code
+                LEFT JOIN map_marker mm ON mm.enum = bu.map_marker_enum
+                LEFT JOIN map_style ms ON ms.enum = bu.map_style_enum
+                LEFT JOIN bear_country bc ON bc.cca2 = bu.country_cca2
                 WHERE bu.id = ?
             ", bindings: [$game->id, $user_id]),
         ]);
@@ -131,10 +132,10 @@ final class GameLobbyController extends Controller {
     public function updateUser(string $gameId): Response|View {
         $updater = WhereBearUserUpdater::fromId(id: BearAuthService::getUserId());
         if (Req::has(key: 'map_marker_enum')) {
-            $updater->setMapMarkerEnum(map_marker_enum: Req::getString(key: 'map_marker_enum'));
+            $updater->setMapMarkerEnum(map_marker_enum: MapMarkerEnum::fromRequest());
         }
         if (Req::has(key: 'map_style_enum')) {
-            $updater->setMapStyleEnum(map_style_enum: Req::getString(key: 'map_style_enum'));
+            $updater->setMapStyleEnum(map_style_enum: MapStyleEnum::fromRequest());
         }
         if (Req::has(key: 'display_name')) {
             $updater->setDisplayName(display_name: Req::getString(key: 'display_name'));
@@ -158,12 +159,11 @@ final class GameLobbyController extends Controller {
     }
 
     public function updateSettings(string $gameId): Response|View {
-        $enum = GamePublicStatusEnum::from(Req::getString(key: 'game_public_status'));
         GameUpdater::fromId(id: $gameId)
             ->setNumberOfRounds(number_of_rounds: Req::getInt(key: 'number_of_rounds'))
             ->setRoundDurationSeconds(round_duration_seconds: Req::getInt(key: 'round_duration_seconds'))
             ->setRoundResultDurationSeconds(round_result_duration_seconds: Req::getInt(key: 'round_result_duration_seconds'))
-            ->setGamePublicStatusEnum(enum: $enum)
+            ->setGamePublicStatusEnum(enum: GamePublicStatusEnum::fromRequest())
             ->update();
         return $this->index($gameId);
     }
@@ -182,19 +182,19 @@ final class GameLobbyController extends Controller {
             title: 'Edit Name and Flag',
             data: [
                 'countries' => DB::select(query: "
-                    SELECT country_name, country_iso2_code
+                    SELECT name, cca2
                     FROM bear_country
-                    WHERE country_dependency_status != 'Fictive' OR country_dependency_status IS NULL
-                    ORDER BY country_name
+                    WHERE dependency_status != 'Fictive' OR bear_country.dependency_status IS NULL
+                    ORDER BY name
                 "),
                 'display_name' => BearAuthService::getUser()->display_name,
                 'flag_selected' => BearAuthService::getUser()->user_country_iso2_code,
                 'game_id' => $gameId,
                 'novelty_flags' => DB::select(query: "
-                    SELECT country_name, country_iso2_code
+                    SELECT name, cca2
                     FROM bear_country bc
-                    WHERE bc.country_dependency_status = 'Fictive'
-                    ORDER BY country_name
+                    WHERE bc.dependency_status = 'Fictive'
+                    ORDER BY name
                 "),
             ]
         );

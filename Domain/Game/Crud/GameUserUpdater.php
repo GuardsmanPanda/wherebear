@@ -14,11 +14,10 @@ final readonly class GameUserUpdater {
     public static function fromGameIdAndUserId(string $game_id, string $user_id): GameUserUpdater {
         $game_user = GameUser::find(ids: ['game_id' => $game_id, 'user_id' => $user_id]);
         return new GameUserUpdater(model: $game_user);
-
     }
 
-    public function setGamePoints(float $game_points): self {
-        $this->model->game_points = $game_points;
+    public function setGamePoints(float $points): self {
+        $this->model->points = $points;
         return $this;
     }
 

@@ -4,8 +4,8 @@ namespace Domain\Map\Enum;
 
 use Domain\Map\Crud\MapStyleCreator;
 use Domain\Map\Model\MapStyle;
-use Domain\Map\Service\MapStyleService;
 use Domain\User\Enum\UserLevelEnum;
+use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 use Infrastructure\App\Enum\BearExternalApiEnum;
 
 enum MapStyleEnum: string {
@@ -13,6 +13,11 @@ enum MapStyleEnum: string {
     case OSM = 'OSM';
     //case STREETS = 'STREETS';
     //case GOOGLE_STREET_VIEW = 'GOOGLE_STREET_VIEW';
+
+    public static function fromRequest(): self {
+        return self::from(value: Req::getString(key: 'map_style_enum'));
+    }
+
 
     public function mapTileUrl(int $z = null, int $x = null, int $y = null): string {
         if ($z === null || $x === null || $y === null) {

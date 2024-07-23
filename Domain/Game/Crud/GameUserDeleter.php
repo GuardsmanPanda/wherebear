@@ -32,7 +32,7 @@ final class GameUserDeleter {
 
 
     public static function deleteGuestUserFromUnfinishedGames(BearUser $user): void {
-        if ($user->user_email !== null) {
+        if ($user->email !== null) {
             throw new RuntimeException(message: 'This method can only be called for guest users.');
         }
         $games = GameUser::fromQuery(query: "

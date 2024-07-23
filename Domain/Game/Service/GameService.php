@@ -30,8 +30,6 @@ final class GameService {
 
 
     public static function setGameState(string $gameId, GameStateEnum $state, CarbonImmutable $nextRoundAt = null): Game {
-        $game = Game::findOrFail($gameId);
-        $user = $game->createdByUser->remember_token;
         try {
             DB::beginTransaction();
             $game = GameUpdater::fromId(id: $gameId, lockForUpdate: true)

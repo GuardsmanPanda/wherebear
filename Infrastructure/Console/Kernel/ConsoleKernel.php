@@ -5,6 +5,7 @@ namespace Infrastructure\Console\Kernel;
 use Domain\Game\Crud\GameRoundDeleter;
 use Domain\Game\Crud\GameUpdater;
 use Domain\Game\Enum\GameStateEnum;
+use Domain\Larabear\Model\BearOauth2Client;
 use Domain\Panorama\Command\PanoramaImportCommand;
 use Domain\Panorama\Command\PanoramaScraperCommand;
 use Illuminate\Console\Scheduling\Schedule;
@@ -53,7 +54,6 @@ final class ConsoleKernel extends Kernel {
         });
 
         Artisan::command('zz', function () {
-
         });
     }
 }

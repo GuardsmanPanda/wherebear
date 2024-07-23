@@ -31,7 +31,7 @@ final class LandingPageController extends Controller {
                     AND g.game_state_enum != 'FINISHED'
                 ORDER BY is_in_game DESC, g.created_at DESC
             ", bindings: [
-                'user_id' => BearAuthService::getUserId()
+                'user_id' => BearAuthService::getUserIdOrNull()
             ])
         ]);
     }

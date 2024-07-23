@@ -13,7 +13,7 @@ use Throwable;
 
 final class GameRoundCalculateResultAction {
     public static function calculate(Game $game): void {
-        if ($game->game_state_enum !== GameStateEnum::IN_PROGRESS_CALCULATING->value) {
+        if ($game->game_state_enum !== GameStateEnum::IN_PROGRESS_CALCULATING) {
             throw new RuntimeException(message: 'Game is not in IN_PROGRESS_CALCULATING state');
         }
         $gameRound = GameRound::findOrFail(ids: ['game_id' => $game->id, 'round_number' => $game->current_round]);
@@ -32,7 +32,7 @@ final class GameRoundCalculateResultAction {
             WHERE gu.game_id = ? AND gru.location IS NULL
         ", bindings: [$gameId]);
 
-        if (empty($players)) {
+        if (count($players) === 0) {
             return;
         }
 
@@ -44,7 +44,7 @@ final class GameRoundCalculateResultAction {
             WHERE gru.game_id = ? AND gru.round_number = ?
         ", bindings: [$gameId, $roundNumber]);
 
-        if ($guesses === null) {
+        if (count($guesses) === 0) {
             self::superFallbackGuesses(gameId: $gameId, roundNumber: $roundNumber, players: $players);
             return;
         }
@@ -73,10 +73,10 @@ final class GameRoundCalculateResultAction {
         $playerCount = count($players);
         $locations = DB::select(query: "
             SELECT 
-                ST_Y(p.panorama_location::geometry) as lat,
-                ST_X(p.panorama_location::geometry) as lng
+                ST_Y(p.location::geometry) as lat,
+                ST_X(p.location::geometry) as lng
             FROM panorama p
-            WHERE p.panorama_location IS NOT NULL
+            WHERE p.location IS NOT NULL
             ORDER BY random()
             LIMIT ?
         ", bindings: [$playerCount]);
@@ -108,24 +108,24 @@ final class GameRoundCalculateResultAction {
             DB::update(query: "
             UPDATE game_round_user gru SET
                 distance_meters = ST_distance(gru.location, (
-                    SELECT p.panorama_location FROM panorama p WHERE p.id = ?
+                    SELECT p.location FROM panorama p WHERE p.id = ?
                 )),
-                approximate_country_iso2_code = (
-                    SELECT close.country_iso2_code
+                approximate_country_cca2 = (
+                    SELECT close.country_cca2
                     FROM ((
                         SELECT 
-                            p2.country_iso2_code,
-                            ST_distance(gru.location, p2.panorama_location) as distance
+                            p2.country_cca2,
+                            ST_distance(gru.location, p2.location) as distance
                         FROM panorama p2
-                        WHERE p2.country_iso2_code IS NOT NULL AND p2.country_iso2_code != 'XX'
-                        ORDER BY gru.location <-> p2.panorama_location
+                        WHERE p2.country_cca2 IS NOT NULL AND p2.country_cca2 != 'XX'
+                        ORDER BY gru.location <-> p2.location
                         LIMIT 1
                     ) UNION (
                         SELECT 
-                            r3.correct_country_iso2_code,
+                            r3.correct_country_cca2,
                             ST_distance(gru.location, r3.location) as distance
                         FROM game_round_user r3
-                        WHERE r3.correct_country_iso2_code IS NOT NULL AND r3.correct_country_iso2_code != 'XX'
+                        WHERE r3.correct_country_cca2 IS NOT NULL AND r3.correct_country_cca2 != 'XX'
                         ORDER BY gru.location <-> r3.location
                         LIMIT 1
                     ) 
@@ -134,17 +134,17 @@ final class GameRoundCalculateResultAction {
                 approximate_country_distance_meters = (
                     SELECT close.distance  FROM ((
                         SELECT 
-                            p2.country_iso2_code,
-                            ST_distance(gru.location, p2.panorama_location) as distance FROM panorama p2
-                        WHERE p2.country_iso2_code IS NOT NULL
-                        ORDER BY gru.location <-> p2.panorama_location
+                            p2.country_cca2,
+                            ST_distance(gru.location, p2.location) as distance FROM panorama p2
+                        WHERE p2.country_cca2 IS NOT NULL AND p2.country_cca2 != 'XX'
+                        ORDER BY gru.location <-> p2.location
                         LIMIT 1
                     ) UNION (
                         SELECT 
-                            r3.correct_country_iso2_code,
+                            r3.correct_country_cca2,
                             ST_distance(gru.location, r3.location) as distance
                         FROM game_round_user r3
-                        WHERE r3.correct_country_iso2_code IS NOT NULL
+                        WHERE r3.correct_country_cca2 IS NOT NULL AND r3.correct_country_cca2 != 'XX'
                         ORDER BY gru.location <-> r3.location
                         LIMIT 1
                         ) 
@@ -155,9 +155,9 @@ final class GameRoundCalculateResultAction {
 
             DB::update(query: "
                 UPDATE game_round_user gru SET
-                    round_points = (100 * pow(0.90, rr_rank.round_rank - 1) + 
+                    points = (100 * pow(0.90, rr_rank.round_rank - 1) + 
                         CASE 
-                            WHEN gru.approximate_country_iso2_code = p.country_iso2_code THEN 20 
+                            WHEN gru.approximate_country_cca2 = p.country_cca2 THEN 20 
                             ELSE 0
                         END) / rr_rank.number_of_rounds
                 FROM 
@@ -178,11 +178,11 @@ final class GameRoundCalculateResultAction {
 
             DB::update(query: "
                 UPDATE game_round_user gru SET
-                    round_rank = player_rank.round_rank
+                    rank = player_rank.round_rank
                 FROM
                     (SELECT
                         ru2.game_id, ru2.round_number, ru2.user_id,
-                        rank() OVER (PARTITION BY ru2.game_id, ru2.round_number ORDER BY ru2.round_points DESC) as round_rank
+                        rank() OVER (PARTITION BY ru2.game_id, ru2.round_number ORDER BY ru2.points DESC) as round_rank
                         FROM game_round_user ru2
                         WHERE ru2.game_id = ? AND ru2.round_number = ?
                     ) player_rank

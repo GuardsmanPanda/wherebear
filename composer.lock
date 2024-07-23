@@ -963,12 +963,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/GuardsmanPanda/larabear.git",
-                "reference": "343fce4a5fd22f18e7c8cdac0e2d6233603b26b9"
+                "reference": "f97ea08e9cdd865479343394c94394778160aaf2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/GuardsmanPanda/larabear/zipball/343fce4a5fd22f18e7c8cdac0e2d6233603b26b9",
-                "reference": "343fce4a5fd22f18e7c8cdac0e2d6233603b26b9",
+                "url": "https://api.github.com/repos/GuardsmanPanda/larabear/zipball/f97ea08e9cdd865479343394c94394778160aaf2",
+                "reference": "f97ea08e9cdd865479343394c94394778160aaf2",
                 "shasum": ""
             },
             "require": {
@@ -1016,7 +1016,7 @@
                 "issues": "https://github.com/GuardsmanPanda/larabear/issues",
                 "source": "https://github.com/GuardsmanPanda/larabear/tree/main"
             },
-            "time": "2024-07-22T18:48:03+00:00"
+            "time": "2024-07-23T19:13:40+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -1431,16 +1431,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v11.16.0",
+            "version": "v11.17.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "bd4808aaf103ccb5cb4b00bcee46140c070c0ec4"
+                "reference": "42f505a0c8afc0743f73e70bec08e641e2870bd6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/bd4808aaf103ccb5cb4b00bcee46140c070c0ec4",
-                "reference": "bd4808aaf103ccb5cb4b00bcee46140c070c0ec4",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/42f505a0c8afc0743f73e70bec08e641e2870bd6",
+                "reference": "42f505a0c8afc0743f73e70bec08e641e2870bd6",
                 "shasum": ""
             },
             "require": {
@@ -1633,7 +1633,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2024-07-16T14:33:07+00:00"
+            "time": "2024-07-23T16:33:27+00:00"
         },
         {
             "name": "laravel/prompts",
@@ -7933,5 +7933,5 @@
         "php": "^8.3"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }

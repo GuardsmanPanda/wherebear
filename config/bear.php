@@ -1,5 +1,13 @@
 <?php declare(strict_types=1);
 
+use Domain\Game\Enum\GamePublicStatusEnum;
+use Domain\Game\Enum\GameStateEnum;
+use Domain\Map\Enum\MapMarkerEnum;
+use Domain\Map\Enum\MapStyleEnum;
+use Domain\Panorama\Enum\TagEnum;
+use Domain\User\Enum\UserLevelEnum;
+use GuardsmanPanda\Larabear\Infrastructure\Auth\Enum\LarabearPermissionEnum;
+
 return [
     'cookie' => [
         'session_key' => env(key: 'LARABEAR_SESSION_KEY'),
@@ -27,18 +35,36 @@ return [
         'pgsql' => [
             'bear_user' => ['class' => 'WhereBearUser', 'location' => 'Domain/User/Model'],
             'game' => ['location' => 'Domain/Game/Model'],
-            'game_public_status' => ['location' => 'Domain/Game/Model'],
+            'game_public_status' => [
+                'enum' => GamePublicStatusEnum::class,
+                'location' => 'Domain/Game/Model'
+            ],
             'game_round' => ['location' => 'Domain/Game/Model'],
             'game_round_user' => ['location' => 'Domain/Game/Model'],
-            'game_state' => ['location' => 'Domain/Game/Model'],
+            'game_state' => [
+                'enum' => GameStateEnum::class,
+                'location' => 'Domain/Game/Model',
+            ],
             'game_user' => ['location' => 'Domain/Game/Model', 'log_exclude_columns' => ['is_ready']],
-            'map_marker' => ['location' => 'Domain/Map/Model'],
-            'map_style' => ['location' => 'Domain/Map/Model'],
+            'map_marker' => [
+                'enum' => MapMarkerEnum::class,
+                'location' => 'Domain/Map/Model'
+            ],
+            'map_style' => [
+                'enum' => MapStyleEnum::class,
+                'location' => 'Domain/Map/Model'
+            ],
             'panorama' => ['location' => 'Domain/Panorama/Model'],
             'panorama_tag' => ['location' => 'Domain/Panorama/Model'],
             'panorama_user_rating' => ['location' => 'Domain/Panorama/Model'],
-            'tag' => ['location' => 'Domain/Panorama/Model'],
-            'user_level' => ['location' => 'Domain/User/Model'],
+            'tag' => [
+                'enum' => TagEnum::class,
+                'location' => 'Domain/Panorama/Model'
+            ],
+            'user_level' => [
+                'enum' => UserLevelEnum::class,
+                'location' => 'Domain/User/Model'
+            ],
 
             'bear_access_token' => ['location' => 'Domain/Larabear/Model'],
             'bear_config' => ['location' => 'Domain/Larabear/Model'],
@@ -52,7 +78,10 @@ return [
             'bear_oauth2_client' => ['location' => 'Domain/Larabear/Model'],
             'bear_oauth2_client_type' => ['location' => 'Domain/Larabear/Model'],
             'bear_oauth2_user' => ['location' => 'Domain/Larabear/Model'],
-            'bear_permission' => ['location' => 'Domain/Larabear/Model'],
+            'bear_permission' => [
+                'enum' => LarabearPermissionEnum::class,
+                'location' => 'Domain/Larabear/Model'
+            ],
             'bear_permission_user' => ['location' => 'Domain/Larabear/Model'],
             'bear_role_permission' => ['location' => 'Domain/Larabear/Model'],
             'bear_role_user' => ['location' => 'Domain/Larabear/Model'],

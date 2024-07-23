@@ -4,7 +4,6 @@ namespace Infrastructure\App\Enum;
 
 use GuardsmanPanda\Larabear\Infrastructure\Oauth2\Crud\BearOauth2ClientCreator;
 use GuardsmanPanda\Larabear\Infrastructure\Oauth2\Enum\LarabearOauth2ClientTypeEnum;
-use GuardsmanPanda\Larabear\Infrastructure\Oauth2\Interface\BearOauth2ClientTypeEnumInterface;
 use GuardsmanPanda\Larabear\Infrastructure\Oauth2\Model\BearOauth2Client;
 
 enum BearOauth2ClientEnum: string {
@@ -32,7 +31,7 @@ enum BearOauth2ClientEnum: string {
         };
     }
 
-    public function getOauth2ClientType(): BearOauth2ClientTypeEnumInterface {
+    public function getOauth2ClientType(): LarabearOauth2ClientTypeEnum {
         return match ($this) {
             self::TWITCH => LarabearOauth2ClientTypeEnum::TWITCH,
             self::GOOGLE => LarabearOauth2ClientTypeEnum::GOOGLE,
@@ -48,7 +47,7 @@ enum BearOauth2ClientEnum: string {
 
     public static function syncToDatabase(): void {
         foreach (self::cases() as $client) {
-            if (BearOauth2Client::find(id: $client->getId())) {
+            if (BearOauth2Client::find(id: $client->getId()) === null) {
                 BearOauth2ClientCreator::create(
                     id: $client->getId(),
                     description: $client->getDescription(),

@@ -4,8 +4,11 @@ namespace Domain\Game\Model;
 
 use Carbon\CarbonInterface;
 use Closure;
+use Domain\Game\Enum\GamePublicStatusEnum;
+use Domain\Game\Enum\GameStateEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearUser;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -25,12 +28,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static Collection<int, Game> get(array $columns = ['*'])
  * @method static Collection<int|string, Game> pluck(string $column, string $key = null)
  * @method static Collection<int, Game> fromQuery(string $query, array $bindings = [])
- * @method static Game lockForUpdate()
+ * @method static Builder<Game> lockForUpdate()
  * @method static Game select(array $columns = ['*'])
  * @method static Game selectRaw(string $expression, array $bindings = [])
  * @method static Game with(array $relations)
  * @method static Game leftJoin(string $table, string $first, string $operator = null, string $second = null)
- * @method static Game where(string $column, string $operator = null, string|float|int|bool $value = null)
+ * @method static Builder<Game> where(string $column, string $operator = null, string|float|int|bool $value = null)
  * @method static Game whereIn(string $column, array $values)
  * @method static Game whereNull(string|array $columns)
  * @method static Game whereNotNull(string|array $columns)
@@ -60,15 +63,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $id
  * @property string $created_at
  * @property string $updated_at
- * @property string $game_state_enum
  * @property string $created_by_user_id
- * @property string $game_public_status_enum
  * @property CarbonInterface|null $next_round_at
  * @property CarbonInterface|null $round_ends_at
+ * @property GameStateEnum $game_state_enum
+ * @property GamePublicStatusEnum $game_public_status_enum
  *
  * @property BearUser $createdByUser
- * @property GameState $gameStateEnum
- * @property GamePublicStatus $gamePublicStatusEnum
+ * @property GameState $gameState
+ * @property GamePublicStatus $gamePublicStatus
  *
  * AUTO GENERATED FILE DO NOT MODIFY
  */
@@ -82,6 +85,8 @@ final class Game extends Model {
 
     /** @var array<string, string> $casts */
     protected $casts = [
+        'game_public_status_enum' => GamePublicStatusEnum::class,
+        'game_state_enum' => GameStateEnum::class,
         'next_round_at' => 'immutable_datetime',
         'round_ends_at' => 'immutable_datetime',
     ];
@@ -92,12 +97,12 @@ final class Game extends Model {
     }
 
     /** @return BelongsTo<GameState, self> */
-    public function gameStateEnum(): BelongsTo {
+    public function gameState(): BelongsTo {
         return $this->belongsTo(related: GameState::class, foreignKey: 'game_state_enum', ownerKey: 'enum');
     }
 
     /** @return BelongsTo<GamePublicStatus, self> */
-    public function gamePublicStatusEnum(): BelongsTo {
+    public function gamePublicStatus(): BelongsTo {
         return $this->belongsTo(related: GamePublicStatus::class, foreignKey: 'game_public_status_enum', ownerKey: 'enum');
     }
 

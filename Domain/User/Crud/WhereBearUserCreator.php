@@ -5,6 +5,7 @@ namespace Domain\User\Crud;
 use Carbon\CarbonImmutable;
 use Domain\Map\Enum\MapMarkerEnum;
 use Domain\Map\Enum\MapStyleEnum;
+use Domain\User\Enum\UserLevelEnum;
 use Domain\User\Model\WhereBearUser;
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearRegexService;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
@@ -14,7 +15,7 @@ final class WhereBearUserCreator {
     public static function create(
         string        $display_name,
         int           $experience,
-        int           $user_level_enum,
+        UserLevelEnum $user_level_enum,
         string        $email = null,
         string        $country_cca2 = null,
         MapMarkerEnum $map_marker_enum = MapMarkerEnum::DEFAULT,
@@ -32,8 +33,8 @@ final class WhereBearUserCreator {
         $model->email = $email !== null ? BearRegexService::superTrim($email) : null;
         $model->country_cca2 = $country_cca2;
         $model->last_login_at = CarbonImmutable::now();
-        $model->map_marker_enum = $map_marker_enum->value;
-        $model->map_style_enum = $map_style_enum->value;
+        $model->map_marker_enum = $map_marker_enum;
+        $model->map_style_enum = $map_style_enum;
 
         $model->save();
         return $model;

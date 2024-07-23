@@ -34,13 +34,13 @@ final class GameRunJob implements ShouldQueue, ShouldBeUnique {
 
     public function handle(): void {
         $game = Game::findOrFail(id: $this->gameId);
-        while (!$this->exitJob && $game->game_state_enum !== GameStateEnum::FINISHED->value) {
+        while (!$this->exitJob && $game->game_state_enum !== GameStateEnum::FINISHED) {
             $game = match ($game->game_state_enum) {
-                GameStateEnum::QUEUED->value => $this->ensureReady(game: $game),
-                GameStateEnum::STARTING->value => $this->startGame(game: $game),
-                GameStateEnum::IN_PROGRESS->value => $this->runRound(game: $game),
-                GameStateEnum::IN_PROGRESS_CALCULATING->value => $this->calculateRoundResults(game: $game),
-                GameStateEnum::IN_PROGRESS_RESULT->value => $this->nextRoundOrEnd(game: $game),
+                GameStateEnum::QUEUED => $this->ensureReady(game: $game),
+                GameStateEnum::STARTING => $this->startGame(game: $game),
+                GameStateEnum::IN_PROGRESS => $this->runRound(game: $game),
+                GameStateEnum::IN_PROGRESS_CALCULATING => $this->calculateRoundResults(game: $game),
+                GameStateEnum::IN_PROGRESS_RESULT => $this->nextRoundOrEnd(game: $game),
                 default => $this->logWierdState(game: $game),
             };
         }

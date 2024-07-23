@@ -4,14 +4,18 @@ namespace Domain\Map\Enum;
 
 use Domain\Map\Crud\MapMarkerCreator;
 use Domain\Map\Model\MapMarker;
-use Domain\Map\Service\MapMarkerService;
 use Domain\User\Enum\UserLevelEnum;
+use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 
 enum MapMarkerEnum: string {
     case DEFAULT = 'DEFAULT';
     case ONE_UP = '1UP';
     case BOB_DINO = 'BOB_DINO';
     case WINDMILL = 'Windmill';
+
+    public static function fromRequest(): self {
+        return self::from(value: Req::getString(key: 'map_marker_enum'));
+    }
 
 
     public function getName(): string {
@@ -36,8 +40,8 @@ enum MapMarkerEnum: string {
 
     public function getUserLevelRequirement(): UserLevelEnum {
         return match ($this) {
-            default => UserLevelEnum::L0,
             self::ONE_UP => UserLevelEnum::L1,
+            default => UserLevelEnum::L0,
         };
     }
 

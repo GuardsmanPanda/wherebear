@@ -4,6 +4,7 @@ namespace Web\Www\Auth\Controller;
 
 use Domain\Game\Crud\GameUserDeleter;
 use Domain\User\Crud\WhereBearUserCreator;
+use Domain\User\Enum\UserLevelEnum;
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearShortCodeService;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Action\BearAuthCookieLoginAction;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearUser;
@@ -38,7 +39,7 @@ final class AuthController extends Controller {
         $user = WhereBearUserCreator::create(
             display_name: "Guest-" . BearShortCodeService::generateNextCode(),
             experience: 0,
-            user_level_enum: 0,
+            user_level_enum: UserLevelEnum::L0,
             country_cca2: Req::ipCountry()
         );
         BearAuthCookieLoginAction::login(user: BearUser::findOrFail($user->id));
@@ -55,9 +56,9 @@ final class AuthController extends Controller {
             $user = $oauth2User->user;
             if ($user === null && $oauth2User->email !== null) {
                 $user = WhereBearUserCreator::create(
-                    display_name: $oauth2User->email,
+                    display_name: $oauth2User->display_name ?? 'User-' . BearShortCodeService::generateNextCode(),
                     experience: 1,
-                    user_level_enum: 1,
+                    user_level_enum: UserLevelEnum::L1,
                     email: $oauth2User->email,
                     country_cca2: Req::ipCountry()
                 );
@@ -67,10 +68,10 @@ final class AuthController extends Controller {
                 throw new LogicException(message: "User not found.");
             }
             // Remove guest from game that are not yet finished.
-            if (BearAuthService::getUserId() !== null && BearAuthService::getUser()->email === null) {
+            if (BearAuthService::getUserIdOrNull() !== null && BearAuthService::getUser()->email === null) {
                 GameUserDeleter::deleteGuestUserFromUnfinishedGames(user: BearAuthService::getUser());
             }
-            BearAuthCookieLoginAction::login($oauth2User->user);
+            BearAuthCookieLoginAction::login(BearUser::findOrFail($oauth2User->user_id));
             DB::commit();
         } catch (LogicException $t) {
             DB::rollBack();

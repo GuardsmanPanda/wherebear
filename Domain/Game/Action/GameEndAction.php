@@ -14,19 +14,19 @@ final class GameEndAction {
         if ($game->current_round !== $game->number_of_rounds) {
             throw new RuntimeException(message: "Game [$game->id] has not reached the maximum number of rounds [$game->number_of_rounds]");
         }
-        if ($game->game_state_enum !== GameStateEnum::IN_PROGRESS_RESULT->value) {
+        if ($game->game_state_enum !== GameStateEnum::IN_PROGRESS_RESULT) {
             throw new RuntimeException(message: 'Game is not in IN_PROGRESS_RESULT state -- cannot end');
         }
         DB::update(query: <<<SQL
             WITH game_score AS (
                 SELECT
-                    gru.user_id, gru.game_id, SUM(gru.round_points) as score
+                    gru.user_id, gru.game_id, SUM(gru.points) as score
                 FROM game_round_user gru
                 WHERE gru.game_id = ?
                 GROUP BY gru.user_id, gru.game_id
             )
             UPDATE game_user gu SET
-                game_points = game_score.score,
+                points = game_score.score,
                 updated_at = NOW()
             FROM game_score
             WHERE gu.game_id = game_score.game_id AND gu.user_id = game_score.user_id

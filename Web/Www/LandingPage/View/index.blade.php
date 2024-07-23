@@ -1,5 +1,5 @@
 <?php declare(strict_types=1); ?>
-@php use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;use Illuminate\Support\Facades\Session; @endphp
+@php use Domain\User\Enum\BearPermissionEnum;use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;use Illuminate\Support\Facades\Session; @endphp
 @extends('layout.landing-layout')
 @section('styles')
     <style>
@@ -19,14 +19,12 @@
                             hx-get="/auth/dialog">Login :D
                     </button>
                 @else
-                    @if(BearAuthService::hasPermission('game::create'))
-                        <button class="transform duration-75 hover:scale-110 p-2 hover:text-gray-200"
-                                hx-get="/game/create">
+                    @if(BearAuthService::hasPermission(permission: BearPermissionEnum::GAME_CREATE))
+                        <button class="transform duration-75 hover:scale-110 p-2 hover:text-gray-200" hx-get="/game/create">
                             <x-bear::icon name="plus" size="8"/>
                         </button>
                     @endif
-                    <button class="transform duration-75 hover:scale-110 p-2 hover:text-green-300 text-green-400"
-                            hx-get="/auth/user-settings">
+                    <button class="transform duration-75 hover:scale-110 p-2 hover:text-green-300 text-green-400" hx-get="/auth/user-settings">
                         <x-bear::icon name="cog-6-tooth" size="8"/>
                     </button>
                 @endif
