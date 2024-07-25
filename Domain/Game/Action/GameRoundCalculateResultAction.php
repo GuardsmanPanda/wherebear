@@ -69,6 +69,12 @@ final class GameRoundCalculateResultAction {
     }
 
 
+    /**
+     * @param string $gameId
+     * @param int $roundNumber
+     * @param array<mixed> $players
+     * @return void
+     */
     private static function superFallbackGuesses(string $gameId, int $roundNumber, array $players): void {
         $playerCount = count($players);
         $locations = DB::select(query: "

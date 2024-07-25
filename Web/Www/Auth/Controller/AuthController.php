@@ -71,7 +71,7 @@ final class AuthController extends Controller {
             if (BearAuthService::getUserIdOrNull() !== null && BearAuthService::getUser()->email === null) {
                 GameUserDeleter::deleteGuestUserFromUnfinishedGames(user: BearAuthService::getUser());
             }
-            BearAuthCookieLoginAction::login(BearUser::findOrFail($oauth2User->user_id));
+            BearAuthCookieLoginAction::login(BearUser::findOrFail($oauth2User->user_id ?? throw new LogicException(message: "User not found.")));
             DB::commit();
         } catch (LogicException $t) {
             DB::rollBack();

@@ -12,7 +12,7 @@ final readonly class GameUserUpdater {
     }
 
     public static function fromGameIdAndUserId(string $game_id, string $user_id): GameUserUpdater {
-        $game_user = GameUser::find(ids: ['game_id' => $game_id, 'user_id' => $user_id]);
+        $game_user = GameUser::findOrFail(ids: ['game_id' => $game_id, 'user_id' => $user_id]);
         return new GameUserUpdater(model: $game_user);
     }
 

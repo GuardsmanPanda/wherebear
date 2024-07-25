@@ -2,7 +2,7 @@
 
 namespace Domain\Map\Enum;
 
-use Domain\Map\Crud\MapMarkerCreator;
+use Domain\Map\Crud\MapMarkerCrud;
 use Domain\Map\Model\MapMarker;
 use Domain\User\Enum\UserLevelEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
@@ -32,8 +32,8 @@ enum MapMarkerEnum: string {
         return match ($this) {
             self::DEFAULT => 'default.png',
             self::ONE_UP => '1up.webp',
-            self::BOB_DINO => 'bobdino.webp',
-            self::WINDMILL => 'windmill.webp',
+            self::BOB_DINO => 'bobdino.png',
+            self::WINDMILL => 'windmill.png',
         };
     }
 
@@ -65,9 +65,12 @@ enum MapMarkerEnum: string {
 
 
     public static function syncToDatabase(): void {
-        foreach (MapMarkerEnum::cases() as $marker) {
-            if (MapMarker::find(id: $marker->value) === null) {
-                MapMarkerCreator::create(enum: $marker);
+        foreach (MapMarkerEnum::cases() as $enum) {
+            $model = MapMarker::find(id: $enum->value);
+            if ($model === null) {
+                MapMarkerCrud::create(enum: $enum);
+            } else {
+                MapMarkerCrud::update(model: $model, enum: $enum);
             }
         }
     }

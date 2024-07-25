@@ -4,7 +4,6 @@ namespace Domain\User\Enum;
 
 use Domain\User\Crud\UserLevelCreator;
 use Domain\User\Model\UserLevel;
-use Domain\User\Service\UserLevelService;
 
 enum UserLevelEnum: int {
     case L0 = 0;

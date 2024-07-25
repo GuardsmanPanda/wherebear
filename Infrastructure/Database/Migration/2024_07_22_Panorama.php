@@ -24,7 +24,7 @@ return new class extends Migration {
                 updated_at            timestamp with time zone default CURRENT_TIMESTAMP not null
             );
         ");
-        DB::statement(query: "create index panorama_location_gist_idx on panorama using gist(location);");
+        DB::statement(query: "create index location_gist_idx on panorama using gist(location);");
     }
 
 

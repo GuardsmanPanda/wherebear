@@ -101,7 +101,7 @@ final class GameRunJob implements ShouldQueue, ShouldBeUnique {
     }
 
     private function logWierdState(Game $game): never {
-        BearErrorCreator::create(message: "error state: " . $game->game_state_enum);
+        BearErrorCreator::create(message: "error state: " . $game->game_state_enum->value);
         throw new RuntimeException(message: "Failed Job");
     }
 }

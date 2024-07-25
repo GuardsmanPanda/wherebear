@@ -7,6 +7,7 @@ use Closure;
 use Domain\Panorama\Model\Panorama;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -25,31 +26,30 @@ use RuntimeException;
  * @method static Collection<int, GameRound> get(array $columns = ['*'])
  * @method static Collection<int|string, GameRound> pluck(string $column, string $key = null)
  * @method static Collection<int, GameRound> fromQuery(string $query, array $bindings = [])
- * @method static GameRound lockForUpdate()
- * @method static GameRound select(array $columns = ['*'])
- * @method static GameRound selectRaw(string $expression, array $bindings = [])
- * @method static GameRound with(array $relations)
- * @method static GameRound leftJoin(string $table, string $first, string $operator = null, string $second = null)
- * @method static GameRound where(string $column, string $operator = null, string|float|int|bool $value = null)
- * @method static GameRound whereIn(string $column, array $values)
- * @method static GameRound whereNull(string|array $columns)
- * @method static GameRound whereNotNull(string|array $columns)
- * @method static GameRound whereYear(string $column, string $operator, CarbonInterface|string|int $value)
- * @method static GameRound whereMonth(string $column, string $operator, CarbonInterface|string|int $value)
- * @method static GameRound whereDate(string $column, string $operator, CarbonInterface|string $value)
- * @method static GameRound whereExists(Closure $callback)
- * @method static GameRound whereNotExists(Closure $callback)
- * @method static GameRound whereHas(string $relation, Closure $callback = null, string $operator = '>=', int $count = 1)
- * @method static GameRound withWhereHas(string $relation, Closure $callback = null, string $operator = '>=', int $count = 1)
- * @method static GameRound whereDoesntHave(string $relation, Closure $callback = null)
- * @method static GameRound whereRaw(string $sql, array $bindings = [])
- * @method static GameRound groupBy(string $groupBy)
- * @method static GameRound orderBy(string $column, string $direction = 'asc')
- * @method static GameRound orderByDesc(string $column)
- * @method static GameRound orderByRaw(string $sql, array $bindings = [])
- * @method static GameRound limit(int $value)
+ * @method static Builder<GameRound> lockForUpdate()
+ * @method static Builder<GameRound> select(array $columns = ['*'])
+ * @method static Builder<GameRound> selectRaw(string $expression, array $bindings = [])
+ * @method static Builder<GameRound> with(array $relations)
+ * @method static Builder<GameRound> leftJoin(string $table, string $first, string $operator = null, string $second = null)
+ * @method static Builder<GameRound> where(string $column, string $operator = null, string|float|int|bool $value = null)
+ * @method static Builder<GameRound> whereIn(string $column, array $values)
+ * @method static Builder<GameRound> whereNull(string|array $columns)
+ * @method static Builder<GameRound> whereNotNull(string|array $columns)
+ * @method static Builder<GameRound> whereYear(string $column, string $operator, CarbonInterface|string|int $value)
+ * @method static Builder<GameRound> whereMonth(string $column, string $operator, CarbonInterface|string|int $value)
+ * @method static Builder<GameRound> whereDate(string $column, string $operator, CarbonInterface|string $value)
+ * @method static Builder<GameRound> whereExists(Closure $callback)
+ * @method static Builder<GameRound> whereNotExists(Closure $callback)
+ * @method static Builder<GameRound> whereHas(string $relation, Closure $callback = null, string $operator = '>=', int $count = 1)
+ * @method static Builder<GameRound> withWhereHas(string $relation, Closure $callback = null, string $operator = '>=', int $count = 1)
+ * @method static Builder<GameRound> whereDoesntHave(string $relation, Closure $callback = null)
+ * @method static Builder<GameRound> whereRaw(string $sql, array $bindings = [])
+ * @method static Builder<GameRound> groupBy(string $groupBy)
+ * @method static Builder<GameRound> orderBy(string $column, string $direction = 'asc')
+ * @method static Builder<GameRound> orderByDesc(string $column)
+ * @method static Builder<GameRound> orderByRaw(string $sql, array $bindings = [])
+ * @method static Builder<GameRound> limit(int $value)
  * @method static int count(array $columns = ['*'])
- * @method static mixed sum(string $column)
  * @method static bool exists()
  *
  * @property int $round_number
@@ -98,7 +98,7 @@ final class GameRound extends Model {
     }
 
     /**
-     * @param array<string, string> $ids # Ids in the form ['key1' => 'value1', 'key2' => 'value2']
+     * @param array<string, string|int> $ids # Ids in the form ['key1' => 'value1', 'key2' => 'value2']
      * @param array<string> $columns
      * @return GameRound|null
      */
@@ -113,7 +113,7 @@ final class GameRound extends Model {
     }
 
     /**
-     * @param array<string, string> $ids # Ids in the form ['key1' => 'value1', 'key2' => 'value2']
+     * @param array<string, string|int> $ids # Ids in the form ['key1' => 'value1', 'key2' => 'value2']
      * @param array<string> $columns
      * @return GameRound
      */

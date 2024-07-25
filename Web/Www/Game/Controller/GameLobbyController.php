@@ -115,15 +115,17 @@ final class GameLobbyController extends Controller {
         return Resp::view(view: 'game::lobby.player-list', data: [
             'players' => DB::select(query: "
                 SELECT 
-                    bu.display_name, bu.map_marker_file_name, bu.user_country_iso2_code,
-                    gu.is_ready, bc.country_name,
-                    bu.user_email IS NULL AS is_guest,
+                    bu.display_name, bu.country_cca2,
+                    mm.file_name as map_marker_file_name, mm.name as map_marker_name,
+                    gu.is_ready, bc.name as country_name,
+                    bu.user_level_enum = 0 AS is_guest,
                     (SELECT COUNT(*) FROM game_user WHERE user_id = bu.id) as game_count
                 FROM game_user gu
                 LEFT JOIN bear_user bu ON bu.id = gu.user_id
-                LEFT JOIN bear_country bc ON bc.country_iso2_code = bu.user_country_iso2_code
+                LEFT JOIN bear_country bc ON bc.cca2 = bu.country_cca2
+                LEFT JOIN map_marker mm ON mm.enum = bu.map_marker_enum
                 WHERE gu.game_id = ?
-                ORDER BY bu.id = ? DESC, bu.display_name, bu.user_country_iso2_code, bu.id
+                ORDER BY bu.id = ? DESC, bu.display_name, bu.country_cca2, bu.id
             ", bindings: [$gameId, BearAuthService::getUserId()]),
         ]);
     }
@@ -140,8 +142,8 @@ final class GameLobbyController extends Controller {
         if (Req::has(key: 'display_name')) {
             $updater->setDisplayName(display_name: Req::getString(key: 'display_name'));
         }
-        if (Req::has(key: 'user_country_iso2_code')) {
-            $updater->setCountryCca2(country_cca2: Req::getString(key: 'user_country_iso2_code'));
+        if (Req::has(key: 'country_cca2')) {
+            $updater->setCountryCca2(country_cca2: Req::getString(key: 'country_cca2'));
         }
         $updater->update();
         GameBroadcast::playerUpdate(gameId: $gameId, playerId: BearAuthService::getUserId()); // Broadcast to all players
@@ -188,7 +190,7 @@ final class GameLobbyController extends Controller {
                     ORDER BY name
                 "),
                 'display_name' => BearAuthService::getUser()->display_name,
-                'flag_selected' => BearAuthService::getUser()->user_country_iso2_code,
+                'flag_selected' => BearAuthService::getUser()->country_cca2,
                 'game_id' => $gameId,
                 'novelty_flags' => DB::select(query: "
                     SELECT name, cca2
@@ -202,7 +204,7 @@ final class GameLobbyController extends Controller {
 
 
     public function dialogMapMarker(string $gameId): View {
-        $markers = DB::select(query: "SELECT file_name, map_marker_name, grouping FROM map_marker ORDER BY grouping, file_name");
+        $markers = DB::select(query: "SELECT enum, file_name, name, grouping FROM map_marker ORDER BY grouping, file_name");
         return Htmx::dialogView(
             view: 'game::lobby.dialog.map-marker',
             title: 'Select Map Marker',
@@ -221,9 +223,9 @@ final class GameLobbyController extends Controller {
             data: [
                 'game_id' => $gameId,
                 'map_styles' => DB::select(query: "
-                    SELECT
-                        map_style_enum, map_style_name
+                    SELECT enum, name
                     FROM map_style
+                    WHERE enum != 'DEFAULT'
                 "),
             ]
         );

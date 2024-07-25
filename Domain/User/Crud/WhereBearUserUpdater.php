@@ -7,7 +7,6 @@ use Domain\Map\Enum\MapMarkerEnum;
 use Domain\Map\Enum\MapStyleEnum;
 use Domain\User\Model\WhereBearUser;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
-use Illuminate\Database\Eloquent\Casts\ArrayObject;
 
 final readonly class WhereBearUserUpdater {
     public function __construct(private WhereBearUser $model) {

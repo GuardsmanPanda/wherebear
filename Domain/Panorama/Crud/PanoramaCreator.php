@@ -25,8 +25,8 @@ final class PanoramaCreator {
 
         DB::insert(query: "
             INSERT INTO panorama (
-                id, captured_date, country_iso2_code, state_name, city_name, added_by_user_id,
-                panorama_location, jpg_path, nominatim_json, created_at, updated_at
+                id, captured_date, country_cca2, state_name, city_name, added_by_user_id,
+                location, jpg_path, nominatim_json, created_at, updated_at
             ) VALUES (?, ?, ?, ?, ?, ?, ST_MakePoint(?::double precision, ?::double precision), ?, ?, NOW(), NOW())
         ", bindings: [
             $id,

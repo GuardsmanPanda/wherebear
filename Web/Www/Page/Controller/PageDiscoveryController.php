@@ -17,9 +17,9 @@ final class PageDiscoveryController extends Controller {
     public function index(): View {
         return Resp::view(view: 'page::discovery.index', data: [
             'markers' => DB::select(query: "
-                SELECT ST_Y(p.panorama_location::geometry) as lat, ST_X(p.panorama_location::geometry) as lng
+                SELECT ST_Y(p.location::geometry) as lat, ST_X(p.location::geometry) as lng
                 FROM panorama p
-                WHERE p.panorama_location IS NOT NULL
+                WHERE p.location IS NOT NULL
             "),
             'user' => DB::selectOne(query: "
                 SELECT

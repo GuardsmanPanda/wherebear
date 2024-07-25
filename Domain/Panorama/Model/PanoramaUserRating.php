@@ -7,6 +7,7 @@ use Closure;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearUser;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -25,31 +26,30 @@ use RuntimeException;
  * @method static Collection<int, PanoramaUserRating> get(array $columns = ['*'])
  * @method static Collection<int|string, PanoramaUserRating> pluck(string $column, string $key = null)
  * @method static Collection<int, PanoramaUserRating> fromQuery(string $query, array $bindings = [])
- * @method static PanoramaUserRating lockForUpdate()
- * @method static PanoramaUserRating select(array $columns = ['*'])
- * @method static PanoramaUserRating selectRaw(string $expression, array $bindings = [])
- * @method static PanoramaUserRating with(array $relations)
- * @method static PanoramaUserRating leftJoin(string $table, string $first, string $operator = null, string $second = null)
- * @method static PanoramaUserRating where(string $column, string $operator = null, string|float|int|bool $value = null)
- * @method static PanoramaUserRating whereIn(string $column, array $values)
- * @method static PanoramaUserRating whereNull(string|array $columns)
- * @method static PanoramaUserRating whereNotNull(string|array $columns)
- * @method static PanoramaUserRating whereYear(string $column, string $operator, CarbonInterface|string|int $value)
- * @method static PanoramaUserRating whereMonth(string $column, string $operator, CarbonInterface|string|int $value)
- * @method static PanoramaUserRating whereDate(string $column, string $operator, CarbonInterface|string $value)
- * @method static PanoramaUserRating whereExists(Closure $callback)
- * @method static PanoramaUserRating whereNotExists(Closure $callback)
- * @method static PanoramaUserRating whereHas(string $relation, Closure $callback = null, string $operator = '>=', int $count = 1)
- * @method static PanoramaUserRating withWhereHas(string $relation, Closure $callback = null, string $operator = '>=', int $count = 1)
- * @method static PanoramaUserRating whereDoesntHave(string $relation, Closure $callback = null)
- * @method static PanoramaUserRating whereRaw(string $sql, array $bindings = [])
- * @method static PanoramaUserRating groupBy(string $groupBy)
- * @method static PanoramaUserRating orderBy(string $column, string $direction = 'asc')
- * @method static PanoramaUserRating orderByDesc(string $column)
- * @method static PanoramaUserRating orderByRaw(string $sql, array $bindings = [])
- * @method static PanoramaUserRating limit(int $value)
+ * @method static Builder<PanoramaUserRating> lockForUpdate()
+ * @method static Builder<PanoramaUserRating> select(array $columns = ['*'])
+ * @method static Builder<PanoramaUserRating> selectRaw(string $expression, array $bindings = [])
+ * @method static Builder<PanoramaUserRating> with(array $relations)
+ * @method static Builder<PanoramaUserRating> leftJoin(string $table, string $first, string $operator = null, string $second = null)
+ * @method static Builder<PanoramaUserRating> where(string $column, string $operator = null, string|float|int|bool $value = null)
+ * @method static Builder<PanoramaUserRating> whereIn(string $column, array $values)
+ * @method static Builder<PanoramaUserRating> whereNull(string|array $columns)
+ * @method static Builder<PanoramaUserRating> whereNotNull(string|array $columns)
+ * @method static Builder<PanoramaUserRating> whereYear(string $column, string $operator, CarbonInterface|string|int $value)
+ * @method static Builder<PanoramaUserRating> whereMonth(string $column, string $operator, CarbonInterface|string|int $value)
+ * @method static Builder<PanoramaUserRating> whereDate(string $column, string $operator, CarbonInterface|string $value)
+ * @method static Builder<PanoramaUserRating> whereExists(Closure $callback)
+ * @method static Builder<PanoramaUserRating> whereNotExists(Closure $callback)
+ * @method static Builder<PanoramaUserRating> whereHas(string $relation, Closure $callback = null, string $operator = '>=', int $count = 1)
+ * @method static Builder<PanoramaUserRating> withWhereHas(string $relation, Closure $callback = null, string $operator = '>=', int $count = 1)
+ * @method static Builder<PanoramaUserRating> whereDoesntHave(string $relation, Closure $callback = null)
+ * @method static Builder<PanoramaUserRating> whereRaw(string $sql, array $bindings = [])
+ * @method static Builder<PanoramaUserRating> groupBy(string $groupBy)
+ * @method static Builder<PanoramaUserRating> orderBy(string $column, string $direction = 'asc')
+ * @method static Builder<PanoramaUserRating> orderByDesc(string $column)
+ * @method static Builder<PanoramaUserRating> orderByRaw(string $sql, array $bindings = [])
+ * @method static Builder<PanoramaUserRating> limit(int $value)
  * @method static int count(array $columns = ['*'])
- * @method static mixed sum(string $column)
  * @method static bool exists()
  *
  * @property int $rating
@@ -97,7 +97,7 @@ final class PanoramaUserRating extends Model {
     }
 
     /**
-     * @param array<string, string> $ids # Ids in the form ['key1' => 'value1', 'key2' => 'value2']
+     * @param array<string, string|int> $ids # Ids in the form ['key1' => 'value1', 'key2' => 'value2']
      * @param array<string> $columns
      * @return PanoramaUserRating|null
      */
@@ -112,7 +112,7 @@ final class PanoramaUserRating extends Model {
     }
 
     /**
-     * @param array<string, string> $ids # Ids in the form ['key1' => 'value1', 'key2' => 'value2']
+     * @param array<string, string|int> $ids # Ids in the form ['key1' => 'value1', 'key2' => 'value2']
      * @param array<string> $columns
      * @return PanoramaUserRating
      */

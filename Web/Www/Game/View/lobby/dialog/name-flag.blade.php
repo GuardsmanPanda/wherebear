@@ -11,12 +11,12 @@
     <h2 class="mt-4 font-bold text-xl">Flag Choice</h2>
     <div class="ml-1">
         <form class="" hx-target="#lobby">
-            <x-bear::form.select id="user_country_iso2_code" label="Country"
+            <x-bear::form.select id="country_cca2" label="Country"
                                  hx-patch="/game/{{$game_id}}/lobby/update-user">
                 <option value="" disabled selected></option>
                 @foreach($countries as $country)
-                    <option value="{{$country->country_iso2_code}}"
-                            @if($country->country_iso2_code === BearAuthService::getUser()->user_country_iso2_code) selected @endif>{{$country->country_name}}</option>
+                    <option value="{{$country->cca2}}"
+                            @if($country->cca2 === BearAuthService::getUser()->country_cca2) selected @endif>{{$country->name}}</option>
                 @endforeach
             </x-bear::form.select>
         </form>

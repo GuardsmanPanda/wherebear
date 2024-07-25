@@ -7,6 +7,7 @@ use Closure;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearUser;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -25,31 +26,30 @@ use RuntimeException;
  * @method static Collection<int, GameUser> get(array $columns = ['*'])
  * @method static Collection<int|string, GameUser> pluck(string $column, string $key = null)
  * @method static Collection<int, GameUser> fromQuery(string $query, array $bindings = [])
- * @method static GameUser lockForUpdate()
- * @method static GameUser select(array $columns = ['*'])
- * @method static GameUser selectRaw(string $expression, array $bindings = [])
- * @method static GameUser with(array $relations)
- * @method static GameUser leftJoin(string $table, string $first, string $operator = null, string $second = null)
- * @method static GameUser where(string $column, string $operator = null, string|float|int|bool $value = null)
- * @method static GameUser whereIn(string $column, array $values)
- * @method static GameUser whereNull(string|array $columns)
- * @method static GameUser whereNotNull(string|array $columns)
- * @method static GameUser whereYear(string $column, string $operator, CarbonInterface|string|int $value)
- * @method static GameUser whereMonth(string $column, string $operator, CarbonInterface|string|int $value)
- * @method static GameUser whereDate(string $column, string $operator, CarbonInterface|string $value)
- * @method static GameUser whereExists(Closure $callback)
- * @method static GameUser whereNotExists(Closure $callback)
- * @method static GameUser whereHas(string $relation, Closure $callback = null, string $operator = '>=', int $count = 1)
- * @method static GameUser withWhereHas(string $relation, Closure $callback = null, string $operator = '>=', int $count = 1)
- * @method static GameUser whereDoesntHave(string $relation, Closure $callback = null)
- * @method static GameUser whereRaw(string $sql, array $bindings = [])
- * @method static GameUser groupBy(string $groupBy)
- * @method static GameUser orderBy(string $column, string $direction = 'asc')
- * @method static GameUser orderByDesc(string $column)
- * @method static GameUser orderByRaw(string $sql, array $bindings = [])
- * @method static GameUser limit(int $value)
+ * @method static Builder<GameUser> lockForUpdate()
+ * @method static Builder<GameUser> select(array $columns = ['*'])
+ * @method static Builder<GameUser> selectRaw(string $expression, array $bindings = [])
+ * @method static Builder<GameUser> with(array $relations)
+ * @method static Builder<GameUser> leftJoin(string $table, string $first, string $operator = null, string $second = null)
+ * @method static Builder<GameUser> where(string $column, string $operator = null, string|float|int|bool $value = null)
+ * @method static Builder<GameUser> whereIn(string $column, array $values)
+ * @method static Builder<GameUser> whereNull(string|array $columns)
+ * @method static Builder<GameUser> whereNotNull(string|array $columns)
+ * @method static Builder<GameUser> whereYear(string $column, string $operator, CarbonInterface|string|int $value)
+ * @method static Builder<GameUser> whereMonth(string $column, string $operator, CarbonInterface|string|int $value)
+ * @method static Builder<GameUser> whereDate(string $column, string $operator, CarbonInterface|string $value)
+ * @method static Builder<GameUser> whereExists(Closure $callback)
+ * @method static Builder<GameUser> whereNotExists(Closure $callback)
+ * @method static Builder<GameUser> whereHas(string $relation, Closure $callback = null, string $operator = '>=', int $count = 1)
+ * @method static Builder<GameUser> withWhereHas(string $relation, Closure $callback = null, string $operator = '>=', int $count = 1)
+ * @method static Builder<GameUser> whereDoesntHave(string $relation, Closure $callback = null)
+ * @method static Builder<GameUser> whereRaw(string $sql, array $bindings = [])
+ * @method static Builder<GameUser> groupBy(string $groupBy)
+ * @method static Builder<GameUser> orderBy(string $column, string $direction = 'asc')
+ * @method static Builder<GameUser> orderByDesc(string $column)
+ * @method static Builder<GameUser> orderByRaw(string $sql, array $bindings = [])
+ * @method static Builder<GameUser> limit(int $value)
  * @method static int count(array $columns = ['*'])
- * @method static mixed sum(string $column)
  * @method static bool exists()
  *
  * @property bool $is_ready
@@ -100,7 +100,7 @@ final class GameUser extends Model {
     }
 
     /**
-     * @param array<string, string> $ids # Ids in the form ['key1' => 'value1', 'key2' => 'value2']
+     * @param array<string, string|int> $ids # Ids in the form ['key1' => 'value1', 'key2' => 'value2']
      * @param array<string> $columns
      * @return GameUser|null
      */
@@ -115,7 +115,7 @@ final class GameUser extends Model {
     }
 
     /**
-     * @param array<string, string> $ids # Ids in the form ['key1' => 'value1', 'key2' => 'value2']
+     * @param array<string, string|int> $ids # Ids in the form ['key1' => 'value1', 'key2' => 'value2']
      * @param array<string> $columns
      * @return GameUser
      */

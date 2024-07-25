@@ -164,11 +164,15 @@ final class GameRoundCreatorAction {
     }
 
 
+    /**
+     * @param array<string> $countryArray
+     * @return string|null
+     */
     private function selectCountry(array &$countryArray): string|null {
         $country = null;
         while ($country === null && count($countryArray) > 0) {
             $country = array_shift($countryArray);
-            if (in_array($country, $this->countries_used)) {
+            if (in_array(needle: $country, haystack:  $this->countries_used, strict: true)) {
                 $country = null;
             }
         }
