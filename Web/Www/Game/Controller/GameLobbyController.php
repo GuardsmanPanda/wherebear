@@ -199,18 +199,12 @@ final class GameLobbyController extends Controller {
                 'countries' => DB::select(query: "
                     SELECT name, cca2
                     FROM bear_country
-                    WHERE dependency_status != 'Fictive' OR bear_country.dependency_status IS NULL
                     ORDER BY name
                 "),
                 'display_name' => BearAuthService::getUser()->display_name,
                 'flag_selected' => BearAuthService::getUser()->country_cca2,
                 'game_id' => $gameId,
-                'novelty_flags' => DB::select(query: "
-                    SELECT name, cca2
-                    FROM bear_country bc
-                    WHERE bc.dependency_status = 'Fictive'
-                    ORDER BY name
-                "),
+                'novelty_flags' => [],
             ]
         );
     }
