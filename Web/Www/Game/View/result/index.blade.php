@@ -10,13 +10,13 @@
                  hx-get="/game/{{$game->id}}/result/round/{{$round->round_number}}" hx-target="#round-details">
                 <div class="text-center font-bold text-xl truncate">{{$round->country_name}}</div>
                 <div class="flex">
-                    <img src="/static/flag/wavy/{{strtolower($round->country_iso2_code)}}.png" width="80"
+                    <img src="/static/flag/wavy/{{strtolower($round->cca2)}}.png" width="80"
                          alt="Wavy flag">
                     <div class="pl-2 flex flex-col justify-between leading-4">
                         @foreach(DB::select(<<<SQL
                             SELECT u.display_name, u.id FROM game_round_user gru
                             LEFT JOIN bear_user u ON u.id = gru.user_id
-                            WHERE gru.game_id = ? AND gru.round_number = ? ORDER BY gru.round_points DESC LIMIT 3
+                            WHERE gru.game_id = ? AND gru.round_number = ? ORDER BY gru.points DESC LIMIT 3
                         SQL, [$game->id, $round->round_number]) as $ru)
                             <div class="flex gap-1">
                                 <img width="20" alt="rank icon"
@@ -40,16 +40,16 @@
             @endif
             <div class="flex items-center px-4 py-2 rounded-md shadow-xl">
                 <div class="text-center font-medium text-gray-500 text-2xl">{{$player->rank}}</div>
-                <img class="h-12 ml-1" src="/static/img/map-marker/{{$player->file_name}}"
+                <img class="h-12 ml-1" src="/static/img/map-marker/{{$player->map_marker_file_name}}"
                      alt="Map Marker">
-                <img class="w-12 shadow-md mx-1" src="/static/flag/svg/{{$player->user_country_iso2_code}}.svg"
+                <img class="w-12 shadow-md mx-1" src="/static/flag/svg/{{$player->country_cca2}}.svg"
                      alt="Country Flag" tippy="{{$player->country_name}}">
                 <div class="text-gray-300 ml-2 flex-grow">
                     <div class="font-bold text-lg">
                         {{$player->display_name}}
                     </div>
                     <div class="font-medium text-gray-400 flex justify-between items-center">
-                        {!! GameRoundResultRender::renderPoints(points: $player->game_points) !!}
+                        {!! GameRoundResultRender::renderPoints(points: $player->points) !!}
                     </div>
                 </div>
             </div>

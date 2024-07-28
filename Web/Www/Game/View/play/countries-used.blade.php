@@ -4,7 +4,7 @@
          style="z-index: 500;">
         <div class="px-2">Out</div>
         @foreach($countries_used as $o)
-            <img class="h-9" src="/static/flag/svg/{{$o->country_iso2_code}}.svg" alt="Country flag" tippy="{{$o->country_name}}">
+            <img class="h-9" src="/static/flag/svg/{{$o->cca2}}.svg" alt="Country flag" tippy="{{$o->name}}">
         @endforeach
     </div>
 @endif

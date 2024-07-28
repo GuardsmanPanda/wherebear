@@ -17,6 +17,7 @@ enum BearOauth2ClientEnum: string {
         };
     }
 
+
     public function getId(): string {
         return match ($this) {
             self::TWITCH => 'q8q6jjiuc7f2ef04wmb7m653jd5ra8',
@@ -24,12 +25,6 @@ enum BearOauth2ClientEnum: string {
         };
     }
 
-    public function getClientSecret(): string {
-        return match ($this) {
-            self::TWITCH => 'twitch_client_secret',
-            self::GOOGLE => 'google_client_secret',
-        };
-    }
 
     public function getOauth2ClientType(): LarabearOauth2ClientTypeEnum {
         return match ($this) {
@@ -38,12 +33,14 @@ enum BearOauth2ClientEnum: string {
         };
     }
 
+
     public function getUserRedirectPath(): string {
         return match ($this) {
             self::TWITCH => '/auth/oauth2-client/q8q6jjiuc7f2ef04wmb7m653jd5ra8/callback',
             self::GOOGLE => '/auth/oauth2-client/730408173687-ad7cjtcq30kgm98mtndtot0dc5hv5fjn.apps.googleusercontent.com/callback',
         };
     }
+
 
     public static function syncToDatabase(): void {
         foreach (self::cases() as $client) {
@@ -52,7 +49,7 @@ enum BearOauth2ClientEnum: string {
                     id: $client->getId(),
                     description: $client->getDescription(),
                     oauth2_client_type: $client->getOauth2ClientType(),
-                    encrypted_secret: $client->getClientSecret(),
+                    encrypted_secret: 'default_encrypted_secret',
                     user_redirect_path: $client->getUserRedirectPath(),
                 );
             }

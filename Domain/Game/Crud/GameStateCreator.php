@@ -7,12 +7,11 @@ use Domain\Game\Model\GameState;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 
 final class GameStateCreator {
-    public static function create(GameStateEnum $enum): GameState {
+    public static function syncToDatabase(GameStateEnum $enum): GameState {
         BearDatabaseService::mustBeInTransaction();
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST']);
 
-        $model = new GameState();
-
+        $model = GameState::find($enum->value) ?? new GameState();
         $model->enum = $enum->value;
         $model->description = $enum->getDescription();
 

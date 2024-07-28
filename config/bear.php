@@ -6,16 +6,16 @@ use Domain\Map\Enum\MapMarkerEnum;
 use Domain\Map\Enum\MapStyleEnum;
 use Domain\Panorama\Enum\TagEnum;
 use Domain\User\Enum\UserLevelEnum;
-use GuardsmanPanda\Larabear\Infrastructure\Auth\Enum\LarabearPermissionEnum;
+use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearEnvService;
+use GuardsmanPanda\Larabear\Integration\ExternalApi\Enum\BearExternalApiAuthEnum;
 
 return [
     'cookie' => [
-        'session_key' => env(key: 'LARABEAR_SESSION_KEY'),
+        'session_key' => BearEnvService::getStringOrNull(key: 'LARABEAR_SESSION_KEY'),
     ],
-    'log_database_change_channel' => null,
     'postmark_from_email' => 'Full Name <dev@example.com>',
-    'postmark_token' => env(key: 'POSTMARK_TOKEN'),
-    'postmark_sandbox_token' => env(key: 'POSTMARK_SANDBOX_TOKEN'),
+    'postmark_token' => BearEnvService::getStringOrNull(key: 'POSTMARK_TOKEN'),
+    'postmark_sandbox_token' => BearEnvService::getStringOrNull(key: 'POSTMARK_SANDBOX_TOKEN'),
     'response_error_log' => [
         'enabled' => true,
         'ignore_response_codes' => [401, 403],
@@ -74,19 +74,21 @@ return [
             'bear_error' => ['location' => 'Domain/Larabear/Model'],
             'bear_error_response' => ['location' => 'Domain/Larabear/Model'],
             'bear_external_api' => ['location' => 'Domain/Larabear/Model'],
+            'bear_external_api_auth' => [
+                'enum' => BearExternalApiAuthEnum::class,
+                'location' => 'Domain/Larabear/Model'
+            ],
             'bear_idempotency' => ['location' => 'Domain/Larabear/Model'],
             'bear_oauth2_client' => ['location' => 'Domain/Larabear/Model'],
             'bear_oauth2_client_type' => ['location' => 'Domain/Larabear/Model'],
             'bear_oauth2_user' => ['location' => 'Domain/Larabear/Model'],
-            'bear_permission' => [
-                'enum' => LarabearPermissionEnum::class,
-                'location' => 'Domain/Larabear/Model'
-            ],
+            'bear_permission' => ['location' => 'Domain/Larabear/Model'],
             'bear_permission_user' => ['location' => 'Domain/Larabear/Model'],
+            'bear_role' => ['location' => 'Domain/Larabear/Model'],
             'bear_role_permission' => ['location' => 'Domain/Larabear/Model'],
             'bear_role_user' => ['location' => 'Domain/Larabear/Model'],
             'bear_route_usage' => ['location' => 'Domain/Larabear/Model'],
-          //  'bear_user' => ['location' => 'Domain/Larabear/Model'],
+            //'bear_user' => ['location' => 'Domain/Larabear/Model'],
         ]
     ],
 ];

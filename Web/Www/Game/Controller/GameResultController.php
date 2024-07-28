@@ -21,13 +21,13 @@ final class GameResultController extends Controller {
                 ST_X(p.location::geometry) as panorama_lng,
                 p.jpg_path, TO_CHAR(p.captured_date, 'Month YYYY') as captured_month,
                 p.state_name, p.city_name,
-                bc.country_iso2_code, bc.country_iso3_code,
-                bc.country_name, bc.country_tld, bc.country_calling_code, bc.country_currency_code,
-                bc.is_country_independent, bc.country_dependency_status
+                bc.cca2, bc.cca3,
+                bc.name as country_name, bc.tld, bc.calling_code, bc.currency_code,
+                bc.dependency_status
             FROM game g
             LEFT JOIN game_round gr ON gr.game_id = g.id AND gr.round_number = g.current_round
             LEFT JOIN panorama p ON p.id = gr.panorama_id
-            LEFT JOIN bear_country bc ON bc.country_iso2_code = p.country_iso2_code
+            LEFT JOIN bear_country bc ON bc.cca2 = p.country_cca2
             WHERE g.id = ?
         ", bindings: [$gameId]);
 
@@ -42,9 +42,10 @@ final class GameResultController extends Controller {
 
         $user = DB::selectOne(query: <<<SQL
             SELECT
-                u.id, u.map_marker_file_name,
-                COALESCE(u.map_style_enum, 'OSM') as map_style_enum
+                u.id, mm.file_name as map_marker_file_name,
+                u.map_style_enum
             FROM bear_user u
+            LEFT JOIN map_marker mm ON mm.enum = u.map_marker_enum
             LEFT JOIN game_user gu ON gu.user_id = u.id
             WHERE u.id = ? AND gu.game_id = ?
         SQL, bindings: [BearAuthService::getUserId(), $gameId]);
@@ -56,23 +57,24 @@ final class GameResultController extends Controller {
             'game' => $game,
             'players' => DB::select(query: <<<SQL
                 SELECT
-                    u.id as user_id, u.display_name, u.user_country_iso2_code, u.map_marker_file_name,
-                    bc.country_name,
-                    gu.game_points,
-                    RANK() OVER (ORDER BY gu.game_points DESC) as rank
+                    u.id as user_id, u.display_name, u.country_cca2, mm.file_name as map_marker_file_name,
+                    bc.name as country_name,
+                    gu.points,
+                    RANK() OVER (ORDER BY gu.points DESC) as rank
                 FROM game_user gu
                 LEFT JOIN bear_user u ON u.id = gu.user_id
-                LEFT JOIN bear_country bc ON bc.country_iso2_code = u.user_country_iso2_code
+                LEFT JOIN map_marker mm ON mm.enum = u.map_marker_enum
+                LEFT JOIN bear_country bc ON bc.cca2 = u.country_cca2
                 WHERE gu.game_id = ?
-                ORDER BY gu.game_points DESC, u.id
+                ORDER BY gu.points DESC, u.id
                 SQL, bindings: [$gameId]),
             'rounds' => DB::select(query: <<<SQL
                 SELECT
                     gr.panorama_id, gr.round_number,
-                    bc.country_iso2_code, bc.country_name
+                    bc.cca2, bc.name as country_name
                 FROM game_round gr
                 LEFT JOIN panorama p ON p.id = gr.panorama_id
-                LEFT JOIN bear_country bc ON bc.country_iso2_code = p.country_iso2_code
+                LEFT JOIN bear_country bc ON bc.cca2 = p.country_cca2
                 WHERE gr.game_id = ?
                 ORDER BY gr.round_number
                 SQL, bindings: [$gameId]),

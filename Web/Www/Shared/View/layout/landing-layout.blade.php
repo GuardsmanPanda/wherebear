@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="WhereBear">
     <title>{{$title ?? 'WhereBear'}}</title>
+    <script src="{!! config('bear.ui.app_js') !!}"></script>
     @if(App::isLocal())
         <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     @endif
@@ -15,6 +16,16 @@
 </head>
 <body class="min-h-screen grid place-items-center bg-gray-900 text-gray-300">
 @yield('content')
-<script src="{!! config('bear.ui.app_js') !!}" defer></script>
+@if(App::isLocal())
+    <script>
+        const pHeader = new Pusher('6csm0edgczin2onq92lm', window.pusher_data);
+        const pChannel = pHeader.subscribe('dev');
+        pChannel.bind('reload', function (data) {
+            if (data.hostname === window.location.hostname) {
+                location.reload();
+            }
+        });
+    </script>
+@endif
 </body>
 </html>

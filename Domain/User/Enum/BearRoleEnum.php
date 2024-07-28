@@ -20,11 +20,13 @@ enum BearRoleEnum: string implements BearRoleEnumInterface {
         };
     }
 
+    public function getModel(): BearRole {
+        return BearRole::findOrFail(id: $this->value);
+    }
+
     public static function syncToDatabase(): void {
         foreach (BearRoleEnum::cases() as $enum) {
-            if (BearRole::find(id: $enum->value) === null) {
-                 BearRoleCrud::create(role: $enum);
-            }
+            BearRoleCrud::syncToDatabase(role: $enum);
         }
     }
 }

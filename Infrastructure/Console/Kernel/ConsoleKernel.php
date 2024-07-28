@@ -29,9 +29,7 @@ final class ConsoleKernel extends Kernel {
     protected function commands(): void {
         Artisan::command('reset:game', function () {
             $ids = [
-                '02e8d81e-fbce-4bfc-9723-59a7abf8a12d',
-                '5e83a45b-d53e-4793-b514-b404eb42827f',
-                '9a89f2c3-50cb-49d8-9130-3662de447be1',
+                '68437f10-bc12-4208-8780-d6796facff4e',
             ];
             foreach ($ids as $gameId) {
                 try {
@@ -41,9 +39,10 @@ final class ConsoleKernel extends Kernel {
                         ->setCurrentRound(current_round: 0)
                         ->setGameStateEnum(enum: GameStateEnum::WAITING_FOR_PLAYERS)
                         ->setRoundEndsAt(round_ends_at: null)
+                        ->setIsForcedStart(is_forced_start: false)
                         ->setNextRoundAt(next_round_at: null)
                         ->update();
-                    DB::update("UPDATE game_user SET game_points = 0 WHERE game_id = ?", [$gameId]);
+                    DB::update("UPDATE game_user SET points = 0 WHERE game_id = ?", [$gameId]);
                     DB::commit();
                 } catch (Throwable $e) {
                     DB::rollBack();
@@ -53,6 +52,7 @@ final class ConsoleKernel extends Kernel {
         });
 
         Artisan::command('zz', function () {
+            dd(config('bear'));
         });
     }
 }

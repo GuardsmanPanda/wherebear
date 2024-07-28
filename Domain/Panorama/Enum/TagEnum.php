@@ -2,7 +2,7 @@
 
 namespace Domain\Panorama\Enum;
 
-use Domain\Panorama\Crud\TagCreator;
+use Domain\Panorama\Crud\TagCrud;
 use Domain\Panorama\Model\Tag;
 
 enum TagEnum: string {
@@ -23,9 +23,7 @@ enum TagEnum: string {
 
     public static function syncToDatabase(): void {
         foreach (TagEnum::cases() as $enum) {
-            if (Tag::find(id: $enum->value) === null) {
-                TagCreator::create(tag_enum: $enum);
-            }
+            TagCrud::syncToDatabase(tag_enum: $enum);
         }
     }
 }

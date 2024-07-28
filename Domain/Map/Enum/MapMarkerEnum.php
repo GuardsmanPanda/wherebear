@@ -11,7 +11,10 @@ enum MapMarkerEnum: string {
     case DEFAULT = 'DEFAULT';
     case ONE_UP = '1UP';
     case BOB_DINO = 'BOB_DINO';
-    case WINDMILL = 'Windmill';
+    case WINDMILL = 'WINDMILL';
+
+    case MONSTER_37 = 'MONSTER_37';
+
 
     public static function fromRequest(): self {
         return self::from(value: Req::getString(key: 'map_marker_enum'));
@@ -24,6 +27,7 @@ enum MapMarkerEnum: string {
             self::ONE_UP => '1UP',
             self::BOB_DINO => 'Bob Dino',
             self::WINDMILL => 'Windmill',
+            self::MONSTER_37 => 'Monster 37',
         };
     }
 
@@ -34,6 +38,7 @@ enum MapMarkerEnum: string {
             self::ONE_UP => '1up.webp',
             self::BOB_DINO => 'bobdino.png',
             self::WINDMILL => 'windmill.png',
+            self::MONSTER_37 => 'monster/37.png',
         };
     }
 
@@ -49,13 +54,9 @@ enum MapMarkerEnum: string {
     public function getGrouping(): string {
         return match ($this) {
             self::BOB_DINO => 'Bob',
+            self::MONSTER_37 => 'Monster',
             default => 'Miscellaneous',
         };
-    }
-
-
-    public function getWidthRem(): int {
-        return 4;
     }
 
 
@@ -66,12 +67,7 @@ enum MapMarkerEnum: string {
 
     public static function syncToDatabase(): void {
         foreach (MapMarkerEnum::cases() as $enum) {
-            $model = MapMarker::find(id: $enum->value);
-            if ($model === null) {
-                MapMarkerCrud::create(enum: $enum);
-            } else {
-                MapMarkerCrud::update(model: $model, enum: $enum);
-            }
+            MapMarkerCrud::syncToDatabase(enum: $enum);
         }
     }
 }

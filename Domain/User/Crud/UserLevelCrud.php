@@ -6,13 +6,12 @@ use Domain\User\Enum\UserLevelEnum;
 use Domain\User\Model\UserLevel;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 
-final class UserLevelCreator {
-    public static function create(UserLevelEnum $enum): UserLevel {
+final class UserLevelCrud {
+    public static function syncToDatabase(UserLevelEnum $enum): UserLevel {
         BearDatabaseService::mustBeInTransaction();
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST']);
 
-        $model = new UserLevel();
-
+        $model = UserLevel::find(id: $enum->value) ?? new UserLevel();
         $model->enum = $enum->value;
         $model->experience_requirement = $enum->getLevelExperienceRequirement();
         $model->feature_unlock = $enum->getFeatureUnlock();

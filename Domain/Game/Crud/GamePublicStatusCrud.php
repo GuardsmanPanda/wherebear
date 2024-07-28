@@ -6,7 +6,7 @@ use Domain\Game\Enum\GamePublicStatusEnum;
 use Domain\Game\Model\GamePublicStatus;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 
-final class GamePublicStatusCreator {
+final class GamePublicStatusCrud {
     public static function create(GamePublicStatusEnum $enum): GamePublicStatus {
         BearDatabaseService::mustBeInTransaction();
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST']);

@@ -2,7 +2,7 @@
 
 namespace Domain\Game\Enum;
 
-use Domain\Game\Crud\GamePublicStatusCreator;
+use Domain\Game\Crud\GamePublicStatusCrud;
 use Domain\Game\Model\GamePublicStatus;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 
@@ -28,7 +28,7 @@ enum GamePublicStatusEnum: string {
     public static function syncToDatabase(): void {
         foreach (GamePublicStatusEnum::cases() as $enum) {
             if (GamePublicStatus::find(id: $enum->value) === null) {
-                GamePublicStatusCreator::create(enum: $enum);
+                GamePublicStatusCrud::create(enum: $enum);
             }
         }
     }

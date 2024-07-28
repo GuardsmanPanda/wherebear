@@ -6,13 +6,12 @@ use Domain\Panorama\Enum\TagEnum;
 use Domain\Panorama\Model\Tag;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 
-final class TagCreator {
-    public static function create(TagEnum $tag_enum,): Tag {
+final class TagCrud {
+    public static function syncToDatabase(TagEnum $tag_enum): Tag {
         BearDatabaseService::mustBeInTransaction();
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST']);
 
-        $model = new Tag();
-
+        $model = Tag::find($tag_enum->value) ?? new Tag();
         $model->enum = $tag_enum->value;
         $model->description = $tag_enum->getDescription();
 

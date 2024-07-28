@@ -105,7 +105,7 @@ final class GameRoundUser extends Model {
 
     /** @return BelongsTo<GameUser, self> */
     public function game(): BelongsTo {
-        return $this->belongsTo(related: GameUser::class, foreignKey: 'game_id', ownerKey: 'game_id');
+        return $this->belongsTo(related: GameUser::class, foreignKey: 'game_id', ownerKey: 'user_id');
     }
 
     /** @return BelongsTo<BearUser, self> */

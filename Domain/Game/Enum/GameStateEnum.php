@@ -42,9 +42,7 @@ enum GameStateEnum: string {
 
     public static function syncToDatabase(): void {
         foreach (GameStateEnum::cases() as $enum) {
-            if (GameState::find(id: $enum->value) === null) {
-                GameStateCreator::create(enum: $enum);
-            }
+            GameStateCreator::syncToDatabase(enum: $enum);
         }
     }
 }

@@ -27,7 +27,8 @@ final class GamePlayController extends Controller {
                 p.jpg_path, TO_CHAR(p.captured_date, 'Month YYYY') as captured_month,
                 p.state_name, p.city_name,
                 bc.cca2, bc.cca3,
-                bc.name, bc.tld, bc.calling_code, bc.currency_code,
+                bc.name as country_name, 
+                bc.tld, bc.calling_code, bc.currency_code,
                 bc.dependency_status
             FROM game g
             LEFT JOIN game_round gr ON gr.game_id = g.id AND gr.round_number = g.current_round
@@ -49,9 +50,11 @@ final class GamePlayController extends Controller {
 
         $user = DB::selectOne(query: <<<SQL
             SELECT
-                u.map_marker_enum, u.map_style_enum
+                u.map_marker_enum, u.map_style_enum,
+                mm.file_name as map_marker_file_name
             FROM bear_user u
             LEFT JOIN game_user gu ON gu.user_id = u.id
+            LEFT JOIN map_marker mm ON mm.enum = u.map_marker_enum
             WHERE u.id = ? AND gu.game_id = ?
         SQL, bindings: [BearAuthService::getUserId(), $gameId]);
         if ($user === null) {
@@ -62,18 +65,20 @@ final class GamePlayController extends Controller {
         if ($enum === GameStateEnum::IN_PROGRESS_RESULT) {
             $guesses = DB::select(query: "
                 SELECT
-                    bu.display_name, bu.map_marker_file_name, bu.user_country_iso2_code, bc.country_name,
-                    gru.distance_meters, gru.round_points, gru.round_rank,
+                    bu.display_name, bu.country_cca2, bc.name as country_name,
+                    mm.file_name as map_marker_file_name,
+                    gru.distance_meters, gru.points, gru.rank,
                     ST_Y(gru.location::geometry) as lat,
                     ST_X(gru.location::geometry) as lng,
-                    p.country_iso2_code = gru.approximate_country_iso2_code as country_match
+                    p.country_cca2 = gru.approximate_country_cca2 as country_match
                 FROM game_round_user gru
                 LEFT JOIN bear_user bu ON bu.id = gru.user_id
-                LEFT JOIN bear_country bc ON bc.country_iso2_code = bu.user_country_iso2_code
+                LEFT JOIN map_marker mm ON mm.enum = bu.map_marker_enum
+                LEFT JOIN bear_country bc ON bc.cca2 = bu.country_cca2
                 LEFT JOIN game_round gr ON gr.game_id = gru.game_id AND gr.round_number = gru.round_number
                 LEFT JOIN panorama p ON p.id = gr.panorama_id
                 WHERE gru.game_id = ? AND gru.round_number = ?
-                ORDER BY gru.round_rank, gru.user_id
+                ORDER BY gru.rank, gru.user_id
             ", bindings: [$gameId, $game->current_round]);
         }
 

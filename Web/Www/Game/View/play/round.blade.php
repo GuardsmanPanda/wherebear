@@ -54,7 +54,7 @@
         worldCopyJump: true
     });
     const map_icon = L.icon({
-        iconUrl: '/static/img/map-marker/{{ $user->file_name }}',
+        iconUrl: '/static/img/map-marker/{{ $user->map_marker_file_name }}',
         iconSize: [48, 48],
         iconAnchor: [24, 48],
         tooltipAnchor: [0, -48],

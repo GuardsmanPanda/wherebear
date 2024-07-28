@@ -11,7 +11,6 @@ use Web\Www\Game\Controller\GameResultController;
 
 Route::get(uri: "create", action: [GameController::class, 'createDialog'])->middleware([BearPermissionMiddleware::using(permission: BearPermissionEnum::GAME_CREATE)]);
 Route::post(uri: "", action: [GameController::class, 'create'])->middleware([BearPermissionMiddleware::using(permission: BearPermissionEnum::GAME_CREATE)]);
-Route::delete(uri: "{gameId}", action: [GameController::class, 'delete']);
 
 Route::prefix("{gameId}")->middleware(BearHtmxMiddleware::using(layout_location: 'layout.layout'))->group(callback: function () {
     Route::prefix("lobby")->group(callback: function () {
@@ -21,9 +20,11 @@ Route::prefix("{gameId}")->middleware(BearHtmxMiddleware::using(layout_location:
         Route::get(uri: "dialog/map-style", action: [GameLobbyController::class, 'dialogMapStyle']);
         Route::get(uri: "dialog/name-flag", action: [GameLobbyController::class, 'dialogNameFlag']);
         Route::get(uri: "dialog/settings", action: [GameLobbyController::class, 'dialogSettings']);
+
         Route::patch(uri: "update-user", action: [GameLobbyController::class, 'updateUser']);
         Route::patch(uri: "update-game-user", action: [GameLobbyController::class, 'updateGameUser']);
         Route::patch(uri: "settings", action: [GameLobbyController::class, 'updateSettings']);
+
         Route::delete(uri: "leave", action: [GameLobbyController::class, 'leaveGame']);
     });
     Route::prefix("play")->group(callback: function () {
@@ -33,6 +34,9 @@ Route::prefix("{gameId}")->middleware(BearHtmxMiddleware::using(layout_location:
     Route::prefix("result")->group(callback: function () {
         Route::get(uri: "", action: [GameResultController::class, 'index']);
     });
+
+    Route::post(uri: "start", action: [GameLobbyController::class, 'forceStartGame']);
+    Route::delete(uri: "", action: [GameController::class, 'delete']);
 });
 
 Route::view(uri: "experiments/popups", view: "game::experiments.popup");

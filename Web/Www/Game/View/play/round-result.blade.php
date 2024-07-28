@@ -11,29 +11,29 @@
             <div class="text-center text-lg text-cyan-500 leading-6">{{$game->city_name}}</div>
 
             <div class="flex gap-3 justify-center py-2">
-                <img src="/static/flag/wavy/{{strtolower($game->country_iso2_code)}}.png" width="140" alt="Wavy flag">
+                <img src="/static/flag/wavy/{{strtolower($game->cca2)}}.png" width="140" alt="Wavy flag">
                 <div class="grid">
 
                     <div class="flex gap-2 items-center">
                         <x-bear::icon name="globe-europe-africa" class="text-gray-500"></x-bear::icon>
-                        <span>{{$game->country_iso2_code}}/{{$game->country_iso3_code}}</span>
+                        <span>{{$game->cca2}}/{{$game->cca3}}</span>
                     </div>
                     <div class="flex gap-2 items-center">
                         <x-bear::icon name="globe-alt" class="text-gray-500"></x-bear::icon>
-                        <span>{{$game->country_tld}}</span>
+                        <span>{{$game->tld}}</span>
                     </div>
                     <div class="flex gap-2 items-center">
                         <x-bear::icon name="banknotes" class="text-gray-500"></x-bear::icon>
-                        <span>{{$game->country_currency_code}}</span>
+                        <span>{{$game->currency_code}}</span>
                     </div>
                     <div class="flex gap-2 items-center">
                         <x-bear::icon name="phone" class="text-gray-500"></x-bear::icon>
-                        <span>+{{$game->country_calling_code}}</span>
+                        <span>+{{$game->calling_code}}</span>
                     </div>
                 </div>
             </div>
-            @if($game->is_country_independent !== true)
-                <div><span class="text-gray-500">Status: </span>{{$game->country_dependency_status}} </div>
+            @if($game->dependency_status !== null)
+                <div><span class="text-gray-500">Status: </span>{{$game->dependency_status}} </div>
             @endif
         </div>
 
@@ -55,21 +55,21 @@
         <div class="w-[23.5rem] grid gap-3 py-2 px-4 overflow-y-auto max-h-full">
             @foreach($guesses as $guess)
                 <div class="flex items-center px-4 py-2 rounded-md shadow-xl bg-gray-800">
-                    <div class="text-center font-medium text-gray-500 text-2xl">{{$guess->round_rank}}</div>
-                    <img class="h-12 ml-1" src="/static/img/map-marker/{{$guess->file_name}}"
+                    <div class="text-center font-medium text-gray-500 text-2xl">{{$guess->rank}}</div>
+                    <img class="h-12 ml-1" src="/static/img/map-marker/{{$guess->map_marker_file_name}}"
                          alt="Map Marker">
-                    <img class="w-12 shadow-md mx-1" src="/static/flag/svg/{{$guess->user_country_iso2_code}}.svg"
+                    <img class="w-12 shadow-md mx-1" src="/static/flag/svg/{{$guess->country_cca2}}.svg"
                          alt="Country Flag" tippy="{{$guess->country_name}}">
                     <div class="text-gray-300 ml-2 flex-grow">
                         <div class="font-bold text-lg">
                             {{$guess->display_name}}
                         </div>
                         <div class="font-medium text-gray-400 flex justify-between items-center">
-                            {!! GameRoundResultRender::renderPoints(points: $guess->round_points) !!}
+                            {!! GameRoundResultRender::renderPoints(points: $guess->points) !!}
                             <div class="flex items-center">
                                 @if($guess->country_match)
-                                    <img src="/static/flag/svg/{{$game->country_iso2_code}}.svg"
-                                         alt="Country flag" @class(['mx-1.5 h-4 shadow-md','animate-pulse' => $guess->round_points === null])>
+                                    <img src="/static/flag/svg/{{$game->cca2}}.svg"
+                                         alt="Country flag" @class(['mx-1.5 h-4 shadow-md','animate-pulse' => $guess->points === null])>
                                 @endif
                                 {!! GameRoundResultRender::renderDistance(distanceMeters: $guess->distance_meters) !!}
                             </div>
@@ -114,7 +114,7 @@
         {
             lat: {{$guess->lat}},
             lng: {{$guess->lng}},
-            file: '{{$guess->file_name}}',
+            file: '{{$guess->map_marker_file_name}}',
             name: '{{$guess->display_name}}'
         },
         @endforeach

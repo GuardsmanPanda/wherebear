@@ -4,7 +4,8 @@
     "description": "Awesome Funtime Game.",
     "private": true,
     "scripts": {
-        "b": "node Web/Www/Shared/js/esbuild.js"
+        "b": "node Web/Www/Shared/js/esbuild.js",
+        "w": "node Web/Www/Shared/js/esbuild.js watch"
     },
     "author": "Bjørn Dons",
     "license": "MIT",

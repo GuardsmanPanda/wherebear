@@ -12,6 +12,7 @@ use Web\Www\Game\Controller\StaticMapTileController;
 final class RouteServiceProvider extends ServiceProvider {
     public function boot(): void {
         $this->routes(function () {
+            Route::group([], base_path(path: 'Web/Www/App/routes.php'));
             Route::middleware([BearSessionAuthMiddleware::allowGuests()])->group(base_path(path: 'Web/Www/LandingPage/routes.php'));
             Route::prefix('auth')->middleware([BearSessionAuthMiddleware::allowGuests(), BearTransactionMiddleware::class])->group(base_path(path: 'Web/Www/Auth/routes.php'));
             Route::prefix('game')->middleware([BearSessionAuthMiddleware::allowGuests(), BearTransactionMiddleware::class])->group(base_path(path: 'Web/Www/Game/routes.php'));

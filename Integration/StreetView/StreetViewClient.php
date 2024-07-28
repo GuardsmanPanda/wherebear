@@ -5,7 +5,7 @@ namespace Integration\StreetView;
 use Domain\Panorama\Crud\PanoramaCreator;
 use Domain\Panorama\Model\Panorama;
 use GuardsmanPanda\Larabear\Integration\ExternalApi\Client\BearExternalApiClient;
-use RuntimeException;
+use Infrastructure\App\Enum\BearExternalApiEnum;
 
 final class StreetViewClient {
     public static function findAndAddByLocation(float $latitude, float $longitude): Panorama|null {
@@ -30,11 +30,8 @@ final class StreetViewClient {
         $query = [
             'location' => "$latitude,$longitude",
         ];
-        $client = BearExternalApiClient::fromSlug(slug: 'google-street-view-static-api');
+        $client = BearExternalApiClient::fromEnum(enum: BearExternalApiEnum::GOOGLE_STREET_VIEW_STATIC_API);
         $resp = $client->request(path: 'metadata', query: $query);
-        if ($resp->failed()) {
-            throw new RuntimeException(message: "Failed street view request: {$resp->status()}");
-        }
         return $resp->json();
     }
 }

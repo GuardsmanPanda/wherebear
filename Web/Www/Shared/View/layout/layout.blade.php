@@ -38,5 +38,16 @@
 <div id="primary" hx-target="#primary" class="min-h-screen bg-gray-950 text-gray-300">
     {!! $content !!}
 </div>
+@if(App::isLocal())
+    <script>
+        const pHeader = new Pusher('6csm0edgczin2onq92lm', window.pusher_data);
+        const pChannel = pHeader.subscribe('dev');
+        pChannel.bind('reload', function (data) {
+            if (data.hostname === window.location.hostname) {
+                location.reload();
+            }
+        });
+    </script>
+@endif
 </body>
 </html>

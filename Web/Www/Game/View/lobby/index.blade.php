@@ -1,5 +1,4 @@
 <?php declare(strict_types=1); ?>
-@php use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService; @endphp
 <div class="md:flex min-h-screen">
     <div class="flex-grow">
         <div class="flex justify-center h-9 bg-gray-900 items-center shadow z-10">

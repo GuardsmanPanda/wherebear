@@ -3,18 +3,25 @@
 namespace Infrastructure\App\Enum;
 
 use GuardsmanPanda\Larabear\Integration\ExternalApi\Crud\BearExternalApiCreator;
-use GuardsmanPanda\Larabear\Integration\ExternalApi\Enum\BearExternalApiTypeEnum;
+use GuardsmanPanda\Larabear\Integration\ExternalApi\Crud\BearExternalApiCrud;
+use GuardsmanPanda\Larabear\Integration\ExternalApi\Enum\BearExternalApiAuthEnum;
+use GuardsmanPanda\Larabear\Integration\ExternalApi\Interface\BearExternalApiEnumInterface;
 use GuardsmanPanda\Larabear\Integration\ExternalApi\Model\BearExternalApi;
 use Illuminate\Database\Eloquent\Casts\ArrayObject;
 
-enum BearExternalApiEnum: string {
+enum BearExternalApiEnum: string implements BearExternalApiEnumInterface {
     case OPENSTREETMAP = 'OPENSTREETMAP';
     case NOMINATIM = 'NOMINATIM';
     case GOOGLE_MAP_TILES_API = 'GOOGLE_MAP_TILES_API';
     case GOOGLE_STREET_VIEW_STATIC_API = 'GOOGLE_STREET_VIEW_STATIC_API';
     case MAPBOX = 'MAPBOX';
 
-    public function getDescription(): string {
+    public function getValue(): string {
+        return $this->value;
+    }
+
+
+    public function description(): string {
         return match ($this) {
             self::OPENSTREETMAP => 'OpenStreetMap used for the default map tiles',
             self::NOMINATIM => 'Nominatim used for reverse location lookup',
@@ -24,15 +31,8 @@ enum BearExternalApiEnum: string {
         };
     }
 
-    public function getType(): BearExternalApiTypeEnum {
-        return match ($this) {
-            self::OPENSTREETMAP, self::NOMINATIM => BearExternalApiTypeEnum::NO_AUTH,
-            self::GOOGLE_MAP_TILES_API, self::GOOGLE_STREET_VIEW_STATIC_API => BearExternalApiTypeEnum::KEY_QUERY,
-            self::MAPBOX => BearExternalApiTypeEnum::ACCESS_TOKEN_QUERY,
-        };
-    }
 
-    public function getBaseUrl(): string {
+    public function baseUrl(): string {
         return match ($this) {
             self::OPENSTREETMAP => 'https://tile.openstreetmap.org/',
             self::NOMINATIM => 'https://nominatim.openstreetmap.org/',
@@ -42,10 +42,11 @@ enum BearExternalApiEnum: string {
         };
     }
 
+
     /**
      * @return ArrayObject<string, string>
      */
-    public function getBaseHeaders(): ArrayObject {
+    public function baseHeadersJson(): ArrayObject {
         return match ($this) {
             self::NOMINATIM => new ArrayObject([
                 'User-Agent' => 'WhereBear (guardsmanpanda@gmail.com)'
@@ -55,17 +56,32 @@ enum BearExternalApiEnum: string {
     }
 
 
+    public function externalApiAuth(): BearExternalApiAuthEnum {
+        return match ($this) {
+            self::OPENSTREETMAP, self::NOMINATIM => BearExternalApiAuthEnum::NO_AUTH,
+            self::GOOGLE_MAP_TILES_API, self::GOOGLE_STREET_VIEW_STATIC_API => BearExternalApiAuthEnum::QUERY_KEY,
+            self::MAPBOX => BearExternalApiAuthEnum::QUERY_ACCESS_TOKEN,
+        };
+    }
+
+
+    public function oauth2ClientId(): string|null {
+        return null;
+    }
+
+    public function metadataJson(): ArrayObject|null {
+        return null;
+    }
+
+
+    public function getModel(): BearExternalApi {
+        return BearExternalApi::findOrFail(id: $this->value);
+    }
+
+
     public static function syncToDatabase(): void {
-        foreach (BearExternalApiEnum::cases() as $api) {
-            if (BearExternalApi::find(id: $api->value) === null) {
-                BearExternalApiCreator::create(
-                    enum: $api->value,
-                    description: $api->getDescription(),
-                    external_api_type: $api->getType(),
-                    base_url: $api->getBaseUrl(),
-                    base_headers_json: $api->getBaseHeaders(),
-                );
-            }
+        foreach (BearExternalApiEnum::cases() as $enum) {
+            BearExternalApiCrud::syncToDatabase(enum: $enum);
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Domain\User\Enum;
 
-use Domain\User\Crud\UserLevelCreator;
+use Domain\User\Crud\UserLevelCrud;
 use Domain\User\Model\UserLevel;
 
 enum UserLevelEnum: int {
@@ -35,7 +35,7 @@ enum UserLevelEnum: int {
     public static function syncToDatabase(): void {
         foreach (UserLevelEnum::cases() as $level) {
             if (UserLevel::find(id: $level->value) === null) {
-                UserLevelCreator::create(enum: $level);
+                UserLevelCrud::syncToDatabase(enum: $level);
             }
         }
     }

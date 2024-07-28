@@ -3,9 +3,9 @@
 namespace Domain\User\Enum;
 
 
-use Domain\Larabear\Model\BearPermission;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Crud\BearPermissionCrud;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Interface\BearPermissionEnumInterface;
+use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearPermission;
 
 enum BearPermissionEnum: string implements BearPermissionEnumInterface {
     case GAME_CREATE = 'GAME::CREATE';
@@ -26,11 +26,14 @@ enum BearPermissionEnum: string implements BearPermissionEnumInterface {
         };
     }
 
+
+    public function getModel(): BearPermission {
+        return BearPermission::findOrFail(id: $this->value);
+    }
+
     public static function syncToDatabase(): void {
         foreach (BearPermissionEnum::cases() as $enum) {
-            if (BearPermission::find(id: $enum->value) === null) {
-                BearPermissionCrud::create(permission: $enum);
-            }
+            BearPermissionCrud::syncToDatabase(permission: $enum);
         }
     }
 }

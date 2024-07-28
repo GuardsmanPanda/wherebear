@@ -63,7 +63,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $updated_at
  * @property string $display_name
  * @property string|null $email
+ * @property string|null $password
  * @property string|null $country_cca2
+ * @property string|null $remember_token
  * @property CarbonInterface|null $last_login_at
  * @property MapStyleEnum $map_style_enum
  * @property MapMarkerEnum $map_marker_enum

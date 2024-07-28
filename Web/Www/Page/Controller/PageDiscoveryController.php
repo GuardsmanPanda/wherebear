@@ -23,9 +23,10 @@ final class PageDiscoveryController extends Controller {
             "),
             'user' => DB::selectOne(query: "
                 SELECT
-                    u.file_name,
-                    COALESCE(u.map_style_enum, 'OSM') as map_style_enum
+                    m.file_name as map_marker_file_name,
+                    u.map_style_enum
                 FROM bear_user u
+                LEFT JOIN map_marker m ON u.map_marker_enum = m.enum
                 WHERE u.id = ?
             ", bindings: [BearAuthService::getUserId()]),
         ]);
@@ -39,7 +40,7 @@ final class PageDiscoveryController extends Controller {
         if (!PanoramaService::panoramaExists(id: $data['pano_id'])) {
             $panorama = PanoramaCreator::createFromStreetViewData(data: $data, added_by_user_id: BearAuthService::getUserId());
             return [
-                'country_iso2_code' => $panorama->country_iso2_code,
+                'country_cca2' => $panorama->country_cca2,
                 'state_name' => $panorama->state_name,
                 'city_name' => $panorama->city_name,
                 'lat' => $data['location']['lat'],
@@ -74,7 +75,7 @@ final class PageDiscoveryController extends Controller {
             if (!PanoramaService::panoramaExists(id: $data['pano_id'])) {
                 $panorama = PanoramaCreator::createFromStreetViewData(data: $data);
                 $results[] = [
-                    'country_iso2_code' => $panorama->country_iso2_code,
+                    'country_cca2' => $panorama->country_cca2,
                     'state_name' => $panorama->state_name,
                     'city_name' => $panorama->city_name,
                     'lat' => $data['location']['lat'],

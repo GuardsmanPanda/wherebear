@@ -3,7 +3,7 @@
 namespace Integration\Nominatim\Data;
 
 final class NominatimLocationData {
-    public string $country_iso2_code;
+    public string $country_cca2;
     public float $latitude;
     public float $longitude;
     public readonly array $nominatim_json;
@@ -13,16 +13,16 @@ final class NominatimLocationData {
     public readonly string|null $city_name;
 
     public function __construct(
-        string $country_iso2_code,
-        float $latitude,
-        float $longitude,
-        array $nominatim_json,
+        string $country_cca2,
+        float  $latitude,
+        float  $longitude,
+        array  $nominatim_json,
         string $state_name = null,
         string $region_name = null,
         string $county_name = null,
         string $city_name = null,
     ) {
-        $this->country_iso2_code = $country_iso2_code;
+        $this->country_cca2 = $country_cca2;
         $this->latitude = $latitude;
         $this->longitude = $longitude;
         $this->nominatim_json = $nominatim_json;

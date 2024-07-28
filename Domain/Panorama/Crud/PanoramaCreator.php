@@ -31,7 +31,7 @@ final class PanoramaCreator {
         ", bindings: [
             $id,
             $captured_date,
-            $data->country_iso2_code,
+            $data->country_cca2,
             $data->state_name,
             $data->city_name,
             $added_by_user_id,

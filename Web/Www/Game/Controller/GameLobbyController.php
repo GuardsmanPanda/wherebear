@@ -13,6 +13,7 @@ use Domain\Game\Enum\GameStateEnum;
 use Domain\Map\Enum\MapMarkerEnum;
 use Domain\Map\Enum\MapStyleEnum;
 use Domain\User\Crud\WhereBearUserUpdater;
+use Domain\User\Enum\BearRoleEnum;
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearArrayService;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
@@ -160,6 +161,7 @@ final class GameLobbyController extends Controller {
         return $this->index($gameId);
     }
 
+
     public function updateSettings(string $gameId): Response|View {
         GameUpdater::fromId(id: $gameId)
             ->setNumberOfRounds(number_of_rounds: Req::getInt(key: 'number_of_rounds'))
@@ -167,6 +169,17 @@ final class GameLobbyController extends Controller {
             ->setRoundResultDurationSeconds(round_result_duration_seconds: Req::getInt(key: 'round_result_duration_seconds'))
             ->setGamePublicStatusEnum(enum: GamePublicStatusEnum::fromRequest())
             ->update();
+        return $this->index($gameId);
+    }
+
+
+    public function forceStartGame(string $gameId): Response|View {
+        $creator = DB::selectOne(query: "SELECT created_by_user_id FROM game WHERE id = ?", bindings: [$gameId])->created_by_user_id;
+        if ($creator !== BearAuthService::getUserId() && !BearAuthService::hasRole(BearRoleEnum::ADMIN)) {
+            return throw new UnauthorizedHttpException("You are not allowed to start this game.");
+        }
+        GameUpdater::fromId(id: $gameId)->setIsForcedStart(is_forced_start: true)->update();
+        GameStartAction::placeInQueueIfAble(gameId: $gameId);
         return $this->index($gameId);
     }
 
