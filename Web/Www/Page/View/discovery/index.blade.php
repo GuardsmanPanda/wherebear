@@ -1,5 +1,5 @@
 <?php declare(strict_types=1); ?>
-@php use Domain\Map\Enum\MapStyleEnum; @endphp
+@php use Domain\Map\Enum\MapStyleEnum;use Domain\User\Model\WhereBearUser;use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService; @endphp
 <div class="h-full w-full flex flex-col">
     <x-bear::form.text id="map-url" required="" class="text-gray-700"></x-bear::form.text>
     <div class="mt-1">
@@ -38,26 +38,20 @@
 
 <script>
     const map = L.map('map', {
-        center: [25, 0],
-        zoom: 3,
-        worldCopyJump: true
+        center: [25, 0], zoom: 3, worldCopyJump: true
     });
 
     const map_icon = L.icon({
-        iconUrl: '/static/img/map-marker/bobdino.png',
-        iconSize: [48, 48],
-        iconAnchor: [24, 48],
-        tooltipAnchor: [0, -48],
+        iconUrl: '/static/img/map-marker/bobdino.png', iconSize: [48, 48], iconAnchor: [24, 48], tooltipAnchor: [0, -48],
     });
     const small_icon = L.icon({
-        iconUrl: '/static/img/map-marker/default.png',
-        iconSize: [24, 24],
-        iconAnchor: [12, 24],
+        iconUrl: '/static/img/map-marker/default.png', iconSize: [24, 24], iconAnchor: [12, 24],
     });
 
-    L.tileLayer('{{MapStyleEnum::OSM->mapTileUrl()}}', {
-        maxNativeZoom: 17,
-        minZoom: 1,
+    L.tileLayer('{{WhereBearUser::find(BearAuthService::getUserId())->map_style_enum->mapTileUrl()}}', {
+        maxNativeZoom: 17, minZoom: 1,
+        tileSize: {{WhereBearUser::find(BearAuthService::getUserId())->map_style_enum->getTileSize()}},
+        zoomOffset: {{WhereBearUser::find(BearAuthService::getUserId())->map_style_enum->getZoomOffset()}}
     }).addTo(map);
 
     map.on('click', function (e) {
@@ -73,8 +67,7 @@
 
             headers: {
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
+            }, body: JSON.stringify({
                 lat: lat,
                 lng: lng,
                 distance: document.getElementById('distance').value,
@@ -107,8 +100,7 @@
 
     const addGuesses = function (guesses) {
         guesses.forEach(val => {
-            if (val.result) L.marker([val.lat, val.lng], {icon: map_icon}).addTo(map);
-            else L.marker([val.lat, val.lng], {icon: small_icon}).addTo(map);
+            if (val.result) L.marker([val.lat, val.lng], {icon: map_icon}).addTo(map); else L.marker([val.lat, val.lng], {icon: small_icon}).addTo(map);
         });
     }
 
@@ -121,11 +113,9 @@
             window.notify.error("Failed to parse URL, is this a valid Street View URL?");
         }
         fetch('/page/discovery/street-view-location', {
-            method: 'POST',
-            headers: {
+            method: 'POST', headers: {
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({lat: text[0], lng: text[1]}),
+            }, body: JSON.stringify({lat: text[0], lng: text[1]}),
         }).then(resp => {
             map.panTo([text[0], text[1]]);
             if (!resp.ok) {
@@ -137,13 +127,11 @@
                 resp.json().then(json => {
                     if (json['exists']) {
                         window.notify.open({
-                            type: "warning",
-                            message: "This location has already been discovered!",
+                            type: "warning", message: "This location has already been discovered!",
                         });
                     } else {
                         window.notify.open({
-                            type: "success",
-                            message: "Location added to the game!",
+                            type: "success", message: "Location added to the game!",
                         });
                         document.getElementById('map-url').value = '';
                     }

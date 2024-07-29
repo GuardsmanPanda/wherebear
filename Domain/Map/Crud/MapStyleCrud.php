@@ -15,6 +15,8 @@ final class MapStyleCrud {
         $model->enum = $enum->value;
         $model->name = $enum->getName();
         $model->external_api_enum = $enum->getExternalApi()->value;
+        $model->tile_size = $enum->getTileSize();
+        $model->zoom_offset = $enum->getZoomOffset();
         $model->http_path = $enum->getExternalPath();
         $model->user_level_enum = $enum->getUserLevelRequirement();
 

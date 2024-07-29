@@ -54,6 +54,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static int count(array $columns = ['*'])
  * @method static bool exists()
  *
+ * @property int $tile_size
+ * @property int $zoom_offset
  * @property string $enum
  * @property string $name
  * @property string $http_path

@@ -11,6 +11,8 @@ return new class extends Migration {
             $table->text(column: 'enum')->primary();
             $table->text(column: 'name');
             $table->text(column: 'external_api_enum');
+            $table->integer(column: 'tile_size');
+            $table->integer(column: 'zoom_offset');
             $table->text(column: 'http_path');
             $table->integer(column: 'user_level_enum');
             $table->timestampTz(column: 'created_at')->default(DB::raw('CURRENT_TIMESTAMP'));

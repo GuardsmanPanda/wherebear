@@ -6,7 +6,6 @@ use Carbon\CarbonInterface;
 use Closure;
 use Domain\User\Enum\UserLevelEnum;
 use Domain\User\Model\UserLevel;
-use GuardsmanPanda\Larabear\Infrastructure\Auth\Enum\LarabearPermissionEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearPermission;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use Illuminate\Database\Eloquent\Builder;
@@ -62,7 +61,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $grouping
  * @property string $file_name
  * @property string $created_at
- * @property LarabearPermissionEnum|null $permission_enum
+ * @property string|null $permission_enum
  * @property UserLevelEnum $user_level_enum
  *
  * @property UserLevel $userLevel
@@ -82,7 +81,6 @@ final class MapMarker extends Model {
 
     /** @var array<string, string> $casts */
     protected $casts = [
-        'permission_enum' => LarabearPermissionEnum::class,
         'user_level_enum' => UserLevelEnum::class,
     ];
 
