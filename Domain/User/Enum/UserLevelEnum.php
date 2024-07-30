@@ -3,24 +3,113 @@
 namespace Domain\User\Enum;
 
 use Domain\User\Crud\UserLevelCrud;
-use Domain\User\Model\UserLevel;
 
 enum UserLevelEnum: int {
     case L0 = 0;
-    case L1 = 1; case L2 = 2; case L3 = 3; case L4 = 4; case L5 = 5; case L6 = 6; case L7 = 7; case L8 = 8; case L9 = 9; case L10 = 10;
-    case L11 = 11; case L12 = 12; case L13 = 13; case L14 = 14; case L15 = 15; case L16 = 16; case L17 = 17; case L18 = 18; case L19 = 19; case L20 = 20;
-    case L21 = 21; case L22 = 22; case L23 = 23; case L24 = 24; case L25 = 25; case L26 = 26; case L27 = 27; case L28 = 28; case L29 = 29; case L30 = 30;
-    case L31 = 31; case L32 = 32; case L33 = 33; case L34 = 34; case L35 = 35; case L36 = 36; case L37 = 37; case L38 = 38; case L39 = 39; case L40 = 40;
-    case L41 = 41; case L42 = 42; case L43 = 43; case L44 = 44; case L45 = 45; case L46 = 46; case L47 = 47; case L48 = 48; case L49 = 49; case L50 = 50;
-    case L51 = 51; case L52 = 52; case L53 = 53; case L54 = 54; case L55 = 55; case L56 = 56; case L57 = 57; case L58 = 58; case L59 = 59; case L60 = 60;
-    case L61 = 61; case L62 = 62; case L63 = 63; case L64 = 64; case L65 = 65; case L66 = 66; case L67 = 67; case L68 = 68; case L69 = 69; case L70 = 70;
-    case L71 = 71; case L72 = 72; case L73 = 73; case L74 = 74; case L75 = 75; case L76 = 76; case L77 = 77; case L78 = 78; case L79 = 79; case L80 = 80;
-    case L81 = 81; case L82 = 82; case L83 = 83; case L84 = 84; case L85 = 85; case L86 = 86; case L87 = 87; case L88 = 88; case L89 = 89; case L90 = 90;
-    case L91 = 91; case L92 = 92; case L93 = 93; case L94 = 94; case L95 = 95; case L96 = 96; case L97 = 97; case L98 = 98; case L99 = 99; case L100 = 100;
+    case L1 = 1;
+    case L2 = 2;
+    case L3 = 3;
+    case L4 = 4;
+    case L5 = 5;
+    case L6 = 6;
+    case L7 = 7;
+    case L8 = 8;
+    case L9 = 9;
+    case L10 = 10;
+    case L11 = 11;
+    case L12 = 12;
+    case L13 = 13;
+    case L14 = 14;
+    case L15 = 15;
+    case L16 = 16;
+    case L17 = 17;
+    case L18 = 18;
+    case L19 = 19;
+    case L20 = 20;
+    case L21 = 21;
+    case L22 = 22;
+    case L23 = 23;
+    case L24 = 24;
+    case L25 = 25;
+    case L26 = 26;
+    case L27 = 27;
+    case L28 = 28;
+    case L29 = 29;
+    case L30 = 30;
+    case L31 = 31;
+    case L32 = 32;
+    case L33 = 33;
+    case L34 = 34;
+    case L35 = 35;
+    case L36 = 36;
+    case L37 = 37;
+    case L38 = 38;
+    case L39 = 39;
+    case L40 = 40;
+    case L41 = 41;
+    case L42 = 42;
+    case L43 = 43;
+    case L44 = 44;
+    case L45 = 45;
+    case L46 = 46;
+    case L47 = 47;
+    case L48 = 48;
+    case L49 = 49;
+    case L50 = 50;
+    case L51 = 51;
+    case L52 = 52;
+    case L53 = 53;
+    case L54 = 54;
+    case L55 = 55;
+    case L56 = 56;
+    case L57 = 57;
+    case L58 = 58;
+    case L59 = 59;
+    case L60 = 60;
+    case L61 = 61;
+    case L62 = 62;
+    case L63 = 63;
+    case L64 = 64;
+    case L65 = 65;
+    case L66 = 66;
+    case L67 = 67;
+    case L68 = 68;
+    case L69 = 69;
+    case L70 = 70;
+    case L71 = 71;
+    case L72 = 72;
+    case L73 = 73;
+    case L74 = 74;
+    case L75 = 75;
+    case L76 = 76;
+    case L77 = 77;
+    case L78 = 78;
+    case L79 = 79;
+    case L80 = 80;
+    case L81 = 81;
+    case L82 = 82;
+    case L83 = 83;
+    case L84 = 84;
+    case L85 = 85;
+    case L86 = 86;
+    case L87 = 87;
+    case L88 = 88;
+    case L89 = 89;
+    case L90 = 90;
+    case L91 = 91;
+    case L92 = 92;
+    case L93 = 93;
+    case L94 = 94;
+    case L95 = 95;
+    case L96 = 96;
+    case L97 = 97;
+    case L98 = 98;
+    case L99 = 99;
+    case L100 = 100;
 
 
-    public function canRatePanoramas(): bool {
-        return $this->value >= self::L20;
+    public function canRatePanoramas(int $level): bool {
+        return $level >= 20;
     }
 
 
@@ -141,9 +230,7 @@ enum UserLevelEnum: int {
 
     public static function syncToDatabase(): void {
         foreach (UserLevelEnum::cases() as $level) {
-            if (UserLevel::find(id: $level->value) === null) {
-                UserLevelCrud::syncToDatabase(enum: $level);
-            }
+            UserLevelCrud::syncToDatabase(enum: $level);
         }
     }
 }

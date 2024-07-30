@@ -12,19 +12,19 @@ use Domain\User\Enum\BearRoleEnum;
 use Domain\User\Enum\UserLevelEnum;
 use Domain\User\Service\WhereBearRolePermissionService;
 use GuardsmanPanda\Larabear\Infrastructure\Console\Service\BearTransactionCommand;
+use Infrastructure\App\Enum\BearConfigEnum;
 use Infrastructure\App\Enum\BearExternalApiEnum;
 use Infrastructure\App\Enum\BearOauth2ClientEnum;
-use Infrastructure\Database\Initialize\DatabaseInitializeBearCountry;
 
 final class DatabaseInitializeCommand extends BearTransactionCommand {
     protected $signature = 'database:initialize';
     protected $description = 'Initialize the database.';
 
     protected function handleInTransaction(): void {
+        BearConfigEnum::syncToDatabase();
         BearOauth2ClientEnum::syncToDatabase();
         BearPermissionEnum::syncToDatabase();
         BearRoleEnum::syncToDatabase();
-        DatabaseInitializeBearCountry::initialize();
         BearExternalApiEnum::syncToDatabase();
         GamePublicStatusEnum::syncToDatabase();
         TagEnum::syncToDatabase();
@@ -35,6 +35,5 @@ final class DatabaseInitializeCommand extends BearTransactionCommand {
         GameStateEnum::syncToDatabase(); // Requires UserLevelEnum.
         MapMarkerEnum::syncToDatabase(); // Requires UserLevelEnum.
         MapStyleEnum::syncToDatabase(); // Requires BearExternalApiEnum && UserLevelEnum.
-
     }
 }

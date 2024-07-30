@@ -57,7 +57,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $width_rem
  * @property int $height_rem
  * @property string $enum
- * @property string $name
  * @property string $grouping
  * @property string $file_name
  * @property string $created_at

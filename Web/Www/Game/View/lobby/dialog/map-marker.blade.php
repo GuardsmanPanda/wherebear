@@ -7,12 +7,11 @@
         </div>
         <div class="grid grid-cols-6 md:grid-cols-9" hx-target="#lobby">
             @foreach($map_markers as $marker)
-                <button class="px-0.5 py-1 hover:scale-110 transition-transform duration-75" hx-dialog-close
+                <button class="py-1 mx-auto hover:scale-110 transition-transform duration-75" hx-dialog-close
                         hx-patch="/game/{{$game_id}}/lobby/update-user"
-                        hx-vals='{"map_marker_enum": "{{$marker->enum}}"}'
-                        tippy="{{$marker->name}}">
-                    <img class="h-14 w-14" src="/static/img/map-marker/{{$marker->file_name}}"
-                         alt="{{$marker->name}}">
+                        hx-vals='{"map_marker_enum": "{{$marker->enum}}"}'>
+                    <img class="h-14" src="/static/img/map-marker/{{$marker->file_name}}"
+                         alt="{{$marker->file_name}}">
                 </button>
             @endforeach
         </div>

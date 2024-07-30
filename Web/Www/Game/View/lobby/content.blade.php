@@ -113,15 +113,11 @@
                 </button>
                 <button class="hover:scale-110 hover:rotate-3 transition-all duration-75"
                         hx-get="/game/{{$game->id}}/lobby/dialog/map-marker">
-                    <div class="text-gray-400 text-xl font-bold">Marker: <span
-                                class="text-gray-300">{{$user->map_marker_name}}</span></div>
+                    <div class="text-gray-400 text-xl font-bold">Map Marker</div>
                     <div class="flex justify-center mt-1">
-                        <img class="h-12 w-12" src="/static/img/map-marker/{{$user->map_marker_file_name}}"
-                             alt="{{$user->map_marker_name}}">
-                        <img class="h-12 w-12" src="/static/img/map-marker/{{$user->map_marker_file_name}}"
-                             alt="{{$user->map_marker_name}}">
-                        <img class="h-12 w-12" src="/static/img/map-marker/{{$user->map_marker_file_name}}"
-                             alt="{{$user->map_marker_name}}">
+                        <img class="h-12 w-12" src="/static/img/map-marker/{{$user->map_marker_file_name}}" alt="{{$user->map_marker_file_name}}">
+                        <img class="h-12 w-12" src="/static/img/map-marker/{{$user->map_marker_file_name}}" alt="{{$user->map_marker_file_name}}">
+                        <img class="h-12 w-12" src="/static/img/map-marker/{{$user->map_marker_file_name}}" alt="{{$user->map_marker_file_name}}">
                     </div>
                     @if($user->map_marker_enum === 'DEFAULT')
                         <div class="text-lime-300 font-medium text-xs">Click to Change</div>

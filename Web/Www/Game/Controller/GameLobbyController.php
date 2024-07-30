@@ -98,7 +98,7 @@ final class GameLobbyController extends Controller {
                 SELECT 
                     bu.id, bu.display_name, bu.user_level_enum, bu.map_marker_enum, bu.map_style_enum,
                     gu.is_ready,
-                    mm.file_name as map_marker_file_name, mm.name as map_marker_name,
+                    mm.file_name as map_marker_file_name,
                     ms.name as map_style_name,
                     bc.cca2, bc.name as country_name
                 FROM bear_user bu
@@ -117,7 +117,7 @@ final class GameLobbyController extends Controller {
             'players' => DB::select(query: "
                 SELECT 
                     bu.display_name, bu.country_cca2,
-                    mm.file_name as map_marker_file_name, mm.name as map_marker_name,
+                    mm.file_name as map_marker_file_name,
                     gu.is_ready, bc.name as country_name,
                     bu.user_level_enum = 0 AS is_guest,
                     (SELECT COUNT(*) FROM game_user WHERE user_id = bu.id) as game_count
@@ -211,7 +211,12 @@ final class GameLobbyController extends Controller {
 
 
     public function dialogMapMarker(string $gameId): View {
-        $markers = DB::select(query: "SELECT enum, file_name, name, grouping FROM map_marker ORDER BY grouping, file_name");
+        $markers = DB::select(query: "
+            SELECT enum, file_name, grouping
+            FROM map_marker
+            --WHERE user_level_enum <= 
+            ORDER BY grouping, file_name
+        ");
         return Htmx::dialogView(
             view: 'game::lobby.dialog.map-marker',
             title: 'Select Map Marker',
