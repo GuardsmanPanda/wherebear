@@ -215,7 +215,8 @@ final class GameLobbyController extends Controller {
             SELECT enum, file_name, grouping
             FROM map_marker
             --WHERE user_level_enum <= 
-            ORDER BY grouping, file_name
+            WHERE enum != 'DEFAULT'
+            ORDER BY grouping = 'Miscellaneous',  grouping, file_name
         ");
         return Htmx::dialogView(
             view: 'game::lobby.dialog.map-marker',
