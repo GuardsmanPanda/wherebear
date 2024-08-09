@@ -16,7 +16,7 @@ const build = function () {
         outfile: 'public/static/dist/app.js',
     }).catch(() => process.exit(1))
 
-    exec('npx tailwindcss -c Web/Www/Shared/js/tailwind.config.js -i Web/Www/Shared/css/app.css -o public/static/dist/app.css', function(error, stdout, stderr){ console.log('\n----\nCSS ' + stdout);  console.log(stderr); });
+    exec('npx tailwindcss -c Web/Www/Shared/js/tailwind.config.js -i Web/Www/Shared/css/app.css -o public/static/dist/app.css', function (error, stdout, stderr) { console.log('\n----\nCSS ' + stdout); console.log(stderr); });
 
     fs.writeFile(
         'storage/app/app-css-path.txt',
@@ -36,24 +36,34 @@ build()
 console.log('Build complete')
 
 if (process.argv[2] === 'watch') {
+    const paths = ['Web/Www', 'Infrastructure/View']
+
     const pwd = process.env.PWD
-    console.log('Watching for changes...')
-    console.log('Current directory: ' + pwd + ", watching: " + pwd + "/Web/Www")
+    console.log('Current directory: ' + pwd)
+
+    let watchedPathsOutput = 'Watching for changes in:\n';
+    paths.forEach(path => {
+        watchedPathsOutput += `    - ${path}\n`;
+    });
+    console.log(watchedPathsOutput)
+
 
     const envFile = fs.readFileSync(pwd + '/.env', 'utf8')
     const appUrl = envFile.match(/APP_URL=(.*)/)[1]
     console.log('App URL: ' + appUrl)
 
 
-    fs.watch('Web/Www', { recursive: true }, (eventType, filename) => {
-        console.log('File changed: ' + filename)
-        let _ = fetch(appUrl + '/system/reload').then(
-            function (response) {
+    paths.forEach(path => {
+        fs.watch(path, { recursive: true }, (eventType, filename) => {
+            console.log('File changed: ' + filename);
+            fetch(appUrl + '/system/reload').then(response => {
                 if (response.status > 299) {
                     console.log('Looks like there was a problem with frontend reload. Status Code: ' + response.status);
                 }
-            }
-        );
-        build()
-    })
+            }).catch(error => {
+                console.error('Fetch error:', error);
+            });
+            build();
+        })
+    });
 }
