@@ -12,7 +12,7 @@ class ProgressBar extends Component
   {
     return <<<'blade'
       <div {{ $attributes->class(['flex w-full h-4 bg-shade-surface-subtle border border-shade-border-default rounded-full']) }}>
-        <div class="bg-primary-surface-default border border-l-0 border-shade-border-default rounded-full {{ 'w-['.$percentage.'%]' }}" ></div>
+        <div class="bg-primary-surface-default border border-l-0 border-shade-border-default rounded-full" style="width: {{$percentage}}%"></div>
       </div>
     blade;
   }

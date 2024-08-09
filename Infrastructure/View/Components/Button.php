@@ -11,12 +11,8 @@ use Infrastructure\View\Enum\IconType;
 
 class Button extends Component
 {
-
-  private int $HEIGHT_PX_SM = 32;
-  private int $HEIGHT_PX_MD = 40;
-  private int $HEIGHT_PX_LG = 48;
-
-  public int $heightPx;
+  public string $heightClass;
+  public string $activeHeightClass;
 
   public function __construct(
     public string $label,
@@ -25,7 +21,6 @@ class Button extends Component
     public ButtonSize $size = ButtonSize::SM,
     public IconPosition $iconPosition = IconPosition::NONE,
     public IconType $iconType = IconType::SOLID,
-    public ?int $widthPx = null,
     public ?string $icon = null,
   ) {
     if ($icon && $iconPosition === IconPosition::NONE) {
@@ -33,25 +28,27 @@ class Button extends Component
     }
 
     switch ($size) {
-      case ButtonSize::SM:
-        $this->heightPx = $this->HEIGHT_PX_SM;
-        break;
-      case ButtonSize::MD:
-        $this->heightPx = $this->HEIGHT_PX_MD;
-        break;
-      case ButtonSize::LG:
-        $this->heightPx = $this->HEIGHT_PX_LG;
-        break;
-      default:
-        $this->heightPx = $this->HEIGHT_PX_SM;
-        break;
+      case ButtonSize::SM: {
+          $this->heightClass = 'h-[32px]';
+          $this->activeHeightClass = 'active:h-[28px]';
+          break;
+        }
+      case ButtonSize::MD: {
+          $this->heightClass =  'h-[40px]';
+          $this->activeHeightClass = 'active:h-[36px]';
+          break;
+        }
+      case ButtonSize::LG: {
+          $this->heightClass = 'h-[48px]';
+          $this->activeHeightClass = 'active:h-[44px]';
+          break;
+        }
     }
   }
 
   private function getDynamicPrimaryClasses(): string
   {
-    $activeHeightPx = $this->heightPx - 2;
-    $classes = " h-[{$this->heightPx}px] active:h-[{$activeHeightPx}px] border-x-[1px] rounded-md text-xl text-white font-bold uppercase";
+    $classes = " {$this->heightClass} {$this->activeHeightClass} border-x-[1px] rounded-md text-xl text-white font-bold uppercase";
 
     switch ($this->style) {
       case ButtonStyle::PRIMARY:
@@ -77,8 +74,7 @@ class Button extends Component
 
   private function getDynamicSecondaryClasses(): string
   {
-    $activeHeightPx = $this->heightPx - 2;
-    $classes = " h-[{$this->heightPx}px] active:h-[{$activeHeightPx}px] border-[1px] border-b-[3px] active:border-b-[1px] rounded";
+    $classes = " {$this->heightClass} {$this->activeHeightClass} border-[1px] border-b-[3px] active:border-b-[1px] rounded";
 
     switch ($this->style) {
       case ButtonStyle::PRIMARY:
@@ -111,7 +107,6 @@ class Button extends Component
           'justify-center',
           'items-center',
           'gap-2',
-          'w-['.$widthPx.'px]' => $widthPx,
           'font-body',
           'text-md',
           $getDynamicClasses()

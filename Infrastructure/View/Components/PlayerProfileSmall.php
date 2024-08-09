@@ -11,7 +11,7 @@ class PlayerProfileSmall extends Component
     public ?int $level = null,
     public ?string $countryCode = null,
     public ?string $icon = null,
-    public ?string $nameBgColor = 'bg-primary-surface-default',
+    public ?string $nameBackgroundColor = 'bg-primary-surface-default',
     public ?string $textColor = 'text-shade-text-title'
   ) {}
 
@@ -33,7 +33,7 @@ class PlayerProfileSmall extends Component
         @endif
 
       </div>
-      <div class="relative w-20 -mt-2 z-10 border border-shade-border-dark rounded px-1 py-0.5 {{ $nameBgColor }} text-xs text-center {{ $textColor ?: 'text-shade-text-title' }} truncate">
+      <div class="relative w-20 -mt-2 z-10 border border-shade-border-dark rounded px-1 py-0.5 {{ $nameBackgroundColor }} text-xs text-center {{ $textColor ?: 'text-shade-text-title' }} truncate">
       {{ $name }}</div>
     </div>
     blade;

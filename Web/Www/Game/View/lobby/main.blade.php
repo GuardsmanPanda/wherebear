@@ -60,11 +60,11 @@ $isGamePublic = $game->game_public_status_enum === GamePublicStatusEnum::PUBLIC-
       <div class="flex w-full justify-end items-end">
         @if($user->is_ready)
         <div hx-patch="/game/{{$game->id}}/lobby/update-game-user" hx-vals='{"is_ready": false}'>
-          <x-button label="Cancel" :style="ButtonStyle::ERROR" :size="ButtonSize::LG" widthPx=160 icon="x-circle" />
+          <x-button label="Cancel" :style="ButtonStyle::ERROR" :size="ButtonSize::LG" icon="x-circle" class="w-[160px]" />
         </div>
         @else
         <div hx-patch="/game/{{$game->id}}/lobby/update-game-user" hx-vals='{"is_ready": true}'>
-          <x-button label="Ready" :style="ButtonStyle::PRIMARY" :size="ButtonSize::LG" widthPx=160 icon="play-circle" />
+          <x-button label="Ready" :style="ButtonStyle::PRIMARY" :size="ButtonSize::LG" icon="play-circle" class="w-[160px]" />
         </div>
         @endif
       </div>
