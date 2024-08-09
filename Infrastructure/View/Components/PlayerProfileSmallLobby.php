@@ -15,7 +15,7 @@ class PlayerProfileSmallLobby extends Component
     public ?string $icon = null,
   ) {}
 
-  public function getNameBgColor(): string
+  public function getNameBackgroundColor(): string
   {
     return $this->isReady ? 'bg-success-surface-default' : 'bg-shade-surface-subtle';
     if ($this->isHost) {
@@ -28,7 +28,7 @@ class PlayerProfileSmallLobby extends Component
   public function render(): string
   {
     return <<<'blade'
-    <x-player-profile-small :$name :$countryCode :$level :$icon :nameBgColor="$getNameBgColor()" />
+    <x-player-profile-small :$name :$countryCode :$level :$icon :nameBackgroundColor="$getNameBackgroundColor()" />
     blade;
   }
 }

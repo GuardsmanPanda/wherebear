@@ -16,7 +16,7 @@ class NextReward extends Component
     return $this->type === RewardType::FEATURE ? 'feat' : $this->type;
   }
 
-  public function getTypeBgColor(): string
+  public function getTypeBackgroundColor(): string
   {
     switch ($this->type) {
       case RewardType::FEATURE:
@@ -37,7 +37,7 @@ class NextReward extends Component
         <img src="/static/img/ui/reward-left.png" />
         <div class="min-w-36 h-[18px] items-center bg-reward-surface-default border-y border-shade-border-dark relative">
           <div class="flex w-full h-full justify-end items-center gap-1 pl-4 py-0-5">
-            <span class="px-1 text-xs leading-none text-white {{ $getTypeBgColor() }} rounded-sm">{{ $getTypeLabel() }}</span>
+            <span class="px-1 text-xs leading-none text-white {{ $getTypeBackgroundColor() }} rounded-sm">{{ $getTypeLabel() }}</span>
             <span class="text-sm text-shade-text-title font-medium text-nowrap pr-14">{{ $name }}</span>
             <img src="{{ $iconUrl }}" alt="{{ $name }} {{ $type }}" class="max-w-10 max-h-10 absolute right-1 bottom-1" />
           </div>
