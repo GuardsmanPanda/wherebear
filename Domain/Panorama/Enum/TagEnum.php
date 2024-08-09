@@ -3,20 +3,21 @@
 namespace Domain\Panorama\Enum;
 
 use Domain\Panorama\Crud\TagCrud;
-use Domain\Panorama\Model\Tag;
 
 enum TagEnum: string {
-    case AWESOME = 'AWESOME';
     case DRONE = 'DRONE';
     case FUNNY = 'FUNNY';
     case GOOGLE = 'GOOGLE';
+    case GREAT = 'GREAT';
+    case LANDSCAPE = 'LANDSCAPE';
 
     public function getDescription(): string {
         return match ($this) {
-            self::AWESOME => 'Great Panorama, S-Tier.',
-            self::FUNNY => 'At least amusing.',
             self::DRONE => 'Quality Drone Shot.',
+            self::FUNNY => 'At least amusing.',
             self::GOOGLE => 'Google Office.',
+            self::GREAT => 'Great Panorama, should be prioritized.',
+            self::LANDSCAPE => 'Landscape is the primary focus, minimal human activity visible.',
         };
     }
 
