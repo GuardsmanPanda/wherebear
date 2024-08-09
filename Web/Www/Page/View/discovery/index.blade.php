@@ -1,5 +1,5 @@
 <?php declare(strict_types=1); ?>
-@php use Domain\Map\Enum\MapStyleEnum;use Domain\User\Model\WhereBearUser;use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService; @endphp
+@php use Domain\User\Model\WhereBearUser;use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService; @endphp
 <div class="h-full w-full flex flex-col">
     <x-bear::form.text id="map-url" required="" class="text-gray-700"></x-bear::form.text>
     <div class="mt-1">
@@ -143,7 +143,6 @@
 
     document.getElementById("map-url").addEventListener("keyup", function (event) {
         if (event.key === 'Enter') {
-            event.preventDefault();
             add_panorama();
         }
     });

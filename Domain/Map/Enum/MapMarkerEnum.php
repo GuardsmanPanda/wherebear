@@ -14,8 +14,10 @@ enum MapMarkerEnum: string {
     case CHIBI_ANUBIS = 'CHIBI_ANUBIS';
     case CHIBI_PUMPKIN_HEAD_GUY = 'CHIBI_PUMPKIN_HEAD_GUY';
     case CHIBI_GREEK_WARRIOR = 'CHIBI_GREEK_WARRIOR';
+    case CHIBI_SUCCUBUS = 'CHIBI_SUCCUBUS';
 
     case MONSTER_37 = 'MONSTER_37';
+    case MONSTER_LAND_2 = 'MONSTER_LAND_2';
 
     case PLANET_1 = 'PLANET_1';
     case PLANET_3 = 'PLANET_3';
