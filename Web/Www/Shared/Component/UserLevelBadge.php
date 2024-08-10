@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Infrastructure\View\Components;
+namespace Web\Www\Shared\Component;
 
 use Illuminate\View\Component;
-use Infrastructure\View\Enum\UserLevelBadgeSize;
+use Web\Www\Shared\Enum\UserLevelBadgeSize;
 
-class UserLevelBadge extends Component
+final class UserLevelBadge extends Component
 {
   public function __construct(public UserLevelBadgeSize $size, public int $level = 0) {}
 

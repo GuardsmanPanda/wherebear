@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Infrastructure\View\Components;
+namespace Web\Www\Shared\Component;
 
 use Illuminate\View\Component;
 
-class ButtonSelector extends Component
+final class ButtonSelector extends Component
 {
   public function __construct(public string $label, public string $imageUrl) {}
 

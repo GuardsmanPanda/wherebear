@@ -73,6 +73,8 @@ enum UserLevelEnum: int {
 
     public function getLevelExperienceRequirement(): int {
         return match ($this) {
+            self::L0 => 0,
+            self::L1 => 1,
             self::L2 => 10,
             self::L3 => 23,
             self::L4 => 39,

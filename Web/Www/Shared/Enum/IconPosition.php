@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Infrastructure\View\Enum;
+namespace Web\Www\Shared\Enum;
 
 enum IconPosition: string
 {

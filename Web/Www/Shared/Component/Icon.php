@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Infrastructure\View\Components;
+namespace Web\Www\Shared\Component;
 
 use Illuminate\View\Component;
-use Infrastructure\View\Enum\IconType;
+use Web\Www\Shared\Enum\IconType;
 
 /**
  * https://heroicons.com/
  */
-class Icon extends Component
+final class Icon extends Component
 {
-  public $paths = [
+  public array $paths = [
     'check' => [
       'outline' => ['m4.5 12.75 6 6 9-13.5'],
       'solid' => 'M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z'
@@ -94,7 +94,7 @@ class Icon extends Component
   {
     return <<<'blade'
       @switch($type)
-        @case(Infrastructure\View\Enum\IconType::OUTLINE)
+        @case(Web\Www\Shared\Enum\IconType::OUTLINE)
           <svg {{ $attributes->class([$getSize(), $getCommonClasses() ]) }} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             @foreach($getIconPaths() as $iconPath)
               <path stroke-linecap="round" stroke-linejoin="round" d="{{ $iconPath }}" />
@@ -102,13 +102,13 @@ class Icon extends Component
           </svg>
         @break
 
-        @case(Infrastructure\View\Enum\IconType::SOLID)
+        @case(Web\Www\Shared\Enum\IconType::SOLID)
           <svg {{ $attributes->class([$getSize(), $getCommonClasses() ]) }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
             <path fill-rule="evenodd" d="{{ $getIconPaths() }}" clip-rule="evenodd" />
           </svg>
         @break
 
-        @case(Infrastructure\View\Enum\IconType::MINI)
+        @case(Web\Www\Shared\Enum\IconType::MINI)
           <svg {{ $attributes->class([$getSize(), $getCommonClasses() ]) }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
             <path fill-rule="evenodd" d="{{ $getIconPaths() }}" clip-rule="evenodd" />
           </svg>

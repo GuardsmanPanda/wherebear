@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Infrastructure\View\Components;
+namespace Web\Www\Shared\Component;
 
 use Illuminate\View\Component;
 
-class Panel extends Component
+final class Panel extends Component
 {
   public function __construct() {}
 

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Infrastructure\View\Components;
+namespace Web\Www\Shared\Component;
 
 use Illuminate\View\Component;
 
-class PlayerProfileSmall extends Component
+final class PlayerProfileSmall extends Component
 {
   public function __construct(
     public string $name,
@@ -27,7 +27,7 @@ class PlayerProfileSmall extends Component
         </div>
         
         @isset ($level)
-        <x-user-level-badge :size="Infrastructure\View\Enum\UserLevelBadgeSize::XS" :level=$level class="absolute -bottom-1 -left-[6px] z-20" />
+        <x-user-level-badge :size="Web\Www\Shared\Enum\UserLevelBadgeSize::XS" :level=$level class="absolute -bottom-1 -left-[6px] z-20" />
         @endisset
 
         @isset ($countryCode)

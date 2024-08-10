@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Infrastructure\View\Components;
+namespace Web\Www\Shared\Component;
 
 use Illuminate\View\Component;
+use Web\Www\Shared\Enum\RewardType;
 
-use Infrastructure\View\Enum\RewardType;
-
-class NextReward extends Component
+final class NextReward extends Component
 {
 
   public function __construct(public RewardType $type, public string $name, public string $iconUrl) {}

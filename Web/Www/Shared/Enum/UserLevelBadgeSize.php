@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Infrastructure\View\Enum;
+namespace Web\Www\Shared\Enum;
 
-enum ButtonSize: string
+enum UserLevelBadgeSize: string
 {
+  case XS = 'XS';
   case SM = 'SM';
   case MD = 'MD';
   case LG = 'LG';
