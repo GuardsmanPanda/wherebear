@@ -3,29 +3,18 @@
 namespace Integration\Nominatim\Client;
 
 use GuardsmanPanda\Larabear\Integration\ExternalApi\Client\BearExternalApiClient;
-use Illuminate\Support\Str;
 use Infrastructure\App\Enum\BearExternalApiEnum;
 use Integration\Nominatim\Data\NominatimLocationData;
 
 final class NominatimClient {
     public static function reverseLookup(float $latitude, float $longitude): NominatimLocationData {
         $client = BearExternalApiClient::fromEnum(enum: BearExternalApiEnum::NOMINATIM);
-        $result = $client->request(path: "reverse", query: [
+        $response = $client->request(path: "reverse", query: [
             'format' => 'jsonv2',
             'lat' => sprintf("%.15f", $latitude),
             'lon' => sprintf("%.15f", $longitude),
-        ])->json();
-        $data = new NominatimLocationData(
-            country_cca2: Str::upper(value: $result['address']['country_code'] ?? 'XX'),
-            latitude: $latitude,
-            longitude: $longitude,
-            nominatim_json: $result,
-            state_name: $result['address']['state'] ?? $result['address']['county'] ?? $result['address']['municipality'] ?? null,
-            region_name: $result['address']['region'] ?? null,
-            county_name: $result['address']['county'] ?? null,
-            city_name: $result['address']['city'] ?? $result['address']['town'] ?? $result['address']['hamlet'] ?? $result['address']['village'] ?? null
-        );
-        return self::fixData(d: $data);
+        ]);
+        return self::fixData(d:  NominatimLocationData::fromResponse(response: $response));
     }
 
 

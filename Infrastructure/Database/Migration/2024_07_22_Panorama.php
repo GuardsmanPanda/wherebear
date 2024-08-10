@@ -15,6 +15,7 @@ return new class extends Migration {
                 city_name             text,
                 added_by_user_id      uuid references bear_user,
                 location              geography(Point, 4326),
+                location_box_hash     integer,
                 jpg_path              text unique,
                 avif_path             text unique,
                 nominatim_json        jsonb,
@@ -25,6 +26,7 @@ return new class extends Migration {
             );
         ");
         DB::statement(query: "create index location_gist_idx on panorama using gist(location);");
+        DB::statement(query: "create index location_box_hash_idx on panorama(location_box_hash);");
     }
 
 

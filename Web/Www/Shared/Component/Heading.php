@@ -6,12 +6,11 @@ namespace Web\Www\Shared\Component;
 
 use Illuminate\View\Component;
 
-final class Heading extends Component
-{
-  public function __construct(public string $label) {}
+final class Heading extends Component {
+  public function __construct(public string $label) {
+  }
 
-  public function render(): string
-  {
+  public function render(): string {
     return <<<'blade'
     <div {{ $attributes->merge(['class' => 'flex justify-between items-center pb-1']) }}>
       <div class="flex items-center">

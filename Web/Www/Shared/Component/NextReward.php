@@ -7,30 +7,24 @@ namespace Web\Www\Shared\Component;
 use Illuminate\View\Component;
 use Web\Www\Shared\Enum\RewardType;
 
-final class NextReward extends Component
-{
+final class NextReward extends Component {
 
-  public function __construct(public RewardType $type, public string $name, public string $iconUrl) {}
+  public function __construct(public RewardType $type, public string $name, public string $iconUrl) {
+  }
 
-  public function getTypeLabel()
-  {
+  public function getTypeLabel(): RewardType|string {
     return $this->type === RewardType::FEATURE ? 'feat' : $this->type;
   }
 
-  public function getTypeBackgroundColor(): string
-  {
-    switch ($this->type) {
-      case RewardType::FEATURE:
-        return 'bg-blue-700';
-      case RewardType::FLAG:
-        return 'bg-orange-600';
-      case RewardType::ICON:
-        return 'bg-purple-700';
-    }
+  public function getTypeBackgroundColor(): string {
+    return match ($this->type) {
+      RewardType::FEATURE => 'bg-blue-700',
+      RewardType::FLAG => 'bg-orange-600',
+      RewardType::ICON => 'bg-purple-700',
+    };
   }
 
-  public function render(): string
-  {
+  public function render(): string {
     return <<<'blade'
     <div {{ $attributes->class(['flex flex-col items-end']) }}>
       <span class="text-xs text-shade-text-body pr-[60px] uppercase">Next reward</span>

@@ -8,6 +8,7 @@ use Domain\Panorama\Model\Panorama;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 use Illuminate\Support\Facades\DB;
 use Integration\Nominatim\Client\NominatimClient;
+use Integration\StreetView\Data\StreetViewPanoramaData;
 
 final class PanoramaCreator {
     public static function create(
@@ -37,17 +38,17 @@ final class PanoramaCreator {
             $added_by_user_id,
             $longitude, $latitude,
             $jpg_path,
-            json_encode($data->nominatim_json)
+            $data->nominatim_json_string,
         ]);
         return Panorama::findOrFail(id: $id);
     }
 
-    public static function createFromStreetViewData(array $data, string $added_by_user_id = null): Panorama {
+    public static function createFromStreetViewData(StreetViewPanoramaData $data, string $added_by_user_id = null): Panorama {
         return PanoramaCreator::create(
-            id: $data['pano_id'],
-            latitude: $data['location']['lat'],
-            longitude: $data['location']['lng'],
-            captured_date: Carbon::parse($data['date'] . "-01"),
+            id: $data->panoId,
+            latitude: $data->lat,
+            longitude: $data->lng,
+            captured_date: $data->date,
             added_by_user_id: $added_by_user_id,
         );
     }

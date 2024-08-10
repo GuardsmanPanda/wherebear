@@ -6,12 +6,11 @@ namespace Web\Www\Shared\Component;
 
 use Illuminate\View\Component;
 
-final class Panel extends Component
-{
-  public function __construct() {}
+final class Panel extends Component {
+  public function __construct() {
+  }
 
-  public function render(): string
-  {
+  public function render(): string {
     return <<<'blade'
     <div {{ $attributes->class(['flex flex-col gap-1']) }}>
       <div class="flex flex-col p-1 rounded bg-tertiary-surface-subtle border border-shade-border-default">

@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace Web\Www\Shared\Component;
 
+use GuardsmanPanda\Larabear\Web\Www\Shared\Service\HeroIconService;
 use Illuminate\View\Component;
 use Web\Www\Shared\Enum\IconType;
 
 /**
  * https://heroicons.com/
  */
-final class Icon extends Component
-{
+final class Icon extends Component {
+  /**
+   * @var array<string, array<string, array<int, string>|string>>
+   */
   public array $paths = [
     'check' => [
       'outline' => ['m4.5 12.75 6 6 9-13.5'],
@@ -66,21 +69,22 @@ final class Icon extends Component
     ],
   ];
 
-  public function __construct(public string $icon, public IconType $type = IconType::OUTLINE, public string $color = 'text-shade-text-body', public ?int $size = null) {}
+  public function __construct(public string $icon, public IconType $type = IconType::OUTLINE, public string $color = 'text-shade-text-body', public ?int $size = null) {
+  }
 
-  public function getIconPaths(): string | array
-  {
+  /**
+   * @return string|array<mixed>
+   */
+  public function getIconPaths(): string|array {
     return $this->paths[$this->icon][strtolower($this->type->value)];
   }
 
-  public function getCommonClasses(): string
-  {
+  public function getCommonClasses(): string {
     return $this->color;
   }
 
-  public function getSize(): string
-  {
-    if (!$this->size) {
+  public function getSize(): string {
+    if ($this->size === null) {
       if ($this->type === IconType::MINI) {
         $this->size = 5;
       } else {
@@ -90,8 +94,8 @@ final class Icon extends Component
     return "size-{$this->size}";
   }
 
-  public function render(): string
-  {
+
+  public function render(): string {
     return <<<'blade'
       @switch($type)
         @case(Web\Www\Shared\Enum\IconType::OUTLINE)

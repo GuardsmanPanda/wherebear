@@ -11,86 +11,85 @@ use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Resp;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
-use Integration\StreetView\StreetViewClient;
+use Integration\StreetView\Client\StreetViewClient;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 final class PageDiscoveryController extends Controller {
-    public function index(): View {
-        return Resp::view(view: 'page::discovery.index', data: [
-            'markers' => DB::select(query: "
-                SELECT ST_Y(p.location::geometry) as lat, ST_X(p.location::geometry) as lng
-                FROM panorama p
-                WHERE p.location IS NOT NULL
-            "),
-            'user' => DB::selectOne(query: "
-                SELECT
-                    m.file_name as map_marker_file_name,
-                    u.map_style_enum
-                FROM bear_user u
-                LEFT JOIN map_marker m ON u.map_marker_enum = m.enum
-                WHERE u.id = ?
-            ", bindings: [BearAuthService::getUserId()]),
-        ]);
+  public function index(): View {
+    return Resp::view(view: 'page::discovery.index', data: [
+      'markers' => DB::select(query: "
+        SELECT ST_Y(p.location::geometry) as lat, ST_X(p.location::geometry) as lng
+        FROM panorama p
+        WHERE p.location IS NOT NULL
+      "),
+      'user' => DB::selectOne(query: "
+        SELECT
+            m.file_name as map_marker_file_name,
+            u.map_style_enum
+        FROM bear_user u
+        LEFT JOIN map_marker m ON u.map_marker_enum = m.enum
+        WHERE u.id = ?
+      ", bindings: [BearAuthService::getUserId()]),
+    ]);
+  }
+
+
+  public function addFromStreetViewLocation(): JsonResponse {
+    $lat = Req::getFloat(key: 'lat');
+    $lng = Req::getFloat(key: 'lng');
+    $data = StreetViewClient::findByLocation(latitude: $lat, longitude: $lng);
+    if ($data === null) {
+      return new JsonResponse(data: ['status' => 'failed']);
     }
+    if (!PanoramaService::panoramaExists(id: $data->panoId)) {
+      $panorama = PanoramaCreator::createFromStreetViewData(data: $data, added_by_user_id: BearAuthService::getUserId());
+      return new JsonResponse(data: [
+        'country_cca2' => $panorama->country_cca2,
+        'state_name' => $panorama->state_name,
+        'city_name' => $panorama->city_name,
+        'lat' => $data->lat,
+        'lng' => $data->lng,
+        'date' => $data->date,
+        'exists' => false,
+      ]);
+    }
+    return new JsonResponse(data: ['exists' => true]);
+  }
 
 
-    public function addFromStreetViewLocation(): array {
-        $lat = Req::getFloat(key: 'lat');
-        $lng = Req::getFloat(key: 'lng');
-        $data = StreetViewClient::findByLocation(latitude: $lat, longitude: $lng);
-        if (!PanoramaService::panoramaExists(id: $data['pano_id'])) {
-            $panorama = PanoramaCreator::createFromStreetViewData(data: $data, added_by_user_id: BearAuthService::getUserId());
-            return [
-                'country_cca2' => $panorama->country_cca2,
-                'state_name' => $panorama->state_name,
-                'city_name' => $panorama->city_name,
-                'lat' => $data['location']['lat'],
-                'lng' => $data['location']['lng'],
-                'date' => $data['date'],
-                'exists' => false,
-            ];
-        }
-        return [
-            'exists' => true,
+  public function searchFromStreetViewLocation(): JsonResponse {
+    $retries = Req::getInt(key: 'retries');
+    $retries = min(max($retries, 0), 50);
+    $lat = Req::getFloat(key: 'lat');
+    $lng = Req::getFloat(key: 'lng');
+    $results = [];
+    for ($i = 0; $i <= $retries; $i++) {
+      $newPos = MapService::offsetLatLng(lat: $lat, lng: $lng, meters: Req::getFloat(key: 'distance'));
+      $data = StreetViewClient::findByLocation(latitude: $newPos->lat, longitude: $newPos->lng);
+      if ($data === null) {
+        $results[] = [
+          'lat' => $newPos->lat,
+          'lng' => $newPos->lng,
+          'status' => 'failed',
         ];
+        continue;
+      }
+      if (!PanoramaService::panoramaExists(id: $data->panoId)) {
+        $panorama = PanoramaCreator::createFromStreetViewData(data: $data);
+        $results[] = [
+          'country_cca2' => $panorama->country_cca2,
+          'state_name' => $panorama->state_name,
+          'city_name' => $panorama->city_name,
+          'lat' => $data->lat,
+          'lng' => $data->lng,
+          'date' => $data->date,
+          'status' => 'new',
+        ];
+        break;
+      } else {
+        $results[] = ['statue' => 'exists'];
+      }
     }
-
-
-    public function searchFromStreetViewLocation(): array {
-        $retries = Req::getInt(key: 'retries');
-        $retries = min(max($retries, 0), 50);
-        $lat = Req::getFloat(key: 'lat');
-        $lng = Req::getFloat(key: 'lng');
-        $results = [];
-        for ($i = 0; $i <= $retries; $i++) {
-            $newPos = MapService::offsetLatLng(lat: $lat, lng: $lng, meters: Req::getFloat(key: 'distance'));
-            $data = StreetViewClient::findByLocation(latitude: $newPos->lat, longitude: $newPos->lng);
-            if ($data === null) {
-                $results[] = [
-                    'lat' => $newPos->lat,
-                    'lng' => $newPos->lng,
-                    'status' => 'failed',
-                ];
-                continue;
-            }
-            if (!PanoramaService::panoramaExists(id: $data['pano_id'])) {
-                $panorama = PanoramaCreator::createFromStreetViewData(data: $data);
-                $results[] = [
-                    'country_cca2' => $panorama->country_cca2,
-                    'state_name' => $panorama->state_name,
-                    'city_name' => $panorama->city_name,
-                    'lat' => $data['location']['lat'],
-                    'lng' => $data['location']['lng'],
-                    'date' => $data['date'],
-                    'status' => 'new',
-                ];
-                break;
-            } else {
-                $results[] = [
-                    'statue' => 'exists',
-                ];
-            }
-        }
-        return $results;
-
-    }
+    return new JsonResponse(data: $results);
+  }
 }

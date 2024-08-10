@@ -6,13 +6,12 @@ namespace Web\Www\Shared\Component;
 
 use Illuminate\View\Component;
 
-final class ButtonSelector extends Component
-{
-  public function __construct(public string $label, public string $imageUrl) {}
+final class ButtonSelector extends Component {
+  public function __construct(public string $label, public string $imageUrl) {
+  }
 
 
-  public function render(): string
-  {
+  public function render(): string {
     return <<<'blade'
 		<div {{ $attributes }} class="flex flex-col items-center gap-1">
 			<span *ngIf="label" class="font-heading text-sm text-shade-text-subtitle">{{ $label }}</span>
