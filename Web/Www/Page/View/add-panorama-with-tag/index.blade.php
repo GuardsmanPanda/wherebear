@@ -1,6 +1,6 @@
 <?php declare(strict_types=1); ?>
 <div class="h-full w-full flex flex-col">
-    <x-bear::form.text id="map-url" required="" class="text-gray-700"></x-bear::form.text>
+    <x-bear::form.text id="map-url" required="" class="text-gray-700" autocomplete="off"></x-bear::form.text>
     <div class="mt-1">
         <h3 class="font-bold text-teal-500">Tags</h3>
         <div class="flex gap-8 ml-2 items-center">
@@ -18,7 +18,7 @@
             </div>
         </div>
     </div>
-    <x-bear::form.text id="streetviews-org-url" class="mt-6 text-gray-700 w-80">
+    <x-bear::form.text id="streetviews-org-url" class="mt-6 text-gray-700 w-80" autocomplete="off">
     </x-bear::form.text>
     <div id="map" class="w-full flex-grow my-4"></div>
 </div>

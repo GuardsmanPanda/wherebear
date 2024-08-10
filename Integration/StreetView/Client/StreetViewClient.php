@@ -18,6 +18,6 @@ final class StreetViewClient {
     ];
     $client = BearExternalApiClient::fromEnum(enum: BearExternalApiEnum::GOOGLE_STREET_VIEW_STATIC_API);
     $resp = $client->request(path: 'metadata', query: $query);
-    return $resp->ok() ? StreetViewPanoramaData::fromResponse(response: $resp) : null;
+    return StreetViewPanoramaData::fromResponse(response: $resp);
   }
 }

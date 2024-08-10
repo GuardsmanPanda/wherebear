@@ -33,7 +33,8 @@ final class GameLobbyController extends Controller {
     $game = DB::selectOne(query: "
       SELECT
           g.id, g.number_of_rounds, g.round_duration_seconds, g.created_by_user_id,
-          g.game_state_enum, g.game_public_status_enum, g.current_round, g.round_result_duration_seconds,
+          g.game_state_enum, g.game_public_status_enum,  g.game_public_status_enum = 'PUBLIC' as is_public,
+          g.current_round, g.round_result_duration_seconds,
           bu.display_name
       FROM game g
       LEFT JOIN bear_user bu ON bu.id = g.created_by_user_id
@@ -62,7 +63,7 @@ final class GameLobbyController extends Controller {
         'game' => $game,
         'players' => DB::select(query: "
           SELECT
-              bu.display_name, bu.country_cca2,
+              bu.display_name, bu.country_cca2, bu.user_level_enum,
               gu.is_ready, bc.name
           FROM game_user gu
           LEFT JOIN bear_user bu ON bu.id = gu.user_id
@@ -95,6 +96,8 @@ final class GameLobbyController extends Controller {
       'user' => DB::selectOne(query: "
         SELECT 
             bu.id, bu.display_name, bu.user_level_enum, bu.map_marker_enum, bu.map_style_enum,
+            bu.experience - ul.experience_requirement as current_level_experience,
+            (SELECT ul2.experience_requirement FROM user_level ul2 WHERE ul2.enum = bu.user_level_enum + 1) - ul.experience_requirement as next_level_experience,
             gu.is_ready,
             mm.file_name as map_marker_file_name,
             ms.name as map_style_name,
@@ -104,6 +107,7 @@ final class GameLobbyController extends Controller {
         LEFT JOIN map_marker mm ON mm.enum = bu.map_marker_enum
         LEFT JOIN map_style ms ON ms.enum = bu.map_style_enum
         LEFT JOIN bear_country bc ON bc.cca2 = bu.country_cca2
+        LEFT JOIN user_level ul ON ul.enum = bu.user_level_enum
         WHERE bu.id = ?
       ", bindings: [$game->id, $user_id]),
     ]);

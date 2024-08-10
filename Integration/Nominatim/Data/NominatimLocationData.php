@@ -2,6 +2,7 @@
 
 namespace Integration\Nominatim\Data;
 
+use GuardsmanPanda\Larabear\Infrastructure\Integrity\Service\ValidateAndParseValue;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Str;
 
@@ -16,6 +17,7 @@ final class NominatimLocationData {
     public readonly string|null $county_name = null,
     public readonly string|null $city_name = null,
   ) {
+    $this->fixCountryCca2();
   }
 
 
@@ -24,13 +26,127 @@ final class NominatimLocationData {
     $json_string = json_encode($data);
     return new NominatimLocationData(
       country_cca2: Str::upper($data['address']['country_code'] ?? 'XX'),
-      latitude: $data['lat'],
-      longitude: $data['lon'],
+      latitude: ValidateAndParseValue::parseFloat($data['lat']),
+      longitude: ValidateAndParseValue::parseFloat($data['lon']),
       nominatim_json_string: $json_string === false ? null : $json_string,
       state_name: $data['address']['state'] ?? $data['address']['county'] ?? $data['address']['municipality'] ?? null,
       region_name: $data['address']['region'] ?? null,
       county_name: $data['address']['county'] ?? null,
       city_name: $data['address']['city'] ?? $data['address']['town'] ?? $data['address']['hamlet'] ?? $data['address']['village'] ?? null
     );
+  }
+
+
+  private function fixCountryCca2(): void {
+    if ($this->latitude <= -60) {
+      $this->country_cca2 = 'AQ';
+    }
+
+
+    if ($this->country_cca2 === 'AU') {
+      if ($this->city_name === 'Shire of Christmas Island') {
+        $this->country_cca2 = 'CX';
+      }
+      if ($this->city_name === 'Shire of Cocos Islands') {
+        $this->country_cca2 = 'CC';
+      }
+    }
+
+
+    if ($this->country_cca2 === 'CN') {
+      if ($this->state_name === '香港 Hong Kong') {
+        $this->country_cca2 = 'HK';
+      }
+      if ($this->state_name === '澳門 Macau') {
+        $this->country_cca2 = 'MO';
+      }
+    }
+
+
+    if ($this->country_cca2 === 'GB') {
+      if ($this->state_name === 'England') {
+        $this->country_cca2 = 'GB-ENG';
+      }
+      if ($this->state_name === 'Scotland') {
+        $this->country_cca2 = 'GB-SCT';
+      }
+      if ($this->state_name === 'Cymru / Wales') {
+        $this->country_cca2 = 'GB-WLS';
+      }
+      if ($this->state_name === 'Northern Ireland') {
+        $this->country_cca2 = 'GB-NIR';
+      }
+    }
+
+
+    if ($this->country_cca2 === 'FI' && ($this->county_name === 'Åland' || $this->county_name === 'Landskapet Åland')) {
+      $this->country_cca2 = 'AX';
+    }
+
+
+    if ($this->country_cca2 === 'NL' && $this->state_name === 'Curaçao') {
+      $this->country_cca2 = 'CW';
+    }
+
+
+    if ($this->country_cca2 === 'FR') {
+      if ($this->state_name === 'Guadeloupe') {
+        $this->country_cca2 = 'GP';
+      }
+      if ($this->state_name === 'Guyane') {
+        $this->country_cca2 = 'GF';
+      }
+      if ($this->state_name === 'La Réunion') {
+        $this->country_cca2 = 'RE';
+      }
+      if ($this->state_name === 'Mayotte') {
+        $this->country_cca2 = 'YT';
+      }
+      if ($this->state_name === 'Martinique') {
+        $this->country_cca2 = 'MQ';
+      }
+      if ($this->state_name === 'Wallis-et-Futuna') {
+        $this->country_cca2 = 'WF';
+      }
+      if ($this->state_name === 'Polynésie Française') {
+        $this->country_cca2 = 'PF';
+      }
+      if ($this->state_name === 'Saint-Martin (France)') {
+        $this->country_cca2 = 'MF';
+      }
+      if ($this->region_name === 'Saint-Pierre-et-Miquelon') {
+        $this->country_cca2 = 'PM';
+      }
+      if ($this->region_name === 'Nouvelle-Calédonie') {
+        $this->country_cca2 = 'NC';
+      }
+      if ($this->region_name === 'Saint-Barthélemy') {
+        $this->country_cca2 = 'BL';
+      }
+    }
+
+
+    if ($this->country_cca2 === 'NO' && ($this->county_name === 'Jan Mayen' || $this->region_name === 'Svalbard')) {
+      $this->country_cca2 = 'SJ';
+    }
+
+
+    if ($this->country_cca2 === 'US') {
+      if ($this->state_name === 'American Samoa') {
+        $this->country_cca2 = 'AS';
+      }
+      if ($this->state_name === 'Guam') {
+        $this->country_cca2 = 'GU';
+      }
+      if ($this->state_name === 'Northern Mariana Islands') {
+        $this->country_cca2 = 'MP';
+      }
+      if ($this->state_name === 'Puerto Rico') {
+        $this->country_cca2 = 'PR';
+      }
+      if ($this->state_name === 'United States Virgin Islands') {
+        $this->country_cca2 = 'VI';
+      }
+    }
   }
 }

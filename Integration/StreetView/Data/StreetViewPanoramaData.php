@@ -16,8 +16,14 @@ final readonly class StreetViewPanoramaData {
   ) {
   }
 
-  public static function fromResponse(Response $response): self {
+  public static function fromResponse(Response $response): self|null {
+    if ($response->status() !== 200) {
+      return null;
+    }
     $data = $response->json();
+    if ($data['status'] !== 'OK') {
+      return null;
+    }
     return new StreetViewPanoramaData(
       lat: $data['location']['lat'],
       lng: $data['location']['lng'],

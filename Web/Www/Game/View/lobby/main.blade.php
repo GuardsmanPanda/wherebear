@@ -2,10 +2,9 @@
 
 declare(strict_types=1); ?>
 @php
-    use Domain\Game\Enum\GamePublicStatusEnum;use Domain\Map\Enum\MapStyleEnum;use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;use Web\Www\Shared\Enum\ButtonSize;use Web\Www\Shared\Enum\ButtonStyle;use Web\Www\Shared\Enum\ButtonType;use Web\Www\Shared\Enum\RewardType;use Web\Www\Shared\Enum\UserLevelBadgeSize;
+    use Domain\Map\Enum\MapStyleEnum;use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;use Web\Www\Shared\Enum\ButtonSize;use Web\Www\Shared\Enum\ButtonStyle;use Web\Www\Shared\Enum\ButtonType;use Web\Www\Shared\Enum\RewardType;use Web\Www\Shared\Enum\UserLevelBadgeSize;
 
     $isPlayerHost = $game->created_by_user_id === BearAuthService::getUserId();
-    $isGamePublic = $game->game_public_status_enum === GamePublicStatusEnum::PUBLIC->value;
 @endphp
 
 <x-panel class="m-2">
@@ -27,7 +26,7 @@ declare(strict_types=1); ?>
             <div class="flex justify-between items-start">
                 <div class="flex flex-wrap items-baseline gap-1">
                     <span class="font-heading text-sm text-shade-text-subtitle">Next Level:</span>
-                    <span class="text-md font-medium text-primary-text">2450/2607</span>
+                    <span class="text-md font-medium text-primary-text">{{$user->current_level_experience}}/{{$user->next_level_experience}}</span>
                 </div>
                 <x-next-reward class="mt-[2px]" :type="RewardType::ICON" name="Kitty Cat" icon-url="/static/img/map-marker/cat.png"/>
             </div>
@@ -75,8 +74,8 @@ declare(strict_types=1); ?>
         <div class="flex justify-between gap-4 border-b-0 border-shade-border-light">
             <div class="flex items-center h-8  border border-shade-border-default rounded">
                 <div class="flex h-full items-center px-1 bg-tertiary-surface-subtle rounded-l text-xs text-shade-text-caption">ACCESS</div>
-                <div class="flex h-full items-center px-1 rounded-r text-xs text-white font-medium {{ $isGamePublic ? 'bg-info-surface-default' : 'bg-error-surface-default' }}">
-                    {{ $game->game_public_status_enum === GamePublicStatusEnum::PRIVATE->value ? 'PRIVATE' : 'PUBLIC'}}
+                <div class="flex h-full items-center px-1 rounded-r text-xs text-white font-medium {{ $game->is_public ? 'bg-info-surface-default' : 'bg-error-surface-default' }}">
+                    {{ $game->game_public_status_enum }}
                 </div>
             </div>
             <div class="flex h-8 gap-1 bg-tertiary-surface-subtle border border-shade-border-default rounded overflow-hidden">
