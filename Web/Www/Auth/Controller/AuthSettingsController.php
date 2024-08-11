@@ -11,20 +11,20 @@ use Illuminate\View\View;
 use RuntimeException;
 
 final class AuthSettingsController extends Controller {
-    public function userSettings(): View {
-        return Htmx::dialogView(view: 'auth::user-settings', title: "User Settings", data: [
-            'user' => BearAuthService::getUser(),
-        ]);
-    }
+  public function userSettings(): View {
+    return Htmx::dialogView(view: 'auth::user-settings', title: "User Settings", data: [
+      'user' => BearAuthService::getUser(),
+    ]);
+  }
 
-    public function userSettingsPatch(): View {
-        $newName = Req::getString(key: 'display_name');
-        if (mb_strlen($newName) > 32) { //TODO :: add support for application/problem+json in larabear
-            throw new RuntimeException(message: "Display name must be less than 32 characters.");
-        }
-        BearUserUpdater::fromId(id: BearAuthService::getUserId())
-            ->setDisplayName(display_name: $newName)
-            ->update();
-        return $this->userSettings();
+  public function userSettingsPatch(): View {
+    $newName = Req::getString(key: 'display_name');
+    if (mb_strlen($newName) > 32) { //TODO :: add support for application/problem+json in larabear
+      throw new RuntimeException(message: "Display name must be less than 32 characters.");
     }
+    BearUserUpdater::fromId(id: BearAuthService::getUserId())
+      ->setDisplayName(display_name: $newName)
+      ->update();
+    return $this->userSettings();
+  }
 }

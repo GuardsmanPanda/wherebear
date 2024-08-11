@@ -8,15 +8,15 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 final class PageDownloadController extends Controller {
-    public function index(): View {
-        return Resp::view(view: 'page::download.index', data: [
-            'panoramas' => DB::select(query: "
-                SELECT 
-                    p.id
-                FROM panorama p
-                WHERE p.jpg_path IS NULL
-                ORDER BY p.added_by_user_id DESC
-            "),
-        ]);
-    }
+  public function index(): View {
+    return Resp::view(view: 'page::download.index', data: [
+      'panoramas' => DB::select(query: "
+        SELECT 
+            p.id
+        FROM panorama p
+        WHERE p.jpg_path IS NULL
+        ORDER BY p.added_by_user_id DESC
+      "),
+    ]);
+  }
 }

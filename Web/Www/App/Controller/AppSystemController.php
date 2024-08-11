@@ -9,12 +9,12 @@ use Illuminate\Routing\Controller;
 use Symfony\Component\HttpFoundation\Response;
 
 final class AppSystemController extends Controller {
-    public function reload(): Response {
-        BearBroadcastService::broadcastNow(
-            channel: 'dev',
-            event: 'reload',
-            data: ['hostname' => Req::hostname()]
-        );
-        return Resp::noContent();
-    }
+  public function reload(): Response {
+    BearBroadcastService::broadcastNow(
+      channel: 'dev',
+      event: 'reload',
+      data: ['hostname' => Req::hostname()]
+    );
+    return Resp::noContent();
+  }
 }

@@ -13,30 +13,30 @@ Route::get(uri: "create", action: [GameController::class, 'createDialog'])->midd
 Route::post(uri: "", action: [GameController::class, 'create'])->middleware([BearPermissionMiddleware::using(permission: BearPermissionEnum::GAME_CREATE)]);
 
 Route::prefix("{gameId}")->middleware(BearHtmxMiddleware::using(layout_location: 'layout.layout'))->group(callback: function () {
-    Route::prefix("lobby")->group(callback: function () {
-        Route::get(uri: "", action: [GameLobbyController::class, 'index']);
-        Route::get(uri: "player-list", action: [GameLobbyController::class, 'playerList']);
-        Route::get(uri: "dialog/map-marker", action: [GameLobbyController::class, 'dialogMapMarker']);
-        Route::get(uri: "dialog/map-style", action: [GameLobbyController::class, 'dialogMapStyle']);
-        Route::get(uri: "dialog/name-flag", action: [GameLobbyController::class, 'dialogNameFlag']);
-        Route::get(uri: "dialog/settings", action: [GameLobbyController::class, 'dialogSettings']);
+  Route::prefix("lobby")->group(callback: function () {
+    Route::get(uri: "", action: [GameLobbyController::class, 'index']);
+    Route::get(uri: "player-list", action: [GameLobbyController::class, 'playerList']);
+    Route::get(uri: "dialog/map-marker", action: [GameLobbyController::class, 'dialogMapMarker']);
+    Route::get(uri: "dialog/map-style", action: [GameLobbyController::class, 'dialogMapStyle']);
+    Route::get(uri: "dialog/name-flag", action: [GameLobbyController::class, 'dialogNameFlag']);
+    Route::get(uri: "dialog/settings", action: [GameLobbyController::class, 'dialogSettings']);
 
-        Route::patch(uri: "update-user", action: [GameLobbyController::class, 'updateUser']);
-        Route::patch(uri: "update-game-user", action: [GameLobbyController::class, 'updateGameUser']);
-        Route::patch(uri: "settings", action: [GameLobbyController::class, 'updateSettings']);
+    Route::patch(uri: "update-user", action: [GameLobbyController::class, 'updateUser']);
+    Route::patch(uri: "update-game-user", action: [GameLobbyController::class, 'updateGameUser']);
+    Route::patch(uri: "settings", action: [GameLobbyController::class, 'updateSettings']);
 
-        Route::delete(uri: "leave", action: [GameLobbyController::class, 'leaveGame']);
-    });
-    Route::prefix("play")->group(callback: function () {
-        Route::get(uri: "", action: [GamePlayController::class, 'index']);
-        Route::put(uri: "guess", action: [GamePlayController::class, 'guess']);
-    });
-    Route::prefix("result")->group(callback: function () {
-        Route::get(uri: "", action: [GameResultController::class, 'index']);
-    });
+    Route::delete(uri: "leave", action: [GameLobbyController::class, 'leaveGame']);
+  });
+  Route::prefix("play")->group(callback: function () {
+    Route::get(uri: "", action: [GamePlayController::class, 'index']);
+    Route::put(uri: "guess", action: [GamePlayController::class, 'guess']);
+  });
+  Route::prefix("result")->group(callback: function () {
+    Route::get(uri: "", action: [GameResultController::class, 'index']);
+  });
 
-    Route::post(uri: "start", action: [GameLobbyController::class, 'forceStartGame']);
-    Route::delete(uri: "", action: [GameController::class, 'delete']);
+  Route::post(uri: "start", action: [GameLobbyController::class, 'forceStartGame']);
+  Route::delete(uri: "", action: [GameController::class, 'delete']);
 });
 
 Route::view(uri: "experiments/popups", view: "game::experiments.popup");

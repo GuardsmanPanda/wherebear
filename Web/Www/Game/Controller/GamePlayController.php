@@ -15,8 +15,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 final class GamePlayController extends Controller {
-    public function index(string $gameId): View|RedirectResponse {
-        $game = DB::selectOne(query: "
+  public function index(string $gameId): View|RedirectResponse {
+    $game = DB::selectOne(query: "
             SELECT
                 g.id, g.game_state_enum, g.number_of_rounds, g.current_round,
                 EXTRACT(EPOCH FROM g.round_ends_at - NOW()) as round_seconds_remaining,
@@ -37,18 +37,18 @@ final class GamePlayController extends Controller {
             WHERE g.id = ?
         ", bindings: [$gameId]);
 
-        $enum = GameStateEnum::from(value: $game->game_state_enum);
-        if ($enum->isStarting()) {
-            return Resp::redirect(url: "/game/$gameId/lobby", message: 'Game is not in progress');
-        }
-        if ($enum->isFinished()) {
-            return Resp::redirect(url: "/game/$gameId/result");
-        }
-        if ($enum === GameStateEnum::IN_PROGRESS_CALCULATING) {
-            return Resp::view(view: 'game::play.round-result-wait');
-        }
+    $enum = GameStateEnum::from(value: $game->game_state_enum);
+    if ($enum->isStarting()) {
+      return Resp::redirect(url: "/game/$gameId/lobby", message: 'Game is not in progress');
+    }
+    if ($enum->isFinished()) {
+      return Resp::redirect(url: "/game/$gameId/result");
+    }
+    if ($enum === GameStateEnum::IN_PROGRESS_CALCULATING) {
+      return Resp::view(view: 'game::play.round-result-wait');
+    }
 
-        $user = DB::selectOne(query: <<<SQL
+    $user = DB::selectOne(query: <<<SQL
             SELECT
                 u.map_marker_enum, u.map_style_enum,
                 mm.file_name as map_marker_file_name
@@ -57,13 +57,13 @@ final class GamePlayController extends Controller {
             LEFT JOIN map_marker mm ON mm.enum = u.map_marker_enum
             WHERE u.id = ? AND gu.game_id = ?
         SQL, bindings: [BearAuthService::getUserId(), $gameId]);
-        if ($user === null) {
-            return Resp::redirect(url: "/game/$gameId/lobby", message: 'You have not joined the game yet');
-        }
+    if ($user === null) {
+      return Resp::redirect(url: "/game/$gameId/lobby", message: 'You have not joined the game yet');
+    }
 
-        $guesses = null;
-        if ($enum === GameStateEnum::IN_PROGRESS_RESULT) {
-            $guesses = DB::select(query: "
+    $guesses = null;
+    if ($enum === GameStateEnum::IN_PROGRESS_RESULT) {
+      $guesses = DB::select(query: "
                 SELECT
                     bu.display_name, bu.country_cca2, bc.name as country_name,
                     mm.file_name as map_marker_file_name,
@@ -80,10 +80,10 @@ final class GamePlayController extends Controller {
                 WHERE gru.game_id = ? AND gru.round_number = ?
                 ORDER BY gru.rank, gru.user_id
             ", bindings: [$gameId, $game->current_round]);
-        }
+    }
 
-        return Resp::view(view: 'game::play.index', data: [
-            'countries_used' => DB::select(query: "
+    return Resp::view(view: 'game::play.index', data: [
+      'countries_used' => DB::select(query: "
                 SELECT
                     bc.cca2, bc.name
                 FROM game_round gr
@@ -95,30 +95,30 @@ final class GamePlayController extends Controller {
                     AND (gr.round_number < g.current_round OR (gr.round_number = g.current_round AND g.game_state_enum = 'IN_PROGRESS_RESULT'))
                 ORDER BY gr.round_number
             ", bindings: [$gameId]),
-            'game' => $game,
-            'guesses' => $guesses,
-            'template' => $enum === GameStateEnum::IN_PROGRESS ? 'game::play.round' : 'game::play.round-result',
-            'user' => $user,
-        ]);
-    }
+      'game' => $game,
+      'guesses' => $guesses,
+      'template' => $enum === GameStateEnum::IN_PROGRESS ? 'game::play.round' : 'game::play.round-result',
+      'user' => $user,
+    ]);
+  }
 
 
-    public function guess(string $gameId): Response {
-        $game = DB::selectOne(query: "
+  public function guess(string $gameId): Response {
+    $game = DB::selectOne(query: "
             SELECT g.game_state_enum, g.current_round
             FROM game g
             WHERE g.id = ?
         ", bindings: [$gameId]);
-        if ($game->game_state_enum !== GameStateEnum::IN_PROGRESS->value) {
-            return Json::serverError(message: 'Game Round is not in progress');
-        }
-        GameRoundUserCrud::createOrUpdate(
-            game_id: $gameId,
-            round_number: $game->current_round,
-            user_id: BearAuthService::getUserId(),
-            lng: Req::getFloat(key: 'lng'),
-            lat: Req::getFloat(key: 'lat'),
-        );
-        return Resp::ok();
+    if ($game->game_state_enum !== GameStateEnum::IN_PROGRESS->value) {
+      return Json::serverError(message: 'Game Round is not in progress');
     }
+    GameRoundUserCrud::createOrUpdate(
+      game_id: $gameId,
+      round_number: $game->current_round,
+      user_id: BearAuthService::getUserId(),
+      lng: Req::getFloat(key: 'lng'),
+      lat: Req::getFloat(key: 'lat'),
+    );
+    return Resp::ok();
+  }
 }

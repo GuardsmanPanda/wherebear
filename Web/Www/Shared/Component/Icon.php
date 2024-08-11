@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Web\Www\Shared\Component;
 
-use GuardsmanPanda\Larabear\Web\Www\Shared\Service\HeroIconService;
 use Illuminate\View\Component;
 use Web\Www\Shared\Enum\IconType;
 

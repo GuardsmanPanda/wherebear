@@ -5,31 +5,22 @@ const fs = require('fs')
 
 const build = function () {
   esbuild.build({
-    entryPoints: ['Web/Www/Shared/js/app.js'],
-    sourcemap: true,
-    bundle: true,
-    minify: true,
-    logLevel: "info",
-    define: {
+    entryPoints: ['Web/Www/Shared/js/app.js'], sourcemap: true, bundle: true, minify: true, logLevel: "info", define: {
       global: "window"
-    },
-    outfile: 'public/static/dist/app.js',
+    }, outfile: 'public/static/dist/app.js',
   }).catch(() => process.exit(1))
 
-  exec('npx tailwindcss -c Web/Www/Shared/js/tailwind.config.js -i Web/Www/Shared/css/app.css -o public/static/dist/app.css', function (error, stdout, stderr) { console.log('\n----\nCSS ' + stdout); console.log(stderr); });
+  exec('npx tailwindcss -c Web/Www/Shared/js/tailwind.config.js -i Web/Www/Shared/css/app.css -o public/static/dist/app.css', function (error, stdout, stderr) {
+    console.log('\n----\nCSS ' + stdout);
+    console.log(stderr);
+  });
 
-  fs.writeFile(
-    'storage/app/app-css-path.txt',
-    "/static/dist/app.css?id=" + Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2),
-    (err) => {
-      if (err) throw err;
-    });
-  fs.writeFile(
-    'storage/app/app-js-path.txt',
-    "/static/dist/app.js?id=" + Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2),
-    (err) => {
-      if (err) throw err;
-    });
+  fs.writeFile('storage/app/app-css-path.txt', "/static/dist/app.css?id=" + Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2), (err) => {
+    if (err) throw err;
+  });
+  fs.writeFile('storage/app/app-js-path.txt', "/static/dist/app.js?id=" + Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2), (err) => {
+    if (err) throw err;
+  });
 }
 
 build()
@@ -54,7 +45,7 @@ if (process.argv[2] === 'watch') {
 
 
   paths.forEach(path => {
-    fs.watch(path, { recursive: true }, (eventType, filename) => {
+    fs.watch(path, {recursive: true}, (eventType, filename) => {
       console.log('File changed: ' + filename);
       fetch(appUrl + '/system/reload').then(response => {
         if (response.status > 299) {

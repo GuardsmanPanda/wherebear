@@ -11,8 +11,8 @@ use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 final class GameResultController extends Controller {
-    public function index(string $gameId): View|RedirectResponse {
-        $game = DB::selectOne(query: "
+  public function index(string $gameId): View|RedirectResponse {
+    $game = DB::selectOne(query: "
             SELECT
                 g.id, g.game_state_enum, g.number_of_rounds, g.current_round,
                 EXTRACT(EPOCH FROM g.round_ends_at - NOW()) as round_seconds_remaining,
@@ -31,16 +31,16 @@ final class GameResultController extends Controller {
             WHERE g.id = ?
         ", bindings: [$gameId]);
 
-        if ($game === null) {
-            return Resp::redirect(url: '/', message: 'Game not found');
-        }
+    if ($game === null) {
+      return Resp::redirect(url: '/', message: 'Game not found');
+    }
 
-        $enum = GameStateEnum::from(value: $game->game_state_enum);
-        if (!$enum->isFinished()) {
-            return Resp::redirect(url: "/game/$gameId/lobby", message: 'Game is not finished');
-        }
+    $enum = GameStateEnum::from(value: $game->game_state_enum);
+    if (!$enum->isFinished()) {
+      return Resp::redirect(url: "/game/$gameId/lobby", message: 'Game is not finished');
+    }
 
-        $user = DB::selectOne(query: <<<SQL
+    $user = DB::selectOne(query: <<<SQL
             SELECT
                 u.id, mm.file_name as map_marker_file_name,
                 u.map_style_enum
@@ -49,13 +49,13 @@ final class GameResultController extends Controller {
             LEFT JOIN game_user gu ON gu.user_id = u.id
             WHERE u.id = ? AND gu.game_id = ?
         SQL, bindings: [BearAuthService::getUserId(), $gameId]);
-        if ($user === null) {
-            return Resp::redirect(url: "/", message: "You did not participate in this game");
-        }
+    if ($user === null) {
+      return Resp::redirect(url: "/", message: "You did not participate in this game");
+    }
 
-        return Resp::view(view: 'game::result.index', data: [
-            'game' => $game,
-            'players' => DB::select(query: <<<SQL
+    return Resp::view(view: 'game::result.index', data: [
+      'game' => $game,
+      'players' => DB::select(query: <<<SQL
                 SELECT
                     u.id as user_id, u.display_name, u.country_cca2, mm.file_name as map_marker_file_name,
                     bc.name as country_name,
@@ -68,7 +68,7 @@ final class GameResultController extends Controller {
                 WHERE gu.game_id = ?
                 ORDER BY gu.points DESC, u.id
                 SQL, bindings: [$gameId]),
-            'rounds' => DB::select(query: <<<SQL
+      'rounds' => DB::select(query: <<<SQL
                 SELECT
                     gr.panorama_id, gr.round_number,
                     bc.cca2, bc.name as country_name
@@ -78,7 +78,7 @@ final class GameResultController extends Controller {
                 WHERE gr.game_id = ?
                 ORDER BY gr.round_number
                 SQL, bindings: [$gameId]),
-            'user' => $user,
-        ]);
-    }
+      'user' => $user,
+    ]);
+  }
 }

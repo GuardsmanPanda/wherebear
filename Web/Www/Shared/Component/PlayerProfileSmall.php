@@ -6,19 +6,18 @@ namespace Web\Www\Shared\Component;
 
 use Illuminate\View\Component;
 
-final class PlayerProfileSmall extends Component
-{
+final class PlayerProfileSmall extends Component {
   public function __construct(
-    public string $name,
-    public ?int $level = null,
+    public string  $name,
+    public ?int    $level = null,
     public ?string $countryCode = null,
     public ?string $icon = null,
     public ?string $nameBackgroundColor = 'bg-primary-surface-default',
     public ?string $textColor = 'text-shade-text-title'
-  ) {}
+  ) {
+  }
 
-  public function render(): string
-  {
+  public function render(): string {
     return <<<'blade'
     <div class="flex flex-col items-center">
       <div class="relative z-1">
