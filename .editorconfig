@@ -22,6 +22,9 @@ ij_visual_guides =
 ij_blade_keep_indents_on_empty_lines = false
 
 [*.css]
+indent_size = 2
+tab_width = 2
+ij_continuation_indent_size = 4
 ij_visual_guides = 
 ij_css_align_closing_brace_with_properties = false
 ij_css_blank_lines_around_nested_selector = 1
@@ -49,6 +52,8 @@ ij_gherkin_keep_indents_on_empty_lines = false
 
 [*.less]
 indent_size = 2
+tab_width = 2
+ij_continuation_indent_size = 4
 ij_visual_guides = 
 ij_less_align_closing_brace_with_properties = false
 ij_less_blank_lines_around_nested_selector = 1
@@ -73,6 +78,8 @@ ij_less_value_alignment = 0
 
 [*.sass]
 indent_size = 2
+tab_width = 2
+ij_continuation_indent_size = 4
 ij_visual_guides = 
 ij_sass_align_closing_brace_with_properties = false
 ij_sass_blank_lines_around_nested_selector = 1
@@ -96,6 +103,8 @@ ij_sass_value_alignment = 0
 
 [*.scss]
 indent_size = 2
+tab_width = 2
+ij_continuation_indent_size = 4
 ij_visual_guides = 
 ij_scss_align_closing_brace_with_properties = false
 ij_scss_blank_lines_around_nested_selector = 1

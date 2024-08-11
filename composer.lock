@@ -977,12 +977,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/GuardsmanPanda/larabear.git",
-                "reference": "06ca3109e7a1ec697fece786a816fb5d379adc34"
+                "reference": "e4ea1069632c85f4edb189fab60c86c492d1f4ad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/GuardsmanPanda/larabear/zipball/06ca3109e7a1ec697fece786a816fb5d379adc34",
-                "reference": "06ca3109e7a1ec697fece786a816fb5d379adc34",
+                "url": "https://api.github.com/repos/GuardsmanPanda/larabear/zipball/e4ea1069632c85f4edb189fab60c86c492d1f4ad",
+                "reference": "e4ea1069632c85f4edb189fab60c86c492d1f4ad",
                 "shasum": ""
             },
             "require": {
@@ -990,7 +990,7 @@
                 "ext-pdo": "*",
                 "ext-zend-opcache": "*",
                 "guzzlehttp/guzzle": "^7.9",
-                "laravel/framework": "^v11.18",
+                "laravel/framework": "^v11.20",
                 "php": "^8.3",
                 "ramsey/collection": "^2.0"
             },
@@ -1030,7 +1030,7 @@
                 "issues": "https://github.com/GuardsmanPanda/larabear/issues",
                 "source": "https://github.com/GuardsmanPanda/larabear/tree/main"
             },
-            "time": "2024-08-01T14:14:58+00:00"
+            "time": "2024-08-11T21:11:45+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",

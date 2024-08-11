@@ -21,7 +21,6 @@ enum TagEnum: string {
     };
   }
 
-
   public static function syncToDatabase(): void {
     foreach (TagEnum::cases() as $enum) {
       TagCrud::syncToDatabase(tag_enum: $enum);

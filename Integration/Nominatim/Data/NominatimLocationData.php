@@ -23,12 +23,11 @@ final class NominatimLocationData {
 
   public static function fromResponse(Response $response): self {
     $data = $response->json();
-    $json_string = json_encode($data);
     return new NominatimLocationData(
       country_cca2: Str::upper($data['address']['country_code'] ?? 'XX'),
       latitude: ValidateAndParseValue::parseFloat($data['lat']),
       longitude: ValidateAndParseValue::parseFloat($data['lon']),
-      nominatim_json_string: $json_string === false ? null : $json_string,
+      nominatim_json_string: json_encode(value: $data, flags: JSON_THROW_ON_ERROR),
       state_name: $data['address']['state'] ?? $data['address']['county'] ?? $data['address']['municipality'] ?? null,
       region_name: $data['address']['region'] ?? null,
       county_name: $data['address']['county'] ?? null,

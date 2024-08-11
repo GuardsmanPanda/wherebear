@@ -54,9 +54,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static int count(array $columns = ['*'])
  * @method static bool exists()
  *
- * @property int $width_rem
  * @property int $height_rem
  * @property string $enum
+ * @property string $name
  * @property string $grouping
  * @property string $file_name
  * @property string $created_at

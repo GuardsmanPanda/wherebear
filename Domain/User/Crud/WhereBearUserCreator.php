@@ -9,6 +9,7 @@ use Domain\User\Enum\UserLevelEnum;
 use Domain\User\Model\WhereBearUser;
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearRegexService;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 final class WhereBearUserCreator {
@@ -18,8 +19,6 @@ final class WhereBearUserCreator {
         UserLevelEnum $user_level_enum,
         string        $email = null,
         string        $country_cca2 = null,
-        MapMarkerEnum $map_marker_enum = MapMarkerEnum::DEFAULT,
-        MapStyleEnum  $map_style_enum = MapStyleEnum::DEFAULT,
     ): WhereBearUser {
         BearDatabaseService::mustBeInTransaction();
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['GET', 'POST']);
@@ -33,8 +32,16 @@ final class WhereBearUserCreator {
         $model->email = $email !== null ? BearRegexService::superTrim($email) : null;
         $model->country_cca2 = $country_cca2;
         $model->last_login_at = CarbonImmutable::now();
-        $model->map_marker_enum = $map_marker_enum;
-        $model->map_style_enum = $map_style_enum;
+        $model->map_style_enum = MapStyleEnum::DEFAULT;
+
+        $map_marker = DB::selectOne(query: "
+            SELECT enum
+            FROM map_marker
+            WHERE user_level_enum <= ?
+            ORDER BY random()
+            LIMIT 1
+        ", bindings: [$user_level_enum->value]);
+        $model->map_marker_enum = MapMarkerEnum::from(value: $map_marker->enum);
 
         $model->save();
         return $model;

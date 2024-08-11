@@ -9,6 +9,7 @@ return new class extends Migration {
     public function up(): void {
         Schema::create(table: 'map_style', callback: static function (Blueprint $table): void {
             $table->text(column: 'enum')->primary();
+            $table->text(column: 'name');
             $table->text(column: 'external_api_enum');
             $table->integer(column: 'tile_size');
             $table->integer(column: 'zoom_offset');

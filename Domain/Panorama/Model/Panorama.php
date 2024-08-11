@@ -55,6 +55,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static int count(array $columns = ['*'])
  * @method static bool exists()
  *
+ * @property int|null $location_box_hash
  * @property string $id
  * @property string $created_at
  * @property string $updated_at

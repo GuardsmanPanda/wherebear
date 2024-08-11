@@ -1,96 +1,96 @@
 @font-face {
-    font-family: 'Inkwell Sans';
-    src: url('/static/font/InkwellSans-Black.woff2') format('woff2');
-    font-weight: 900;
-    font-style: normal;
-    font-display: swap;
+  font-family: 'Inkwell Sans';
+  src: url('/static/font/InkwellSans-Black.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Inkwell Sans';
-    src: url('/static/font/InkwellSans-BookItalic.woff2') format('woff2');
-    font-weight: normal;
-    font-style: italic;
-    font-display: swap;
+  font-family: 'Inkwell Sans';
+  src: url('/static/font/InkwellSans-BookItalic.woff2') format('woff2');
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Inkwell Sans';
-    src: url('/static/font/InkwellSans-BlackItalic.woff2') format('woff2');
-    font-weight: 900;
-    font-style: italic;
-    font-display: swap;
+  font-family: 'Inkwell Sans';
+  src: url('/static/font/InkwellSans-BlackItalic.woff2') format('woff2');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Inkwell Sans';
-    src: url('/static/font/InkwellSans-Bold.woff2') format('woff2');
-    font-weight: bold;
-    font-style: normal;
-    font-display: swap;
+  font-family: 'Inkwell Sans';
+  src: url('/static/font/InkwellSans-Bold.woff2') format('woff2');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Inkwell Sans';
-    src: url('/static/font/InkwellSans-BoldItalic.woff2') format('woff2');
-    font-weight: bold;
-    font-style: italic;
-    font-display: swap;
+  font-family: 'Inkwell Sans';
+  src: url('/static/font/InkwellSans-BoldItalic.woff2') format('woff2');
+  font-weight: bold;
+  font-style: italic;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Inkwell Sans';
-    src: url('/static/font/InkwellSans-Book.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
+  font-family: 'Inkwell Sans';
+  src: url('/static/font/InkwellSans-Book.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Inkwell Sans';
-    src: url('/static/font/InkwellSans-Light.woff2') format('woff2');
-    font-weight: 300;
-    font-style: normal;
-    font-display: swap;
+  font-family: 'Inkwell Sans';
+  src: url('/static/font/InkwellSans-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Inkwell Sans';
-    src: url('/static/font/InkwellSans-LightItalic.woff2') format('woff2');
-    font-weight: 300;
-    font-style: italic;
-    font-display: swap;
+  font-family: 'Inkwell Sans';
+  src: url('/static/font/InkwellSans-LightItalic.woff2') format('woff2');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Inkwell Sans';
-    src: url('/static/font/InkwellSans-Thin.woff2') format('woff2');
-    font-weight: 100;
-    font-style: normal;
-    font-display: swap;
+  font-family: 'Inkwell Sans';
+  src: url('/static/font/InkwellSans-Thin.woff2') format('woff2');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Inkwell Sans';
-    src: url('/static/font/InkwellSans-MediumItalic.woff2') format('woff2');
-    font-weight: 500;
-    font-style: italic;
-    font-display: swap;
+  font-family: 'Inkwell Sans';
+  src: url('/static/font/InkwellSans-MediumItalic.woff2') format('woff2');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Inkwell Sans';
-    src: url('/static/font/InkwellSans-ThinItalic.woff2') format('woff2');
-    font-weight: 100;
-    font-style: italic;
-    font-display: swap;
+  font-family: 'Inkwell Sans';
+  src: url('/static/font/InkwellSans-ThinItalic.woff2') format('woff2');
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Inkwell Sans';
-    src: url('/static/font/InkwellSans-Medium.woff2') format('woff2');
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap;
+  font-family: 'Inkwell Sans';
+  src: url('/static/font/InkwellSans-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
 }
 

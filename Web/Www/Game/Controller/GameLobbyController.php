@@ -64,10 +64,12 @@ final class GameLobbyController extends Controller {
         'players' => DB::select(query: "
           SELECT
               bu.display_name, bu.country_cca2, bu.user_level_enum,
-              gu.is_ready, bc.name
+              gu.is_ready, bc.name as country_name,
+              mm.file_name as map_marker_file_name
           FROM game_user gu
           LEFT JOIN bear_user bu ON bu.id = gu.user_id
           LEFT JOIN bear_country bc ON bc.cca2 = bu.country_cca2
+          LEFT JOIN map_marker mm ON mm.enum = bu.map_marker_enum
           WHERE gu.game_id = ?
           ORDER BY bu.id = ? DESC, bu.display_name, bu.country_cca2, bu.id
         ", bindings: [$game->id, $user_id]),
