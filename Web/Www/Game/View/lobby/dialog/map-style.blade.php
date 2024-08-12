@@ -1,6 +1,4 @@
 <?php declare(strict_types=1); ?>
-@php use Domain\Map\Enum\MapStyleEnum; @endphp
-
 <x-bear::dialog.basic>
   <div class="grid" hx-target="#lobby">
     @foreach($map_styles as $style)
@@ -8,7 +6,7 @@
               hx-patch="/game/{{$game_id}}/lobby/update-user"
               hx-vals='{"map_style_enum": "{{$style->enum}}"}'>
         <span class="text-xl font-medium">{{$style->name}}</span>
-        <img class="h-24 w-96 object-none" src="{{MapStyleEnum::from($style->enum)->mapTileUrl(z: 11, x: 1614, y: 1016)}}"
+        <img class="h-24 w-96 object-none" src="{{str_replace(search: ['{x}', '{y}', '{z}'], replace: [1614, 1016, 11], subject: $style->full_uri)}}"
              alt="Example map tile">
       </button>
     @endforeach

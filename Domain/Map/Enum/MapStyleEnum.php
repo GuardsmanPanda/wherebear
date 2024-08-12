@@ -22,17 +22,9 @@ enum MapStyleEnum: string {
     }
 
 
-    public function mapTileUrl(int $z = null, int $x = null, int $y = null): string {
-        if ($z === null || $x === null || $y === null) {
-            return "https://tile.gman.bot/$this->value/{z}/{x}/{y}.png";
-        }
-        return "https://tile.gman.bot/$this->value/$z/$x/$y.png";
-    }
-
-
     public function getName(): string {
         return match ($this) {
-            self::DEFAULT, self::OSM => 'OpenStreetMap',
+            self::DEFAULT, self::OSM => 'Open Street Map',
             self::SATELLITE_STREETS => 'Satellite Streets',
             self::SATELLITE => 'Satellite (Expert Mode)',
             self::NIGHT => 'Navigation Night',
@@ -88,6 +80,14 @@ enum MapStyleEnum: string {
             self::DARK => UserLevelEnum::L33,
             self::SATELLITE => UserLevelEnum::L43,
         };
+    }
+
+
+    public function getFullUri(): string {
+        if ($this === self::DEFAULT || $this === self::OSM) {
+            return 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+        }
+        return "https://tile.gman.bot/$this->value/{z}/{x}/{y}.png";
     }
 
 

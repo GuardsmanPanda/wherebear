@@ -1,5 +1,5 @@
 <?php declare(strict_types=1); ?>
-@php use Domain\Map\Enum\MapStyleEnum;use Web\Www\Game\Render\GameRoundResultRender; @endphp
+@php use Web\Www\Game\Render\GameRoundResultRender; @endphp
 <div class="flex min-h-screen">
   <div class="flex-grow flex-shrink relative">
     @include('game::play.countries-used')
@@ -90,8 +90,11 @@
   const marker_win = L.icon({
     iconUrl: '/static/img/map-extra/marker-win2.png', iconSize: [64, 64], iconAnchor: [32, 32],
   });
-  L.tileLayer('{{ MapStyleEnum::from($user->map_style_enum)->mapTileUrl() }}', {
-    maxNativeZoom: 17, minZoom: 1,
+  L.tileLayer('{{ $user->map_Style_full_uri }}', {
+    maxNativeZoom: 17,
+    minZoom: 1,
+    tileSize: {{$user->map_style_tile_size}},
+    zoomOffset: {{$user->map_style_zoom_offset}},
   }).addTo(map);
 
   L.marker([{{$game->panorama_lat}}, {{$game->panorama_lng}}], {

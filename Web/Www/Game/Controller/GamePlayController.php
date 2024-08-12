@@ -50,11 +50,15 @@ final class GamePlayController extends Controller {
 
     $user = DB::selectOne(query: <<<SQL
             SELECT
-                u.map_marker_enum, u.map_style_enum,
-                mm.file_name as map_marker_file_name
+                u.map_marker_enum,
+                mm.file_name as map_marker_file_name,
+                ms.tile_size as map_style_tile_size,
+                ms.zoom_offset as map_style_zoom_offset,
+                ms.full_uri as map_style_full_uri
             FROM bear_user u
             LEFT JOIN game_user gu ON gu.user_id = u.id
             LEFT JOIN map_marker mm ON mm.enum = u.map_marker_enum
+            LEFT JOIN map_style ms ON ms.enum = u.map_style_enum
             WHERE u.id = ? AND gu.game_id = ?
         SQL, bindings: [BearAuthService::getUserId(), $gameId]);
     if ($user === null) {

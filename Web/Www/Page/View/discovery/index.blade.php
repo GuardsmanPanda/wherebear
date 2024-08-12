@@ -48,11 +48,11 @@
     iconUrl: '/static/img/map-marker/default.png', iconSize: [24, 24], iconAnchor: [12, 24],
   });
 
-  L.tileLayer('{{WhereBearUser::find(BearAuthService::getUserId())->map_style_enum->mapTileUrl()}}', {
+  L.tileLayer('{{$user->map_style_full_uri}}', {
     maxNativeZoom: 17,
     minZoom: 1,
-    tileSize: {{WhereBearUser::find(BearAuthService::getUserId())->map_style_enum->getTileSize()}},
-    zoomOffset: {{WhereBearUser::find(BearAuthService::getUserId())->map_style_enum->getZoomOffset()}}
+    tileSize: {{$user->map_style_tile_size}},
+    zoomOffset: {{$user->map_style_zoom_offset}},
   }).addTo(map);
 
   map.on('click', function (e) {

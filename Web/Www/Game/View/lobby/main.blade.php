@@ -2,7 +2,7 @@
 
 declare(strict_types=1); ?>
 @php
-  use Domain\Map\Enum\MapStyleEnum;use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;use Web\Www\Shared\Enum\ButtonSize;use Web\Www\Shared\Enum\ButtonStyle;use Web\Www\Shared\Enum\ButtonType;use Web\Www\Shared\Enum\RewardType;use Web\Www\Shared\Enum\UserLevelBadgeSize;
+  use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;use Web\Www\Shared\Enum\ButtonSize;use Web\Www\Shared\Enum\ButtonStyle;use Web\Www\Shared\Enum\ButtonType;use Web\Www\Shared\Enum\RewardType;use Web\Www\Shared\Enum\UserLevelBadgeSize;
 
   $isPlayerHost = $game->created_by_user_id === BearAuthService::getUserId();
 @endphp
@@ -51,10 +51,11 @@ declare(strict_types=1); ?>
     <div class="flex justify-between gap-2">
       <x-button-selector label="Marker" imageUrl='/static/img/map-marker/{{ $user->map_marker_file_name }}'
                          hx-get="/game/{{$game->id}}/lobby/dialog/map-marker"/>
-      <x-button-selector label="Map" :imageUrl="MapStyleEnum::from($user->map_style_enum)->mapTileUrl(z: 11, x: 1614, y: 1016)"
+      <x-button-selector label="Map" :imageUrl="str_replace(search: ['{x}', '{y}', '{z}'], replace: [1614, 1016, 11], subject: $user->map_style_full_uri)"
                          hx-get="/game/{{$game->id}}/lobby/dialog/map-style"/>
     </div>
     <div class="flex w-full justify-end items-end">
+
       @if($user->is_ready)
         <div hx-patch="/game/{{$game->id}}/lobby/update-game-user" hx-vals='{"is_ready": false}'>
           <x-button label="Cancel" :style="ButtonStyle::ERROR" :size="ButtonSize::LG" icon="x-circle" class="w-[160px]"/>

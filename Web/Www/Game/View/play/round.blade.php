@@ -1,5 +1,4 @@
 <?php declare(strict_types=1); ?>
-@php use Domain\Map\Enum\MapStyleEnum; @endphp
 <div class="z-30 filter drop-shadow-xl absolute h-64 hover:h-2/3 hover:opacity-100 hover:w-2/3 opacity-75 right-0 rounded-bl overflow-hidden w-96">
   <div id="map-container" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 55% 100%);" class="w-full h-full">
     <div id="map" class="h-full w-full"></div>
@@ -53,8 +52,11 @@
   const map_icon = L.icon({
     iconUrl: '/static/img/map-marker/{{ $user->map_marker_file_name }}', iconSize: [48, 48], iconAnchor: [24, 48], tooltipAnchor: [0, -48],
   });
-  L.tileLayer('{{ MapStyleEnum::from($user->map_style_enum)->mapTileUrl() }}', {
-    maxNativeZoom: 17, minZoom: 1,
+  L.tileLayer('{{ $user->map_Style_full_uri }}', {
+    maxNativeZoom: 17,
+    minZoom: 1,
+    tileSize: {{$user->map_style_tile_size}},
+    zoomOffset: {{$user->map_style_zoom_offset}},
   }).addTo(map);
 
   const map_ele = document.getElementById('map-container');

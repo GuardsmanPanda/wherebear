@@ -58,6 +58,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $zoom_offset
  * @property string $enum
  * @property string $name
+ * @property string $full_uri
  * @property string $http_path
  * @property string $created_at
  * @property string $external_api_enum

@@ -19,6 +19,7 @@ final class MapStyleCrud {
         $model->zoom_offset = $enum->getZoomOffset();
         $model->http_path = $enum->getExternalPath();
         $model->user_level_enum = $enum->getUserLevelRequirement();
+        $model->full_uri = $enum->getFullUri();
 
         $model->save();
         return $model;

@@ -102,7 +102,7 @@ final class GameLobbyController extends Controller {
             (SELECT ul2.experience_requirement FROM user_level ul2 WHERE ul2.enum = bu.user_level_enum + 1) - ul.experience_requirement as next_level_experience,
             gu.is_ready,
             mm.file_name as map_marker_file_name,
-            ms.name as map_style_name,
+            ms.name as map_style_name, ms.full_uri as map_style_full_uri,
             bc.cca2, bc.name as country_name
         FROM bear_user bu
         LEFT JOIN game_user gu ON gu.user_id = bu.id AND gu.game_id = ?
@@ -240,10 +240,10 @@ final class GameLobbyController extends Controller {
       data: [
         'game_id' => $gameId,
         'map_styles' => DB::select(query: "
-                    SELECT enum, name
-                    FROM map_style
-                    WHERE enum != 'DEFAULT'
-                "),
+          SELECT enum, name, full_uri
+          FROM map_style
+          WHERE enum != 'DEFAULT'
+        "),
       ]
     );
   }
@@ -263,12 +263,12 @@ final class GameLobbyController extends Controller {
       title: 'Game Settings',
       data: [
         'game' => DB::selectOne(query: "
-                    SELECT
-                        g.id, g.number_of_rounds, g.round_duration_seconds,
-                        g.round_result_duration_seconds, g.game_public_status_enum
-                    FROM game g
-                    WHERE g.id = ?
-                ", bindings: [$gameId]),
+          SELECT
+              g.id, g.number_of_rounds, g.round_duration_seconds,
+              g.round_result_duration_seconds, g.game_public_status_enum
+          FROM game g
+          WHERE g.id = ?
+        ", bindings: [$gameId]),
       ]
     );
   }

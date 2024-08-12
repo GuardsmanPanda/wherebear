@@ -10,6 +10,7 @@ enum TagEnum: string {
   case GREAT = 'GREAT';
   case LANDSCAPE = 'LANDSCAPE';
   case ANIMALS = 'ANIMALS';
+  case DIFFICULT = 'DIFFICULT';
 
   public function getDescription(): string {
     return match ($this) {
@@ -17,7 +18,8 @@ enum TagEnum: string {
       self::GOOGLE => 'Google Office.',
       self::GREAT => 'Great Panorama, should be prioritized.',
       self::LANDSCAPE => 'Landscape is the primary focus, minimal human activity visible.',
-      self::ANIMALS => 'Panorama contains animals.',
+      self::ANIMALS => 'Panorama contains animals as the focus.',
+      self::DIFFICULT => 'AN experienced player would have a hard time guessing this panorama.',
     };
   }
 

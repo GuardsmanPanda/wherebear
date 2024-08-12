@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->integer(column: 'zoom_offset');
             $table->text(column: 'http_path');
             $table->integer(column: 'user_level_enum');
+            $table->text(column: 'full_uri');
             $table->timestampTz(column: 'created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->foreign(columns: 'external_api_enum')->references('enum')->on(table: 'bear_external_api');
             $table->foreign(columns: 'user_level_enum')->references('enum')->on(table: 'user_level');
