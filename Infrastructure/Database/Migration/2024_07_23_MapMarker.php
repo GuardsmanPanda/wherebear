@@ -9,7 +9,6 @@ return new class extends Migration {
     public function up(): void {
         Schema::create(table: 'map_marker', callback: static function (Blueprint $table): void {
             $table->text(column: 'enum')->primary();
-            $table->text(column: 'name')->unique();
             $table->text(column: 'grouping');
             $table->text(column: 'file_name')->unique();
             $table->integer(column: 'height_rem');

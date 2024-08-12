@@ -5,17 +5,19 @@ namespace Integration\Nominatim\Data;
 use GuardsmanPanda\Larabear\Infrastructure\Integrity\Service\ValidateAndParseValue;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Str;
+use RuntimeException;
 
 final class NominatimLocationData {
   public function __construct(
-    public string               $country_cca2,
-    public readonly float       $latitude,
-    public readonly float       $longitude,
-    public readonly string|null $nominatim_json_string,
-    public readonly string|null $state_name = null,
-    public readonly string|null $region_name = null,
-    public readonly string|null $county_name = null,
-    public readonly string|null $city_name = null,
+    public string                $country_cca2,
+    public readonly float        $latitude,
+    public readonly float        $longitude,
+    public readonly string|null  $nominatim_json_string,
+    public readonly string|null  $state_name = null,
+    public readonly string|null  $region_name = null,
+    public readonly string|null  $county_name = null,
+    public readonly string|null  $city_name = null,
+    private readonly string|null $iso3166_2_lvl4 = null,
   ) {
     $this->fixCountryCca2();
   }
@@ -31,7 +33,8 @@ final class NominatimLocationData {
       state_name: $data['address']['state'] ?? $data['address']['county'] ?? $data['address']['municipality'] ?? null,
       region_name: $data['address']['region'] ?? null,
       county_name: $data['address']['county'] ?? null,
-      city_name: $data['address']['city'] ?? $data['address']['town'] ?? $data['address']['hamlet'] ?? $data['address']['village'] ?? null
+      city_name: $data['address']['city'] ?? $data['address']['town'] ?? $data['address']['hamlet'] ?? $data['address']['village'] ?? null,
+      iso3166_2_lvl4: $data['address']['ISO3166_2_lvl4'] ?? null,
     );
   }
 
@@ -63,18 +66,13 @@ final class NominatimLocationData {
 
 
     if ($this->country_cca2 === 'GB') {
-      if ($this->state_name === 'England') {
-        $this->country_cca2 = 'GB-ENG';
-      }
-      if ($this->state_name === 'Scotland') {
-        $this->country_cca2 = 'GB-SCT';
-      }
-      if ($this->state_name === 'Cymru / Wales') {
-        $this->country_cca2 = 'GB-WLS';
-      }
-      if ($this->state_name === 'Northern Ireland') {
-        $this->country_cca2 = 'GB-NIR';
-      }
+      $this->country_cca2 = match ($this->iso3166_2_lvl4) {
+        'GB-ENG' => 'GB-ENG',
+        'GB-SCT' => 'GB-SCT',
+        'GB-WLS' => 'GB-WLS',
+        'GB-NIR' => 'GB-NIR',
+        default => throw new RuntimeException(message: 'Unknown GB iso3166_2_lvl4: ' . $this->iso3166_2_lvl4),
+      };
     }
 
 

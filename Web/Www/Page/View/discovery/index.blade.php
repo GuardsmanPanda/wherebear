@@ -42,7 +42,7 @@
   });
 
   const map_icon = L.icon({
-    iconUrl: '/static/img/map-marker/bobdino.png', iconSize: [48, 48], iconAnchor: [24, 48], tooltipAnchor: [0, -48],
+    iconUrl: '/static/img/map-marker/{{$user->map_marker_file_name}}', iconSize: [48, 48], iconAnchor: [24, 48], tooltipAnchor: [0, -48],
   });
   const small_icon = L.icon({
     iconUrl: '/static/img/map-marker/default.png', iconSize: [24, 24], iconAnchor: [12, 24],
