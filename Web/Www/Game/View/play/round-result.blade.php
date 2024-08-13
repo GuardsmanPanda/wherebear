@@ -90,7 +90,7 @@
   const marker_win = L.icon({
     iconUrl: '/static/img/map-extra/marker-win2.png', iconSize: [64, 64], iconAnchor: [32, 32],
   });
-  L.tileLayer('{{ $user->map_Style_full_uri }}', {
+  L.tileLayer('{{ $user->map_style_full_uri }}', {
     maxNativeZoom: 17,
     minZoom: 1,
     tileSize: {{$user->map_style_tile_size}},

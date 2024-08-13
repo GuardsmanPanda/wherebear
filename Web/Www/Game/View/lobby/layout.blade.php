@@ -32,11 +32,33 @@ declare(strict_types=1); ?>
 </div>
 
 <script>
-  pusher = new Pusher('6csm0edgczin2onq92lm', window.pusher_data);
-  channel = pusher.subscribe('game.{{$game->id}}');
+  const pusher = new Pusher('6csm0edgczin2onq92lm', window.pusher_data);
+  const channel = pusher.subscribe('game.{{$game->id}}');
+  let lastUpdate = new Date(0);
+  let pendingUpdate = false;
+
   channel.bind('player.update', function (data) {
+    const currentTime = new Date();
+    if (currentTime - lastUpdate < 2500) {
+      pendingUpdate = true;
+      return;
+    }
     window.htmx.ajax('GET', '/game/{{$game->id}}/lobby/player-list', '#player-list');
+    lastUpdate = currentTime;
   });
+
+  setInterval(function () {
+    const currentTime = new Date();
+    if (pendingUpdate && currentTime - lastUpdate > 2500) {
+      window.htmx.ajax('GET', '/game/{{$game->id}}/lobby/player-list', '#player-list');
+      lastUpdate = new Date();
+      pendingUpdate = false;
+    } else if (currentTime - lastUpdate > 20000) {
+      window.htmx.ajax('GET', '/game/{{$game->id}}/lobby/player-list', '#player-list');
+      lastUpdate = new Date();
+    }
+  }, 300 + Math.floor(Math.random() * 120));
+
   channel.bind('prep', function (data) {
     document.getElementById('game-state-text').innerText = data.message;
     if (data.stage === -2) { // game reset

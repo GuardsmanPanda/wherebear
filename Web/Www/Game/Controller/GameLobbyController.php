@@ -116,7 +116,14 @@ final class GameLobbyController extends Controller {
   }
 
 
-  public function playerList(string $gameId): View {
+  public function playerList(string $gameId): View|Response {
+    $enum = GameStateEnum::fromGameId(gameId: $gameId);
+    if ($enum->isInProgress()) {
+      return Htmx::redirect(url: "/game/$gameId/play");
+    } else if ($enum->isFinished()) {
+      return Htmx::redirect(url: "/game/$gameId/result");
+    }
+
     return Resp::view(view: 'game::lobby.player-list', data: [
       'players' => DB::select(query: "
         SELECT 
