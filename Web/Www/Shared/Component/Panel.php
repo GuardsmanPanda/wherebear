@@ -17,7 +17,7 @@ final class Panel extends Component {
         @isset($heading)
         {{ $heading }}
         @endisset
-        <div class="flex gap-2 rounded p-2 bg-tertiary-surface-light border border-shade-border-light">
+        <div class="flex gap-2 rounded p-2 bg-tertiary-surface-default border border-shade-border-light">
         {{ $slot }}
         </div>
       </div>

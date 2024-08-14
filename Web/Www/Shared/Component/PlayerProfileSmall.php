@@ -12,7 +12,7 @@ final class PlayerProfileSmall extends Component {
     public ?int    $level = null,
     public ?string $countryCode = null,
     public ?string $icon = null,
-    public ?string $nameBackgroundColor = 'bg-primary-surface-default',
+    public ?string $nameBackgroundColor = 'bg-shade-surface-subtle',
     public ?string $textColor = 'text-shade-text-title'
   ) {
   }
@@ -22,7 +22,7 @@ final class PlayerProfileSmall extends Component {
     <div class="flex flex-col items-center">
       <div class="relative z-1">
         <div class="w-16 h-16 rounded-full overflow-hidden flex justify-center items-center bg-tertiary-surface-default border border-shade-border-dark rounded-full">
-          <img class="h-16 w-auto object-cover object-center z-100" src="https://devfuntime.gman.bot/static/img/map-marker/{{ $icon ?? 'mario.png' }}" alt="User location marker on map">
+          <img class="h-16 w-auto object-cover object-center z-100" src="/static/img/map-marker/{{ $icon ?? 'mario.png' }}" alt="User location marker on map">
         </div>
         
         @isset ($level)
@@ -30,7 +30,7 @@ final class PlayerProfileSmall extends Component {
         @endisset
 
         @isset ($countryCode)
-        <img class="absolute bottom-1 -right-[6px] h-5 rounded-sm border border-shade-border-dark z-20" src="https://devfuntime.gman.bot/static/flag/svg/{{ $countryCode }}.svg" />
+        <img class="absolute bottom-1 -right-[6px] h-5 rounded-sm border border-shade-border-dark z-20" src="/static/flag/svg/{{ $countryCode }}.svg" />
         @endif
 
       </div>
