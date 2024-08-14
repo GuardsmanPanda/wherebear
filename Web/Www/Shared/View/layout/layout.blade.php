@@ -20,7 +20,8 @@ declare(strict_types=1); ?>
   <script>
     let targetTime = null;
     let countdownInterval;
-    countdownStart = function(seconds) {
+    let reloading = false
+    countdownStart = function (seconds) {
       clearInterval(countdownInterval);
       targetTime = new Date(new Date().getTime() + seconds * 1000);
       document.getElementById("countdown").setAttribute("style", "display: block;");
@@ -33,7 +34,8 @@ declare(strict_types=1); ?>
       if (value <= 0) {
         document.getElementById("countdown").setAttribute("style", "display: none;");
       }
-      if (value < -4) {
+      if (value < -4 && !reloading) {
+        reloading = true;
         location.reload();
       }
     }

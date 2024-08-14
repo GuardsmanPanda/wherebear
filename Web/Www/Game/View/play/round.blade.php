@@ -52,7 +52,7 @@
   const map_icon = L.icon({
     iconUrl: '/static/img/map-marker/{{ $user->map_marker_file_name }}', iconSize: [48, 48], iconAnchor: [24, 48], tooltipAnchor: [0, -48],
   });
-  L.tileLayer('{{ $user->map_Style_full_uri }}', {
+  L.tileLayer('{{ $user->map_style_full_uri }}', {
     maxNativeZoom: 17,
     minZoom: 1,
     tileSize: {{$user->map_style_tile_size}},
