@@ -18,12 +18,7 @@ final class PlayerProfileSmallLobby extends Component {
   }
 
   public function getNameBackgroundColor(): string {
-    return $this->isReady ? 'bg-success-surface-default' : 'bg-shade-surface-subtle';
-    //if ($this->isHost) {
-    //  return 'bg-reward-surface-default';
-    //} else {
-    //  return $this->isReady ? 'bg-success-surface-default' : 'bg-shade-surface-subtle';
-    //}
+    return $this->isReady ? 'bg-success-surface-light' : 'bg-shade-surface-subtle';
   }
 
   public function render(): string {
