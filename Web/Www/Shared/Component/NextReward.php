@@ -9,35 +9,35 @@ use Web\Www\Shared\Enum\RewardType;
 
 final class NextReward extends Component {
 
-  public function __construct(public RewardType $type, public string $name, public string $iconUrl) {
+  /**
+   * @param array<array<string, mixed>> $rewards
+   */
+  public function __construct(
+    public int $level,
+    public array $rewards
+  ) {
   }
 
-  public function getTypeLabel(): RewardType|string {
-    return $this->type === RewardType::FEATURE ? 'feat' : $this->type;
+  public function shouldRender(): bool {
+    return count($this->rewards) > 0;
   }
 
-  public function getTypeBackgroundColor(): string {
-    return match ($this->type) {
-      RewardType::FEATURE => 'bg-blue-700',
-      RewardType::FLAG => 'bg-orange-600',
-      RewardType::ICON => 'bg-purple-700',
-    };
+  public function getIconUrl(RewardType $rewardType, string $iconFilename): string {
+    return RewardType::getIconUrl($rewardType, $iconFilename);
   }
 
   public function render(): string {
     return <<<'blade'
     <div {{ $attributes->class(['flex flex-col items-end']) }}>
-      <span class="text-xs text-shade-text-body pr-[60px] uppercase">Next reward</span>
       <div class="flex items-center">
-        <img src="/static/img/ui/reward-left.png" />
-        <div class="min-w-36 h-[18px] items-center bg-reward-surface-default border-y border-shade-border-dark relative">
-          <div class="flex w-full h-full justify-end items-center gap-1 pl-4 py-0-5">
-            <span class="px-1 text-xs leading-none text-white {{ $getTypeBackgroundColor() }} rounded-sm">{{ $getTypeLabel() }}</span>
-            <span class="text-sm text-shade-text-title font-medium text-nowrap pr-14">{{ $name }}</span>
-            <img src="{{ $iconUrl }}" alt="{{ $name }} {{ $type }}" class="max-w-10 max-h-10 absolute right-1 bottom-1" />
-          </div>
+        <img src="/static/img/ui/reward-left.png" class="max-h-10" />
+        <div class="flex h-[18px] items-center gap-2 px-2 bg-reward-surface-default border-y border-shade-border-dark">
+          <span class="text-xs text-shade-text-title font-medium">Level {{ $level }} Reward{{ count($rewards) > 1 ?  's' : '' }}</span>
+          @foreach($rewards as $reward)
+          <img src="{{ $getIconUrl($reward->type, $reward->iconFilename) }}" alt="{{ ucfirst(strtolower(str_replace('_', ' ', $reward->type->value))) }}" class="max-h-10 relative bottom-[14px] drop-shadow-md" />
+          @endforeach
         </div>
-        <img src="/static/img/ui/reward-right.png" />
+        <img src="/static/img/ui/reward-right.png" class="max-h-10" />
       </div>
     </div>
     blade;

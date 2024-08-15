@@ -28,13 +28,19 @@ $isPlayerHost = $game->created_by_user_id === BearAuthService::getUserId();
         alt="{{ $user->country_name }}" title="{{ $user->country_name }}" />
     </div>
     <div class="flex flex-col">
-      <x-progress-bar percentage=45 class="w-full" label="120/140" />
-      <div class="flex justify-between items-start">
-        <div class="flex flex-wrap items-baseline gap-1">
-          <span class="font-heading text-sm text-shade-text-subtitle">Next Level:</span>
-          <span class="text-md font-medium text-primary-text">{{$user->current_level_experience}}/{{$user->next_level_experience}}</span>
-        </div>
-        <x-next-reward class="mt-[2px]" :type="RewardType::ICON" name="Kitty Cat" icon-url="/static/img/map-marker/cat.png" />
+      <div class="flex gap-1 text-sm text-shade-text-title">
+        <span>Next Level:</span>
+        <span class="font-medium">{{ $user->current_level_experience }}/{{ $user->next_level_experience }} XP</span>
+      </div>
+      <x-progress-bar :percentage="$user->current_level_experience * 100 / $user->next_level_experience" class="w-full" />
+      <div class="flex justify-end items-start">
+        @php
+        $nextRewards = [
+        (object) ['type' => RewardType::MAP_MARKER, 'iconFilename' => 'cat.png'],
+        (object) ['type' => RewardType::MAP, 'iconFilename' => 'satellite-xs.png'],
+        ];
+        @endphp
+        <x-next-reward class="mt-4" :level="$user->user_level_enum + 1" :rewards="$nextRewards" />
       </div>
     </div>
   </div>
