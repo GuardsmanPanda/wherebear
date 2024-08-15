@@ -11,6 +11,9 @@ use Web\Www\Shared\Enum\IconType;
  * https://heroicons.com/
  */
 final class Icon extends Component {
+  /**
+   * @var array<string, array<string, array<string>>>
+   */
   public array $paths = [
     'check' => [
       'outline' => ['m4.5 12.75 6 6 9-13.5'],
