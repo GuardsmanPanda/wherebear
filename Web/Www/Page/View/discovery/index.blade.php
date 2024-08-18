@@ -63,7 +63,7 @@
   });
 
   const map_icon = L.icon({
-    iconUrl: '/static/img/map-marker/{{$user->map_marker_file_name}}', iconSize: [48, 48], iconAnchor: [24, 48], tooltipAnchor: [0, -48],
+    iconUrl: '{{$user->map_marker_file_path}}', iconSize: [48, 48], iconAnchor: [24, 48], tooltipAnchor: [0, -48],
   });
   const small_icon = L.icon({
     iconUrl: '/static/img/map-marker/default.png', iconSize: [24, 24], iconAnchor: [12, 24],
@@ -128,8 +128,6 @@
 
 
   const add_panorama = function () {
-    // example url: https://www.google.com/maps/@45.5289702,5.2519047,3a,75y,140h,100t/data=!3m8!1e1!3m6!1sAF1QipMkUsYr6e5pLWzBzmmgtukhDmbgqHg9P7_-qaRN!2e10!3e11!6shttps:%2F%2Flh5.googleusercontent.com%2Fp%2FAF1QipMkUsYr6e5pLWzBzmmgtukhDmbgqHg9P7_-qaRN%3Dw203-h100-k-no-pi-10-ya287-ro0-fo100!7i10240!8i5120?coh=205409&entry=ttu
-    //     https://www.google.com/maps/@-0.7592075,-91.3786117,3a,59.4y,288.29h,95.18t/data=!3m8!1e1!3m6!1sAF1QipO4rFNJyX92bEpSxB-rDVBJYcqzDn9IMe3gPyq9!2e10!3e11!6shttps:%2F%2Flh5.googleusercontent.com%2Fp%2FAF1QipO4rFNJyX92bEpSxB-rDVBJYcqzDn9IMe3gPyq9%3Dw203-h100-k-no-pi-9.981238-ya88.512215-ro-0-fo100!7i10240!8i5120?coh=205409&entry=ttu
     let panorama_id = "";
     let text = "";
     try {
@@ -164,25 +162,29 @@
         window.notify.error("Failed to add location to the game, Panorama API error.");
         console.error(json['error']);
       } else if (json['exists']) {
-        let message = "This location has already been discovered!";
+        window.notify.open({
+          type: "warning", message: "This location has already been discovered!", duration: 10000,
+        });
         if (json['tags_added'].length > 0) {
-          message += "<br><hr><hr><hr>+Tags added: " + json['tags_added'];
+          window.notify.open({
+            type: "success", message: "Tags added<br>" +  json['tags_added'], duration: 10000,
+          });
         }
         if (json['tags_removed'].length > 0) {
-          console.log(json['tags_removed']);
-          message += "<br><hr><hr><hr>--Tags removed: " + json['tags_removed'];
+          window.notify.open({
+            type: "error", message: "Tags removed<br>" +  json['tags_removed'], duration: 10000,
+          });
         }
-        window.notify.open({
-          type: "warning", message: message, duration: 12000,
-        });
+
       } else {
-        let message = "Location added to the game!";
-        if (json['tags_added'].length > 0) {
-          message += "<br><hr><hr>+Tags added: " + json['tags_added'];
-        }
         window.notify.open({
-          type: "success", message: message, duration: 12000,
+          type: "success", message: "Location added to the game!", duration: 10000,
         });
+        if (json['tags_added'].length > 0) {
+          window.notify.open({
+            type: "success", message: "Tags added<br>" +  json['tags_added'], duration: 10000,
+          });
+        }
         document.getElementById('map-url').value = '';
       }
     }).catch(err => {

@@ -1,14 +1,14 @@
 {
-  "name": "laravel/laravel",
+  "name": "guardsmanpanda/wherebear",
   "type": "project",
   "description": "The Laravel Framework.",
   "license": "MIT",
   "require": {
     "php": "^8.3",
     "guardsmanpanda/larabear": "dev-main",
-    "guzzlehttp/guzzle": "^7.8",
-    "laravel/framework": "^v11.14",
-    "laravel/reverb": "^v1.0"
+    "guzzlehttp/guzzle": "^7.9",
+    "laravel/framework": "^v11.20",
+    "laravel/reverb": "^v1.1"
   },
   "require-dev": {
     "ergebnis/phpstan-rules": "^2.2",

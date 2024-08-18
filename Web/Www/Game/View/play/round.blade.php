@@ -50,7 +50,7 @@
     center: [25, 0], zoom: 1, worldCopyJump: true
   });
   const map_icon = L.icon({
-    iconUrl: '/static/img/map-marker/{{ $user->map_marker_file_name }}', iconSize: [48, 48], iconAnchor: [24, 48], tooltipAnchor: [0, -48],
+    iconUrl: '{{ $user->map_marker_file_path }}', iconSize: [48, 48], iconAnchor: [24, 48], tooltipAnchor: [0, -48],
   });
   L.tileLayer('{{ $user->map_style_full_uri }}', {
     maxNativeZoom: 17,

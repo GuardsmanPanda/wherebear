@@ -8,7 +8,6 @@ use Domain\Game\Enum\GameStateEnum;
 use Domain\Panorama\Command\PanoramaImportCommand;
 use Domain\Panorama\Model\Panorama;
 use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Database\Eloquent\Casts\ArrayObject;
 use Illuminate\Foundation\Console\Kernel;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -52,9 +51,7 @@ final class ConsoleKernel extends Kernel {
         });
 
         Artisan::command('zz', function () {
-            $panorama = Panorama::find('CAoSLEFGMVFpcFBsYlp1eDBldlQxR1lzRWwxeE82RVNSQ05Lc3Y2QmpvZkNEQVlx');
-            $panorama->panorama_tag_array->offsetUnset(key: 2);
-            $panorama->save();
+
         });
     }
 }

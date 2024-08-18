@@ -57,7 +57,7 @@
       @foreach($guesses as $guess)
         <div class="flex items-center px-4 py-2 rounded-md shadow-xl bg-gray-800">
           <div class="text-center font-medium text-gray-500 text-2xl">{{$guess->rank}}</div>
-          <img class="h-12 ml-1" src="/static/img/map-marker/{{$guess->map_marker_file_name}}"
+          <img class="h-12 ml-1" src="{{$guess->map_marker_file_path}}"
                alt="Map Marker">
           <img class="w-12 shadow-md mx-1" src="/static/flag/svg/{{$guess->country_cca2}}.svg"
                alt="Country Flag" tippy="{{$guess->country_name}}">
@@ -105,14 +105,14 @@
 
   const map_guesses = [@foreach($guesses as $guess)
   {
-    lat: {{$guess->lat}}, lng: {{$guess->lng}}, file: '{{$guess->map_marker_file_name}}', name: '{{$guess->display_name}}'
+    lat: {{$guess->lat}}, lng: {{$guess->lng}}, file_path: '{{$guess->map_marker_file_path}}', name: '{{$guess->display_name}}'
   },
     @endforeach
   ];
   map_guesses.reverse().forEach(function (item) {
     L.marker([item.lat, item.lng], {
       icon: L.icon({
-        iconUrl: '/static/img/map-marker/' + item.file, iconSize: [48, 48], iconAnchor: [24, 48], tooltipAnchor: [0, -48],
+        iconUrl: item.file_path, iconSize: [48, 48], iconAnchor: [24, 48], tooltipAnchor: [0, -48],
       })
     }).addTo(map).bindTooltip(item.name, {direction: 'top', permanent: true, opacity: 0.9})
       .openTooltip();

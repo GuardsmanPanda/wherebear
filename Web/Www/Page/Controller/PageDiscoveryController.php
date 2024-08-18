@@ -27,7 +27,7 @@ final class PageDiscoveryController extends Controller {
       "),
       'user' => DB::selectOne(query: "
         SELECT
-            m.file_name as map_marker_file_name,
+            m.file_path as map_marker_file_path,
             s.tile_size as map_style_tile_size,
             s.zoom_offset as map_style_zoom_offset,
             s.full_uri as map_style_full_uri

@@ -13,10 +13,9 @@ final class MapMarkerCrud {
 
         $model = MapMarker::find(id: $enum->value) ?? new MapMarker();
         $model->enum = $enum->value;
-        $model->file_name = $enum->getFileName();
+        $model->file_path = $enum->getFilePath();
         $model->user_level_enum = $enum->getUserLevelRequirement();
         $model->grouping = $enum->getGrouping();
-        $model->height_rem = $enum->getHeightRem();
 
         $model->save();
         return $model;

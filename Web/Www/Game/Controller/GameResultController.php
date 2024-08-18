@@ -42,7 +42,7 @@ final class GameResultController extends Controller {
 
     $user = DB::selectOne(query: <<<SQL
             SELECT
-                u.id, mm.file_name as map_marker_file_name,
+                u.id, mm.file_path as map_marker_file_path,
                 u.map_style_enum
             FROM bear_user u
             LEFT JOIN map_marker mm ON mm.enum = u.map_marker_enum
@@ -57,7 +57,7 @@ final class GameResultController extends Controller {
       'game' => $game,
       'players' => DB::select(query: <<<SQL
                 SELECT
-                    u.id as user_id, u.display_name, u.country_cca2, mm.file_name as map_marker_file_name,
+                    u.id as user_id, u.display_name, u.country_cca2, mm.file_path as map_marker_file_path,
                     bc.name as country_name,
                     gu.points,
                     RANK() OVER (ORDER BY gu.points DESC) as rank

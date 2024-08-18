@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->text(column: 'enum')->primary();
             $table->text(column: 'grouping');
             $table->text(column: 'file_name')->unique();
-            $table->integer(column: 'height_rem');
+            $table->text(column: 'file_path')->unique();
             $table->integer(column: 'user_level_enum');
             $table->text(column: 'permission_enum')->nullable();
             $table->timestampTz(column: 'created_at')->default(DB::raw('CURRENT_TIMESTAMP'));

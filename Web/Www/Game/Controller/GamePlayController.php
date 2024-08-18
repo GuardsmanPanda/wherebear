@@ -51,7 +51,7 @@ final class GamePlayController extends Controller {
     $user = DB::selectOne(query: <<<SQL
       SELECT
           u.map_marker_enum,
-          mm.file_name as map_marker_file_name,
+          mm.file_path as map_marker_file_path,
           ms.tile_size as map_style_tile_size,
           ms.zoom_offset as map_style_zoom_offset,
           ms.full_uri as map_style_full_uri
@@ -70,7 +70,7 @@ final class GamePlayController extends Controller {
       $guesses = DB::select(query: "
         SELECT
             bu.display_name, bu.country_cca2, bc.name as country_name,
-            mm.file_name as map_marker_file_name,
+            mm.file_path as map_marker_file_path,
             gru.distance_meters, gru.points, gru.rank,
             ST_Y(gru.location::geometry) as lat,
             ST_X(gru.location::geometry) as lng,

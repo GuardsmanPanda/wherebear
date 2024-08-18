@@ -41,13 +41,12 @@ enum MapMarkerEnum: string {
     }
 
 
-    public function getFileName(): string {
+    public function getFilePath(): string {
         $value = $this->value;
         $folder = strtolower(explode(separator: '_', string: $value)[0]);
         $file = substr(string: $value, offset: strlen(string: $folder) + 1);
         $file = strtolower(string: str_replace(search: '_', replace: '-', subject: $file));
-
-        return "$folder/$file.png";
+        return "/static/img/map-marker/$folder/$file.png";
     }
 
 
@@ -61,11 +60,6 @@ enum MapMarkerEnum: string {
 
     public function getGrouping(): string {
         return Str::title(value: explode(separator: '_', string: $this->value)[0]);
-    }
-
-
-    public function getHeightRem(): int {
-        return 4;
     }
 
 

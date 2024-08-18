@@ -54,10 +54,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static int count(array $columns = ['*'])
  * @method static bool exists()
  *
- * @property int $height_rem
  * @property string $enum
  * @property string $grouping
  * @property string $file_name
+ * @property string $file_path
  * @property string $created_at
  * @property string|null $permission_enum
  * @property UserLevelEnum $user_level_enum
