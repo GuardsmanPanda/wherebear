@@ -11,7 +11,9 @@ html {
   box-sizing: border-box;
 }
 
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   box-sizing: inherit;
 }
 
@@ -30,6 +32,7 @@ body {
     opacity: 0;
     transform: translateY(25%)
   }
+
   to {
     opacity: 1;
     transform: translateY(0)
@@ -41,6 +44,7 @@ body {
     opacity: 0;
     transform: translateY(25%)
   }
+
   to {
     opacity: 1;
     transform: translateY(0)
@@ -52,6 +56,7 @@ body {
     opacity: 0;
     transform: translateX(25%)
   }
+
   to {
     opacity: 1;
     transform: translateX(0)
@@ -63,6 +68,7 @@ body {
     opacity: 0;
     transform: translateX(25%)
   }
+
   to {
     opacity: 1;
     transform: translateX(0)
@@ -74,6 +80,7 @@ body {
     opacity: 1;
     transform: translateX(0)
   }
+
   to {
     opacity: 0;
     transform: translateX(25%)
@@ -85,6 +92,7 @@ body {
     opacity: 1;
     transform: translateX(0)
   }
+
   to {
     opacity: 0;
     transform: translateX(25%)
@@ -96,6 +104,7 @@ body {
     opacity: 1;
     transform: translateY(0)
   }
+
   to {
     opacity: 0;
     transform: translateY(25%)
@@ -107,6 +116,7 @@ body {
     opacity: 1;
     transform: translateY(0)
   }
+
   to {
     opacity: 0;
     transform: translateY(25%)
@@ -117,6 +127,7 @@ body {
   0% {
     transform: scale(0) translateY(-45%) translateX(13%)
   }
+
   to {
     transform: scale(1) translateY(-45%) translateX(13%)
   }
@@ -126,6 +137,7 @@ body {
   0% {
     transform: scale(0) translateY(-45%) translateX(13%)
   }
+
   to {
     transform: scale(1) translateY(-45%) translateX(13%)
   }
@@ -148,7 +160,8 @@ body {
   padding: 20px
 }
 
-.notyf__icon--error, .notyf__icon--success {
+.notyf__icon--error,
+.notyf__icon--success {
   height: 21px;
   width: 21px;
   background: #fff;
@@ -158,7 +171,8 @@ body {
   position: relative
 }
 
-.notyf__icon--error:after, .notyf__icon--error:before {
+.notyf__icon--error:after,
+.notyf__icon--error:before {
   content: "";
   background: currentColor;
   display: block;
@@ -178,7 +192,8 @@ body {
   transform: rotate(45deg)
 }
 
-.notyf__icon--success:after, .notyf__icon--success:before {
+.notyf__icon--success:after,
+.notyf__icon--success:before {
   content: "";
   background: currentColor;
   display: block;
@@ -225,7 +240,8 @@ body {
   animation-delay: .25s
 }
 
-.notyf__toast--disappear .notyf__icon, .notyf__toast--disappear .notyf__message {
+.notyf__toast--disappear .notyf__icon,
+.notyf__toast--disappear .notyf__message {
   -webkit-animation: notyf-fadeoutdown .3s forwards;
   animation: notyf-fadeoutdown .3s forwards;
   opacity: 1;
@@ -318,7 +334,8 @@ body {
   width: 100%
 }
 
-.notyf__dismiss-btn:after, .notyf__dismiss-btn:before {
+.notyf__dismiss-btn:after,
+.notyf__dismiss-btn:before {
   content: "";
   background: #fff;
   height: 12px;
@@ -392,7 +409,8 @@ body {
   mix-blend-mode: normal !important;
 }
 
-.leaflet-cluster-anim .leaflet-marker-icon, .leaflet-cluster-anim .leaflet-marker-shadow {
+.leaflet-cluster-anim .leaflet-marker-icon,
+.leaflet-cluster-anim .leaflet-marker-shadow {
   -webkit-transition: -webkit-transform 0.3s ease-out, opacity 0.3s ease-in;
   -moz-transition: -moz-transform 0.3s ease-out, opacity 0.3s ease-in;
   -o-transition: -o-transform 0.3s ease-out, opacity 0.3s ease-in;
@@ -449,4 +467,19 @@ body {
 
 .marker-cluster span {
   line-height: 30px;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, .2);
+  box-shadow: inset 0 0 2px #bcaaa4;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background-color: #795548;
 }
