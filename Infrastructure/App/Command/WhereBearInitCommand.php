@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace Infrastructure\Database\Command;
+namespace Infrastructure\App\Command;
 
 use Domain\Game\Enum\GamePublicStatusEnum;
 use Domain\Game\Enum\GameStateEnum;
 use Domain\Map\Enum\MapMarkerEnum;
 use Domain\Map\Enum\MapStyleEnum;
-use Domain\Panorama\Enum\TagEnum;
+use Domain\Panorama\Enum\PanoramaTagEnum;
 use Domain\User\Enum\BearPermissionEnum;
 use Domain\User\Enum\BearRoleEnum;
 use Domain\User\Enum\UserLevelEnum;
@@ -16,8 +16,8 @@ use Infrastructure\App\Enum\BearConfigEnum;
 use Infrastructure\App\Enum\BearExternalApiEnum;
 use Infrastructure\App\Enum\BearOauth2ClientEnum;
 
-final class DatabaseInitializeCommand extends BearTransactionCommand {
-    protected $signature = 'database:initialize';
+final class WhereBearInitCommand extends BearTransactionCommand {
+    protected $signature = 'wherebear:init';
     protected $description = 'Initialize the database.';
 
     protected function handleInTransaction(): void {
@@ -27,7 +27,7 @@ final class DatabaseInitializeCommand extends BearTransactionCommand {
         BearRoleEnum::syncToDatabase();
         BearExternalApiEnum::syncToDatabase();
         GamePublicStatusEnum::syncToDatabase();
-        TagEnum::syncToDatabase();
+        PanoramaTagEnum::syncToDatabase();
         UserLevelEnum::syncToDatabase();
 
         WhereBearRolePermissionService::syncRolePermissionsToDatabase(); // Requires Bear Role and Bear Permission.

@@ -29,7 +29,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static WhereBearUser|null firstWhere(string $column, string $operator, string|float|int|bool $value)
  * @method static Collection<int, WhereBearUser> all(array $columns = ['*'])
  * @method static Collection<int, WhereBearUser> get(array $columns = ['*'])
- * @method static Collection<int|string, WhereBearUser> pluck(string $column, string $key = null)
+ * @method static Collection<array-key, WhereBearUser> pluck(string $column, string $key = null)
  * @method static Collection<int, WhereBearUser> fromQuery(string $query, array $bindings = [])
  * @method static Builder<WhereBearUser> lockForUpdate()
  * @method static Builder<WhereBearUser> select(array $columns = ['*'])

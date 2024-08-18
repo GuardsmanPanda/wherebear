@@ -4,7 +4,7 @@ use Domain\Game\Enum\GamePublicStatusEnum;
 use Domain\Game\Enum\GameStateEnum;
 use Domain\Map\Enum\MapMarkerEnum;
 use Domain\Map\Enum\MapStyleEnum;
-use Domain\Panorama\Enum\TagEnum;
+use Domain\Panorama\Enum\PanoramaTagEnum;
 use Domain\User\Enum\UserLevelEnum;
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearEnvService;
 use GuardsmanPanda\Larabear\Integration\ExternalApi\Enum\BearExternalApiAuthEnum;
@@ -55,12 +55,11 @@ return [
                 'location' => 'Domain/Map/Model'
             ],
             'panorama' => ['location' => 'Domain/Panorama/Model'],
-            'panorama_tag' => ['location' => 'Domain/Panorama/Model'],
-            'panorama_user_rating' => ['location' => 'Domain/Panorama/Model'],
-            'tag' => [
-                'enum' => TagEnum::class,
+            'panorama_tag' => [
+                'enum' => PanoramaTagEnum::class,
                 'location' => 'Domain/Panorama/Model'
             ],
+            'panorama_user_rating' => ['location' => 'Domain/Panorama/Model'],
             'user_level' => [
                 'enum' => UserLevelEnum::class,
                 'location' => 'Domain/User/Model'

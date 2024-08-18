@@ -1,7 +1,28 @@
 <?php declare(strict_types=1); ?>
-@php use Domain\User\Model\WhereBearUser;use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService; @endphp
 <div class="h-full w-full flex flex-col">
-  <x-bear::form.text id="map-url" required="" class="text-gray-700"></x-bear::form.text>
+  <x-bear::form.text id="map-url" required="" class="text-gray-700" autocomplete="off"></x-bear::form.text>
+  <div id="tags" class="mt-1">
+    <h3 class="font-bold text-teal-500">Tags</h3>
+    <div class="flex gap-6 ml-2 items-center">
+      <div class="flex items-center">
+        <label class="mr-2 font-medium text-gray-400" for="GREAT">GREAT</label>
+        <input id="GREAT" type="checkbox" name="tag" value="GREAT">
+      </div>
+      <div class="flex items-center">
+        <label class="mr-2 font-medium text-gray-400" for="LANDSCAPE">LANDSCAPE</label>
+        <input id="LANDSCAPE" type="checkbox" name="tag" value="LANDSCAPE">
+      </div>
+      <div class="flex items-center">
+        <label class="mr-2 font-medium text-gray-400" for="ANIMAL">ANIMAL</label>
+        <input id="ANIMAL" type="checkbox" name="tag" value="ANIMAL">
+      </div>
+      <div class="flex items-center">
+        <label class="mr-2 font-medium text-amber-400" for="DIFFICULT">DIFFICULT</label>
+        <input id="DIFFICULT" type="checkbox" name="tag" value="DIFFICULT">
+      </div>
+    </div>
+  </div>
+  <hr class="mt-2 mb-1  border-gray-600 border-2">
   <div class="mt-1">
     <h3 class="font-bold text-teal-500">Map Options</h3>
     <div class="flex ml-2 items-center">
@@ -107,38 +128,66 @@
 
 
   const add_panorama = function () {
+    // example url: https://www.google.com/maps/@45.5289702,5.2519047,3a,75y,140h,100t/data=!3m8!1e1!3m6!1sAF1QipMkUsYr6e5pLWzBzmmgtukhDmbgqHg9P7_-qaRN!2e10!3e11!6shttps:%2F%2Flh5.googleusercontent.com%2Fp%2FAF1QipMkUsYr6e5pLWzBzmmgtukhDmbgqHg9P7_-qaRN%3Dw203-h100-k-no-pi-10-ya287-ro0-fo100!7i10240!8i5120?coh=205409&entry=ttu
+    //     https://www.google.com/maps/@-0.7592075,-91.3786117,3a,59.4y,288.29h,95.18t/data=!3m8!1e1!3m6!1sAF1QipO4rFNJyX92bEpSxB-rDVBJYcqzDn9IMe3gPyq9!2e10!3e11!6shttps:%2F%2Flh5.googleusercontent.com%2Fp%2FAF1QipO4rFNJyX92bEpSxB-rDVBJYcqzDn9IMe3gPyq9%3Dw203-h100-k-no-pi-9.981238-ya88.512215-ro-0-fo100!7i10240!8i5120?coh=205409&entry=ttu
+    let panorama_id = "";
     let text = "";
     try {
+      // Regex for extracting panorama id, which is the string aster !1s
+      const re = "!1s([^!]+)!2e";
+      panorama_id = document.getElementById('map-url').value.match(re)[1];
       text = document.getElementById('map-url').value.split('@')[1].split(',');
     } catch (e) {
       window.notify.error("Failed to parse URL, is this a valid Street View URL?");
+      return;
     }
-    fetch('/page/discovery/street-view-location', {
+    let tag_elements = document.getElementById('tags').querySelectorAll('input[type="checkbox"]');
+    let tags_unchecked = [];
+    let tags_checked = [];
+    tag_elements.forEach(val => {
+      if (val.checked) tags_checked.push(val.value); else tags_unchecked.push(val.value);
+    });
+
+    fetch('/page/discovery/street-view', {
       method: 'POST', headers: {
         'Content-Type': 'application/json'
-      }, body: JSON.stringify({lat: text[0], lng: text[1]}),
-    }).then(resp => {
-      map.panTo([text[0], text[1]]);
-      if (!resp.ok) {
-        resp.text().then(text => {
-          window.notify.error(text);
-        })
-      } else {
-        //document.getElementById('map-url').value = '';
-        resp.json().then(json => {
-          if (json['exists']) {
-            window.notify.open({
-              type: "warning", message: "This location has already been discovered!",
-            });
-          } else {
-            window.notify.open({
-              type: "success", message: "Location added to the game!",
-            });
-            document.getElementById('map-url').value = '';
-          }
-          //addGuesses(json)
+      }, body: JSON.stringify({
+        panorama_id: panorama_id,
+        lat: text[0],
+        lng: text[1],
+        tags_checked: tags_checked,
+        tags_unchecked: tags_unchecked,
+      }),
+    }).then(resp => resp.json()).then(json => {
+      console.log(json);
+      if (json['status'] === 'failed') {
+        window.notify.error("Failed to add location to the game, Panorama API error.");
+        console.error(json['error']);
+      } else if (json['exists']) {
+        let message = "This location has already been discovered!";
+        if (json['tags_added'].length > 0) {
+          message += "<br><hr><hr><hr>+Tags added: " + json['tags_added'];
+        }
+        if (json['tags_removed'].length > 0) {
+          console.log(json['tags_removed']);
+          message += "<br><hr><hr><hr>--Tags removed: " + json['tags_removed'];
+        }
+        window.notify.open({
+          type: "warning", message: message, duration: 12000,
         });
+      } else {
+        let message = "Location added to the game!";
+        if (json['tags_added'].length > 0) {
+          message += "<br><hr><hr>+Tags added: " + json['tags_added'];
+        }
+        window.notify.open({
+          type: "success", message: message, duration: 12000,
+        });
+        document.getElementById('map-url').value = '';
       }
+    }).catch(err => {
+      window.notify.error("Failed to add location to the game, see console for error.");
+      console.error(err);
     });
   }
 

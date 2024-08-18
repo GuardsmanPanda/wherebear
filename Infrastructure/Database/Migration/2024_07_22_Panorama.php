@@ -14,6 +14,7 @@ return new class extends Migration {
           state_name            text,
           city_name             text,
           added_by_user_id      uuid references bear_user,
+          panorama_tag_array    text[],
           location              geography(Point, 4326),
           location_box_hash     integer,
           jpg_path              text unique,
@@ -26,7 +27,9 @@ return new class extends Migration {
       );
     ");
     DB::statement(query: "create index location_gist_idx on panorama using gist(location);");
+    DB::statement(query: "create index country_cca2_idx on panorama(country_cca2);");
     DB::statement(query: "create index location_box_hash_idx on panorama(location_box_hash);");
+    DB::statement(query: "create index panorama_tag_array_idx on panorama using GIN(panorama_tag_array);");
   }
 
 

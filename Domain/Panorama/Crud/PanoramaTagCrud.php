@@ -2,12 +2,12 @@
 
 namespace Domain\Panorama\Crud;
 
-use Domain\Panorama\Enum\TagEnum;
+use Domain\Panorama\Enum\PanoramaTagEnum;
 use Domain\Panorama\Model\Tag;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 
-final class TagCrud {
-    public static function syncToDatabase(TagEnum $tag_enum): Tag {
+final class PanoramaTagCrud {
+    public static function syncToDatabase(PanoramaTagEnum $tag_enum): Tag {
         BearDatabaseService::mustBeInTransaction();
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST']);
 

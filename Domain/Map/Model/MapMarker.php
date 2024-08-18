@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static MapMarker|null firstWhere(string $column, string $operator, string|float|int|bool $value)
  * @method static Collection<int, MapMarker> all(array $columns = ['*'])
  * @method static Collection<int, MapMarker> get(array $columns = ['*'])
- * @method static Collection<int|string, MapMarker> pluck(string $column, string $key = null)
+ * @method static Collection<array-key, MapMarker> pluck(string $column, string $key = null)
  * @method static Collection<int, MapMarker> fromQuery(string $query, array $bindings = [])
  * @method static Builder<MapMarker> lockForUpdate()
  * @method static Builder<MapMarker> select(array $columns = ['*'])
