@@ -39,122 +39,123 @@ $isPlayerHost = $game->created_by_user_id === BearAuthService::getUserId();
 
     <div id="player-list" class="py-2" hx-get="/game/{{$game->id}}/lobby/player-list" hx-trigger="load" hx-target="this"></div>
   </div>
+</div>
 
-  <script>
-    const layoutEl = document.getElementById('layout');
-    const gameStatusEl = document.getElementById('game-status');
-    const playersSubstituteEl = document.getElementById('playersSubstitute');
-    const playersEl = document.getElementById('players');
-    const expandIconEl = document.getElementById('players-expand-icon');
-    const playerListEl = document.getElementById('player-list');
+<script>
+  const layoutEl = document.getElementById('layout');
+  const gameStatusEl = document.getElementById('game-status');
+  const playersSubstituteEl = document.getElementById('playersSubstitute');
+  const playersEl = document.getElementById('players');
+  const expandIconEl = document.getElementById('players-expand-icon');
+  const playerListEl = document.getElementById('player-list');
 
-    const animationDurationMs = 700;
-    const playerListMarginTopPx = 8;
+  const animationDurationMs = 700;
+  const playerListMarginTopPx = 8;
 
-    window.addEventListener('resize', function() {
-      const playersState = playersEl.getAttribute('data-state');
+  window.addEventListener('resize', function() {
+    const playersState = playersEl.getAttribute('data-state');
 
-      if (playersState === 'expanded') {
-        const playersExpandedHeightpx = window.innerHeight - gameStatusEl.offsetHeight - playerListMarginTopPx;
-
-        playersEl.style.width = `${layoutEl.offsetWidth}px`;
-        playersEl.style.height = `${playersExpandedHeightpx}px`;
-      }
-    });
-
-    function togglePlayerListSize() {
-      const state = playersEl.getAttribute('data-state');
-
+    if (playersState === 'expanded') {
       const playersExpandedHeightpx = window.innerHeight - gameStatusEl.offsetHeight - playerListMarginTopPx;
 
-      if (state === 'collapsed') {
-        playersEl.style.width = `${layoutEl.offsetWidth}px`;
-        playersEl.style.height = `${playersEl.offsetHeight}px`;
-
-        expandIconEl.classList.add('rotate-180');
-
-        // If there is no timeout, the animation doesn't occur. It's as if the second value is applied immediately, bypassing the first value altogether.
-        // One millisecond is enough in dev, put 5 for security.
-        setTimeout(() => {
-          playersEl.classList.add('fixed', 'bottom-0', 'transition-[height]', `duration-${animationDurationMs}`);
-
-          setTimeout(() => {
-            playersSubstituteEl.classList.remove('hidden');
-            playersSubstituteEl.classList.add('block');
-
-            playersEl.style.height = `${playersExpandedHeightpx}px`;
-          }, 5);
-        }, 5);
-
-        setTimeout(() => {
-          playersEl.classList.remove('transition-[height]', `duration-${animationDurationMs}`);
-          playerListEl.classList.add('overflow-y-auto');
-          playersEl.setAttribute('data-state', 'expanded');
-        }, (animationDurationMs));
-      } else {
-        playersEl.classList.add('transition-[height]', `duration-${animationDurationMs}`);
-        playersEl.style.height = `${playersSubstituteEl.offsetHeight}px`;
-
-        expandIconEl.classList.remove('rotate-180');
-
-        playerListEl.classList.remove('overflow-y-auto');
-
-        setTimeout(() => {
-          playersEl.style.removeProperty('width');
-          playersEl.classList.remove('fixed', 'bottom-0');
-          playersEl.classList.add('flex', 'flex-1', `min-h-[136px]`);
-          playersEl.classList.remove('transition-[height]', `duration-${animationDurationMs}`);
-
-          playersSubstituteEl.classList.remove('block');
-          playersSubstituteEl.classList.add('hidden');
-
-          playersEl.setAttribute('data-state', 'collapsed');
-        }, animationDurationMs);
-
-      }
+      playersEl.style.width = `${layoutEl.offsetWidth}px`;
+      playersEl.style.height = `${playersExpandedHeightpx}px`;
     }
+  });
 
-    const pusher = new Pusher('6csm0edgczin2onq92lm', window.pusher_data);
-    const channel = pusher.subscribe('game.{{$game->id}}');
-    let lastUpdate = new Date(0);
-    let pendingUpdate = false;
+  function togglePlayerListSize() {
+    const state = playersEl.getAttribute('data-state');
 
-    channel.bind('player.update', function(data) {
-      const currentTime = new Date();
-      if (currentTime - lastUpdate < 2500) {
-        pendingUpdate = true;
-        return;
-      }
+    const playersExpandedHeightpx = window.innerHeight - gameStatusEl.offsetHeight - playerListMarginTopPx;
+
+    if (state === 'collapsed') {
+      playersEl.style.width = `${layoutEl.offsetWidth}px`;
+      playersEl.style.height = `${playersEl.offsetHeight}px`;
+
+      expandIconEl.classList.add('rotate-180');
+
+      // If there is no timeout, the animation doesn't occur. It's as if the second value is applied immediately, bypassing the first value altogether.
+      // One millisecond is enough in dev, put 5 for security.
+      setTimeout(() => {
+        playersEl.classList.add('fixed', 'bottom-0', 'transition-[height]', `duration-${animationDurationMs}`);
+
+        setTimeout(() => {
+          playersSubstituteEl.classList.remove('hidden');
+          playersSubstituteEl.classList.add('block');
+
+          playersEl.style.height = `${playersExpandedHeightpx}px`;
+        }, 5);
+      }, 5);
+
+      setTimeout(() => {
+        playersEl.classList.remove('transition-[height]', `duration-${animationDurationMs}`);
+        playerListEl.classList.add('overflow-y-auto');
+        playersEl.setAttribute('data-state', 'expanded');
+      }, (animationDurationMs));
+    } else {
+      playersEl.classList.add('transition-[height]', `duration-${animationDurationMs}`);
+      playersEl.style.height = `${playersSubstituteEl.offsetHeight}px`;
+
+      expandIconEl.classList.remove('rotate-180');
+
+      playerListEl.classList.remove('overflow-y-auto');
+
+      setTimeout(() => {
+        playersEl.style.removeProperty('width');
+        playersEl.classList.remove('fixed', 'bottom-0');
+        playersEl.classList.add('flex', 'flex-1', `min-h-[136px]`);
+        playersEl.classList.remove('transition-[height]', `duration-${animationDurationMs}`);
+
+        playersSubstituteEl.classList.remove('block');
+        playersSubstituteEl.classList.add('hidden');
+
+        playersEl.setAttribute('data-state', 'collapsed');
+      }, animationDurationMs);
+
+    }
+  }
+
+  const pusher = new Pusher('6csm0edgczin2onq92lm', window.pusher_data);
+  const channel = pusher.subscribe('game.{{$game->id}}');
+  let lastUpdate = new Date(0);
+  let pendingUpdate = false;
+
+  channel.bind('player.update', function(data) {
+    const currentTime = new Date();
+    if (currentTime - lastUpdate < 2500) {
+      pendingUpdate = true;
+      return;
+    }
+    window.htmx.ajax('GET', '/game/{{$game->id}}/lobby/player-list', '#player-list');
+    lastUpdate = currentTime;
+  });
+
+  setInterval(function() {
+    const currentTime = new Date();
+    if (pendingUpdate && currentTime - lastUpdate > 2500) {
       window.htmx.ajax('GET', '/game/{{$game->id}}/lobby/player-list', '#player-list');
-      lastUpdate = currentTime;
-    });
+      lastUpdate = new Date();
+      pendingUpdate = false;
+    } else if (currentTime - lastUpdate > 20000) {
+      window.htmx.ajax('GET', '/game/{{$game->id}}/lobby/player-list', '#player-list');
+      lastUpdate = new Date();
+    }
+  }, 300 + Math.floor(Math.random() * 120));
 
-    setInterval(function() {
-      const currentTime = new Date();
-      if (pendingUpdate && currentTime - lastUpdate > 2500) {
-        window.htmx.ajax('GET', '/game/{{$game->id}}/lobby/player-list', '#player-list');
-        lastUpdate = new Date();
-        pendingUpdate = false;
-      } else if (currentTime - lastUpdate > 20000) {
-        window.htmx.ajax('GET', '/game/{{$game->id}}/lobby/player-list', '#player-list');
-        lastUpdate = new Date();
-      }
-    }, 300 + Math.floor(Math.random() * 120));
+  channel.bind('prep', function(data) {
+    document.getElementById('game-state-text').innerText = data.message;
+    if (data.stage === -2) { // game reset
+    } else {
 
-    channel.bind('prep', function(data) {
-      document.getElementById('game-state-text').innerText = data.message;
-      if (data.stage === -2) { // game reset
-      } else {
-
-      }
-    });
-    channel.bind('round.event', function(data) {
-      window.location.href = '/game/{{$game->id}}/play';
-    });
-    pusher.bind('error', function(error) {
-      console.error('Pusher error:', error);
-    });
-    pusher.bind('disconnected', function(error) {
-      console.error('Pusher error:', error);
-    });
-  </script>
+    }
+  });
+  channel.bind('round.event', function(data) {
+    window.location.href = '/game/{{$game->id}}/play';
+  });
+  pusher.bind('error', function(error) {
+    console.error('Pusher error:', error);
+  });
+  pusher.bind('disconnected', function(error) {
+    console.error('Pusher error:', error);
+  });
+</script>
