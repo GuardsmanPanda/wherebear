@@ -977,12 +977,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/GuardsmanPanda/larabear.git",
-                "reference": "3610baf972277ac7814a915850c040da15c6a80c"
+                "reference": "0d8b25a2cf58442ca19fc82d3bc0d262f4013f21"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/GuardsmanPanda/larabear/zipball/3610baf972277ac7814a915850c040da15c6a80c",
-                "reference": "3610baf972277ac7814a915850c040da15c6a80c",
+                "url": "https://api.github.com/repos/GuardsmanPanda/larabear/zipball/0d8b25a2cf58442ca19fc82d3bc0d262f4013f21",
+                "reference": "0d8b25a2cf58442ca19fc82d3bc0d262f4013f21",
                 "shasum": ""
             },
             "require": {
@@ -1030,7 +1030,7 @@
                 "issues": "https://github.com/GuardsmanPanda/larabear/issues",
                 "source": "https://github.com/GuardsmanPanda/larabear/tree/main"
             },
-            "time": "2024-08-17T19:19:20+00:00"
+            "time": "2024-08-18T00:53:38+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
