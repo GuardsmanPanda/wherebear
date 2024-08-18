@@ -1,3 +1,7 @@
+<?php
+
+declare(strict_types=1); ?>
+
 <div class="grid grid-cols-3 min-[400px]:grid-cols-4 min-[530px]:grid-cols-5 min-[630px]:grid-cols-6 md:grid-cols-6 gap-4 justify-between">
   @foreach($players as $player)
   <x-player-profile-small-lobby :isHost="$loop->first" :isReady="$player->is_ready" :level="$player->user_level_enum"
