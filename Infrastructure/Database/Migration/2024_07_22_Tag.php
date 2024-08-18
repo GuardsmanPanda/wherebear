@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void {
-        Schema::create(table: 'tag', callback: static function (Blueprint $table): void {
+        Schema::create(table: 'panorama_tag', callback: static function (Blueprint $table): void {
             $table->text(column: 'enum')->primary();
             $table->text(column: 'description');
             $table->timestampTz(column: 'created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
@@ -16,6 +16,6 @@ return new class extends Migration {
 
 
     public function down(): void {
-        Schema::dropIfExists(table: 'tag');
+        Schema::dropIfExists(table: 'panorama_tag');
     }
 };

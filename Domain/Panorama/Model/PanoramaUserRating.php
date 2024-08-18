@@ -24,7 +24,7 @@ use RuntimeException;
  * @method static PanoramaUserRating|null firstWhere(string $column, string $operator, string|float|int|bool $value)
  * @method static Collection<int, PanoramaUserRating> all(array $columns = ['*'])
  * @method static Collection<int, PanoramaUserRating> get(array $columns = ['*'])
- * @method static Collection<int|string, PanoramaUserRating> pluck(string $column, string $key = null)
+ * @method static Collection<array-key, PanoramaUserRating> pluck(string $column, string $key = null)
  * @method static Collection<int, PanoramaUserRating> fromQuery(string $query, array $bindings = [])
  * @method static Builder<PanoramaUserRating> lockForUpdate()
  * @method static Builder<PanoramaUserRating> select(array $columns = ['*'])

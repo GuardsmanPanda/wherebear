@@ -2,14 +2,14 @@
 
 namespace Domain\Panorama\Enum;
 
-use Domain\Panorama\Crud\TagCrud;
+use Domain\Panorama\Crud\PanoramaTagCrud;
 
-enum TagEnum: string {
+enum PanoramaTagEnum: string {
   case FUNNY = 'FUNNY';
   case GOOGLE = 'GOOGLE';
   case GREAT = 'GREAT';
   case LANDSCAPE = 'LANDSCAPE';
-  case ANIMALS = 'ANIMALS';
+  case ANIMAL = 'ANIMAL';
   case DIFFICULT = 'DIFFICULT';
 
   public function getDescription(): string {
@@ -18,14 +18,14 @@ enum TagEnum: string {
       self::GOOGLE => 'Google Office.',
       self::GREAT => 'Great Panorama, should be prioritized.',
       self::LANDSCAPE => 'Landscape is the primary focus, minimal human activity visible.',
-      self::ANIMALS => 'Panorama contains animals as the focus.',
+      self::ANIMAL => 'Panorama contains animals as the focus.',
       self::DIFFICULT => 'AN experienced player would have a hard time guessing this panorama.',
     };
   }
 
   public static function syncToDatabase(): void {
-    foreach (TagEnum::cases() as $enum) {
-      TagCrud::syncToDatabase(tag_enum: $enum);
+    foreach (PanoramaTagEnum::cases() as $enum) {
+      PanoramaTagCrud::syncToDatabase(tag_enum: $enum);
     }
   }
 }

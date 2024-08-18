@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static Game|null firstWhere(string $column, string $operator, string|float|int|bool $value)
  * @method static Collection<int, Game> all(array $columns = ['*'])
  * @method static Collection<int, Game> get(array $columns = ['*'])
- * @method static Collection<int|string, Game> pluck(string $column, string $key = null)
+ * @method static Collection<array-key, Game> pluck(string $column, string $key = null)
  * @method static Collection<int, Game> fromQuery(string $query, array $bindings = [])
  * @method static Builder<Game> lockForUpdate()
  * @method static Builder<Game> select(array $columns = ['*'])

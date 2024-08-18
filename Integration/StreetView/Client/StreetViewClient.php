@@ -7,17 +7,15 @@ use Infrastructure\App\Enum\BearExternalApiEnum;
 use Integration\StreetView\Data\StreetViewPanoramaData;
 
 final class StreetViewClient {
-  public static function findByLocation(float $latitude, float $longitude): StreetViewPanoramaData|null {
-    $data = self::queryStreetView($latitude, $longitude);
-    return $data === null ? null : $data;
+  public static function fromPanoramaId(string $panoramaId): StreetViewPanoramaData|null {
+    $client = BearExternalApiClient::fromEnum(enum: BearExternalApiEnum::GOOGLE_STREET_VIEW_STATIC_API);
+    $resp = $client->request(path: 'metadata', query: ['pano' => $panoramaId]);
+    return StreetViewPanoramaData::fromResponse(response: $resp);
   }
 
-  private static function queryStreetView(float $latitude, float $longitude): StreetViewPanoramaData|null {
-    $query = [
-      'location' => "$latitude,$longitude",
-    ];
+  public static function fromLocation(float $latitude, float $longitude, int $radius = 50): StreetViewPanoramaData|null {
     $client = BearExternalApiClient::fromEnum(enum: BearExternalApiEnum::GOOGLE_STREET_VIEW_STATIC_API);
-    $resp = $client->request(path: 'metadata', query: $query);
+    $resp = $client->request(path: 'metadata', query: ['location' => "$latitude,$longitude", 'radius' => $radius]);
     return StreetViewPanoramaData::fromResponse(response: $resp);
   }
 }

@@ -9,7 +9,7 @@ use Web\Www\Page\Controller\PageDownloadController;
 
 Route::prefix('discovery')->middleware([BearPermissionMiddleware::using(permission: BearPermissionEnum::PANORAMA_CONTRIBUTE)])->group(callback: function () {
   Route::get(uri: '', action: [PageDiscoveryController::class, 'index']);
-  Route::post(uri: 'street-view-location', action: [PageDiscoveryController::class, 'addFromStreetViewLocation']);
+  Route::post(uri: 'street-view', action: [PageDiscoveryController::class, 'addFromStreetViewData']);
   Route::post(uri: 'street-view-location-search', action: [PageDiscoveryController::class, 'searchFromStreetViewLocation']);
 });
 

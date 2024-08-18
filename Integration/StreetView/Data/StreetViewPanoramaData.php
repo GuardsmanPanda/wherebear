@@ -7,12 +7,12 @@ use Illuminate\Http\Client\Response;
 
 final readonly class StreetViewPanoramaData {
   public function __construct(
-    public float $lat,
-    public float $lng,
-    public string $panoId,
-    public string $copyright,
+    public float           $lat,
+    public float           $lng,
+    public string          $panoId,
+    public string          $copyright,
     public CarbonImmutable $date,
-    public string $status, // Should always be 'OK', as this class is only returned when a panorama is found.
+    public string          $status, // Should always be 'OK', as this class is only returned when a panorama is found.
   ) {
   }
 

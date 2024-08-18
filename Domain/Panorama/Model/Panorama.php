@@ -5,6 +5,7 @@ namespace Domain\Panorama\Model;
 use Carbon\CarbonInterface;
 use Closure;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearUser;
+use GuardsmanPanda\Larabear\Infrastructure\Database\Cast\BearDatabaseArrayCast;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Model\BearCountry;
 use Illuminate\Database\Eloquent\Builder;
@@ -27,7 +28,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static Panorama|null firstWhere(string $column, string $operator, string|float|int|bool $value)
  * @method static Collection<int, Panorama> all(array $columns = ['*'])
  * @method static Collection<int, Panorama> get(array $columns = ['*'])
- * @method static Collection<int|string, Panorama> pluck(string $column, string $key = null)
+ * @method static Collection<array-key, Panorama> pluck(string $column, string $key = null)
  * @method static Collection<int, Panorama> fromQuery(string $query, array $bindings = [])
  * @method static Builder<Panorama> lockForUpdate()
  * @method static Builder<Panorama> select(array $columns = ['*'])
@@ -68,6 +69,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $retired_reason
  * @property string|null $added_by_user_id
  * @property ArrayObject|null $nominatim_json
+ * @property ArrayObject<int,string> $panorama_tag_array
  * @property CarbonInterface $captured_date
  * @property CarbonInterface|null $retired_at
  *
@@ -88,6 +90,7 @@ final class Panorama extends Model {
     protected $casts = [
         'captured_date' => 'immutable_date',
         'nominatim_json' => AsArrayObject::class,
+        'panorama_tag_array' => BearDatabaseArrayCast::class,
         'retired_at' => 'immutable_datetime',
     ];
 
