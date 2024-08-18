@@ -60,6 +60,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $name
  * @property string $full_uri
  * @property string $http_path
+ * @property string $icon_path
  * @property string $created_at
  * @property string $external_api_enum
  * @property UserLevelEnum $user_level_enum

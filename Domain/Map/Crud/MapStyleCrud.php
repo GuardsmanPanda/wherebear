@@ -20,6 +20,7 @@ final class MapStyleCrud {
         $model->http_path = $enum->getExternalPath();
         $model->user_level_enum = $enum->getUserLevelRequirement();
         $model->full_uri = $enum->getFullUri();
+        $model->icon_path = $enum->getIconPath();
 
         $model->save();
         return $model;
