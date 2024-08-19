@@ -30,7 +30,7 @@ final class UserLevelBadge extends Component {
 
   public function getFontSize(): string {
     return match ($this->size) {
-      UserLevelBadgeSize::XS => 'text-xs',
+      UserLevelBadgeSize::XS => 'text-sm',
       UserLevelBadgeSize::SM => 'text-sm',
       UserLevelBadgeSize::MD => 'text-base',
       UserLevelBadgeSize::LG => 'text-2xl',
@@ -42,7 +42,7 @@ final class UserLevelBadge extends Component {
 		<div {{ $attributes() }} class="shrink-0">
 			<div class='relative inline-block shrink-0'>
 				<img src="{{ $getImageUrl() }}" class="block" alt="User level: {{ $level }}">
-				<span class="flex items-center justify-center absolute inset-0 text-3xl text-shade-text-negative  {{ $getBottomPx() }} {{ $getFontSize() }}">
+				<span class="flex items-center justify-center absolute inset-0 text-shade-text-negative {{ $getBottomPx() }} {{ $getFontSize() }}">
 					{{ $level }}
 				</span>
 			</div>
