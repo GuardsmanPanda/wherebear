@@ -39,12 +39,12 @@ module.exports = {
           text: "#35798f"
         },
         secondary: {
-          text: "#4561bf",
+          text: "#2A3C7A",
           surface: {
-            subtle: "#b2c1e9",
-            light: "#8ea3dd",
-            default: "#6d83cd",
-            dark: "#5c75c7"
+            subtle: "#D1D8EF",
+            light: "#B7C2E6",
+            default: "#95A5DB",
+            dark: "#6D83CD"
           },
           border: {
             subtle: "#95a5db",

@@ -3,8 +3,12 @@
 declare(strict_types=1); ?>
 @php
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
+use Web\Www\Shared\Enum\ButtonSize;
+use Web\Www\Shared\Enum\ButtonStyle;
+use Web\Www\Shared\Enum\ButtonType;
 
 $isPlayerHost = $game->created_by_user_id === BearAuthService::getUserId();
+$isPlayerGuest = $user->user_level_enum === 0;
 @endphp
 
 <div id="layout" class="flex flex-col h-screen overflow-hidden">
@@ -23,6 +27,14 @@ $isPlayerHost = $game->created_by_user_id === BearAuthService::getUserId();
 
     <div class="w-16"></div>
   </div>
+
+  @if($isPlayerGuest)
+  <div class="flex justify-center items-center gap-4 px-4 py-2 bg-shade-surface-default border-b border-shade-border-dark">
+    <x-icon icon="information-circle" class="shrink-0 text-shade-text-negative" />
+    <p class="flex-wrap text-xs text-shade-text-negative"><span class="font-medium">You are playing as a guest.</span> To save your progress, track experience and unlock icons, please log in.</p>
+    <x-button label="Log In" :type="ButtonType::SECONDARY" :style="ButtonStyle::SECONDARY" :size="ButtonSize::SM" :isPill=true class="w-24 shrink-0" hx-get="/auth/dialog" />
+  </div>
+  @endif
 
   <div id="lobby" hx-target="#lobby" class="overflow-y-auto">
     @include('game::lobby.main')
