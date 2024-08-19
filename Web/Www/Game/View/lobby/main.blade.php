@@ -10,12 +10,15 @@ use Web\Www\Shared\Enum\RewardType;
 use Web\Www\Shared\Enum\UserLevelBadgeSize;
 
 $isPlayerHost = $game->created_by_user_id === BearAuthService::getUserId();
+$isPlayerGuest = $user->user_level_enum === 0;
 @endphp
 
 <x-panel class="m-2">
   <div class="flex flex-col w-full">
     <div class="flex gap-2">
+      @if(!$isPlayerGuest)
       <x-user-level-badge :size="UserLevelBadgeSize::LG" :level="$user->user_level_enum" />
+      @endif
       <div class="flex flex-col">
         <div class="flex gap-1 items-center">
           <span class="text-lg text-shade-text-title">{{ $user->display_name }}</span>
@@ -27,6 +30,7 @@ $isPlayerHost = $game->created_by_user_id === BearAuthService::getUserId();
         src="/static/flag/svg/{{ $user->cca2 }}.svg"
         alt="{{ $user->country_name }}" title="{{ $user->country_name }}" />
     </div>
+    @if(!$isPlayerGuest)
     <div class="flex flex-col">
       <div class="flex gap-1 text-sm text-shade-text-title">
         <span>Next Level:</span>
@@ -43,6 +47,7 @@ $isPlayerHost = $game->created_by_user_id === BearAuthService::getUserId();
         <x-next-reward class="mt-4" :level="$user->user_level_enum + 1" :rewards="$nextRewards" />
       </div>
     </div>
+    @endif
   </div>
 </x-panel>
 
@@ -62,8 +67,10 @@ $isPlayerHost = $game->created_by_user_id === BearAuthService::getUserId();
       <div class="flex justify-between gap-2">
         <x-button-selector label="Marker" imageUrl='/static/img/map-marker/{{ $user->map_marker_file_name }}'
           hx-get="/game/{{$game->id}}/lobby/dialog/map-marker" />
+        @if(!$isPlayerGuest)
         <x-button-selector label="Map" :imageUrl="str_replace(search: ['{x}', '{y}', '{z}'], replace: [1614, 1016, 11], subject: $user->map_style_full_uri)"
           hx-get="/game/{{$game->id}}/lobby/dialog/map-style" />
+        @endif
       </div>
       <div class="flex w-full justify-end items-end">
 
