@@ -90,7 +90,7 @@ $isPlayerGuest = $user->user_level_enum === 0;
 
 <x-panel class="flex flex-col m-2">
   <x-slot:heading>
-    <x-heading label="Test" />
+    <x-heading label="Game Settings" />
   </x-slot:heading>
 
   <div class="flex flex-col w-full gap-4">
