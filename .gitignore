@@ -8,10 +8,7 @@
 /public/static/dist
 /public/hot
 /public/storage
-/storage/*.key
-/storage/phpstan
-/storage/app/public/panorama/
-/storage/app/public/tile/
+/storage
 /vendor
 .env
 .env.backup
