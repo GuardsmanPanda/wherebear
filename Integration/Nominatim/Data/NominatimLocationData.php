@@ -34,7 +34,7 @@ final class NominatimLocationData {
       region_name: $data['address']['region'] ?? null,
       county_name: $data['address']['county'] ?? null,
       city_name: $data['address']['city'] ?? $data['address']['town'] ?? $data['address']['hamlet'] ?? $data['address']['village'] ?? null,
-      iso3166_2_lvl4: $data['address']['ISO3166_2_lvl4'] ?? null,
+      iso3166_2_lvl4: $data['address']['ISO3166-2-lvl4'] ?? null,
     );
   }
 
@@ -71,7 +71,7 @@ final class NominatimLocationData {
         'GB-SCT' => 'GB-SCT',
         'GB-WLS' => 'GB-WLS',
         'GB-NIR' => 'GB-NIR',
-        default => throw new RuntimeException(message: 'Unknown GB iso3166_2_lvl4: ' . $this->iso3166_2_lvl4),
+        default => throw new RuntimeException(message: 'Unknown GB iso3166_2_lvl4: ' . $this->iso3166_2_lvl4 . ': ' . $this->nominatim_json_string),
       };
     }
 
