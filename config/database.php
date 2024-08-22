@@ -6,14 +6,13 @@ return [
   'connections' => [
     'pgsql' => [
       'driver' => 'pgsql',
-      //'host' => "/var/run/postgresql",
-      'host' => 'localhost', // change back to peer auth when using correct user on linux
+      'host' => "/var/run/postgresql",
       'database' => 'wherebear',
       'username' => "wherebear",
       'password' => env(key: 'DB_PASSWORD'),
       'charset' => 'utf8',
       'prefix_indexes' => true,
-      //'search_path' => ['wherebear', 'public'], // REMOVE COMMENT WHEN MIGRATING
+      'search_path' => ['wherebear', 'public'], // REMOVE COMMENT WHEN MIGRATING
     ],
     'previous' => [
       'driver' => 'pgsql',
