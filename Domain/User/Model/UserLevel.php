@@ -22,7 +22,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static UserLevel|null firstWhere(string $column, string $operator, string|float|int|bool $value)
  * @method static Collection<int, UserLevel> all(array $columns = ['*'])
  * @method static Collection<int, UserLevel> get(array $columns = ['*'])
- * @method static Collection<array-key, UserLevel> pluck(string $column, string $key = null)
  * @method static Collection<int, UserLevel> fromQuery(string $query, array $bindings = [])
  * @method static Builder<UserLevel> lockForUpdate()
  * @method static Builder<UserLevel> select(array $columns = ['*'])

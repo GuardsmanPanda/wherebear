@@ -9,6 +9,7 @@ return new class extends Migration {
     public function up(): void {
         Schema::create(table: 'game', callback: static function (Blueprint $table): void {
             $table->uuid(column: 'id')->primary();
+            $table->text(column: 'name');
             $table->text(column: 'game_state_enum');
             $table->text(column: 'game_public_status_enum');
             $table->boolean(column: 'is_forced_start');
@@ -16,6 +17,8 @@ return new class extends Migration {
             $table->integer(column: 'current_round');
             $table->integer(column: 'round_duration_seconds');
             $table->integer(column: 'round_result_duration_seconds');
+            $table->text(column: 'panorama_tag_enum')->nullable();
+            $table->boolean(column: 'is_country_restricted');
             $table->timestampTz(column: 'round_ends_at')->nullable();
             $table->timestampTz(column: 'next_round_at')->nullable();
             $table->uuid(column: 'created_by_user_id');

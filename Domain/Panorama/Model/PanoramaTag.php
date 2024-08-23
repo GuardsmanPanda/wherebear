@@ -22,7 +22,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static PanoramaTag|null firstWhere(string $column, string $operator, string|float|int|bool $value)
  * @method static Collection<int, PanoramaTag> all(array $columns = ['*'])
  * @method static Collection<int, PanoramaTag> get(array $columns = ['*'])
- * @method static Collection<array-key, PanoramaTag> pluck(string $column, string $key = null)
  * @method static Collection<int, PanoramaTag> fromQuery(string $query, array $bindings = [])
  * @method static Builder<PanoramaTag> lockForUpdate()
  * @method static Builder<PanoramaTag> select(array $columns = ['*'])

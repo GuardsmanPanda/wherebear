@@ -22,7 +22,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static GamePublicStatus|null firstWhere(string $column, string $operator, string|float|int|bool $value)
  * @method static Collection<int, GamePublicStatus> all(array $columns = ['*'])
  * @method static Collection<int, GamePublicStatus> get(array $columns = ['*'])
- * @method static Collection<array-key, GamePublicStatus> pluck(string $column, string $key = null)
  * @method static Collection<int, GamePublicStatus> fromQuery(string $query, array $bindings = [])
  * @method static Builder<GamePublicStatus> lockForUpdate()
  * @method static Builder<GamePublicStatus> select(array $columns = ['*'])

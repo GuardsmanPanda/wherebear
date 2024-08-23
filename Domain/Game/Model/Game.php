@@ -6,6 +6,8 @@ use Carbon\CarbonInterface;
 use Closure;
 use Domain\Game\Enum\GamePublicStatusEnum;
 use Domain\Game\Enum\GameStateEnum;
+use Domain\Panorama\Enum\PanoramaTagEnum;
+use Domain\Panorama\Model\PanoramaTag;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearUser;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use Illuminate\Database\Eloquent\Builder;
@@ -26,7 +28,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static Game|null firstWhere(string $column, string $operator, string|float|int|bool $value)
  * @method static Collection<int, Game> all(array $columns = ['*'])
  * @method static Collection<int, Game> get(array $columns = ['*'])
- * @method static Collection<array-key, Game> pluck(string $column, string $key = null)
  * @method static Collection<int, Game> fromQuery(string $query, array $bindings = [])
  * @method static Builder<Game> lockForUpdate()
  * @method static Builder<Game> select(array $columns = ['*'])
@@ -59,17 +60,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $round_duration_seconds
  * @property int $round_result_duration_seconds
  * @property bool $is_forced_start
+ * @property bool $is_country_restricted
  * @property string $id
  * @property string $created_at
  * @property string $updated_at
  * @property string $created_by_user_id
+ * @property string|null $name
  * @property CarbonInterface|null $next_round_at
  * @property CarbonInterface|null $round_ends_at
  * @property GameStateEnum $game_state_enum
+ * @property PanoramaTagEnum|null $panorama_tag_enum
  * @property GamePublicStatusEnum $game_public_status_enum
  *
  * @property BearUser $createdByUser
  * @property GameState $gameState
+ * @property PanoramaTag|null $panoramaTag
  * @property GamePublicStatus $gamePublicStatus
  *
  * AUTO GENERATED FILE DO NOT MODIFY
@@ -87,6 +92,7 @@ final class Game extends Model {
         'game_public_status_enum' => GamePublicStatusEnum::class,
         'game_state_enum' => GameStateEnum::class,
         'next_round_at' => 'immutable_datetime',
+        'panorama_tag_enum' => PanoramaTagEnum::class,
         'round_ends_at' => 'immutable_datetime',
     ];
 
@@ -98,6 +104,11 @@ final class Game extends Model {
     /** @return BelongsTo<GameState, self> */
     public function gameState(): BelongsTo {
         return $this->belongsTo(related: GameState::class, foreignKey: 'game_state_enum', ownerKey: 'enum');
+    }
+
+    /** @return BelongsTo<PanoramaTag, self>|null */
+    public function panoramaTag(): BelongsTo|null {
+        return $this->belongsTo(related: PanoramaTag::class, foreignKey: 'panorama_tag_enum', ownerKey: 'enum');
     }
 
     /** @return BelongsTo<GamePublicStatus, self> */

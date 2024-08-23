@@ -6,8 +6,7 @@ use Domain\Game\Crud\GameStateCreator;
 use Illuminate\Support\Facades\DB;
 
 enum GameStateEnum: string {
-  case PREPARING = 'PREPARING';
-  case PREPARED = 'PREPARED';
+  case TEMPLATE = 'TEMPLATE';
   case WAITING_FOR_PLAYERS = 'WAITING_FOR_PLAYERS';
   case QUEUED = 'QUEUED';
   case STARTING = 'STARTING';
@@ -22,8 +21,7 @@ enum GameStateEnum: string {
 
   public function getDescription(): string {
     return match ($this) {
-      self::PREPARING => 'Preparing',
-      self::PREPARED => 'Prepared',
+      self::TEMPLATE => 'Template',
       self::WAITING_FOR_PLAYERS => 'Waiting for players',
       self::QUEUED => 'Queued',
       self::STARTING => 'Starting',

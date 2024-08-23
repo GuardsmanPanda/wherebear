@@ -4,7 +4,6 @@ namespace Domain\Game\Model;
 
 use Carbon\CarbonInterface;
 use Closure;
-use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearUser;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Model\BearCountry;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -27,7 +26,6 @@ use RuntimeException;
  * @method static GameRoundUser|null firstWhere(string $column, string $operator, string|float|int|bool $value)
  * @method static Collection<int, GameRoundUser> all(array $columns = ['*'])
  * @method static Collection<int, GameRoundUser> get(array $columns = ['*'])
- * @method static Collection<array-key, GameRoundUser> pluck(string $column, string $key = null)
  * @method static Collection<int, GameRoundUser> fromQuery(string $query, array $bindings = [])
  * @method static Builder<GameRoundUser> lockForUpdate()
  * @method static Builder<GameRoundUser> select(array $columns = ['*'])
@@ -72,7 +70,7 @@ use RuntimeException;
  * @property BearCountry|null $approximateCountryCca2
  * @property BearCountry|null $correctCountryCca2
  * @property GameRound $game
- * @property BearUser $user
+ * @property GameUser $user
  * @property GameRound $roundNumber
  *
  * AUTO GENERATED FILE DO NOT MODIFY
@@ -105,17 +103,17 @@ final class GameRoundUser extends Model {
 
     /** @return BelongsTo<GameRound, self> */
     public function game(): BelongsTo {
-        return $this->belongsTo(related: GameRound::class, foreignKey: 'game_id', ownerKey: 'round_number');
+        return $this->belongsTo(related: GameRound::class, foreignKey: 'game_id', ownerKey: 'game_id');
     }
 
-    /** @return BelongsTo<BearUser, self> */
+    /** @return BelongsTo<GameUser, self> */
     public function user(): BelongsTo {
-        return $this->belongsTo(related: BearUser::class, foreignKey: 'user_id', ownerKey: 'id');
+        return $this->belongsTo(related: GameUser::class, foreignKey: 'user_id', ownerKey: 'user_id');
     }
 
     /** @return BelongsTo<GameRound, self> */
     public function roundNumber(): BelongsTo {
-        return $this->belongsTo(related: GameRound::class, foreignKey: 'round_number', ownerKey: 'game_id');
+        return $this->belongsTo(related: GameRound::class, foreignKey: 'round_number', ownerKey: 'round_number');
     }
 
     protected $guarded = ['game_id', 'round_number', 'user_id', 'updated_at', 'created_at', 'deleted_at'];

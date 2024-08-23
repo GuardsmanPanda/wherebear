@@ -8,6 +8,7 @@ use Domain\Map\Enum\MapMarkerEnum;
 use Domain\Map\Enum\MapStyleEnum;
 use Domain\Map\Model\MapMarker;
 use Domain\Map\Model\MapStyle;
+use Domain\User\Enum\UserFlagEnum;
 use Domain\User\Enum\UserLevelEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Model\BearCountry;
@@ -29,7 +30,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static WhereBearUser|null firstWhere(string $column, string $operator, string|float|int|bool $value)
  * @method static Collection<int, WhereBearUser> all(array $columns = ['*'])
  * @method static Collection<int, WhereBearUser> get(array $columns = ['*'])
- * @method static Collection<array-key, WhereBearUser> pluck(string $column, string $key = null)
  * @method static Collection<int, WhereBearUser> fromQuery(string $query, array $bindings = [])
  * @method static Builder<WhereBearUser> lockForUpdate()
  * @method static Builder<WhereBearUser> select(array $columns = ['*'])
@@ -68,11 +68,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $remember_token
  * @property CarbonInterface|null $last_login_at
  * @property MapStyleEnum $map_style_enum
+ * @property UserFlagEnum|null $user_flag_enum
  * @property MapMarkerEnum $map_marker_enum
  * @property UserLevelEnum $user_level_enum
  *
  * @property BearCountry|null $countryCca2
  * @property MapStyle $mapStyle
+ * @property UserFlag|null $userFlag
  * @property UserLevel $userLevel
  * @property MapMarker $mapMarker
  *
@@ -91,6 +93,7 @@ final class WhereBearUser extends Model {
         'last_login_at' => 'immutable_datetime',
         'map_marker_enum' => MapMarkerEnum::class,
         'map_style_enum' => MapStyleEnum::class,
+        'user_flag_enum' => UserFlagEnum::class,
         'user_level_enum' => UserLevelEnum::class,
     ];
 
@@ -102,6 +105,11 @@ final class WhereBearUser extends Model {
     /** @return BelongsTo<MapStyle, self> */
     public function mapStyle(): BelongsTo {
         return $this->belongsTo(related: MapStyle::class, foreignKey: 'map_style_enum', ownerKey: 'enum');
+    }
+
+    /** @return BelongsTo<UserFlag, self>|null */
+    public function userFlag(): BelongsTo|null {
+        return $this->belongsTo(related: UserFlag::class, foreignKey: 'user_flag_enum', ownerKey: 'enum');
     }
 
     /** @return BelongsTo<UserLevel, self> */

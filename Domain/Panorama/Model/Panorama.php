@@ -28,7 +28,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static Panorama|null firstWhere(string $column, string $operator, string|float|int|bool $value)
  * @method static Collection<int, Panorama> all(array $columns = ['*'])
  * @method static Collection<int, Panorama> get(array $columns = ['*'])
- * @method static Collection<array-key, Panorama> pluck(string $column, string $key = null)
  * @method static Collection<int, Panorama> fromQuery(string $query, array $bindings = [])
  * @method static Builder<Panorama> lockForUpdate()
  * @method static Builder<Panorama> select(array $columns = ['*'])
