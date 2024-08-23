@@ -10,10 +10,11 @@ final class PlayerProfileSmallLobby extends Component {
   public function __construct(
     public int     $level,
     public bool    $isReady,
-    public string  $name = 'Guest',
+    public string  $name,
+    public string  $countryCode,
+    public string  $countryName,
+    public string  $icon,
     public bool    $isHost = false,
-    public ?string $countryCode = null,
-    public ?string $icon = null,
   ) {
   }
 
@@ -23,7 +24,7 @@ final class PlayerProfileSmallLobby extends Component {
 
   public function render(): string {
     return <<<'blade'
-    <x-player-profile-small :$name :$countryCode :$level :$icon :nameBackgroundColor="$getNameBackgroundColor()" />
+    <x-player-profile-small {{ $attributes }} :$name :$countryCode :$countryName :$level :$icon :nameBackgroundColor="$getNameBackgroundColor()" />
     blade;
   }
 }

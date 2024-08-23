@@ -17,6 +17,7 @@ final class UserLevelBadge extends Component {
       UserLevelBadgeSize::SM => 'level-badge-sm',
       UserLevelBadgeSize::MD => 'level-badge-md',
       UserLevelBadgeSize::LG => 'level-badge-lg',
+      UserLevelBadgeSize::XL => 'level-badge-xl',
     };
     return "/static/img/level-badge/$filename.png";
   }
@@ -34,14 +35,15 @@ final class UserLevelBadge extends Component {
       UserLevelBadgeSize::SM => 'text-sm',
       UserLevelBadgeSize::MD => 'text-base',
       UserLevelBadgeSize::LG => 'text-2xl',
+      UserLevelBadgeSize::XL => 'text-4xl',
     };
   }
 
   public function render(): string {
     return <<<'blade'
 		<div {{ $attributes() }} class="shrink-0">
-			<div class='relative inline-block shrink-0'>
-				<img src="{{ $getImageUrl() }}" class="block" alt="User level: {{ $level }}">
+			<div class='relative shrink-0'>
+				<img src="{{ $getImageUrl() }}" class="block" alt="User badge level {{ $level }}">
 				<span class="flex items-center justify-center absolute inset-0 text-shade-text-negative {{ $getBottomPx() }} {{ $getFontSize() }}">
 					{{ $level }}
 				</span>

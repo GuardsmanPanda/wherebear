@@ -19,10 +19,10 @@ final class ButtonSelector extends Component {
       <button {{ $attributes->class([
         'flex', 
         'items-end',
-        'h-12',
+        'h-12 lg:h-14',
       ]) }}>
-        <div class='flex w-12 h-12 justify-center items-center p-1 rounded bg-secondary-surface-default border border-b-4 border-secondary-border-dark hover:bg-secondary-surface-dark active:h-[46px] active:border-t active:border-b-2'>
-          <img class="max-h-10 max-w-10" src="{{ $imageUrl }}" draggable="false" />
+        <div class='flex w-12 lg:w-14 h-12 lg:h-14 justify-center items-center p-1 rounded bg-secondary-surface-default border border-b-4 border-secondary-border-dark hover:bg-secondary-surface-dark active:h-[46px] lg:active:h-[54px] active:border-t active:border-b-2'>
+          <img class="max-w-10 lg:max-w-11 max-h-10 lg:max-h-11" src="{{ $imageUrl }}" draggable="false" />
         </div>
       </button>
     </div>

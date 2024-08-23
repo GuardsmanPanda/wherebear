@@ -32,6 +32,7 @@ final class Button extends Component {
       ButtonSize::SM => 'h-[32px]',
       ButtonSize::MD => 'h-[40px]',
       ButtonSize::LG => 'h-[48px]',
+      ButtonSize::XL => 'h-[56px]',
     };
   }
 
@@ -40,6 +41,7 @@ final class Button extends Component {
       ButtonSize::SM => 'active:h-[28px]',
       ButtonSize::MD => 'active:h-[36px]',
       ButtonSize::LG => 'active:h-[44px]',
+      ButtonSize::XL => 'active:h-[52px]',
     };
   }
 
