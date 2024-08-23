@@ -21,7 +21,7 @@ declare(strict_types=1); ?>
     let targetTime = null;
     let countdownInterval;
     let reloading = false
-    countdownStart = function (seconds) {
+    countdownStart = function(seconds) {
       clearInterval(countdownInterval);
       targetTime = new Date(new Date().getTime() + seconds * 1000);
       document.getElementById("countdown").setAttribute("style", "display: block;");
@@ -44,7 +44,7 @@ declare(strict_types=1); ?>
 
 <body>
   <div id="primary" hx-target="#primary" class="bg-tertiary-surface-subtle font-body text-shade-text-body">
-    <div class="flex flex-col max-w-3xl min-h-screen mx-auto bg-green-500 border-x border-shade-border-dark">
+    <div class="flex flex-col max-w-7xl min-h-screen mx-auto bg-green-500 border-x border-shade-border-dark">
       <main class="flex grow bg-tertiary-surface-darker">
         <div class="w-full">
           {!! $content !!}

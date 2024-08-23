@@ -11,46 +11,61 @@ $isPlayerHost = $game->created_by_user_id === BearAuthService::getUserId();
 $isPlayerGuest = $user->user_level_enum === 0;
 @endphp
 
-<div id="layout" class="flex flex-col h-screen overflow-hidden">
-  <div id="game-status" class="flex justify-between gap-2 bg-primary-surface-default border-b-2 border-primary-border-dark p-2">
-    <div class="w-16">
-      @if(!$isPlayerHost)
-      <x-icon icon="chevron-left" color="text-shade-text-subtitle hover:cursor-pointer hover:text-shade-text-title" size="12"
-        hx-delete="/game/{{$game->id}}/lobby/leave" />
-      @endif
+<div id="layout" class="flex h-screen overflow-hidden">
+  <div class="flex flex-col w-full">
+    <div id="game-status" class="flex justify-between gap-2 bg-primary-surface-default border-b-2 border-primary-border-dark p-2">
+      <div class="w-16">
+        @if(!$isPlayerHost)
+        <x-icon icon="chevron-left" color="text-shade-text-subtitle hover:cursor-pointer hover:text-shade-text-title" size="12"
+          hx-delete="/game/{{$game->id}}/lobby/leave" />
+        @endif
+      </div>
+
+      <div class="flex flex-col w-full justify-between {{ $isPlayerHost ? 'items-center' : 'items-end' }}">
+        <span id="game-state-text" class="text-md text-shade-text-title font-medium text-center">Waiting for players...</span>
+        <span class="text-md text-shade-text-title">7/10 ready</span>
+      </div>
+
+      <div class="w-16"></div>
     </div>
 
-    <div class="flex flex-col w-full justify-between {{ $isPlayerHost ? 'items-center' : 'items-end' }}">
-      <span id="game-state-text" class="text-md text-shade-text-title font-medium text-center">Waiting for players...</span>
-      <span class="text-md text-shade-text-title">7/10 ready</span>
+    @if($isPlayerGuest)
+    <div class="flex justify-center items-center gap-4 px-4 py-2 bg-shade-surface-default border-b border-shade-border-dark">
+      <x-icon icon="information-circle" class="shrink-0 text-shade-text-negative" />
+      <p class="flex-wrap text-xs text-shade-text-negative"><span class="font-medium">You are playing as a guest.</span> To save your progress, track experience and unlock icons, please log in.</p>
+      <x-button label="Log In" :type="ButtonType::SECONDARY" :style="ButtonStyle::SECONDARY" :size="ButtonSize::SM" :isPill=true class="w-24 shrink-0" hx-get="/auth/dialog" />
+    </div>
+    @endif
+
+    <div hx-target="#lobby" class="flex lg:h-full overflow-y-auto">
+      <div id="lobby" class="flex flex-col w-full lg:w-2/3 overflow-y-auto">
+        @include('game::lobby.main')
+      </div>
+
+      <div class="hidden lg:flex flex-col w-full lg:w-1/3 pt-2 bg-tertiary-surface-light border-l border-shade-border-default">
+        <div class="mx-2 pb-1 border-b border-shade-border-default">
+          <x-heading label="Players" />
+        </div>
+        <div class="p-2 overflow-y-auto">
+          <div id="player-list" class="" hx-get="/game/{{$game->id}}/lobby/player-list" hx-trigger="load" hx-target="this"></div>
+        </div>
+      </div>
     </div>
 
-    <div class="w-16"></div>
-  </div>
+    <div id="playersSubstitute" class="flex-1 min-h-[136px] hidden"></div>
+    <div id="players" data-state="collapsed" class="flex flex-col lg:hidden min-h-[136px] flex-1 px-2 bg-primary-surface-default border border-b-0 border-primary-border-dark rounded-t-2xl transition-[height] duration-700 ease-in-out">
+      <div class="flex justify-between items-center py-2 border-b border-primary-border-dark cursor-pointer" onclick="togglePlayerListSize()">
+        <div></div>
+        <div class="font-heading text-base text-shade-text-title font-medium uppercase">Players</div>
 
-  @if($isPlayerGuest)
-  <div class="flex justify-center items-center gap-4 px-4 py-2 bg-shade-surface-default border-b border-shade-border-dark">
-    <x-icon icon="information-circle" class="shrink-0 text-shade-text-negative" />
-    <p class="flex-wrap text-xs text-shade-text-negative"><span class="font-medium">You are playing as a guest.</span> To save your progress, track experience and unlock icons, please log in.</p>
-    <x-button label="Log In" :type="ButtonType::SECONDARY" :style="ButtonStyle::SECONDARY" :size="ButtonSize::SM" :isPill=true class="w-24 shrink-0" hx-get="/auth/dialog" />
-  </div>
-  @endif
+        <x-icon id="players-expand-icon" class="transition-transform duration-1000 ease-in-out" icon="chevron-up" :isButton=true color="text-shade-text-title" />
+      </div>
 
-  <div id="lobby" hx-target="#lobby" class="overflow-y-auto">
-    @include('game::lobby.main')
-  </div>
-
-  <div id="playersSubstitute" class="flex-1 min-h-[136px] hidden"></div>
-  <div id="players" data-state="collapsed" class="flex flex-col min-h-[136px] flex-1 px-2 bg-primary-surface-default border border-b-0 border-primary-border-dark rounded-t-2xl transition-[height] duration-700 ease-in-out">
-    <div class="flex justify-between items-center py-2 border-b border-primary-border-dark cursor-pointer" onclick="togglePlayerListSize()">
-      <div></div>
-      <div class="font-heading text-base text-shade-text-title font-medium uppercase">Players</div>
-
-      <x-icon id="players-expand-icon" class="transition-transform duration-1000 ease-in-out" icon="chevron-up" :isButton=true color="text-shade-text-title" />
+      <div id="player-list" class="py-2" hx-get="/game/{{$game->id}}/lobby/player-list" hx-trigger="load" hx-target="this"></div>
     </div>
-
-    <div id="player-list" class="py-2" hx-get="/game/{{$game->id}}/lobby/player-list" hx-trigger="load" hx-target="this"></div>
   </div>
+
+
 </div>
 
 <script>

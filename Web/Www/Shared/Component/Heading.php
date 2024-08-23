@@ -12,10 +12,10 @@ final class Heading extends Component {
 
   public function render(): string {
     return <<<'blade'
-    <div {{ $attributes->merge(['class' => 'flex justify-between items-center pb-1']) }}>
+    <div {{ $attributes->merge(['class' => 'flex justify-between items-center']) }}>
       <div class="flex items-center">
         <x-icon icon="chevron-right" :type="Web\Www\Shared\Enum\IconType::SOLID" size=5 color="text-shade-text-body" />
-        <span class="font-heading text-sm text-shade-text-body uppercase">{{ $label }}</span>
+        <span class="font-heading text-sm text-shade-text-body uppercase lg:text-base">{{ $label }}</span>
       </div>
       <span>{{ $slot }}</span>
     </div>
