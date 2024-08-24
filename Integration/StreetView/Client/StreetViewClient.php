@@ -15,7 +15,7 @@ final class StreetViewClient {
 
   public static function fromLocation(float $latitude, float $longitude, int $radius = 50): StreetViewPanoramaData|null {
     $client = BearExternalApiClient::fromEnum(enum: BearExternalApiEnum::GOOGLE_STREET_VIEW_STATIC_API);
-    $resp = $client->request(path: 'metadata', query: ['location' => "$latitude,$longitude", 'radius' => $radius]);
+    $resp = $client->request(path: 'metadata', query: ['location' => "$latitude,$longitude", 'radius' => "$radius"]);
     return StreetViewPanoramaData::fromResponse(response: $resp);
   }
 }

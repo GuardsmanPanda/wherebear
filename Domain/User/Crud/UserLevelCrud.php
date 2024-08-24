@@ -7,7 +7,7 @@ use Domain\User\Model\UserLevel;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 
 final class UserLevelCrud {
-    public static function syncToDatabase(UserLevelEnum $enum): UserLevel {
+    public static function syncToDatabase(UserLevelEnum $enum): void {
         BearDatabaseService::mustBeInTransaction();
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST']);
 
@@ -17,6 +17,5 @@ final class UserLevelCrud {
         $model->feature_unlock = $enum->getFeatureUnlock();
 
         $model->save();
-        return $model;
     }
 }

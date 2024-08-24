@@ -16,6 +16,7 @@ use Domain\Map\Enum\MapMarkerEnum;
 use Domain\Map\Enum\MapStyleEnum;
 use Domain\User\Crud\WhereBearUserUpdater;
 use Domain\User\Enum\BearRoleEnum;
+use Domain\User\Enum\UserFlagEnum;
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearArrayService;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
@@ -103,13 +104,15 @@ final class GameLobbyController extends Controller {
             gu.is_ready,
             mm.file_name as map_marker_file_name,
             ms.name as map_style_name, ms.full_uri as map_style_full_uri,
-            bc.cca2, bc.name as country_name
+            COALESCE(uf.file_path, CONCAT('/static/flag/svg/', bu.country_cca2, '.svg')) as flag_file_path,
+            COALESCE(uf.description, bc.name) as flag_description
         FROM bear_user bu
         LEFT JOIN game_user gu ON gu.user_id = bu.id AND gu.game_id = ?
         LEFT JOIN map_marker mm ON mm.enum = bu.map_marker_enum
         LEFT JOIN map_style ms ON ms.enum = bu.map_style_enum
         LEFT JOIN bear_country bc ON bc.cca2 = bu.country_cca2
         LEFT JOIN user_level ul ON ul.enum = bu.user_level_enum
+        LEFT JOIN user_flag uf ON uf.enum = bu.user_flag_enum
         WHERE bu.id = ?
       ", bindings: [$game->id, $user_id]),
     ]);
@@ -129,13 +132,16 @@ final class GameLobbyController extends Controller {
         SELECT 
             bu.display_name, bu.country_cca2,
             mm.file_name as map_marker_file_name,
-            gu.is_ready, bc.name as country_name, bc.cca2,
+            gu.is_ready,
+            COALESCE(uf.file_path, CONCAT('/static/flag/svg/', bu.country_cca2, '.svg')) as flag_file_path,
+            COALESCE(uf.description, bc.name) as flag_description,
             bu.user_level_enum,
             (SELECT COUNT(*) FROM game_user WHERE user_id = bu.id) as game_count
         FROM game_user gu
         LEFT JOIN bear_user bu ON bu.id = gu.user_id
         LEFT JOIN bear_country bc ON bc.cca2 = bu.country_cca2
         LEFT JOIN map_marker mm ON mm.enum = bu.map_marker_enum
+        LEFT JOIN user_flag uf ON uf.enum = bu.user_flag_enum
         WHERE gu.game_id = ?
         ORDER BY bu.id = ? DESC, bu.display_name, bu.country_cca2, bu.id
       ", bindings: [$gameId, BearAuthService::getUserId()]),
@@ -156,6 +162,9 @@ final class GameLobbyController extends Controller {
     }
     if (Req::has(key: 'country_cca2')) {
       $updater->setCountryCca2(country_cca2: Req::getString(key: 'country_cca2'));
+    }
+    if (Req::has(key: 'user_flag_enum')) {
+      $updater->setUserFlag(enum: UserFlagEnum::fromRequest());
     }
     $updater->update();
     GameBroadcast::playerUpdate(gameId: $gameId, playerId: BearAuthService::getUserId()); // Broadcast to all players
@@ -215,7 +224,7 @@ final class GameLobbyController extends Controller {
         'display_name' => BearAuthService::getUser()->display_name,
         'flag_selected' => BearAuthService::getUser()->country_cca2,
         'game_id' => $gameId,
-        'novelty_flags' => [],
+        'novelty_flags' => DB::select(query: "SELECT enum, description, file_path FROM user_flag ORDER BY enum"),
       ]
     );
   }

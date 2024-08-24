@@ -5,6 +5,7 @@ namespace Domain\User\Crud;
 use Carbon\CarbonInterface;
 use Domain\Map\Enum\MapMarkerEnum;
 use Domain\Map\Enum\MapStyleEnum;
+use Domain\User\Enum\UserFlagEnum;
 use Domain\User\Model\WhereBearUser;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 
@@ -34,13 +35,15 @@ final readonly class WhereBearUserUpdater {
         return $this;
     }
 
-    public function setEmail(string|null $email): self {
-        $this->model->email = $email;
-        return $this;
-    }
 
     public function setCountryCca2(string $country_cca2): self {
         $this->model->country_cca2 = $country_cca2;
+        $this->model->user_flag_enum = null;
+        return $this;
+    }
+
+    public function setUserFlag(UserFlagEnum $enum): self {
+        $this->model->user_flag_enum = $enum;
         return $this;
     }
 

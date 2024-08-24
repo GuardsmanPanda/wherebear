@@ -9,8 +9,8 @@ use Illuminate\View\Component;
 final class PlayerProfileSmall extends Component {
   public function __construct(
     public string  $name,
-    public string  $countryCode,
-    public string  $countryName,
+    public string  $flagFilePath,
+    public string  $flagDescription,
     public string  $icon,
     public ?int    $level = null,
     public ?bool   $isActive = null,
@@ -35,7 +35,7 @@ final class PlayerProfileSmall extends Component {
         <x-user-level-badge :size="Web\Www\Shared\Enum\UserLevelBadgeSize::XS" :level=$level class="absolute {{ $name ? '-bottom-1 -left-[6px]' : '-bottom-2' }} z-20" />
         @endif
 
-        <img class="absolute bottom-1 -right-[6px] h-5 rounded-sm border border-shade-border-dark z-20" src="/static/flag/svg/{{ $countryCode }}.svg" alt="Flag of {{ $countryName }}" title="{{ $countryName }}" />
+        <img class="absolute bottom-1 -right-[6px] h-5 rounded-sm border border-shade-border-dark z-20" src="{{ $flagFilePath }}" alt="{{ $flagDescription }}" tippy="{{ $flagDescription }}" />
       </div>
 
       <div class="relative w-20 -mt-2 z-10 border border-shade-border-dark rounded px-1 py-0.5 {{ $nameBackgroundColor }} text-xs text-center {{ $textColor ?: 'text-shade-text-title' }} truncate">

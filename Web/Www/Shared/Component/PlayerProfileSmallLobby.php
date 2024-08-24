@@ -11,8 +11,8 @@ final class PlayerProfileSmallLobby extends Component {
     public int     $level,
     public bool    $isReady,
     public string  $name,
-    public string  $countryCode,
-    public string  $countryName,
+    public string  $flagFilePath,
+    public string  $flagDescription,
     public string  $icon,
     public bool    $isHost = false,
   ) {
@@ -24,7 +24,7 @@ final class PlayerProfileSmallLobby extends Component {
 
   public function render(): string {
     return <<<'blade'
-    <x-player-profile-small {{ $attributes }} :$name :$countryCode :$countryName :$level :$icon :nameBackgroundColor="$getNameBackgroundColor()" />
+    <x-player-profile-small {{ $attributes }} :$name :$flagFilePath :$flagDescription :$level :$icon :nameBackgroundColor="$getNameBackgroundColor()" />
     blade;
   }
 }

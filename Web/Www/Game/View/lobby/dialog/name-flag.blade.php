@@ -26,10 +26,10 @@
       @foreach($novelty_flags as $flag)
         <button class="px-1 hover:scale-110 transition-transform duration-75" hx-dialog-close
                 hx-patch="/game/{{$game_id}}/lobby/update-user"
-                hx-vals='{"user_country_iso2_code": "{{$flag->country_iso2_code}}"}'
-                tippy="{{$flag->country_name}}">
-          <img class="h-8" src="/static/flag/svg/{{$flag->country_iso2_code}}.svg?"
-               alt="{{$flag->country_name}}">
+                hx-vals='{"user_flag_enum": "{{$flag->enum}}"}'
+                tippy="{{$flag->description}}">
+          <img class="h-8" src="{{$flag->file_path}}"
+               alt="{{$flag->description}}">
         </button>
       @endforeach
     </div>

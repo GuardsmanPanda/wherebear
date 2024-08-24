@@ -11,8 +11,8 @@ final class PlayerProfileLargeLobby extends Component {
     public int     $level,
     public bool    $isReady,
     public string  $name,
-    public string  $countryCode,
-    public string  $countryName,
+    public string  $flagFilePath,
+    public string  $flagDescription,
     public string  $icon,
     public bool    $isHost = false,
     public ?string $title = null,
@@ -38,7 +38,7 @@ final class PlayerProfileLargeLobby extends Component {
           <span class="text-sm text-shade-text-subtitle leading-none truncate">{{ $title }}</span>
         </div>
       </div>
-      <img class="h-10 rounded shrink-0 border border-shade-border-light" src="/static/flag/svg/{{ $countryCode }}.svg" alt="Flag of {{ $countryName }}" title="{{ $countryName }}" />
+      <img class="h-10 rounded shrink-0 border border-shade-border-light" src="{{ $flagFilePath }}" alt="{{ $flagDescription }}" tippy="{{ $flagDescription }}" />
     </div>
     blade;
   }

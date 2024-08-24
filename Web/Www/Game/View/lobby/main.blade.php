@@ -29,8 +29,8 @@ $isPlayerGuest = $user->user_level_enum === 0;
         <span class="text-sm lg:text-lg text-shade-text-subtitle">Enthusiast Traveler</span>
       </div>
       <img class="h-8 ml-auto rounded border border-shade-border-default shadow lg:h-16"
-        src="/static/flag/svg/{{ $user->cca2 }}.svg"
-        alt="{{ $user->country_name }}" title="{{ $user->country_name }}" />
+        src="{{ $user->flag_file_path }}"
+        alt="{{ $user->flag_description }}" tippy="{{ $user->flag_description }}" />
     </div>
     @if(!$isPlayerGuest)
     <div class="flex flex-col">

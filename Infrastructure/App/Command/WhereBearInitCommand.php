@@ -9,6 +9,7 @@ use Domain\Map\Enum\MapStyleEnum;
 use Domain\Panorama\Enum\PanoramaTagEnum;
 use Domain\User\Enum\BearPermissionEnum;
 use Domain\User\Enum\BearRoleEnum;
+use Domain\User\Enum\UserFlagEnum;
 use Domain\User\Enum\UserLevelEnum;
 use Domain\User\Service\WhereBearRolePermissionService;
 use GuardsmanPanda\Larabear\Infrastructure\Console\Service\BearTransactionCommand;
@@ -28,6 +29,7 @@ final class WhereBearInitCommand extends BearTransactionCommand {
         BearExternalApiEnum::syncToDatabase();
         GamePublicStatusEnum::syncToDatabase();
         PanoramaTagEnum::syncToDatabase();
+        UserFlagEnum::syncToDatabase();
         UserLevelEnum::syncToDatabase();
 
         WhereBearRolePermissionService::syncRolePermissionsToDatabase(); // Requires Bear Role and Bear Permission.

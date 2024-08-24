@@ -3,8 +3,9 @@
 namespace Domain\User\Enum;
 
 use Domain\User\Crud\UserLevelCrud;
+use GuardsmanPanda\Larabear\Infrastructure\App\Interface\BearDatabaseBackedEnumInterface;
 
-enum UserLevelEnum: int {
+enum UserLevelEnum: int implements BearDatabaseBackedEnumInterface {
   case L0 = 0;
   case L1 = 1;
   case L2 = 2;

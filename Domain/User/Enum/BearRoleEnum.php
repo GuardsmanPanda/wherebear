@@ -5,7 +5,6 @@ namespace Domain\User\Enum;
 
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Crud\BearRoleCrud;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Interface\BearRoleEnumInterface;
-use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearRole;
 
 enum BearRoleEnum: string implements BearRoleEnumInterface {
     case ADMIN = 'ADMIN';
@@ -20,9 +19,6 @@ enum BearRoleEnum: string implements BearRoleEnumInterface {
         };
     }
 
-    public function getModel(): BearRole {
-        return BearRole::findOrFail(id: $this->value);
-    }
 
     public static function syncToDatabase(): void {
         foreach (BearRoleEnum::cases() as $enum) {
