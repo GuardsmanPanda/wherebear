@@ -36,8 +36,9 @@ final class GameRunJob implements ShouldQueue, ShouldBeUnique {
         $game = Game::findOrFail(id: $this->gameId);
         while (!$this->exitJob && $game->game_state_enum !== GameStateEnum::FINISHED) {
             $game = match ($game->game_state_enum) {
-                GameStateEnum::QUEUED => $this->ensureReady(game: $game),
-                GameStateEnum::STARTING => $this->startGame(game: $game),
+                GameStateEnum::QUEUED => $this->startConfirmingReady(game: $game),
+                GameStateEnum::CONFIRMING => $this->confirmReady(game: $game),
+                GameStateEnum::SELECTING => $this->startGame(game: $game),
                 GameStateEnum::IN_PROGRESS => $this->runRound(game: $game),
                 GameStateEnum::IN_PROGRESS_CALCULATING => $this->calculateRoundResults(game: $game),
                 GameStateEnum::IN_PROGRESS_RESULT => $this->nextRoundOrEnd(game: $game),
@@ -46,11 +47,17 @@ final class GameRunJob implements ShouldQueue, ShouldBeUnique {
         }
     }
 
-    private function ensureReady(Game $game): Game {
+    private function startConfirmingReady(Game $game): Game {
+      GameBroadcast::prep(gameId: $game->id, message: 'Game Starting', stage: 1);
+      return GameService::setGameState(gameId: $game->id, state: GameStateEnum::CONFIRMING);
+    }
+
+
+    private function confirmReady(Game $game): Game {
         GameBroadcast::prep(gameId: $game->id, message: 'Game Starting', stage: 1);
         sleep(seconds: 8); // Wait for all players to confirm they are ready.
-        if (GameService::canGameStart(gameId: $game->id, expectState: GameStateEnum::QUEUED)) {
-            return GameService::setGameState(gameId: $game->id, state: GameStateEnum::STARTING);
+        if (GameService::canGameStart(gameId: $game->id, expectState: GameStateEnum::CONFIRMING)) {
+            return GameService::setGameState(gameId: $game->id, state: GameStateEnum::SELECTING);
         }
         $game = GameService::setGameState(gameId: $game->id, state: GameStateEnum::WAITING_FOR_PLAYERS);
         GameBroadcast::prep(gameId: $this->gameId, message: 'Waiting For Players..', stage: -1);

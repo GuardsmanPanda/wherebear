@@ -9,7 +9,8 @@ enum GameStateEnum: string {
   case TEMPLATE = 'TEMPLATE';
   case WAITING_FOR_PLAYERS = 'WAITING_FOR_PLAYERS';
   case QUEUED = 'QUEUED';
-  case STARTING = 'STARTING';
+  case CONFIRMING = 'CONFIRMING';
+  case SELECTING = 'SELECTING';
   case IN_PROGRESS = 'IN_PROGRESS';
   case IN_PROGRESS_CALCULATING = 'IN_PROGRESS_CALCULATING';
   case IN_PROGRESS_RESULT = 'IN_PROGRESS_RESULT';
@@ -24,7 +25,8 @@ enum GameStateEnum: string {
       self::TEMPLATE => 'Template',
       self::WAITING_FOR_PLAYERS => 'Waiting for players',
       self::QUEUED => 'Queued',
-      self::STARTING => 'Starting',
+      self::CONFIRMING => 'Confirming players are ready',
+      self::SELECTING => 'Selecting panoramas',
       self::IN_PROGRESS => 'In progress',
       self::IN_PROGRESS_CALCULATING => 'In progress calculating',
       self::IN_PROGRESS_RESULT => 'In progress result',
@@ -37,7 +39,7 @@ enum GameStateEnum: string {
 
 
   public function isStarting(): bool {
-    return $this === self::WAITING_FOR_PLAYERS || $this === self::QUEUED || $this === self::STARTING;
+    return $this === self::WAITING_FOR_PLAYERS || $this === self::QUEUED || $this === self::CONFIRMING || $this === self::SELECTING;
   }
 
   public function isInProgress(): bool {
