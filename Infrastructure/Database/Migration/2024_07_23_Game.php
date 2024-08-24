@@ -27,6 +27,7 @@ return new class extends Migration {
             $table->foreign("created_by_user_id")->references('id')->on(table: 'bear_user');
             $table->foreign("game_state_enum")->references('enum')->on(table: 'game_state');
             $table->foreign("game_public_status_enum")->references('enum')->on(table: 'game_public_status');
+            $table->foreign("panorama_tag_enum")->references('enum')->on(table: 'panorama_tag');
         });
     }
 

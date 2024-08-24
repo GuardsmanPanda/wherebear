@@ -17,7 +17,7 @@ final class LandingPageController extends Controller {
     return Resp::view(view: 'landing-page::game-list', data: [
       'games' => DB::select(query: "
           SELECT
-              g.id, g.number_of_rounds, g.round_duration_seconds,
+              g.id, g.number_of_rounds, g.round_duration_seconds, g.name AS game_name,
               bu.display_name,
               gu.user_id IS NOT NULL AS is_in_game
           FROM game g

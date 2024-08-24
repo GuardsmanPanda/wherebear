@@ -62,10 +62,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property bool $is_forced_start
  * @property bool $is_country_restricted
  * @property string $id
+ * @property string $name
  * @property string $created_at
  * @property string $updated_at
  * @property string $created_by_user_id
- * @property string|null $name
  * @property CarbonInterface|null $next_round_at
  * @property CarbonInterface|null $round_ends_at
  * @property GameStateEnum $game_state_enum

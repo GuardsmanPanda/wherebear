@@ -1,6 +1,7 @@
 <?php declare(strict_types=1); ?>
 @php use Domain\User\Enum\BearPermissionEnum;use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService; @endphp
 <x-bear::dialog.create hx-post="/game">
+  <x-bear::form.text id="name" required>{{$display_name}}'s Game</x-bear::form.text>
   <x-bear::form.number id="number_of_rounds" required>7</x-bear::form.number>
   <fieldset class="flex gap-3 px-3 border border-gray-400 pb-3 mt-2">
     <legend class="px-1.5">Round Duration - Seconds</legend>

@@ -5,6 +5,7 @@ namespace Web\Www\Game\Controller;
 use Domain\Game\Crud\GameCreator;
 use Domain\Game\Crud\GameDeleter;
 use Domain\Game\Enum\GamePublicStatusEnum;
+use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Htmx;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 use Illuminate\Routing\Controller;
@@ -13,11 +14,14 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class GameController extends Controller {
   public function createDialog(): View {
-    return Htmx::dialogView(view: 'game::create', title: "Create Game");
+    return Htmx::dialogView(view: 'game::create', title: "Create Game", data: [
+      'display_name' => BearAuthService::getUser()->display_name,
+    ]);
   }
 
   public function create(): Response {
     $game = GameCreator::create(
+      name: Req::getString(key: 'name'),
       number_of_rounds: Req::getInt(key: 'number_of_rounds'),
       round_duration_seconds: Req::getInt(key: 'round_duration_seconds'),
       round_result_duration_seconds: Req::getInt(key: 'round_result_duration_seconds'),
