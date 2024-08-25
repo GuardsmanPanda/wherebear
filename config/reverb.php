@@ -16,13 +16,13 @@ return [
 
     'servers' => [
         'reverb' => [
-            'host' => env('REVERB_SERVER_HOST', '0.0.0.0'),
+            'host' => env('REVERB_SERVER_HOST', '127.0.0.1'),
             'port' => 8585,
-            'hostname' => 'socket.gman.bot',
+            'hostname' => 'socket.wherebear.fun',
             'options' => [
                 'tls' => [],
             ],
-            'max_request_size' => 10_000,
+            'max_request_size' => 100_000,
             'scaling' => [
                 'enabled' => false,
                 'channel' => 'reverb',

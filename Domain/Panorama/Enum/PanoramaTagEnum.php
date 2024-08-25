@@ -5,6 +5,7 @@ namespace Domain\Panorama\Enum;
 use Domain\Panorama\Crud\PanoramaTagCrud;
 
 enum PanoramaTagEnum: string {
+  case DAILY = 'DAILY';
   case FUNNY = 'FUNNY';
   case GOOGLE = 'GOOGLE';
   case GREAT = 'GREAT';
@@ -14,6 +15,7 @@ enum PanoramaTagEnum: string {
 
   public function getDescription(): string {
     return match ($this) {
+      self::DAILY => 'For use in the daily challenge.',
       self::FUNNY => 'At least amusing.',
       self::GOOGLE => 'Google Office.',
       self::GREAT => 'Great Panorama, should be prioritized.',
