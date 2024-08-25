@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 
+use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearEnvService;
+
 return [
     'default' => 'public',
 
@@ -12,7 +14,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path(path: 'app/public'),
-            'url' => env(key: 'APP_URL') . '/storage',
+            'url' => BearEnvService::getString(key: 'APP_URL') . '/storage',
             'visibility' => 'public',
             'throw' => false,
         ],

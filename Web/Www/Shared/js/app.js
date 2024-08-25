@@ -13,7 +13,7 @@ window.pusher = Pusher;
 window.tippy = tippy;
 
 window.pusher_data = {
-  cluster: 'eu', wsHost: 'socket.gman.bot', wsPort: 80, wssPort: 443, enabledTransports: ['ws', 'wss']
+  cluster: 'eu', wsHost: 'socket.wherebear.fun', wsPort: 80, wssPort: 443, enabledTransports: ['ws', 'wss']
 }
 
 const tippyFunction = function (el) {

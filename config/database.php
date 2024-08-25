@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 
+use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearEnvService;
+
 return [
   'default' => 'pgsql',
 
@@ -9,7 +11,7 @@ return [
       'host' => "/var/run/postgresql",
       'database' => 'wherebear',
       'username' => "wherebear",
-      'password' => env(key: 'DB_PASSWORD'),
+      'password' => BearEnvService::getString(key: 'DB_PASSWORD'),
       'charset' => 'utf8',
       'prefix_indexes' => true,
       'search_path' => ['wherebear', 'public'], // REMOVE COMMENT WHEN MIGRATING
