@@ -10,7 +10,7 @@ return new class extends Migration {
         Schema::create(table: 'game', callback: static function (Blueprint $table): void {
             $table->uuid(column: 'id')->primary();
             $table->text(column: 'name');
-            $table->text(column: 'game_state_enum');
+            $table->text(column: 'game_state_enum')->index();
             $table->text(column: 'game_public_status_enum');
             $table->boolean(column: 'is_forced_start');
             $table->integer(column: 'number_of_rounds');
@@ -22,6 +22,7 @@ return new class extends Migration {
             $table->timestampTz(column: 'round_ends_at')->nullable();
             $table->timestampTz(column: 'next_round_at')->nullable();
             $table->uuid(column: 'created_by_user_id');
+            $table->text(column: 'short_code')->nullable()->unique();
             $table->timestampTz(column: 'created_at')->default(value: DB::raw('CURRENT_TIMESTAMP'));
             $table->timestampTz(column: 'updated_at')->default(value: DB::raw('CURRENT_TIMESTAMP'));
             $table->foreign("created_by_user_id")->references('id')->on(table: 'bear_user');

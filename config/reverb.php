@@ -16,7 +16,7 @@ return [
 
     'servers' => [
         'reverb' => [
-            'host' => env('REVERB_SERVER_HOST', '127.0.0.1'),
+            'host' => '127.0.0.1',
             'port' => 8585,
             'hostname' => 'socket.wherebear.fun',
             'options' => [

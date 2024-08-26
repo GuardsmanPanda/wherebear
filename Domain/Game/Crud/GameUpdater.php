@@ -78,6 +78,11 @@ final readonly class GameUpdater {
         return $this;
     }
 
+    public function setShortCode(string|null $short_code): self {
+        $this->model->short_code = $short_code;
+        return $this;
+    }
+
     public function getGameStateEnum(): GameStateEnum {
         return $this->model->game_state_enum;
     }

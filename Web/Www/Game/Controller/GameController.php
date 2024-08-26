@@ -5,11 +5,15 @@ namespace Web\Www\Game\Controller;
 use Domain\Game\Crud\GameCreator;
 use Domain\Game\Crud\GameDeleter;
 use Domain\Game\Enum\GamePublicStatusEnum;
+use Domain\Game\Enum\GameStateEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Htmx;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
+use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Resp;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 final class GameController extends Controller {
@@ -33,5 +37,17 @@ final class GameController extends Controller {
   public function delete(string $gameId): Response {
     GameDeleter::deleteFromId(id: $gameId);
     return Htmx::redirect(url: '/');
+  }
+
+  public function redirectFromShortCode(string $shortCode): RedirectResponse {
+    $game = DB::selectOne(query: "SELECT id, game_state_enum FROM game WHERE short_code = ?", bindings: [$shortCode]);
+    if ($game === null) {
+      return Resp::redirect(url: '/', message: "Game not found");
+    }
+    $enum = GameStateEnum::from(value: $game->game_state_enum);
+    if ($enum->isFinished()) {
+      return Resp::redirect(url: '/', message: "Game is finished");
+    }
+    return Resp::redirect(url: "/game/$game->id/lobby");
   }
 }
