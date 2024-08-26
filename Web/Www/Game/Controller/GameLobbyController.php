@@ -35,8 +35,7 @@ final class GameLobbyController extends Controller {
       SELECT
           g.id, g.number_of_rounds, g.round_duration_seconds, g.created_by_user_id,
           g.game_state_enum, g.game_public_status_enum,  g.game_public_status_enum = 'PUBLIC' as is_public,
-          g.current_round, g.round_result_duration_seconds,
-          bu.display_name
+          g.current_round, g.round_result_duration_seconds, g.short_code
       FROM game g
       LEFT JOIN bear_user bu ON bu.id = g.created_by_user_id
       WHERE g.id = ?

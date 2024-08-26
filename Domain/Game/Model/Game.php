@@ -66,6 +66,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $created_at
  * @property string $updated_at
  * @property string $created_by_user_id
+ * @property string|null $short_code
  * @property CarbonInterface|null $next_round_at
  * @property CarbonInterface|null $round_ends_at
  * @property GameStateEnum $game_state_enum

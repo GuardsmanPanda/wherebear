@@ -38,5 +38,3 @@ Route::prefix("{gameId}")->middleware(BearHtmxMiddleware::using(layout_location:
   Route::post(uri: "start", action: [GameLobbyController::class, 'forceStartGame']);
   Route::delete(uri: "", action: [GameController::class, 'delete']);
 });
-
-Route::view(uri: "experiments/popups", view: "game::experiments.popup");
