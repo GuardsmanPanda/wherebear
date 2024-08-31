@@ -8,6 +8,7 @@ use Domain\Map\Enum\MapStyleEnum;
 use Domain\User\Enum\UserFlagEnum;
 use Domain\User\Model\WhereBearUser;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
+use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
 
 final readonly class WhereBearUserUpdater {
     public function __construct(private WhereBearUser $model) {
@@ -36,7 +37,7 @@ final readonly class WhereBearUserUpdater {
     }
 
 
-    public function setCountryCca2(string $country_cca2): self {
+    public function setCountryCca2(BearCountryEnum $country_cca2): self {
         $this->model->country_cca2 = $country_cca2;
         $this->model->user_flag_enum = null;
         return $this;

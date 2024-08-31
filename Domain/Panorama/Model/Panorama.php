@@ -7,6 +7,7 @@ use Closure;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearUser;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Cast\BearDatabaseArrayCast;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
+use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Model\BearCountry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\ArrayObject;
@@ -64,13 +65,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $avif_path
  * @property string|null $city_name
  * @property string|null $state_name
- * @property string|null $country_cca2
  * @property string|null $retired_reason
  * @property string|null $added_by_user_id
  * @property ArrayObject|null $nominatim_json
  * @property ArrayObject<int,string> $panorama_tag_array
  * @property CarbonInterface $captured_date
  * @property CarbonInterface|null $retired_at
+ * @property BearCountryEnum|null $country_cca2
  *
  * @property BearCountry|null $countryCca2
  * @property BearUser|null $addedByUser
@@ -88,6 +89,7 @@ final class Panorama extends Model {
     /** @var array<string, string> $casts */
     protected $casts = [
         'captured_date' => 'immutable_date',
+        'country_cca2' => BearCountryEnum::class,
         'nominatim_json' => AsArrayObject::class,
         'panorama_tag_array' => BearDatabaseArrayCast::class,
         'retired_at' => 'immutable_datetime',

@@ -23,6 +23,7 @@ use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Htmx;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Resp;
+use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -160,7 +161,7 @@ final class GameLobbyController extends Controller {
       $updater->setDisplayName(display_name: Req::getString(key: 'display_name'));
     }
     if (Req::has(key: 'country_cca2')) {
-      $updater->setCountryCca2(country_cca2: Req::getString(key: 'country_cca2'));
+      $updater->setCountryCca2(country_cca2: BearCountryEnum::from(value: Req::getString(key: 'country_cca2')));
     }
     if (Req::has(key: 'user_flag_enum')) {
       $updater->setUserFlag(enum: UserFlagEnum::fromRequest());

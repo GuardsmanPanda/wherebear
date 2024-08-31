@@ -11,6 +11,7 @@ use Domain\Map\Model\MapStyle;
 use Domain\User\Enum\UserFlagEnum;
 use Domain\User\Enum\UserLevelEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
+use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Model\BearCountry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -64,9 +65,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $display_name
  * @property string|null $email
  * @property string|null $password
- * @property string|null $country_cca2
  * @property string|null $remember_token
  * @property CarbonInterface|null $last_login_at
+ * @property BearCountryEnum|null $country_cca2
  * @property MapStyleEnum $map_style_enum
  * @property UserFlagEnum|null $user_flag_enum
  * @property MapMarkerEnum $map_marker_enum
@@ -90,6 +91,7 @@ final class WhereBearUser extends Model {
 
     /** @var array<string, string> $casts */
     protected $casts = [
+        'country_cca2' => BearCountryEnum::class,
         'last_login_at' => 'immutable_datetime',
         'map_marker_enum' => MapMarkerEnum::class,
         'map_style_enum' => MapStyleEnum::class,

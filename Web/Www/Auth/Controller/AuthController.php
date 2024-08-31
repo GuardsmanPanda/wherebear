@@ -40,7 +40,7 @@ final class AuthController extends Controller {
       display_name: "Guest-" . BearShortCodeService::generateNextCode(),
       experience: 0,
       user_level_enum: UserLevelEnum::L0,
-      country_cca2: Req::ipCountry()
+      country_cca2: Req::ipCountryEnum()
     );
     BearAuthCookieLoginAction::login(user: BearUser::findOrFail($user->id));
     return Htmx::redirect(url: "/game/$gameId/lobby");
@@ -60,7 +60,7 @@ final class AuthController extends Controller {
           experience: 1,
           user_level_enum: UserLevelEnum::L1,
           email: $oauth2User->email,
-          country_cca2: Req::ipCountry()
+          country_cca2: Req::ipCountryEnum()
         );
         $updater = new BearOauth2UserUpdater($oauth2User);
         $oauth2User = $updater->setUserId(user_id: $user->id)->update();

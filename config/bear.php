@@ -1,5 +1,6 @@
 <?php declare(strict_types=1);
 
+use Domain\Achievement\Enum\AchievementTypeEnum;
 use Domain\Game\Enum\GamePublicStatusEnum;
 use Domain\Game\Enum\GameStateEnum;
 use Domain\Map\Enum\MapMarkerEnum;
@@ -8,6 +9,7 @@ use Domain\Panorama\Enum\PanoramaTagEnum;
 use Domain\User\Enum\UserFlagEnum;
 use Domain\User\Enum\UserLevelEnum;
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearEnvService;
+use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
 use GuardsmanPanda\Larabear\Integration\ExternalApi\Enum\BearExternalApiAuthEnum;
 
 return [
@@ -34,6 +36,11 @@ return [
   //------------------------------------------------------------------------------------------------------------------
   'eloquent-model-generator' => [
     'pgsql' => [
+      'achievement' => ['location' => 'Domain/Achievement/Model'],
+      'achievement_type' => [
+        'enum' => AchievementTypeEnum::class,
+        'location' => 'Domain/Achievement/Model'
+      ],
       'bear_user' => ['class' => 'WhereBearUser', 'location' => 'Domain/User/Model'],
       'game' => ['location' => 'Domain/Game/Model'],
       'game_public_status' => [
@@ -74,7 +81,10 @@ return [
       'bear_access_token' => ['location' => 'Domain/Larabear/Model'],
       'bear_config' => ['location' => 'Domain/Larabear/Model'],
       'bear_console_event' => ['location' => 'Domain/Larabear/Model'],
-      'bear_country' => ['location' => 'Domain/Larabear/Model'],
+      'bear_country' => [
+        BearCountryEnum::class,
+        'location' => 'Domain/Larabear/Model'
+      ],
       'bear_database_change' => ['location' => 'Domain/Larabear/Model'],
       'bear_error' => ['location' => 'Domain/Larabear/Model'],
       'bear_error_response' => ['location' => 'Domain/Larabear/Model'],

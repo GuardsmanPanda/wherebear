@@ -28,7 +28,7 @@ enum GamePublicStatusEnum: string {
     public static function syncToDatabase(): void {
         foreach (GamePublicStatusEnum::cases() as $enum) {
             if (GamePublicStatus::find(id: $enum->value) === null) {
-                GamePublicStatusCrud::create(enum: $enum);
+                GamePublicStatusCrud::syncToDatabase(enum: $enum);
             }
         }
     }

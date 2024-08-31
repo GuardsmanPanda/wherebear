@@ -51,7 +51,6 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $enum
  * @property int $experience_requirement
- * @property string $title
  * @property string $created_at
  * @property string $updated_at
  * @property string|null $feature_unlock

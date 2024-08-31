@@ -2,6 +2,7 @@
 
 namespace Infrastructure\App\Command;
 
+use Domain\Achievement\Enum\AchievementTypeEnum;
 use Domain\Game\Enum\GamePublicStatusEnum;
 use Domain\Game\Enum\GameStateEnum;
 use Domain\Map\Enum\MapMarkerEnum;
@@ -18,24 +19,25 @@ use Infrastructure\App\Enum\BearExternalApiEnum;
 use Infrastructure\App\Enum\BearOauth2ClientEnum;
 
 final class WhereBearInitCommand extends BearTransactionCommand {
-    protected $signature = 'wherebear:init';
-    protected $description = 'Initialize the database.';
+  protected $signature = 'wherebear:init';
+  protected $description = 'Initialize the database.';
 
-    protected function handleInTransaction(): void {
-        BearConfigEnum::syncToDatabase();
-        BearOauth2ClientEnum::syncToDatabase();
-        BearPermissionEnum::syncToDatabase();
-        BearRoleEnum::syncToDatabase();
-        BearExternalApiEnum::syncToDatabase();
-        GamePublicStatusEnum::syncToDatabase();
-        PanoramaTagEnum::syncToDatabase();
-        UserFlagEnum::syncToDatabase();
-        UserLevelEnum::syncToDatabase();
+  protected function handleInTransaction(): void {
+    AchievementTypeEnum::syncToDatabase();
+    BearConfigEnum::syncToDatabase();
+    BearOauth2ClientEnum::syncToDatabase();
+    BearPermissionEnum::syncToDatabase();
+    BearRoleEnum::syncToDatabase();
+    BearExternalApiEnum::syncToDatabase();
+    GamePublicStatusEnum::syncToDatabase();
+    PanoramaTagEnum::syncToDatabase();
+    UserFlagEnum::syncToDatabase();
+    UserLevelEnum::syncToDatabase();
 
-        WhereBearRolePermissionService::syncRolePermissionsToDatabase(); // Requires Bear Role and Bear Permission.
+    WhereBearRolePermissionService::syncRolePermissionsToDatabase(); // Requires Bear Role and Bear Permission.
 
-        GameStateEnum::syncToDatabase(); // Requires UserLevelEnum.
-        MapMarkerEnum::syncToDatabase(); // Requires UserLevelEnum.
-        MapStyleEnum::syncToDatabase(); // Requires BearExternalApiEnum && UserLevelEnum.
-    }
+    GameStateEnum::syncToDatabase(); // Requires UserLevelEnum.
+    MapMarkerEnum::syncToDatabase(); // Requires UserLevelEnum.
+    MapStyleEnum::syncToDatabase(); // Requires BearExternalApiEnum && UserLevelEnum.
+  }
 }

@@ -45,7 +45,7 @@ enum BearOauth2ClientEnum: string {
     public static function syncToDatabase(): void {
         foreach (self::cases() as $client) {
             if (BearOauth2Client::find(id: $client->getId()) === null) {
-                BearOauth2ClientCreator::create(
+                BearOauth2ClientCreator::syncToDatabase(
                     id: $client->getId(),
                     description: $client->getDescription(),
                     oauth2_client_type: $client->getOauth2ClientType(),

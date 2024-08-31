@@ -26,11 +26,6 @@ final readonly class PanoramaUpdater {
     return $this;
   }
 
-  public function setCountryCca2(string|null $country_cca2): self {
-    $this->model->country_cca2 = $country_cca2;
-    return $this;
-  }
-
   public function setStateName(string|null $state_name): self {
     $this->model->state_name = $state_name;
     return $this;

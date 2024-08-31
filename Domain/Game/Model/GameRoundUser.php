@@ -5,6 +5,7 @@ namespace Domain\Game\Model;
 use Carbon\CarbonInterface;
 use Closure;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
+use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Model\BearCountry;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Builder;
@@ -63,13 +64,13 @@ use RuntimeException;
  * @property string $location
  * @property string $created_at
  * @property string $updated_at
- * @property string|null $correct_country_cca2
- * @property string|null $approximate_country_cca2
  * @property ArrayObject|null $nominatim_json
+ * @property BearCountryEnum|null $correct_country_cca2
+ * @property BearCountryEnum|null $approximate_country_cca2
  *
  * @property BearCountry|null $approximateCountryCca2
  * @property BearCountry|null $correctCountryCca2
- * @property GameRound $game
+ * @property GameUser $game
  * @property GameUser $user
  * @property GameRound $roundNumber
  *
@@ -88,6 +89,8 @@ final class GameRoundUser extends Model {
 
     /** @var array<string, string> $casts */
     protected $casts = [
+        'approximate_country_cca2' => BearCountryEnum::class,
+        'correct_country_cca2' => BearCountryEnum::class,
         'nominatim_json' => AsArrayObject::class,
     ];
 
@@ -101,9 +104,9 @@ final class GameRoundUser extends Model {
         return $this->belongsTo(related: BearCountry::class, foreignKey: 'correct_country_cca2', ownerKey: 'cca2');
     }
 
-    /** @return BelongsTo<GameRound, self> */
+    /** @return BelongsTo<GameUser, self> */
     public function game(): BelongsTo {
-        return $this->belongsTo(related: GameRound::class, foreignKey: 'game_id', ownerKey: 'game_id');
+        return $this->belongsTo(related: GameUser::class, foreignKey: 'game_id', ownerKey: 'user_id');
     }
 
     /** @return BelongsTo<GameUser, self> */
@@ -113,7 +116,7 @@ final class GameRoundUser extends Model {
 
     /** @return BelongsTo<GameRound, self> */
     public function roundNumber(): BelongsTo {
-        return $this->belongsTo(related: GameRound::class, foreignKey: 'round_number', ownerKey: 'round_number');
+        return $this->belongsTo(related: GameRound::class, foreignKey: 'round_number', ownerKey: 'game_id');
     }
 
     protected $guarded = ['game_id', 'round_number', 'user_id', 'updated_at', 'created_at', 'deleted_at'];

@@ -32,6 +32,7 @@
           @endif
           @if(BearAuthService::hasRole(role: BearRoleEnum::ADMIN))
             <x-bear::sidebar.divider color="gray-800">Admin</x-bear::sidebar.divider>
+            <x-bear::sidebar.link path="/page/achievement-location" icon="key">Location POI</x-bear::sidebar.link>
             @if(BearAuthService::hasPermission(permission: BearPermissionEnum::PANORAMA_DOWNLOAD))
               <x-bear::sidebar.link path="/page/download" icon="key">Download Missing</x-bear::sidebar.link>
             @endif
