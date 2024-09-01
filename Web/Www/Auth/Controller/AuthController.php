@@ -56,7 +56,7 @@ final class AuthController extends Controller {
       $user = $oauth2User->user;
       if ($user === null && $oauth2User->email !== null) {
         $user = WhereBearUserCreator::create(
-          display_name: $oauth2User->display_name ?? 'User-' . BearShortCodeService::generateNextCode(),
+          display_name: $oauth2User->display_name ?? 'Player-' . BearShortCodeService::generateNextCode(),
           experience: 1,
           user_level_enum: UserLevelEnum::L1,
           email: $oauth2User->email,
