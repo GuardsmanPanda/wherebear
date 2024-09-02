@@ -12,8 +12,6 @@
   </div>
 </div>
 <script>
-
-
   const map = L.map('map', {
     center: [25, 0], zoom: 3, worldCopyJump: true, scrollWheelZoom: true
   });
@@ -35,16 +33,31 @@
   let radius = 2000;
   let circle = null;
 
-  map.on('click', function (e) {
-    lat = e.latlng.lat;
-    lng = e.latlng.lng;
-    //L.marker([lat, lng], {icon: small_icon}).addTo(map);
+  const myStyle = {
+    "color": "#ff7800",
+    "weight": 5,
+    "opacity": 0.3
+  };
+
+  const drawCircle = function () {
     if (circle !== null) {
       map.removeLayer(circle);
     }
-    circle = L.circle([lat, lng], {radius: radius});
-    circle.addTo(map);
+    const resp = fetch('/page/achievement-location/data?' + new URLSearchParams({lat: lat, lng: lng, radius: radius}).toString())
+      .then(resp => resp.json())
 
+    // wait for the response
+    const json = resp;
+
+    console.dir(resp);
+    circle = L.geoJSON(json.polygon, {style: myStyle});
+    circle.addTo(map);
+  };
+
+  map.on('click', function (e) {
+    lat = e.latlng.lat;
+    lng = e.latlng.lng;
+    drawCircle();
   });
 
   window.addEventListener('wheel', function (ev) {
@@ -56,7 +69,7 @@
       } else {
         radius /= delta;
       }
-      circle.setRadius(radius);
+      drawCircle();
     }
     console.log('radius', radius);
   });

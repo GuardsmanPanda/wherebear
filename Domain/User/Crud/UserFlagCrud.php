@@ -11,7 +11,7 @@ final class UserFlagCrud {
     BearDatabaseService::mustBeInTransaction();
     BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST']);
 
-    $model = UserFlag::find($enum->value) ?? new UserFlag();
+    $model = UserFlag::find(id: $enum->value) ?? new UserFlag();
     $model->enum = $enum->value;
     $model->description = $enum->getDescription();
     $model->file_path = $enum->getFilePath();

@@ -11,7 +11,7 @@ final class PanoramaTagCrud {
         BearDatabaseService::mustBeInTransaction();
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST']);
 
-        $model = PanoramaTag::find($tag_enum->value) ?? new PanoramaTag();
+        $model = PanoramaTag::find(id: $tag_enum->value) ?? new PanoramaTag();
         $model->enum = $tag_enum->value;
         $model->description = $tag_enum->getDescription();
 

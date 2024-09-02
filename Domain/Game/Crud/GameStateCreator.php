@@ -11,7 +11,7 @@ final class GameStateCreator {
         BearDatabaseService::mustBeInTransaction();
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST']);
 
-        $model = GameState::find($enum->value) ?? new GameState();
+        $model = GameState::find(id: $enum->value) ?? new GameState();
         $model->enum = $enum->value;
         $model->description = $enum->getDescription();
 

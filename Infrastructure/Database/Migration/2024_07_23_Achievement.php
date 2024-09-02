@@ -9,8 +9,8 @@ return new class extends Migration {
     DB::statement(query: "
       create table achievement(
         enum                   text not null primary key,
+        name                   text not null,
         title                  text not null,
-        description            text not null,
         achievement_type_enum  text not null references achievement_type,
         required_points        integer not null,
         country_cca2           text references bear_country,
@@ -18,6 +18,7 @@ return new class extends Migration {
         location               geography(Point, 4326),
         location_radius_meters integer,
         geographic_area        geography(Polygon, 4326),
+        unlock_description     text not null,
         created_at             timestamp with time zone default CURRENT_TIMESTAMP not null,
         updated_at             timestamp with time zone default CURRENT_TIMESTAMP not null
       );

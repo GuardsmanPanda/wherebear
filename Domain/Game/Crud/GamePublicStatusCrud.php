@@ -11,7 +11,7 @@ final class GamePublicStatusCrud {
         BearDatabaseService::mustBeInTransaction();
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['CLI']);
 
-        $model = GamePublicStatus::find($enum->value) ?? new GamePublicStatus();
+        $model = GamePublicStatus::find(id: $enum->value) ?? new GamePublicStatus();
 
         $model->enum = $enum->value;
         $model->description = $enum->getDescription();

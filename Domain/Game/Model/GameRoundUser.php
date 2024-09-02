@@ -70,7 +70,7 @@ use RuntimeException;
  *
  * @property BearCountry|null $approximateCountryCca2
  * @property BearCountry|null $correctCountryCca2
- * @property GameUser $game
+ * @property GameRound $game
  * @property GameUser $user
  * @property GameRound $roundNumber
  *
@@ -104,9 +104,9 @@ final class GameRoundUser extends Model {
         return $this->belongsTo(related: BearCountry::class, foreignKey: 'correct_country_cca2', ownerKey: 'cca2');
     }
 
-    /** @return BelongsTo<GameUser, self> */
+    /** @return BelongsTo<GameRound, self> */
     public function game(): BelongsTo {
-        return $this->belongsTo(related: GameUser::class, foreignKey: 'game_id', ownerKey: 'user_id');
+        return $this->belongsTo(related: GameRound::class, foreignKey: 'game_id', ownerKey: 'game_id');
     }
 
     /** @return BelongsTo<GameUser, self> */

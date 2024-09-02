@@ -27,7 +27,7 @@ enum AchievementTypeEnum: string implements BearDatabaseBackedEnumInterface {
 
   public static function syncToDatabase(): void {
     foreach (AchievementTypeEnum::cases() as $enum) {
-      if (AchievementType::find($enum->value) === null) {
+      if (AchievementType::find(id: $enum->value) === null) {
         AchievementTypeCrud::syncToDatabase(enum: $enum);
       }
     }

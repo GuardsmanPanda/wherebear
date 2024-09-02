@@ -58,10 +58,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $required_points
  * @property int|null $location_radius_meters
  * @property string $enum
+ * @property string $name
  * @property string $title
  * @property string $created_at
  * @property string $updated_at
- * @property string $description
+ * @property string $unlock_description
  * @property string|null $location
  * @property string|null $geographic_area
  * @property ArrayObject<int,string> $country_cca2_array

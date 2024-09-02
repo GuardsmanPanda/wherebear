@@ -5,33 +5,56 @@ namespace Domain\Achievement\Data;
 use Domain\Achievement\Enum\AchievementTypeEnum;
 use Domain\Map\Data\MapLocationData;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
-use InvalidArgumentException;
 
-final class AchievementData {
-
-  public function __construct(
-    public string               $title = "",
-    public string               $description = "",
-    public int                  $required_points = 1,
+final readonly class AchievementData {
+  /**
+   * @param array<string>|null $country_array
+   */
+  private function __construct(
+    public string               $title,
+    public string               $name,
+    public int                  $required_points,
+    public AchievementTypeEnum  $achievement_type_enum,
     public BearCountryEnum|null $country = null,
+    public array|null           $country_array = null,
     public MapLocationData|null $location_data = null,
-    public bool                 $is_hidden = false,
-    public AchievementTypeEnum  $type = AchievementTypeEnum::CUSTOM,
+    public string               $unlock_description = '',
   ) {
-    if ($this->is_hidden === false && ($this->title === "" || $this->description === "")) {
-      throw new InvalidArgumentException("Visible achievements must have a title and description.");
-    }
+  }
 
-    if ($this->country !== null && $this->location_data !== null) {
-      throw new InvalidArgumentException("Achievements cannot have both a country and location data.");
-    }
 
-    if ($this->country !== null) {
-      $this->type = AchievementTypeEnum::COUNTRY;
-      $this->description = "Guess " . $this->country->getCountryData()->name . " correctly";
-      if ($this->required_points > 1) {
-        $this->description .= " " . $this->required_points . " times";
-      }
-    }
+  public static function country(string $title, BearCountryEnum $country, int $required_points): self {
+    return new self(
+      title: $title,
+      name: $country->getCountryData()->name,
+      required_points: $required_points,
+      achievement_type_enum: AchievementTypeEnum::COUNTRY,
+      country: $country,
+      unlock_description: "Guess a location in {$country->getCountryData()->name} $required_points times!",
+    );
+  }
+
+  /**
+   * @param array<string> $country_array
+   */
+  public static function countryArray(string $title, string $name, array $country_array): self {
+    return new self(
+      title: $title,
+      name: $name,
+      required_points: count(value: $country_array),
+      achievement_type_enum: AchievementTypeEnum::COUNTRY_ARRAY,
+      country_array: $country_array,
+      unlock_description: "Guess all countries from the $name!",
+    );
+  }
+
+  public static function level(string $title, int $required_points): self {
+    return new self(
+      title: $title,
+      name: '',
+      required_points: $required_points,
+      achievement_type_enum: AchievementTypeEnum::LEVEL,
+      unlock_description: "Reach Level $required_points!",
+    );
   }
 }

@@ -85,6 +85,7 @@ return [
         BearCountryEnum::class,
         'location' => 'Domain/Larabear/Model'
       ],
+      'bear_country_subdivision' => ['location' => 'Domain/Larabear/Model'],
       'bear_database_change' => ['location' => 'Domain/Larabear/Model'],
       'bear_error' => ['location' => 'Domain/Larabear/Model'],
       'bear_error_response' => ['location' => 'Domain/Larabear/Model'],

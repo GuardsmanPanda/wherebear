@@ -49,8 +49,8 @@ enum BearConfigEnum: string implements BearConfigEnumInterface {
 
     public static function syncToDatabase(): void {
         foreach (self::cases() as $enum) {
-            if (BearConfig::find($enum->value) === null) {
-                BearConfigCreator::create($enum);
+            if (BearConfig::find(id: $enum->value) === null) {
+                BearConfigCreator::create(enum: $enum);
             }
         }
     }

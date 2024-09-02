@@ -2,6 +2,7 @@
 
 namespace Infrastructure\App\Command;
 
+use Domain\Achievement\Enum\AchievementEnum;
 use Domain\Achievement\Enum\AchievementTypeEnum;
 use Domain\Game\Enum\GamePublicStatusEnum;
 use Domain\Game\Enum\GameStateEnum;
@@ -35,7 +36,7 @@ final class WhereBearInitCommand extends BearTransactionCommand {
     UserLevelEnum::syncToDatabase();
 
     WhereBearRolePermissionService::syncRolePermissionsToDatabase(); // Requires Bear Role and Bear Permission.
-
+    AchievementEnum::syncToDatabase(); // Requires AchievementTypeEnum.
     GameStateEnum::syncToDatabase(); // Requires UserLevelEnum.
     MapMarkerEnum::syncToDatabase(); // Requires UserLevelEnum.
     MapStyleEnum::syncToDatabase(); // Requires BearExternalApiEnum && UserLevelEnum.

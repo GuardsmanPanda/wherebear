@@ -10,7 +10,7 @@ final class AchievementTypeCrud {
   public static function syncToDatabase(AchievementTypeEnum $enum): void {
     BearDatabaseService::mustBeInTransaction();
 
-    $model = AchievementType::find($enum->value) ?? new AchievementType();
+    $model = AchievementType::find(id: $enum->value) ?? new AchievementType();
     $model->enum = $enum->value;
     $model->description = $enum->getDescription();
 

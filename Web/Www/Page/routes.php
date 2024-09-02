@@ -21,6 +21,7 @@ Route::prefix('add-panorama-with-tag')->middleware([BearPermissionMiddleware::us
 
 Route::prefix('achievement-location')->middleware([])->group(callback: function () {
   Route::get(uri: '', action: [PageAchievementLocationController::class, 'index']);
+  Route::get(uri: 'data', action: [PageAchievementLocationController::class, 'getData']);
 });
 
 Route::prefix('download')->middleware([BearPermissionMiddleware::using(permission: BearPermissionEnum::PANORAMA_DOWNLOAD)])->group(callback: function () {
