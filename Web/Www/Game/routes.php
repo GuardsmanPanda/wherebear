@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use Domain\User\Enum\BearPermissionEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Middleware\BearHtmxMiddleware;
@@ -31,10 +33,10 @@ Route::prefix("{gameId}")->middleware(BearHtmxMiddleware::using(layout_location:
     Route::get(uri: "", action: [GamePlayController::class, 'index']);
     Route::put(uri: "guess", action: [GamePlayController::class, 'guess']);
   });
+  Route::get(uri: "play-dev", action: [GamePlayController::class, 'indexDev']);
   Route::prefix("result")->group(callback: function () {
     Route::get(uri: "", action: [GameResultController::class, 'index']);
   });
-
   Route::post(uri: "start", action: [GameLobbyController::class, 'forceStartGame']);
   Route::delete(uri: "", action: [GameController::class, 'delete']);
 });
