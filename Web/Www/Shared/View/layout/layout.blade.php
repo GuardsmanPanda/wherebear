@@ -17,6 +17,7 @@ declare(strict_types=1); ?>
   <link rel="stylesheet" href="{!! config('bear.ui.app_css') !!}">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Outfit" />
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <script>
     let targetTime = null;
     let countdownInterval;
@@ -44,7 +45,7 @@ declare(strict_types=1); ?>
 
 <body>
   <div id="primary" hx-target="#primary" class="bg-tertiary-surface-subtle font-body text-shade-text-body">
-    <div class="flex flex-col max-w-7xl min-h-screen mx-auto bg-green-500 border-x border-shade-border-dark">
+    <div class="flex flex-col max-w-7xl min-h-screen mx-auto bg-green-500 xl:border-x border-shade-border-dark">
       <main class="flex grow bg-tertiary-surface-darker">
         <div class="w-full">
           {!! $content !!}

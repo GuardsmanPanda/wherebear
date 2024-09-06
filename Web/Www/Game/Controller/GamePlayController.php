@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Web\Www\Game\Controller;
 
@@ -24,7 +26,7 @@ final class GamePlayController extends Controller {
                 gr.panorama_id,
                 ST_Y(p.location::geometry) as panorama_lat,
                 ST_X(p.location::geometry) as panorama_lng,
-                p.jpg_path, TO_CHAR(p.captured_date, 'Month YYYY') as captured_month,
+                p.jpg_path, TO_CHAR(p.captured_date, 'Month') as captured_month, TO_CHAR(p.captured_date, 'YYYY') as captured_year,
                 p.state_name, p.city_name,
                 bc.cca2, bc.cca3,
                 bc.name as country_name, 
@@ -101,11 +103,49 @@ final class GamePlayController extends Controller {
        ", bindings: [$gameId]),
       'game' => $game,
       'guesses' => $guesses,
+      'isDev' => false,
+      'panorama_url' =>  "https://panorama.gman.bot/{$game->jpg_path}",
       'template' => $enum === GameStateEnum::IN_PROGRESS ? 'game::play.round' : 'game::play.round-result',
       'user' => $user,
     ]);
   }
 
+  public function indexDev(): View {
+    return Resp::view(view: 'game::play.round', data: [
+      'countries_used' => [
+        'france' => (object) [
+          'cca2' => 'FR',
+          'name' => 'France'
+        ],
+        'Ukraine' => (object) [
+          'cca2' => 'UA',
+          'name' => 'Ukraine'
+        ],
+        'spain' => (object) [
+          'cca2' => 'DE',
+          'name' => 'Germany'
+        ],
+        'south-korea' => (object) [
+          'cca2' => 'KR',
+          'name' => 'South Korea'
+        ],
+      ],
+      'game' => (object) [
+        'id' => 123,
+        'captured_month' => 'May',
+        'captured_year' => 2014,
+        'round_seconds_remaining' => 44,
+        'number_of_rounds' => 5
+      ],
+      'isDev' => true,
+      'panorama_url' => 'https://pannellum.org/images/alma.jpg',
+      'user' => (object) [
+        'map_marker_file_path' => '/static/img/map-marker/chibi/indian-tribe-knight.png',
+        'map_style_tile_size' => 256,
+        'map_style_zoom_offset' => 0
+      ]
+    ]);
+  }
 
   public function guess(string $gameId): Response {
     $game = DB::selectOne(query: "
