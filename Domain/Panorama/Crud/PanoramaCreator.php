@@ -31,7 +31,7 @@ final class PanoramaCreator {
       INSERT INTO panorama (
           id, captured_date, country_cca2, state_name, city_name, panorama_tag_array, added_by_user_id,
           location, jpg_path, nominatim_json, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ST_MakePoint(?::double precision, ?::double precision), ?, ?, NOW(), NOW())
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ST_Point(?, ?, 4326)::geography, ?, ?, NOW(), NOW())
     ", bindings: [
       $id,
       $captured_date,

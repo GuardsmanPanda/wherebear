@@ -65,17 +65,6 @@ final class NominatimLocationData {
     }
 
 
-    if ($this->country_cca2 === 'GB') {
-      $this->country_cca2 = match ($this->iso3166_2_lvl4) {
-        'GB-ENG' => 'GB-ENG',
-        'GB-SCT' => 'GB-SCT',
-        'GB-WLS' => 'GB-WLS',
-        'GB-NIR' => 'GB-NIR',
-        default => throw new RuntimeException(message: 'Unknown GB iso3166_2_lvl4: ' . $this->iso3166_2_lvl4 . ': ' . $this->nominatim_json_string),
-      };
-    }
-
-
     if ($this->country_cca2 === 'FI' && ($this->county_name === 'Åland' || $this->county_name === 'Landskapet Åland')) {
       $this->country_cca2 = 'AX';
     }

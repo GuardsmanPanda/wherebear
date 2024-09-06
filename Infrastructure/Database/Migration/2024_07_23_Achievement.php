@@ -18,7 +18,6 @@ return new class extends Migration {
         location               geography(Point, 4326),
         location_radius_meters integer,
         geographic_area        geography(Polygon, 4326),
-        unlock_description     text not null,
         created_at             timestamp with time zone default CURRENT_TIMESTAMP not null,
         updated_at             timestamp with time zone default CURRENT_TIMESTAMP not null
       );

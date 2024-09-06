@@ -36,15 +36,18 @@ final class PageAchievementLocationController extends Controller {
 
     $polygon = DB::selectOne(query: "
       SELECT
-        ST_AsGeoJSON(ST_Buffer(ST_MakePoint(?, ?)::geography, ?)) as polygon
+        ST_AsGeoJSON(ST_Buffer(ST_Point(?, ?, 4326)::geography, ?)) as polygon
     ", bindings: [$lng, $lat, $radius]);
 
     $panoramas = DB::select(query: "
       SELECT
-        p.id, p.country_cca2, p.location, p.city_name, p.state_name
+        p.id, p.country_cca2, p.city_name, p.state_name,
+        ST_Y(p.location::geometry) as lat,
+        ST_X(p.location::geometry) as lng,
+        st_dwithin(p.location, ST_Point(:lng, :lat, 4326)::geography, :radius) as within
       FROM panorama p
-      WHERE ST_DWithin(p.location, ST_SetSRID(ST_MakePoint(?, ?), 4326), ?)
-    ", bindings: [$lng, $lat, $radius]);
+      WHERE ST_DWithin(p.location, ST_Point(:lng, :lat, 4326)::geography, :radius * 2)
+    ", bindings: ['lng' => $lng, 'lat' => $lat, 'radius' => $radius]);
 
     //$data = NominatimClient::reverseLookup(latitude: $lat, longitude: $lng);
     return new JsonResponse(data: [

@@ -3,6 +3,7 @@
 namespace Domain\Achievement\Crud;
 
 use Domain\Achievement\Enum\AchievementEnum;
+use Domain\Achievement\Enum\AchievementTypeEnum;
 use Domain\Achievement\Model\Achievement;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 use Illuminate\Database\Eloquent\Casts\ArrayObject;
@@ -22,7 +23,11 @@ final class AchievementCrud {
     $model->required_points = $data->required_points;
     $model->country_cca2 = $data->country;
     $model->country_cca2_array = new ArrayObject(array: $data->country_array ?? []);
-    $model->unlock_description = $data->unlock_description;
+
+    if ($data->achievement_type_enum === AchievementTypeEnum::LOCATION) {
+    } else {
+      $model->location = null;
+    }
 
     $model->save();
   }

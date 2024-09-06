@@ -4,6 +4,7 @@ namespace Domain\Achievement\Enum;
 
 use Domain\Achievement\Crud\AchievementCrud;
 use Domain\Achievement\Data\AchievementData;
+use Domain\Map\Data\MapLocationData;
 use GuardsmanPanda\Larabear\Infrastructure\App\Interface\BearDatabaseBackedEnumInterface;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryOrganizationEnum;
 
@@ -22,6 +23,9 @@ enum AchievementEnum: string implements BearDatabaseBackedEnumInterface {
   case LEVEL_30 = 'LEVEL_30';
   case LEVEL_35 = 'LEVEL_35';
 
+  // LOCATION ACHIEVEMENTS
+  case TEST_LOCATION = 'TEST_LOCATION';
+
 
   public function getAchievementData(): AchievementData {
     return match ($this) {
@@ -38,7 +42,15 @@ enum AchievementEnum: string implements BearDatabaseBackedEnumInterface {
       self::LEVEL_25 => AchievementData::level(title: "Grandmaster Navigator", required_points: 25),
       self::LEVEL_30 => AchievementData::level(title: "Legendary Navigator", required_points: 30),
       self::LEVEL_35 => AchievementData::level(title: "Mythical Navigator", required_points: 35),
+
+      // LOCATION ACHIEVEMENTS
+      self::TEST_LOCATION => AchievementData::location(
+        title: "Test Location",
+        name: "Test Location",
+        location_data: new MapLocationData(lat: 0, lng: 0, radius_meters: 23)
+      ),
     };
+
   }
 
 

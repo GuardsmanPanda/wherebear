@@ -62,7 +62,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $title
  * @property string $created_at
  * @property string $updated_at
- * @property string $unlock_description
  * @property string|null $location
  * @property string|null $geographic_area
  * @property ArrayObject<int,string> $country_cca2_array

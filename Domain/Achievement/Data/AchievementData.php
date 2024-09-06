@@ -18,7 +18,6 @@ final readonly class AchievementData {
     public BearCountryEnum|null $country = null,
     public array|null           $country_array = null,
     public MapLocationData|null $location_data = null,
-    public string               $unlock_description = '',
   ) {
   }
 
@@ -30,7 +29,6 @@ final readonly class AchievementData {
       required_points: $required_points,
       achievement_type_enum: AchievementTypeEnum::COUNTRY,
       country: $country,
-      unlock_description: "Guess a location in {$country->getCountryData()->name} $required_points times!",
     );
   }
 
@@ -44,7 +42,6 @@ final readonly class AchievementData {
       required_points: count(value: $country_array),
       achievement_type_enum: AchievementTypeEnum::COUNTRY_ARRAY,
       country_array: $country_array,
-      unlock_description: "Guess all countries from the $name!",
     );
   }
 
@@ -54,7 +51,16 @@ final readonly class AchievementData {
       name: '',
       required_points: $required_points,
       achievement_type_enum: AchievementTypeEnum::LEVEL,
-      unlock_description: "Reach Level $required_points!",
+    );
+  }
+
+  public static function location(string $title, string $name, MapLocationData $location_data): self {
+    return new self(
+      title: $title,
+      name: $name,
+      required_points: 1,
+      achievement_type_enum: AchievementTypeEnum::LOCATION,
+      location_data: $location_data,
     );
   }
 }
