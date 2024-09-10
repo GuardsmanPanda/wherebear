@@ -11,7 +11,7 @@ return new class extends Migration {
       $table->text(column: 'enum')->primary();
       $table->text(column: 'file_path');
       $table->text(column: 'description');
-      $table->timestampTz(column: 'created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+      $table->timestampTz(column: 'created_at')->default(value: DB::raw(value: 'CURRENT_TIMESTAMP'));
     });
   }
 

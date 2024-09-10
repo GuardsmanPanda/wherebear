@@ -23,8 +23,8 @@ return new class extends Migration {
             $table->timestampTz(column: 'next_round_at')->nullable();
             $table->uuid(column: 'created_by_user_id');
             $table->text(column: 'short_code')->nullable()->unique();
-            $table->timestampTz(column: 'created_at')->default(value: DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestampTz(column: 'updated_at')->default(value: DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestampTz(column: 'created_at')->default(value: DB::raw(value: 'CURRENT_TIMESTAMP'));
+            $table->timestampTz(column: 'updated_at')->default(value: DB::raw(value: 'CURRENT_TIMESTAMP'));
             $table->foreign("created_by_user_id")->references('id')->on(table: 'bear_user');
             $table->foreign("game_state_enum")->references('enum')->on(table: 'game_state');
             $table->foreign("game_public_status_enum")->references('enum')->on(table: 'game_public_status');

@@ -11,8 +11,8 @@ return new class extends Migration {
             $table->text(column: 'panorama_id');
             $table->uuid(column: 'user_id');
             $table->integer(column: 'rating');
-            $table->timestampTz(column: 'created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestampTz(column: 'updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestampTz(column: 'created_at')->default(value: DB::raw(value: 'CURRENT_TIMESTAMP'));
+            $table->timestampTz(column: 'updated_at')->default(value: DB::raw(value: 'CURRENT_TIMESTAMP'));
             $table->primary(['panorama_id', 'user_id']);
             $table->foreign("panorama_id")->references('id')->on(table: 'panorama');
             $table->foreign("user_id")->references('id')->on(table: 'bear_user');

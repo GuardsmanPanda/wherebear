@@ -30,7 +30,7 @@ enum AchievementEnum: string implements BearDatabaseBackedEnumInterface {
   public function getAchievementData(): AchievementData {
     return match ($this) {
       // COUNTRY GROUP ACHIEVEMENTS
-      self::EUROPEAN_UNION => AchievementData::countryArray(title: "United in Diversity!", name: "European Union", country_array: BearCountryOrganizationEnum::EUROPEAN_UNION->getCountryCca2Array()),
+      self::EUROPEAN_UNION => AchievementData::countryArray(title: "United in Diversity!", name: "European Union", country_array: BearCountryOrganizationEnum::EU->getCountryCca2Array()),
 
       // LEVEL ACHIEVEMENTS
       self::LEVEL_0 => AchievementData::level(title: "Novice Navigator", required_points: 0),
