@@ -74,6 +74,12 @@
         document.getElementById('lng').innerText = lng;
         document.getElementById('radius').innerText = radius;
         document.getElementById('panoramas').innerText = panoramas;
+        if (json.location) {
+          let text = "Found location: " + json.location + (json.subdivision ? " - " + json.subdivision : "");
+          window.notify.success(text);
+        } else {
+          window.notify.error("No location found");
+        }
       });
   };
 

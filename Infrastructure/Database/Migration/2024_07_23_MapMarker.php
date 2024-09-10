@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->text(column: 'file_path')->unique();
             $table->integer(column: 'user_level_enum');
             $table->text(column: 'permission_enum')->nullable();
-            $table->timestampTz(column: 'created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestampTz(column: 'created_at')->default(value: DB::raw(value: 'CURRENT_TIMESTAMP'));
             $table->foreign(columns: 'user_level_enum')->references('enum')->on(table: 'user_level');
             $table->foreign(columns: 'permission_enum')->references('enum')->on(table: 'bear_permission');
         });

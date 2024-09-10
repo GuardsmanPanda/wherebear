@@ -11,8 +11,8 @@ return new class extends Migration {
             $table->integer(column: 'enum')->primary();
             $table->integer(column: 'experience_requirement')->unique();
             $table->text(column: 'feature_unlock')->nullable();
-            $table->timestampTz(column: 'created_at')->default(value: DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestampTz(column: 'updated_at')->default(value: DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestampTz(column: 'created_at')->default(value: DB::raw(value: 'CURRENT_TIMESTAMP'));
+            $table->timestampTz(column: 'updated_at')->default(value: DB::raw(value: 'CURRENT_TIMESTAMP'));
         });
     }
 

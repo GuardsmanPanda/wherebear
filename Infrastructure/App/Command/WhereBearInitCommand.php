@@ -6,6 +6,8 @@ use Domain\Achievement\Enum\AchievementEnum;
 use Domain\Achievement\Enum\AchievementTypeEnum;
 use Domain\Game\Enum\GamePublicStatusEnum;
 use Domain\Game\Enum\GameStateEnum;
+use Domain\Map\Crud\MapCountryBoundaryCrud;
+use Domain\Map\Crud\MapCountrySubdivisionBoundaryCrud;
 use Domain\Map\Enum\MapMarkerEnum;
 use Domain\Map\Enum\MapStyleEnum;
 use Domain\Panorama\Enum\PanoramaTagEnum;
@@ -40,5 +42,8 @@ final class WhereBearInitCommand extends BearTransactionCommand {
     GameStateEnum::syncToDatabase(); // Requires UserLevelEnum.
     MapMarkerEnum::syncToDatabase(); // Requires UserLevelEnum.
     MapStyleEnum::syncToDatabase(); // Requires BearExternalApiEnum && UserLevelEnum.
+
+    MapCountryBoundaryCrud::syncCountriesBoundariesToDatabase(); // Requires BearCountryEnum.
+    MapCountrySubdivisionBoundaryCrud::syncCountriesSubdivisionBoundariesToDatabase(); // Requires BearCountrySubdivisionEnum.
   }
 }

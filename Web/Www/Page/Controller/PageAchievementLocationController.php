@@ -34,6 +34,26 @@ final class PageAchievementLocationController extends Controller {
     $lng = Req::getFloat(key: 'lng');
     $radius = Req::getFloat(key: 'radius');
 
+    $loc = DB::selectOne(query: "
+      SELECT
+        bc.name as country_name
+      FROM map_country_boundary mcb
+      LEFT JOIN bear_country bc ON mcb.country_cca2 = bc.cca2
+      WHERE ST_DWithin(mcb.polygon, ST_Point(:lng, :lat, 4326)::geography, 0)
+      ORDER BY mcb.osm_relation_sort_order
+      LIMIT 1
+    ", bindings: ['lng' => $lng, 'lat' => $lat])?->country_name;
+
+    $loc2 = DB::selectOne(query: "
+      SELECT
+        bcs.name as subdivision_name
+      FROM wherebear.map_country_subdivision_boundary mcsb
+      LEFT JOIN bear_country_subdivision bcs ON mcsb.country_subdivision_iso_3166 = bcs.iso_3166
+      WHERE ST_DWithin(mcsb.polygon, ST_Point(:lng, :lat, 4326)::geography, 0)
+      ORDER BY bcs.name, mcsb.country_subdivision_iso_3166
+      LIMIT 1
+    ", bindings: ['lng' => $lng, 'lat' => $lat])?->subdivision_name;
+
     $polygon = DB::selectOne(query: "
       SELECT
         ST_AsGeoJSON(ST_Buffer(ST_Point(?, ?, 4326)::geography, ?)) as polygon
@@ -53,7 +73,8 @@ final class PageAchievementLocationController extends Controller {
     return new JsonResponse(data: [
       'polygon' => json_decode(json: $polygon->polygon),
       'panoramas' => $panoramas,
-      //'location' => $data,
+      'location' => $loc,
+      'subdivision' => $loc2,
     ]);
 
   }

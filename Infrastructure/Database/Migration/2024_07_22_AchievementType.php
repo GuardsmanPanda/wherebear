@@ -10,7 +10,7 @@ return new class extends Migration {
     Schema::create(table: 'achievement_type', callback: static function (Blueprint $table): void {
       $table->text(column: 'enum')->primary();
       $table->text(column: 'description');
-      $table->timestampTz(column: 'created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+      $table->timestampTz(column: 'created_at')->default(value: DB::raw(value: 'CURRENT_TIMESTAMP'));
     });
   }
 

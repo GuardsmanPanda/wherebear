@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->integer(column: 'user_level_enum');
             $table->text(column: 'full_uri');
             $table->text(column: 'icon_path');
-            $table->timestampTz(column: 'created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestampTz(column: 'created_at')->default(value: DB::raw(value: 'CURRENT_TIMESTAMP'));
             $table->foreign(columns: 'external_api_enum')->references('enum')->on(table: 'bear_external_api');
             $table->foreign(columns: 'user_level_enum')->references('enum')->on(table: 'user_level');
         });
