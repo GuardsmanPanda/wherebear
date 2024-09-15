@@ -28,13 +28,13 @@ final class MapCountrySubdivisionBoundaryCrud {
     $osmRelationId = $subdivision->getCountrySubdivisionData()->osm_relation_id;
     $data = NominatimClient::lookup(osm_relation_id: $osmRelationId, nameDetails: true);
     if (count($data) !== 1) {
-      throw new RuntimeException(message: "Nominatim lookup failed for osm_relation_id $osmRelationId for subdivision {$subdivision->getCountrySubdivisionData()->name}");
+      throw new RuntimeException(message: "Nominatim lookup failed for osm_relation_id $osmRelationId for subdivision {$subdivision->getCountrySubdivisionData()->english_name}");
     }
 
     $name = $data[0]['namedetails']['name:en'] ?? $data[0]['name'];
     $iso3166 = $data[0]['address']['ISO3166-2-lvl4'] ?? null;
-    if ($name !== $subdivision->getCountrySubdivisionData()->name && $iso3166 !== $subdivision->value) {
-      throw new RuntimeException(message: "Nominatim lookup failed for osm_relation_id $osmRelationId for subdivision {$subdivision->getCountrySubdivisionData()->name}, got name: $name");
+    if ($name !== $subdivision->getCountrySubdivisionData()->english_name && $iso3166 !== $subdivision->value) {
+      throw new RuntimeException(message: "Nominatim lookup failed for osm_relation_id $osmRelationId for subdivision {$subdivision->getCountrySubdivisionData()->english_name}, got name: $name");
     }
 
     $geoJson = $data[0]['geojson'];
@@ -47,7 +47,7 @@ final class MapCountrySubdivisionBoundaryCrud {
     } else if ($geoJson['type'] === 'Polygon') {
       self::insertPolygon(subdivision: $subdivision, polygon: $geoJson['coordinates']);
     } else {
-      throw new RuntimeException(message: "Nominatim lookup failed for osm_relation_id $osmRelationId for subdivision {$subdivision->getCountrySubdivisionData()->name}, got type: {$geoJson['type']}");
+      throw new RuntimeException(message: "Nominatim lookup failed for osm_relation_id $osmRelationId for subdivision {$subdivision->getCountrySubdivisionData()->english_name}, got type: {$geoJson['type']}");
     }
   }
 

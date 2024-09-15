@@ -8,7 +8,9 @@ use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearUser;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Cast\BearDatabaseArrayCast;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
+use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountrySubdivisionEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Model\BearCountry;
+use GuardsmanPanda\Larabear\Infrastructure\Locale\Model\BearCountrySubdivision;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\ArrayObject;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
@@ -72,8 +74,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property CarbonInterface $captured_date
  * @property CarbonInterface|null $retired_at
  * @property BearCountryEnum|null $country_cca2
+ * @property BearCountrySubdivisionEnum|null $country_subdivision_iso_3166
  *
  * @property BearCountry|null $countryCca2
+ * @property BearCountrySubdivision|null $countrySubdivisionIso3166
  * @property BearUser|null $addedByUser
  *
  * AUTO GENERATED FILE DO NOT MODIFY
@@ -90,6 +94,7 @@ final class Panorama extends Model {
     protected $casts = [
         'captured_date' => 'immutable_date',
         'country_cca2' => BearCountryEnum::class,
+        'country_subdivision_iso_3166' => BearCountrySubdivisionEnum::class,
         'nominatim_json' => AsArrayObject::class,
         'panorama_tag_array' => BearDatabaseArrayCast::class,
         'retired_at' => 'immutable_datetime',
@@ -98,6 +103,11 @@ final class Panorama extends Model {
     /** @return BelongsTo<BearCountry, self>|null */
     public function countryCca2(): BelongsTo|null {
         return $this->belongsTo(related: BearCountry::class, foreignKey: 'country_cca2', ownerKey: 'cca2');
+    }
+
+    /** @return BelongsTo<BearCountrySubdivision, self>|null */
+    public function countrySubdivisionIso3166(): BelongsTo|null {
+        return $this->belongsTo(related: BearCountrySubdivision::class, foreignKey: 'country_subdivision_iso_3166', ownerKey: 'iso_3166');
     }
 
     /** @return BelongsTo<BearUser, self>|null */

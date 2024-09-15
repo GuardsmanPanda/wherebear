@@ -15,13 +15,19 @@ final class RouteServiceProvider extends ServiceProvider {
     $this->routes(function () {
       Route::group([], base_path(path: 'Web/Www/App/routes.php'));
       Route::middleware([BearSessionAuthMiddleware::allowGuests()])->group(base_path(path: 'Web/Www/LandingPage/routes.php'));
-      Route::prefix('auth')->middleware([BearSessionAuthMiddleware::allowGuests(), BearTransactionMiddleware::class])->group(base_path(path: 'Web/Www/Auth/routes.php'));
-      Route::prefix('game')->middleware([BearSessionAuthMiddleware::allowGuests(), BearTransactionMiddleware::class])->group(base_path(path: 'Web/Www/Game/routes.php'));
+
+      Route::middleware([BearSessionAuthMiddleware::allowGuests(), BearTransactionMiddleware::class])->group(callback: function () {
+        Route::get(uri: "g/{shortCode}", action: [GameController::class, 'redirectFromShortCode']);
+
+        Route::prefix('auth')->group(callback: base_path(path: 'Web/Www/Auth/routes.php'));
+        Route::prefix('game')->group(callback: base_path(path: 'Web/Www/Game/routes.php'));
+        Route::prefix('flag-game')->group(callback: base_path(path: 'Web/Www/FlagGame/routes.php'));
+      });
+
       Route::prefix('page')
         ->middleware([BearSessionAuthMiddleware::onlyAuthenticated(), BearTransactionMiddleware::class, BearHtmxMiddleware::using(layout_location: 'layout.page-layout')])
         ->group(base_path(path: 'Web/Www/Page/routes.php'));
 
-      Route::middleware([BearSessionAuthMiddleware::allowGuests()])->get(uri: "g/{shortCode}", action: [GameController::class, 'redirectFromShortCode']);
       Route::get(uri: "tile/{style}/{z}/{x}/{filename}", action: [StaticMapTileController::class, 'getMapTile']);
     });
   }

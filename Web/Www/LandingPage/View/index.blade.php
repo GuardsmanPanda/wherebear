@@ -1,6 +1,6 @@
 <?php declare(strict_types=1); ?>
 @php use Domain\User\Enum\BearPermissionEnum;use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;use Illuminate\Support\Facades\Session; @endphp
-@extends('layout.landing-layout')
+@extends('layout.blank-layout')
 @section('styles')
     <style>
         body {

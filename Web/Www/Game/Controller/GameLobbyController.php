@@ -38,7 +38,6 @@ final class GameLobbyController extends Controller {
           g.game_state_enum, g.game_public_status_enum,  g.game_public_status_enum = 'PUBLIC' as is_public,
           g.current_round, g.round_result_duration_seconds, g.short_code
       FROM game g
-      LEFT JOIN bear_user bu ON bu.id = g.created_by_user_id
       WHERE g.id = ?
     ", bindings: [$gameId]);
 
@@ -64,9 +63,9 @@ final class GameLobbyController extends Controller {
         'game' => $game,
         'players' => DB::select(query: "
           SELECT
-              bu.display_name, bu.country_cca2, bu.user_level_enum,
-              gu.is_ready, bc.name as country_name,
-              mm.file_name as map_marker_file_name
+            bu.display_name, bu.country_cca2, bu.user_level_enum,
+            gu.is_ready, bc.name as country_name,
+            mm.file_name as map_marker_file_name
           FROM game_user gu
           LEFT JOIN bear_user bu ON bu.id = gu.user_id
           LEFT JOIN bear_country bc ON bc.cca2 = bu.country_cca2

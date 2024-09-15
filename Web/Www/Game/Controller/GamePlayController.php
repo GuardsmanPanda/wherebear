@@ -19,25 +19,26 @@ use Symfony\Component\HttpFoundation\Response;
 final class GamePlayController extends Controller {
   public function index(string $gameId): View|RedirectResponse {
     $game = DB::selectOne(query: "
-            SELECT
-                g.id, g.game_state_enum, g.number_of_rounds, g.current_round,
-                EXTRACT(EPOCH FROM g.round_ends_at - NOW()) as round_seconds_remaining,
-                EXTRACT(EPOCH FROM g.next_round_at - NOW()) as round_result_seconds_remaining,
-                gr.panorama_id,
-                ST_Y(p.location::geometry) as panorama_lat,
-                ST_X(p.location::geometry) as panorama_lng,
-                p.jpg_path, TO_CHAR(p.captured_date, 'Month') as captured_month, TO_CHAR(p.captured_date, 'YYYY') as captured_year,
-                p.state_name, p.city_name,
-                bc.cca2, bc.cca3,
-                bc.name as country_name, 
-                bc.tld, bc.calling_code, bc.currency_code,
-                bc.dependency_status
-            FROM game g
-            LEFT JOIN game_round gr ON gr.game_id = g.id AND gr.round_number = g.current_round
-            LEFT JOIN panorama p ON p.id = gr.panorama_id
-            LEFT JOIN bear_country bc ON bc.cca2 = p.country_cca2
-            WHERE g.id = ?
-        ", bindings: [$gameId]);
+      SELECT
+        g.id, g.game_state_enum, g.number_of_rounds, g.current_round,
+        EXTRACT(EPOCH FROM g.round_ends_at - NOW()) as round_seconds_remaining,
+        EXTRACT(EPOCH FROM g.next_round_at - NOW()) as round_result_seconds_remaining,
+        EXTRACT(EPOCH FROM NOW() - g.updated_at) as last_updated_seconds_ago,
+        gr.panorama_id,
+        ST_Y(p.location::geometry) as panorama_lat,
+        ST_X(p.location::geometry) as panorama_lng,
+        p.jpg_path, TO_CHAR(p.captured_date, 'Month') as captured_month, TO_CHAR(p.captured_date, 'YYYY') as captured_year,
+        p.state_name, p.city_name,
+        bc.cca2, bc.cca3,
+        bc.name as country_name, 
+        bc.tld, bc.calling_code, bc.currency_code,
+        bc.dependency_status
+      FROM game g
+      LEFT JOIN game_round gr ON gr.game_id = g.id AND gr.round_number = g.current_round
+      LEFT JOIN panorama p ON p.id = gr.panorama_id
+      LEFT JOIN bear_country bc ON bc.cca2 = p.country_cca2
+      WHERE g.id = ?
+    ", bindings: [$gameId]);
 
     $enum = GameStateEnum::from(value: $game->game_state_enum);
     if ($enum->isStarting()) {
@@ -47,7 +48,11 @@ final class GamePlayController extends Controller {
       return Resp::redirect(url: "/game/$gameId/result");
     }
     if ($enum === GameStateEnum::IN_PROGRESS_CALCULATING) {
-      return Resp::view(view: 'game::play.round-result-wait');
+      if ($game->last_updated_seconds_ago > 30) {
+        return Resp::redirect(url: "/", message: 'Game Broke, Sorry');
+      }
+      dump($game);
+      return Resp::view(view: 'game::play.round-result-wait', data: ['game' => $game]);
     }
 
     $user = DB::selectOne(query: <<<SQL
@@ -76,7 +81,7 @@ final class GamePlayController extends Controller {
             gru.distance_meters, gru.points, gru.rank,
             ST_Y(gru.location::geometry) as lat,
             ST_X(gru.location::geometry) as lng,
-            p.country_cca2 = gru.approximate_country_cca2 as country_match
+            p.country_cca2 = gru.country_cca2 as country_match
         FROM game_round_user gru
         LEFT JOIN bear_user bu ON bu.id = gru.user_id
         LEFT JOIN map_marker mm ON mm.enum = bu.map_marker_enum
@@ -104,7 +109,7 @@ final class GamePlayController extends Controller {
       'game' => $game,
       'guesses' => $guesses,
       'isDev' => false,
-      'panorama_url' =>  "https://panorama.gman.bot/{$game->jpg_path}",
+      'panorama_url' =>  "https://panorama.gman.bot/$game->jpg_path",
       'template' => $enum === GameStateEnum::IN_PROGRESS ? 'game::play.round' : 'game::play.round-result',
       'user' => $user,
     ]);

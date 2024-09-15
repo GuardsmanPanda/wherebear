@@ -6,11 +6,11 @@ use Carbon\CarbonInterface;
 use Closure;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
+use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountrySubdivisionEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Model\BearCountry;
+use GuardsmanPanda\Larabear\Infrastructure\Locale\Model\BearCountrySubdivision;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Casts\ArrayObject;
-use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -58,18 +58,16 @@ use RuntimeException;
  * @property int|null $rank
  * @property float|null $points
  * @property float|null $distance_meters
- * @property float|null $approximate_country_distance_meters
  * @property string $game_id
  * @property string $user_id
  * @property string $location
  * @property string $created_at
  * @property string $updated_at
- * @property ArrayObject|null $nominatim_json
- * @property BearCountryEnum|null $correct_country_cca2
- * @property BearCountryEnum|null $approximate_country_cca2
+ * @property BearCountryEnum $country_cca2
+ * @property BearCountrySubdivisionEnum|null $country_subdivision_iso_3166
  *
- * @property BearCountry|null $approximateCountryCca2
- * @property BearCountry|null $correctCountryCca2
+ * @property BearCountry $countryCca2
+ * @property BearCountrySubdivision|null $countrySubdivisionIso3166
  * @property GameRound $game
  * @property GameUser $user
  * @property GameRound $roundNumber
@@ -89,29 +87,28 @@ final class GameRoundUser extends Model {
 
     /** @var array<string, string> $casts */
     protected $casts = [
-        'approximate_country_cca2' => BearCountryEnum::class,
-        'correct_country_cca2' => BearCountryEnum::class,
-        'nominatim_json' => AsArrayObject::class,
+        'country_cca2' => BearCountryEnum::class,
+        'country_subdivision_iso_3166' => BearCountrySubdivisionEnum::class,
     ];
 
-    /** @return BelongsTo<BearCountry, self>|null */
-    public function approximateCountryCca2(): BelongsTo|null {
-        return $this->belongsTo(related: BearCountry::class, foreignKey: 'approximate_country_cca2', ownerKey: 'cca2');
+    /** @return BelongsTo<BearCountry, self> */
+    public function countryCca2(): BelongsTo {
+        return $this->belongsTo(related: BearCountry::class, foreignKey: 'country_cca2', ownerKey: 'cca2');
     }
 
-    /** @return BelongsTo<BearCountry, self>|null */
-    public function correctCountryCca2(): BelongsTo|null {
-        return $this->belongsTo(related: BearCountry::class, foreignKey: 'correct_country_cca2', ownerKey: 'cca2');
+    /** @return BelongsTo<BearCountrySubdivision, self>|null */
+    public function countrySubdivisionIso3166(): BelongsTo|null {
+        return $this->belongsTo(related: BearCountrySubdivision::class, foreignKey: 'country_subdivision_iso_3166', ownerKey: 'iso_3166');
     }
 
     /** @return BelongsTo<GameRound, self> */
     public function game(): BelongsTo {
-        return $this->belongsTo(related: GameRound::class, foreignKey: 'game_id', ownerKey: 'game_id');
+        return $this->belongsTo(related: GameRound::class, foreignKey: 'game_id', ownerKey: 'round_number');
     }
 
     /** @return BelongsTo<GameUser, self> */
     public function user(): BelongsTo {
-        return $this->belongsTo(related: GameUser::class, foreignKey: 'user_id', ownerKey: 'user_id');
+        return $this->belongsTo(related: GameUser::class, foreignKey: 'user_id', ownerKey: 'game_id');
     }
 
     /** @return BelongsTo<GameRound, self> */

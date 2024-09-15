@@ -77,8 +77,7 @@ final class GameRunJob implements ShouldQueue, ShouldBeUnique {
         if ($game->round_ends_at === null) {
             throw new RuntimeException(message: "Round ends at is null when trying to run round.");
         }
-        $microSecondUntilRoundEnd = (int)$game->round_ends_at->diffInMicroseconds(date: now(), absolute: true);
-        usleep(microseconds: $microSecondUntilRoundEnd);
+        sleep(seconds: (int)$game->round_ends_at->diffInSeconds(date: now(), absolute: true));
         $game = GameService::setGameState(gameId: $game->id, state: GameStateEnum::IN_PROGRESS_CALCULATING);
         GameBroadcast::roundEvent(gameId: $game->id, roundNumber: $game->current_round, gameStateEnum: GameStateEnum::IN_PROGRESS_CALCULATING);
         return $game;
@@ -99,8 +98,7 @@ final class GameRunJob implements ShouldQueue, ShouldBeUnique {
         if ($game->next_round_at === null) {
             throw new RuntimeException(message: "Next round at is null when trying to go to next round.");
         }
-        $microSecondUntilNextRound = (int)$game->next_round_at->diffInMicroseconds(date: now(), absolute: true);
-        usleep(microseconds: $microSecondUntilNextRound);
+        sleep(seconds: (int)$game->next_round_at->diffInSeconds(date: now(), absolute: true));
         if ($game->current_round >= $game->number_of_rounds) {
             return GameEndAction::end(game: $game);
         }

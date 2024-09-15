@@ -36,13 +36,13 @@ final class PageAchievementLocationController extends Controller {
 
     $loc = DB::selectOne(query: "
       SELECT
-        bc.name as country_name
+        bc.name, bc.cca2
       FROM map_country_boundary mcb
       LEFT JOIN bear_country bc ON mcb.country_cca2 = bc.cca2
       WHERE ST_DWithin(mcb.polygon, ST_Point(:lng, :lat, 4326)::geography, 0)
       ORDER BY mcb.osm_relation_sort_order
       LIMIT 1
-    ", bindings: ['lng' => $lng, 'lat' => $lat])?->country_name;
+    ", bindings: ['lng' => $lng, 'lat' => $lat]);
 
     $loc2 = DB::selectOne(query: "
       SELECT

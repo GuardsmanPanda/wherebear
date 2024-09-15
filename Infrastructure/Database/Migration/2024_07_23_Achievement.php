@@ -24,7 +24,7 @@ return new class extends Migration {
     ");
     DB::statement(query: "create index achievement_type_enum_index on achievement(achievement_type_enum);");
     DB::statement(query: "create index achievement_country_cca2_index on achievement(country_cca2);");
-    DB::statement(query: "create index achievement_geographic_area_index on achievement using gist(geographic_area);");
+    DB::statement(query: "create index achievement_geographic_area_index on achievement using GIST(geographic_area);");
   }
 
   public function down(): void {

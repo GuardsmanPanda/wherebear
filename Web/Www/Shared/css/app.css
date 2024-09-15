@@ -1,3 +1,4 @@
+@import "maplibre-gl/dist/maplibre-gl.css";
 @import "pannellum/build/pannellum.css";
 @import "leaflet/dist/leaflet.css";
 @import "tippy.js/dist/tippy.css";

@@ -7,8 +7,8 @@ declare(strict_types=1);
 <div x-data="pageHandler" class="flex flex-col h-screen bg-green-200">
   <div class="relative flex-1 overflow-hidden">
     <div class="flex flex-col min-w-16 absolute top-0 left-0 z-10 rounded-br border-r border-b border-gray-700">
-      <div class="flex justify-center items-center px-1 py-0.5 bg-blue-500 font-heading text-sm font-medium text-white">2014</div>
-      <div class="flex justify-center items-center px-1 py-0.5 rounded-br-md bg-white font-heading text-sm font-medium text-gray-800">May</div>
+      <div class="flex justify-center items-center px-1 py-0.5 bg-blue-500 font-heading text-sm font-medium text-white select-none">{{$game->captured_year}}</div>
+      <div class="flex justify-center items-center px-1 py-0.5 rounded-br-md bg-white font-heading text-sm font-medium text-gray-800 select-none">{{$game->captured_month}}</div>
     </div>
     <div id="panorama"></div>
 
@@ -38,7 +38,7 @@ declare(strict_types=1);
     <div id="guessing-time-progress-bar" class="relative">
       <img src="/static/img/pengu-sign.png" class="absolute -left-1 bottom-[10px] h-20 z-20" alt="Cutest pengu around">
       <div class="flex justify-center items-center w-12 h-8 absolute bottom-[62px] left-[13px]">
-        <span x-text="timeRemainingSec" class="font-heading text-xl font-medium text-gray-900 z-30"></span>
+        <span x-text="timeRemainingSec" class="font-heading text-xl font-medium text-gray-900 select-none z-30"></span>
       </div>
       <div class="flex w-full h-4 bg-gray-700 border-y border-gray-900" style="box-shadow: inset 0 4px 1px rgb(0 0 0 / 0.3);">
         <div class="rounded-r" x-bind:style="{ 
@@ -115,80 +115,65 @@ declare(strict_types=1);
             marker: null,
             onMouseEnter() {
               this.map.zoomIn(1);
-              this.map.invalidateSize();
             },
             onMouseLeave() {
               this.map.zoomOut(1);
-              this.map.invalidateSize();
             },
           },
         },
-        handleMarkerPlacement(latlng) {
-          this.placeMarkerOnMaps(latlng);
-
-          if (!"{{ $isDev }}") {
-            clearTimeout(this.requestThrottleTimeout);
-
-            this.requestThrottleTimeout = setTimeout(() => {
-              fetch('/game/{{ $game->id }}/play/guess', {
-                  method: 'PUT',
-                  headers: {
-                    'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify(latlng),
-                })
-                .then(resp => {
-                  if (!resp.ok) {
-                    return Promise.reject(resp);
-                  }
-                })
-                .catch(error => console.error(error.statusText || error));
-            }, 200);
-          }
+        mapClickHandler(latlng) {
+          fetch('/game/{{ $game->id }}/play/guess', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(latlng),
+          }).then(resp => {
+              if (!resp.ok) {
+                return Promise.reject(resp);
+              }
+            this.placeMarkerOnMaps(latlng);
+          }).catch(error => console.error(error.statusText || error));
         },
         placeMarkerOnMaps(latlng) {
           for (const screen in this.screens) {
             const currentScreen = this.screens[screen];
             if (!this.firstGuessMade) {
-              currentScreen.marker = L.marker(latlng, {
-                icon: this.mapIcon
-              }).addTo(currentScreen.map);
+              currentScreen.marker = new window.maplibregl.Marker({element: this.mapIcon, anchor: 'bottom'})
+                .setLngLat([latlng.lng, latlng.lat])
+                .addTo(currentScreen.map);
             } else {
-              currentScreen.marker.setLatLng(latlng);
+              currentScreen.marker.setLngLat([latlng.lng, latlng.lat]);
             }
           }
           this.firstGuessMade = true;
         },
         setupMap(screen) {
-          const mapInstance = L.map(screen.divId, {
-            center: [25, 0],
-            worldCopyJump: true,
-            zoom: 1,
-            zoomControl: false,
+          const mapInstance = new window.maplibregl.Map({
+            container: screen.divId, style: {
+              'version': 8, 'sources': {
+                'raster-tiles': {
+                  'type': 'raster', 'tiles': ['{{$user->map_style_full_uri}}'], 'tileSize': {{$user->map_style_tile_size}},
+                }
+              }, 'layers': [{'id': 'simple-tiles', 'type': 'raster', 'source': 'raster-tiles'}]
+            }, center: [0, 25], dragRotate: false, keyboard: false, minZoom: 1, maxZoom: 18, zoom: 1
           });
-
-          L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxNativeZoom: 17,
-            minZoom: 1,
-            tileSize: parseInt("{{ $user->map_style_tile_size }}", 10),
-            zoomOffset: parseInt("{{ $user->map_style_zoom_offset }}", 10),
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          }).addTo(mapInstance);
+          mapInstance.scrollZoom.setWheelZoomRate(1 / 75);
+          mapInstance.scrollZoom.setZoomRate(1 / 75);
+          mapInstance.touchZoomRotate.disableRotation();
 
           mapInstance.on('click', e => {
-            this.handleMarkerPlacement(e.latlng);
+            this.mapClickHandler(e.lngLat);
           });
-
           screen.map = mapInstance;
-        },
+        }
       },
       init() {
-        this.maps.mapIcon = L.icon({
-          iconUrl: '{{ $user->map_marker_file_path }}',
-          iconSize: [48, 48],
-          iconAnchor: [24, 48],
-          tooltipAnchor: [0, -48],
-        });
+        const elem = document.createElement('img');
+        elem.src = '{{ $user->map_marker_file_path }}';
+        elem.style.height = '48px';
+        elem.classList.add('drop-shadow');
+        this.maps.mapIcon = elem;
 
         for (const screen in this.maps.screens) {
           this.maps.setupMap(this.maps.screens[screen]);

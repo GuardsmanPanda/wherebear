@@ -20,11 +20,56 @@
   </div>
 </div>
 <script>
-  const map = L.map('map', {
-    center: [25, 0], zoom: 3, worldCopyJump: true, scrollWheelZoom: true
+  //const map = L.map('map', {
+  //  center: [25, 0], zoom: 3, worldCopyJump: true, scrollWheelZoom: true
+  //});
+
+  const map = new window.maplibregl.Map({
+    container: 'map', style: {
+      'version': 8, 'sources': {
+        'raster-tiles': {
+          'type': 'raster', 'tiles': ['{{$user->map_style_full_uri}}'], 'tileSize': {{$user->map_style_tile_size}},
+        }
+      }, 'layers': [{'id': 'simple-tiles', 'type': 'raster', 'source': 'raster-tiles'}]
+    }, center: [0, 25], dragRotate: false, keyboard: false, minZoom: 1, maxZoom: 17, zoom: 2
+  });
+  map.scrollZoom.setWheelZoomRate(1 / 150);
+  map.scrollZoom.setZoomRate(1 / 75);
+  map.touchZoomRotate.disableRotation();
+
+
+  map.on('click', function (e) {
+    // Rounded to nearest meter-ish (5 decimal places)
+    const lat = Math.round(e.lngLat.lat * 100000) / 100000;
+    const lng = Math.round(e.lngLat.lng * 100000) / 100000;
+
+    const resp = fetch('/page/achievement-location/data?' + new URLSearchParams({lat: lat, lng: lng, radius: radius}).toString())
+      .then(resp => resp.json())
+      .then(json => {
+        if (json.location) {
+          // create flag element
+          const flag = document.createElement('img');
+          flag.src = '/static/flag/svg/' + json.location.cca2  + '.svg'
+          flag.classList.add('shadow');
+          flag.classList.add('border');
+          flag.classList.add('border-black');
+          flag.setAttribute('tippy', json.location.name + (json.subdivision ? " - " + json.subdivision : ""));
+          flag.style.height = '26px';
+          window.tippyFunction(flag);
+          new window.maplibregl.Marker({element: flag})
+            .setLngLat([lng, lat])
+            .addTo(map);
+          //move mouse 1 px to trigger tooltip
+          const mouseEvent = new MouseEvent('mousemove', {bubbles: true, cancelable: true, view: window});
+          document.dispatchEvent(mouseEvent);
+
+        } else {
+          window.notify.error("No location found");
+        }
+      });
   });
 
-  const markerLayer = L.layerGroup().addTo(map);
+  //const markerLayer = L.layerGroup().addTo(map);
 
   const small_icon_green = L.icon({
     iconUrl: '/static/img/map-util/map-marker-green.svg', iconSize: [24, 24], iconAnchor: [12, 24],
@@ -34,9 +79,9 @@
   });
 
 
-  L.tileLayer('{{$user->map_style_full_uri}}', {
-    maxNativeZoom: 17, minZoom: 1, tileSize: {{$user->map_style_tile_size}}, zoomOffset: {{$user->map_style_zoom_offset}},
-  }).addTo(map);
+  //L.tileLayer('{{$user->map_style_full_uri}}', {
+  //  maxNativeZoom: 17, minZoom: 1, tileSize: {{$user->map_style_tile_size}}, zoomOffset: {{$user->map_style_zoom_offset}},
+  //}).addTo(map);
 
 
   let lat = 0;
@@ -83,12 +128,12 @@
       });
   };
 
-  map.on('click', function (e) {
-    // Rounded to nearest meter-ish (5 decimal places)
-    lat = Math.round(e.latlng.lat * 100000) / 100000;
-    lng = Math.round(e.latlng.lng * 100000) / 100000;
-    drawCircle();
-  });
+  //map.on('click', function (e) {
+  //  // Rounded to nearest meter-ish (5 decimal places)
+  //  lat = Math.round(e.latlng.lat * 100000) / 100000;
+  //  lng = Math.round(e.latlng.lng * 100000) / 100000;
+  //  drawCircle();
+  //});
 
   window.addEventListener('wheel', function (ev) {
     if (circle !== null) {
