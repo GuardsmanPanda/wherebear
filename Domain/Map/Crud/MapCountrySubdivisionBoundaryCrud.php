@@ -31,13 +31,17 @@ final class MapCountrySubdivisionBoundaryCrud {
       throw new RuntimeException(message: "Nominatim lookup failed for osm_relation_id $osmRelationId for subdivision {$subdivision->getCountrySubdivisionData()->english_name}");
     }
 
-    $name = $data[0]['namedetails']['name:en'] ?? $data[0]['name'];
-    $iso3166 = $data[0]['address']['ISO3166-2-lvl4'] ?? null;
-    if ($name !== $subdivision->getCountrySubdivisionData()->english_name && $iso3166 !== $subdivision->value) {
+    $data = $data[0];
+
+    $address = $data['address'];
+    $iso3166 = $address['ISO3166-2-lvl4'] ?? $address['ISO3166-2-lvl5'] ?? $address['ISO3166-2-lvl6'] ?? $address['ISO3166-2-lvl7'] ?? null;
+    if ($iso3166 !== $subdivision->value) {
+      dump($data);
+      $name = $data['namedetails']['name:en'] ?? $data['name'];
       throw new RuntimeException(message: "Nominatim lookup failed for osm_relation_id $osmRelationId for subdivision {$subdivision->getCountrySubdivisionData()->english_name}, got name: $name");
     }
 
-    $geoJson = $data[0]['geojson'];
+    $geoJson = $data['geojson'];
 
     if ($geoJson['type'] === 'MultiPolygon') {
       // for each polygon

@@ -45,13 +45,7 @@ declare(strict_types=1); ?>
 
 <body>
   <div id="primary" hx-target="#primary" class="bg-tertiary-surface-subtle font-body text-shade-text-body">
-    <div class="flex flex-col max-w-7xl min-h-screen mx-auto bg-green-500 xl:border-x border-shade-border-dark">
-      <main class="flex grow bg-tertiary-surface-darker">
-        <div class="w-full">
-          {!! $content !!}
-        </div>
-      </main>
-    </div>
+    {!! $content !!}
   </div>
   @if(App::isLocal())
   <script>

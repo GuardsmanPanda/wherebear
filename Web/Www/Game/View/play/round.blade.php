@@ -25,7 +25,7 @@ declare(strict_types=1);
       </div>
 
       <div id="largeScreenMap" x-data="{ clipStyle: 'polygon(0 0, 100% 0, 100% 100%, 55% 100%)'}"
-        class="hidden sm:block w-4/12 hover:w-2/3 h-1/3 hover:h-2/3 absolute top-0 right-0 rounded-bl opacity-75 hover:opacity-100 drop-shadow-xl transition-all duration-[100ms]"
+        class="hidden sm:block w-4/12  h-1/3  absolute top-0 right-0 rounded-bl opacity-75 hover:opacity-100 drop-shadow-xl transition-all duration-[100ms]"
         x-on:mouseenter="clipStyle = 'none'; maps.screens.large.onMouseEnter();"
         x-on:mouseleave="clipStyle = 'polygon(0 0, 100% 0, 100% 100%, 55% 100%)'; maps.screens.large.onMouseLeave();"
         :style="`clip-path: ${clipStyle}`">
@@ -114,10 +114,14 @@ declare(strict_types=1);
             map: null,
             marker: null,
             onMouseEnter() {
-              this.map.zoomIn(1);
+              console.log("map center in before: ", this.map.getCenter());
+              this.map.zoomIn(1, {animate: false});
+              console.log("map center in after: ", this.map.getCenter());
             },
             onMouseLeave() {
-              this.map.zoomOut(1);
+              console.log("map center out before: ", this.map.getCenter());
+              this.map.zoomOut(1, {animate: false});
+              console.log("map center out after: ", this.map.getCenter());
             },
           },
         },

@@ -23,8 +23,8 @@
 
     map.on('click', function (e) {
       // Rounded to nearest meter-ish (5 decimal places)
-      const lng = Math.round(e.lngLat.lng * 100000) / 100000;
-      const lat = Math.round(e.lngLat.lat * 100000) / 100000;
+      const lng = e.lngLat.lng;
+      const lat = e.lngLat.lat;
       const resp = fetch('/flag-game/location-data?' + new URLSearchParams({lat: lat, lng: lng}).toString())
         .then(resp => resp.json())
         .then(json => {
@@ -34,8 +34,8 @@
             const text = json.country.name + (json.subdivision ? " - " + json.subdivision.name : "");
 
             const element = `
-              <div style='text-align: center; font-weight: bold; margin: -1px'>${json.country.name}</div>
-              ${json.subdivision ? "<div style='text-align: center; font-size: smaller'>" + json.subdivision.name + "</div>" : ""}
+              <div style='text-align: center; font-weight: bold; font-size: large; margin: -1px'>${json.country.name}</div>
+              ${json.data.iso_3166 ? "<div style='text-align: center; font-size: small'>" + json.data.subdivision_name + "</div>" : ""}
             `
 
             flag.src = '/static/flag/svg/' + json.country.cca2  + '.svg'
@@ -45,7 +45,6 @@
             flag.style.height = '26px';
             flag.setAttribute('tippy', text);
             //window.tippyFunction(flag);
-
             window.tippy(flag, {
               allowHTML: true,
               content: element,

@@ -22,29 +22,29 @@ final class FlagGameController extends Controller {
     $lng = Req::getFloat(key: 'lng');
     $lat = Req::getFloat(key: 'lat');
 
-    $country = DB::selectOne(query: "
+    $country = DB::selectOne(query: <<<SQL
+      WITH country as (SELECT wherebear_country(:lng, :lat) as cca2)
       SELECT
         bc.cca2, bc.name
-      FROM map_country_boundary mcb
-      LEFT JOIN bear_country bc ON mcb.country_cca2 = bc.cca2
-      WHERE ST_DWITHIN(mcb.polygon, st_point(?, ?, 4326)::geography, 0)
-      ORDER BY mcb.osm_relation_sort_order
+      FROM bear_country bc
+      WHERE bc.cca2 = (SELECT cca2 FROM country)
       LIMIT 1
-    ", bindings: [$lng, $lat]);
+    SQL, bindings: ['lng' => $lng, 'lat' => $lat]);
 
-    $subdivision = DB::selectOne(query: "
+    $data = DB::selectOne(query: <<<SQL
+      WITH 
+        country as (SELECT wherebear_country(:lng, :lat) as cca2),
+        subdivion as (SELECT wherebear_subdivision(:lng, :lat, (SELECT cca2 FROM country)) as cca3)
       SELECT
-        bcs.iso_3166, bcs.name
-      FROM map_country_subdivision_boundary mcsb
-      LEFT JOIN bear_country_subdivision bcs ON mcsb.country_subdivision_iso_3166 = bcs.iso_3166
-      WHERE ST_DWITHIN(mcsb.polygon, st_point(?, ?, 4326)::geography, 0)
-      ORDER BY mcsb.country_subdivision_iso_3166
-      LIMIT 1
-    ", bindings: [$lng, $lat]);
+        bc.cca2, bc.name as country_name, bcs.iso_3166, bcs.name as subdivision_name
+      FROM bear_country bc
+      LEFT JOIN bear_country_subdivision bcs ON bc.cca2 = bcs.country_cca2 AND bcs.iso_3166 = (SELECT cca3 FROM subdivion)
+      WHERE bc.cca2 = (SELECT cca2 FROM country)
+    SQL, bindings: ['lng' => $lng, 'lat' => $lat]);
 
     return Resp::json(data: [
       'country' => $country,
-      'subdivision' => $subdivision,
+      'data' => $data,
     ]);
   }
 }
