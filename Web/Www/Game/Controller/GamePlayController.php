@@ -147,7 +147,8 @@ final class GamePlayController extends Controller {
       'user' => (object) [
         'map_marker_file_path' => '/static/img/map-marker/chibi/indian-tribe-knight.png',
         'map_style_tile_size' => 256,
-        'map_style_zoom_offset' => 0
+        'map_style_zoom_offset' => 0,
+        'map_style_full_uri' => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
       ]
     ]);
   }
