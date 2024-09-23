@@ -11,6 +11,9 @@ declare(strict_types=1); ?>
   <meta name="description" content="WhereBear">
   <title>{{$title ?? 'WhereBear'}}</title>
   <script src="{!! config('bear.ui.app_js') !!}"></script>
+  @foreach (config('bear.ui.lit_components') as $litComponentFile)
+    <script src="{{ $litComponentFile }}"></script>
+  @endforeach
   @if(App::isLocal())
   <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
   @endif

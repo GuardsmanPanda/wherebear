@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use Domain\Achievement\Enum\AchievementTypeEnum;
 use Domain\Game\Enum\GamePublicStatusEnum;
@@ -30,6 +32,7 @@ return [
   'ui' => [
     'app_css' => file_get_contents(filename: storage_path(path: 'app/app-css-path.txt')),
     'app_js' => file_get_contents(filename: storage_path(path: 'app/app-js-path.txt')),
+    'lit_components' => array_map('file_get_contents', glob(storage_path('app/lit-components/*.txt')))
   ],
   //------------------------------------------------------------------------------------------------------------------
   // Config for generating eloquent models, the "eloquent-models" array has en entry for each connection that wants models generated,as defined in config/database.php

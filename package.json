@@ -16,6 +16,7 @@
         "htmx.org": "^2.0",
         "leaflet": "^1.9.4",
         "leaflet.markercluster": "^1.5.3",
+        "lit": "^3.2.0",
         "maplibre-gl": "^4.7.0",
         "notyf": "^3.10.0",
         "pannellum": "^2.5.6",
