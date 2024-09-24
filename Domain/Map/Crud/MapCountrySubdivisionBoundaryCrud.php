@@ -9,7 +9,7 @@ use Integration\Nominatim\Client\NominatimClient;
 use RuntimeException;
 
 final class MapCountrySubdivisionBoundaryCrud {
-  public static function syncCountriesSubdivisionBoundariesToDatabase(): void {
+  public static function syncCountriesSubdivisionBoundariesToDatabase(bool $haltOnError = True): void {
     BearDatabaseService::mustBeInTransaction();
 
     $subdivisions = DB::select(query: "
@@ -20,25 +20,47 @@ final class MapCountrySubdivisionBoundaryCrud {
       WHERE mcsb.id IS NULL
     ");
     foreach ($subdivisions as $subdivision) {
-      self::syncOsmRelationForSubdivision(subdivision: BearCountrySubdivisionEnum::from(value: $subdivision->iso_3166));
+      try {
+        self::syncOsmRelationForSubdivision(subdivision: BearCountrySubdivisionEnum::from(value: $subdivision->iso_3166));
+      } catch (RuntimeException $e) {
+        if ($haltOnError) {
+          throw $e;
+        } else {
+          dump($e->getMessage());
+        }
+      }
     }
   }
 
   private static function syncOsmRelationForSubdivision(BearCountrySubdivisionEnum $subdivision): void {
-    $osmRelationId = $subdivision->getCountrySubdivisionData()->osm_relation_id;
+    $osmRelationId = $subdivision->getCountrySubdivisionData()->osm;
+
+
+
     $data = NominatimClient::lookup(osm_relation_id: $osmRelationId, nameDetails: true);
     if (count($data) !== 1) {
-      throw new RuntimeException(message: "Nominatim lookup failed for osm_relation_id $osmRelationId for subdivision {$subdivision->getCountrySubdivisionData()->english_name}");
+      throw new RuntimeException(message: "Nominatim lookup failed for osm_relation_id $osmRelationId for subdivision {$subdivision->getCountrySubdivisionData()->name}");
     }
 
     $data = $data[0];
 
     $address = $data['address'];
-    $iso3166 = $address['ISO3166-2-lvl4'] ?? $address['ISO3166-2-lvl5'] ?? $address['ISO3166-2-lvl6'] ?? $address['ISO3166-2-lvl7'] ?? null;
+    $iso3166 = null;
+    $iso3166 ??= $data['extratags']['ISO3166-2:2'] ?? null;
+    for ($i = 15; $i > 2 && $iso3166 === null; $i--) {
+      $iso3166 = $address["ISO3166-2-lvl$i"] ?? null;
+    }
+    $iso3166 ??= $data['extratags']['ISO3166-1:alpha3'] ?? null;
+
+    if ($iso3166 === 'AZ-NX') { # Workaround for Nakhchivan - azerbaijan
+      $iso3166 = $address['ISO3166-2-lvl5'];
+    }
+
     if ($iso3166 !== $subdivision->value) {
       dump($data);
       $name = $data['namedetails']['name:en'] ?? $data['name'];
-      throw new RuntimeException(message: "Nominatim lookup failed for osm_relation_id $osmRelationId for subdivision {$subdivision->getCountrySubdivisionData()->english_name}, got name: $name");
+      dump("was: $iso3166, expected: $subdivision->value");
+      throw new RuntimeException(message: "Nominatim lookup failed for osm_relation_id $osmRelationId for subdivision {$subdivision->getCountrySubdivisionData()->name}, got name: $name");
     }
 
     $geoJson = $data['geojson'];
@@ -51,7 +73,7 @@ final class MapCountrySubdivisionBoundaryCrud {
     } else if ($geoJson['type'] === 'Polygon') {
       self::insertPolygon(subdivision: $subdivision, polygon: $geoJson['coordinates']);
     } else {
-      throw new RuntimeException(message: "Nominatim lookup failed for osm_relation_id $osmRelationId for subdivision {$subdivision->getCountrySubdivisionData()->english_name}, got type: {$geoJson['type']}");
+      throw new RuntimeException(message: "Nominatim lookup failed for osm_relation_id $osmRelationId for subdivision {$subdivision->getCountrySubdivisionData()->name}, got type: {$geoJson['type']}");
     }
   }
 
@@ -66,6 +88,6 @@ final class MapCountrySubdivisionBoundaryCrud {
     DB::insert(query: "
       INSERT INTO wherebear.map_country_subdivision_boundary (id, country_subdivision_iso_3166, osm_relation_id, polygon)
       VALUES (gen_random_uuid(), ?, ?, ST_GeomFromGeoJSON(?))
-    ", bindings: [$subdivision->value, $subdivision->getCountrySubdivisionData()->osm_relation_id, json_encode(value: $geoJson)]);
+    ", bindings: [$subdivision->value, $subdivision->getCountrySubdivisionData()->osm, json_encode(value: $geoJson)]);
   }
 }

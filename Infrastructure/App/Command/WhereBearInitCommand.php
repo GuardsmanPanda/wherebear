@@ -44,6 +44,6 @@ final class WhereBearInitCommand extends BearTransactionCommand {
     MapStyleEnum::syncToDatabase(); // Requires BearExternalApiEnum && UserLevelEnum.
 
     MapCountryBoundaryCrud::syncCountriesBoundariesToDatabase(); // Requires BearCountryEnum.
-    MapCountrySubdivisionBoundaryCrud::syncCountriesSubdivisionBoundariesToDatabase(); // Requires BearCountrySubdivisionEnum.
+    MapCountrySubdivisionBoundaryCrud::syncCountriesSubdivisionBoundariesToDatabase(haltOnError: false); // Requires BearCountrySubdivisionEnum.
   }
 }

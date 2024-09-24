@@ -13,7 +13,14 @@ final class FlagGameController extends Controller {
 
   public function index(): View {
     return Resp::view(view: 'flag-game::index', data: [
-      'countries' => DB::select(query: "SELECT cca2, name FROM bear_country ORDER BY name"),
+      'countries' => DB::select(query: "SELECT cca2, name FROM bear_country WHERE cca2 != 'XX'"),
+      'map' => DB::selectOne(query: "SELECT zoom_offset,tile_size, full_uri FROM map_style WHERE enum = 'SATELLITE'"),
+    ]);
+  }
+
+
+  public function old(): View {
+    return Resp::view(view: 'flag-game::index', data: [
       'map' => DB::selectOne(query: "SELECT zoom_offset,tile_size, full_uri FROM map_style WHERE enum = 'SATELLITE'"),
     ]);
   }

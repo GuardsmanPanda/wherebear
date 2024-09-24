@@ -12,18 +12,25 @@ final class MapCountryBoundaryCrud {
   /** @var array<int> */
   public static array $ignoreRelationErrors = [
     3791785, // Area C
-    155987,  // Saint Helena
     3969434, // United Kingdom
   ];
 
 
-  public static function syncCountriesBoundariesToDatabase(): void {
+  public static function syncCountriesBoundariesToDatabase(bool $haltOnError = true): void {
     BearDatabaseService::mustBeInTransaction();
 
     foreach (BearCountryEnum::cases() as $country) {
       $osmRelationId = $country->getCountryData()->osm_relation_id;
       if ($osmRelationId !== null) {
-        self::syncOsmRelationForCountry(country: $country, osmRelationId: $osmRelationId);
+        try {
+          self::syncOsmRelationForCountry(country: $country, osmRelationId: $osmRelationId);
+        } catch (RuntimeException $e) {
+          if ($haltOnError) {
+            throw $e;
+          } else {
+            dump($e->getMessage());
+          }
+        }
       }
     }
     self::syncOsmRelationForCountry(country: BearCountryEnum::PS, osmRelationId: 3791785);

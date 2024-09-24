@@ -5,6 +5,7 @@ namespace Infrastructure\Console\Kernel;
 use Domain\Game\Crud\GameRoundDeleter;
 use Domain\Game\Crud\GameUpdater;
 use Domain\Game\Enum\GameStateEnum;
+use Domain\Map\Command\MapSubdivisionBoundaryCheckCommand;
 use Domain\Panorama\Command\PanoramaImportCommand;
 use Domain\Panorama\Command\PanoramaImportFromPreviousGameCommand;
 use Illuminate\Console\Scheduling\Schedule;
@@ -12,15 +13,15 @@ use Illuminate\Foundation\Console\Kernel;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Infrastructure\App\Command\WhereBearInitCommand;
-use Integration\Nominatim\Client\NominatimClient;
 use Throwable;
 
 final class ConsoleKernel extends Kernel {
   /** @var array<int, string> $commands @phpstan-ignore-next-line */
   protected $commands = [
-    WhereBearInitCommand::class,
+    MapSubdivisionBoundaryCheckCommand::class,
     PanoramaImportCommand::class,
     PanoramaImportFromPreviousGameCommand::class,
+    WhereBearInitCommand::class,
   ];
 
   protected function schedule(Schedule $schedule): void {
@@ -53,40 +54,7 @@ final class ConsoleKernel extends Kernel {
     });
 
     Artisan::command('zz', function () {
-      $panoramas = DB::connection('previous')->select(query: "
-        SELECT
-          p.panorama_id as id, st_x(p.panorama_location::geometry) as longitude, st_y(p.panorama_location::geometry) as latitude, p.extended_country_code as country_cca2
-        FROM panorama p
-      ");
-      foreach ($panoramas as $panorama) {
-        $timeStart = microtime(true);
-        $loc = DB::selectOne(query: "
-          SELECT
-            mcb.country_cca2
-          FROM map_country_boundary mcb
-          WHERE ST_DWithin(mcb.polygon, ST_Point(:lng, :lat, 4326)::geography, 0)
-          ORDER BY mcb.osm_relation_sort_order
-          LIMIT 1
-        ", bindings: ['lng' => $panorama->longitude, 'lat' => $panorama->latitude])?->country_cca2;
-        $timeEnd = microtime(true);
 
-        if ($loc === 'GB' && in_array($panorama->country_cca2, ['GB-ENG', 'GB-SCT', 'GB-WLS', 'GB-NIR'])) {
-          continue;
-        }
-        if ($panorama->country_cca2 === 'NL' && in_array($loc, ['AW', 'BQ', 'SX'])) {
-          continue;
-        }
-        if ($loc === 'MV' && $panorama->country_cca2 === 'XX') {
-          continue;
-        }
-
-
-        if ($loc !== $panorama->country_cca2) {
-          echo "Panorama $panorama->id is in $loc, not $panorama->country_cca2\n";
-          echo "  $panorama->latitude, $panorama->longitude\n";
-          echo "  Time: " . ($timeEnd - $timeStart) . "s\n";
-        }
-      }
     });
   }
 }
