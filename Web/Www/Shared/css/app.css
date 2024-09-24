@@ -1,12 +1,6 @@
 @import "maplibre-gl/dist/maplibre-gl.css";
 @import "pannellum/build/pannellum.css";
-@import "leaflet/dist/leaflet.css";
 @import "tippy.js/dist/tippy.css";
-@import "fonts.css";
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 html {
   box-sizing: border-box;
@@ -20,12 +14,6 @@ html {
 
 body {
   font-family: system-ui, sans-serif;
-}
-
-.sidebar-active {
-  background-color: rgb(17 24 39) !important;
-  color: rgb(220 220 220) !important;
-  font-weight: 500 !important;
 }
 
 @-webkit-keyframes notyf-fadeinup {
@@ -397,77 +385,6 @@ body {
   .notyf__dismiss {
     width: 56px
   }
-}
-
-.leaflet-tooltip {
-  @apply font-bold text-base;
-  padding-bottom: 0 !important;
-  padding-top: 0 !important;
-}
-
-.leaflet-container img.leaflet-tile {
-  /* See: https://bugs.chromium.org/p/chromium/issues/detail?id=600120 */
-  mix-blend-mode: normal !important;
-}
-
-.leaflet-cluster-anim .leaflet-marker-icon,
-.leaflet-cluster-anim .leaflet-marker-shadow {
-  -webkit-transition: -webkit-transform 0.3s ease-out, opacity 0.3s ease-in;
-  -moz-transition: -moz-transform 0.3s ease-out, opacity 0.3s ease-in;
-  -o-transition: -o-transform 0.3s ease-out, opacity 0.3s ease-in;
-  transition: transform 0.3s ease-out, opacity 0.3s ease-in;
-}
-
-.leaflet-cluster-spider-leg {
-  /* stroke-dashoffset (duration and function) should match with leaflet-marker-icon transform in order to track it exactly */
-  -webkit-transition: -webkit-stroke-dashoffset 0.3s ease-out, -webkit-stroke-opacity 0.3s ease-in;
-  -moz-transition: -moz-stroke-dashoffset 0.3s ease-out, -moz-stroke-opacity 0.3s ease-in;
-  -o-transition: -o-stroke-dashoffset 0.3s ease-out, -o-stroke-opacity 0.3s ease-in;
-  transition: stroke-dashoffset 0.3s ease-out, stroke-opacity 0.3s ease-in;
-}
-
-.marker-cluster-small {
-  background-color: rgba(181, 226, 140, 0.6);
-}
-
-.marker-cluster-small div {
-  background-color: rgba(110, 204, 57, 0.6);
-}
-
-.marker-cluster-medium {
-  background-color: rgba(241, 211, 87, 0.6);
-}
-
-.marker-cluster-medium div {
-  background-color: rgba(240, 194, 12, 0.6);
-}
-
-.marker-cluster-large {
-  background-color: rgba(253, 156, 115, 0.6);
-}
-
-.marker-cluster-large div {
-  background-color: rgba(241, 128, 23, 0.6);
-}
-
-.marker-cluster {
-  background-clip: padding-box;
-  border-radius: 20px;
-}
-
-.marker-cluster div {
-  width: 30px;
-  height: 30px;
-  margin-left: 5px;
-  margin-top: 5px;
-
-  text-align: center;
-  border-radius: 15px;
-  font: 12px "Helvetica Neue", Arial, Helvetica, sans-serif;
-}
-
-.marker-cluster span {
-  line-height: 30px;
 }
 
 ::-webkit-scrollbar {

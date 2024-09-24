@@ -1,7 +1,12 @@
 const defaultTheme = require('tailwindcss/defaultTheme');
 
 module.exports = {
-  content: ['Web/Www/**/*.blade.php', 'Web/Www/Shared/Component/**/*.php', 'vendor/guardsmanpanda/larabear/src/Web/Www/**/*.php'], theme: {
+  content: [
+    'Web/Www/**/*.blade.php',
+    'Web/Www/**/*.lit-component.js',
+    'Web/Www/Shared/Component/**/*.php',
+    'vendor/guardsmanpanda/larabear/src/Web/Www/**/*.php'
+  ], theme: {
     fontFamily: {
       body: 'Roboto', heading: 'Outfit',
     }, extend: {
