@@ -62,7 +62,7 @@ function buildTailwindCss() {
       fs.mkdirSync(storagePath, { recursive: true });
     }
 
-    execSync('npx tailwindcss -c Web/Www/tailwind.config.js -i Web/Www/Shared/css/tailwind.css -o public/static/dist/tailwind.css');
+    execSync('npx tailwindcss -c Web/Www/tailwind.config.js -i Web/Www/Shared/css/tailwind.css -o public/static/dist/tailwind.css --minify');
     fs.writeFileSync(`${storagePath}/tailwind-css-path.txt`, `/static/dist/tailwind.css?id=${createUniqId()}`);
     logCompletedBuild('Tailwind CSS build completed');
   } catch (error) {
