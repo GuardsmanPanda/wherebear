@@ -36,7 +36,8 @@ function buildApp() {
     }
 
     esbuild.buildSync({
-      entryPoints: ['Web/Www/Shared/js/app.js'],
+      entryPoints: ['Web/Www/Shared/css/app.css', 'Web/Www/Shared/js/app.js'],
+      entryNames: '[name]',
       sourcemap: true,
       bundle: true,
       minify: true,
@@ -45,6 +46,7 @@ function buildApp() {
       outdir: 'public/static/dist',
     });
 
+    fs.writeFileSync(`${storagePath}/app-css-path.txt`, `/static/dist/app.css?id=${createUniqId()}`);
     fs.writeFileSync(`${storagePath}/app-js-path.txt`, `/static/dist/app.js?id=${createUniqId()}`);
     logCompletedBuild('App build completed');
   } catch (error) {
@@ -99,6 +101,9 @@ function buildLitComponents() {
   const storagePath = 'storage/app/lit-components';
 
   try {
+    if (!fs.existsSync(distPath)) {
+      fs.mkdirSync(distPath, { recursive: true });
+    }
     if (!fs.existsSync(storagePath)) {
       fs.mkdirSync(storagePath, { recursive: true });
     }
