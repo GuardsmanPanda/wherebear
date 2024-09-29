@@ -9,19 +9,19 @@ use GuardsmanPanda\Larabear\Infrastructure\App\Interface\BearDatabaseBackedEnumI
 enum AchievementTypeEnum: string implements BearDatabaseBackedEnumInterface {
   case COUNTRY = 'COUNTRY';
   case COUNTRY_ARRAY = 'COUNTRY_ARRAY';
+  case COUNTRY_SUBDIVISION = 'COUNTRY_SUBDIVISION';
   case LOCATION = 'LOCATION';
   case LEVEL = 'LEVEL';
-  case PRE_REQS = 'PRE_REQS';
   case CUSTOM = 'CUSTOM';
 
   public function getDescription(): string {
     return match ($this) {
-      self::COUNTRY => "Earned by correctly guessing a country",
-      self::COUNTRY_ARRAY => "Earned by correctly guessing all of the countries in an array",
-      self::LOCATION => "Earned by guessing a location correctly",
-      self::LEVEL => "Earned by reaching a certain level",
-      self::PRE_REQS => "Earned by completing other achievements, need to complete 'requirement' achievement of the pre-requisite achievements",
-      self::CUSTOM => 'Mostly for achievements with hard coded requirements',
+      self::COUNTRY => "Earned by correctly guessing a country x times.",
+      self::COUNTRY_ARRAY => "Earned by correctly guessing all of the countries in an array.",
+      self::COUNTRY_SUBDIVISION => "Earned by correctly guessing a country subdivision.",
+      self::LOCATION => "Earned by guessing a location correctly.",
+      self::LEVEL => "Earned by reaching a certain level.",
+      self::CUSTOM => 'Mostly for achievements with hard coded requirements.',
     };
   }
 

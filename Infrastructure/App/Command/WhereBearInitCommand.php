@@ -22,7 +22,7 @@ use Infrastructure\App\Enum\BearExternalApiEnum;
 use Infrastructure\App\Enum\BearOauth2ClientEnum;
 
 final class WhereBearInitCommand extends BearTransactionCommand {
-  protected $signature = 'wherebear:init';
+  protected $signature = 'wherebear:init {--bootstrap}';
   protected $description = 'Initialize the database.';
 
   protected function handleInTransaction(): void {
@@ -43,7 +43,11 @@ final class WhereBearInitCommand extends BearTransactionCommand {
     MapMarkerEnum::syncToDatabase(); // Requires UserLevelEnum.
     MapStyleEnum::syncToDatabase(); // Requires BearExternalApiEnum && UserLevelEnum.
 
-    MapCountryBoundaryCrud::syncCountriesBoundariesToDatabase(); // Requires BearCountryEnum.
-    MapCountrySubdivisionBoundaryCrud::syncCountriesSubdivisionBoundariesToDatabase(haltOnError: false); // Requires BearCountrySubdivisionEnum.
+    if ($this->option(key: 'bootstrap')) { // Skip the rest of the initialization if we're just bootstrapping.
+      return;
+    }
+
+    MapCountryBoundaryCrud::syncCountriesBoundariesToDatabase(); // Requires BearCountryEnum && valid BearExternalApiEnum.
+    MapCountrySubdivisionBoundaryCrud::syncCountriesSubdivisionBoundariesToDatabase(haltOnError: false); // Same as above.
   }
 }

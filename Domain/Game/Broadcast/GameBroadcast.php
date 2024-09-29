@@ -14,7 +14,7 @@ final class GameBroadcast {
         );
     }
 
-    public  static function prep(string $gameId, string $message, int $stage): void {
+    public static function prep(string $gameId, string $message, int $stage): void {
         BearBroadcastService::broadcastNow(
             channel: 'game.' . $gameId,
             event: 'prep',

@@ -73,8 +73,6 @@ final class PageDiscoveryController extends Controller {
     }
     return new JsonResponse(data: [
       'country_cca2' => $panorama->country_cca2,
-      'state_name' => $panorama->state_name,
-      'city_name' => $panorama->city_name,
       'lat' => $data->lat,
       'lng' => $data->lng,
       'date' => $data->date,
@@ -106,8 +104,6 @@ final class PageDiscoveryController extends Controller {
         $panorama = PanoramaCreator::createFromStreetViewData(data: $data);
         $results[] = [
           'country_cca2' => $panorama->country_cca2,
-          'state_name' => $panorama->state_name,
-          'city_name' => $panorama->city_name,
           'lat' => $data->lat,
           'lng' => $data->lng,
           'date' => $data->date,

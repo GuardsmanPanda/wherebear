@@ -11,7 +11,6 @@ use Domain\Panorama\Enum\PanoramaTagEnum;
 use Domain\User\Enum\UserFlagEnum;
 use Domain\User\Enum\UserLevelEnum;
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearEnvService;
-use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
 use GuardsmanPanda\Larabear\Integration\ExternalApi\Enum\BearExternalApiAuthEnum;
 
 return [
@@ -32,7 +31,7 @@ return [
   'ui' => [
     'app_css' => file_get_contents(filename: storage_path(path: 'app/app-css-path.txt')),
     'app_js' => file_get_contents(filename: storage_path(path: 'app/app-js-path.txt')),
-    'lit_components' => array_map('file_get_contents', glob(storage_path('app/lit-components/*.txt'))),
+    'lit_components' => array_map(callback: 'file_get_contents', array: glob(storage_path(path: 'app/lit-components/*.txt'))),
     'tailwind_css' => file_get_contents(filename: storage_path(path: 'app/tailwind-css-path.txt')),
   ],
   //------------------------------------------------------------------------------------------------------------------
@@ -41,10 +40,13 @@ return [
   'eloquent-model-generator' => [
     'pgsql' => [
       'achievement' => ['location' => 'Domain/Achievement/Model'],
+      'achievement_country_guess' => ['location' => 'Domain/Achievement/Model'],
+      'achievement_country_subdivision_guess' => ['location' => 'Domain/Achievement/Model'],
       'achievement_type' => [
         'enum' => AchievementTypeEnum::class,
         'location' => 'Domain/Achievement/Model'
       ],
+      'achievement_user' => ['location' => 'Domain/Achievement/Model'],
       'bear_user' => ['class' => 'WhereBearUser', 'location' => 'Domain/User/Model'],
       'game' => ['location' => 'Domain/Game/Model'],
       'game_public_status' => [

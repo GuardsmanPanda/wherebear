@@ -61,9 +61,8 @@ final class PageAchievementLocationController extends Controller {
 
     $panoramas = DB::select(query: "
       SELECT
-        p.id, p.country_cca2, p.city_name, p.state_name,
-        ST_Y(p.location::geometry) as lat,
-        ST_X(p.location::geometry) as lng,
+        p.id, p.country_cca2,
+        ST_Y(p.location::geometry) as lat, ST_X(p.location::geometry) as lng,
         st_dwithin(p.location, ST_Point(:lng, :lat, 4326)::geography, :radius) as within
       FROM panorama p
       WHERE ST_DWithin(p.location, ST_Point(:lng, :lat, 4326)::geography, :radius * 2)

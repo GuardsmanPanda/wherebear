@@ -2,6 +2,7 @@
 
 namespace Domain\Game\Action;
 
+use Domain\Achievement\Job\AchievementJob;
 use Domain\Game\Broadcast\GameBroadcast;
 use Domain\Game\Enum\GameStateEnum;
 use Domain\Game\Model\Game;
@@ -52,6 +53,7 @@ final class GameEndAction {
 
     $game = GameService::setGameState(gameId: $game->id, state: GameStateEnum::FINISHED);
     GameBroadcast::roundEvent(gameId: $game->id, roundNumber: $game->current_round, gameStateEnum: GameStateEnum::FINISHED);
+    AchievementJob::dispatch($game->id);
     return $game;
   }
 }

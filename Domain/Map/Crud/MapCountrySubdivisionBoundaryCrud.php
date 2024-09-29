@@ -35,8 +35,6 @@ final class MapCountrySubdivisionBoundaryCrud {
   private static function syncOsmRelationForSubdivision(BearCountrySubdivisionEnum $subdivision): void {
     $osmRelationId = $subdivision->getCountrySubdivisionData()->osm;
 
-
-
     $data = NominatimClient::lookup(osm_relation_id: $osmRelationId, nameDetails: true);
     if (count($data) !== 1) {
       throw new RuntimeException(message: "Nominatim lookup failed for osm_relation_id $osmRelationId for subdivision {$subdivision->getCountrySubdivisionData()->name}");
@@ -45,8 +43,7 @@ final class MapCountrySubdivisionBoundaryCrud {
     $data = $data[0];
 
     $address = $data['address'];
-    $iso3166 = null;
-    $iso3166 ??= $data['extratags']['ISO3166-2:2'] ?? null;
+    $iso3166 = $data['extratags']['ISO3166-2:2'] ?? null;
     for ($i = 15; $i > 2 && $iso3166 === null; $i--) {
       $iso3166 = $address["ISO3166-2-lvl$i"] ?? null;
     }

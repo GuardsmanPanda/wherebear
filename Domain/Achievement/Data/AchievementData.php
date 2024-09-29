@@ -9,7 +9,8 @@ use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
 final readonly class AchievementData {
   /**
    * @param array<string>|null $country_array
-   */
+   * @param array<string>|null $country_subdivsion_array
+ */
   private function __construct(
     public string               $title,
     public string               $name,
@@ -17,6 +18,7 @@ final readonly class AchievementData {
     public AchievementTypeEnum  $achievement_type_enum,
     public BearCountryEnum|null $country = null,
     public array|null           $country_array = null,
+    public array|null           $country_subdivsion_array = null,
     public MapLocationData|null $location_data = null,
   ) {
   }

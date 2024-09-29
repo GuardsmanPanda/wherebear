@@ -52,11 +52,13 @@ use RuntimeException;
  * @method static bool exists()
  *
  * @property bool $is_ready
+ * @property bool $is_observer
  * @property float $points
  * @property string $game_id
  * @property string $user_id
  * @property string $created_at
  * @property string $updated_at
+ * @property CarbonInterface|null $achievements_calculated_at
  *
  * @property Game $game
  * @property BearUser $user
@@ -75,6 +77,11 @@ final class GameUser extends Model {
     protected $dateFormat = 'Y-m-d\TH:i:sP';
     /** @var array<string> $log_exclude_columns */
     public array $log_exclude_columns = ['is_ready'];
+
+    /** @var array<string, string> $casts */
+    protected $casts = [
+        'achievements_calculated_at' => 'immutable_datetime',
+    ];
 
     /** @return BelongsTo<Game, self> */
     public function game(): BelongsTo {

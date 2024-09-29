@@ -2,12 +2,14 @@
 
 namespace Infrastructure\Console\Kernel;
 
+use Domain\Achievement\Action\AchievementGameGuessAction;
 use Domain\Game\Crud\GameRoundDeleter;
 use Domain\Game\Crud\GameUpdater;
 use Domain\Game\Enum\GameStateEnum;
 use Domain\Map\Command\MapSubdivisionBoundaryCheckCommand;
 use Domain\Panorama\Command\PanoramaImportCommand;
 use Domain\Panorama\Command\PanoramaImportFromPreviousGameCommand;
+use Domain\Panorama\Command\PanoramaUpdateCountryAndSubdivisionCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel;
 use Illuminate\Support\Facades\Artisan;
@@ -21,6 +23,7 @@ final class ConsoleKernel extends Kernel {
     MapSubdivisionBoundaryCheckCommand::class,
     PanoramaImportCommand::class,
     PanoramaImportFromPreviousGameCommand::class,
+    PanoramaUpdateCountryAndSubdivisionCommand::class,
     WhereBearInitCommand::class,
   ];
 
@@ -54,7 +57,22 @@ final class ConsoleKernel extends Kernel {
     });
 
     Artisan::command('zz', function () {
-
+      $games = DB::select(query: <<<SQL
+        SELECT id
+        FROM game
+        WHERE game_state_enum = 'FINISHED' and country_guess_updated_at IS NULL
+      SQL);
+      foreach ($games as $game) {
+        try {
+          DB::beginTransaction();
+          AchievementGameGuessAction::updateCorrectGameGuesses(gameId: $game->id);
+          DB::commit();
+        } catch (Throwable $e) {
+          DB::rollBack();
+          dump($e);
+          dump("Failed to update game $game->id");
+        }
+      }
     });
   }
 }

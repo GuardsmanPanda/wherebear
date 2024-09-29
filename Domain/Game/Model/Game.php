@@ -69,6 +69,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $short_code
  * @property CarbonInterface|null $next_round_at
  * @property CarbonInterface|null $round_ends_at
+ * @property CarbonInterface|null $country_guess_updated_at
  * @property GameStateEnum $game_state_enum
  * @property PanoramaTagEnum|null $panorama_tag_enum
  * @property GamePublicStatusEnum $game_public_status_enum
@@ -90,6 +91,7 @@ final class Game extends Model {
 
     /** @var array<string, string> $casts */
     protected $casts = [
+        'country_guess_updated_at' => 'immutable_datetime',
         'game_public_status_enum' => GamePublicStatusEnum::class,
         'game_state_enum' => GameStateEnum::class,
         'next_round_at' => 'immutable_datetime',

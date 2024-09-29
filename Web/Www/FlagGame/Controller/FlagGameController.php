@@ -41,11 +41,11 @@ final class FlagGameController extends Controller {
     $data = DB::selectOne(query: <<<SQL
       WITH 
         country as (SELECT wherebear_country(:lng, :lat) as cca2),
-        subdivion as (SELECT wherebear_subdivision(:lng, :lat, (SELECT cca2 FROM country)) as cca3)
+        subdivision as (SELECT wherebear_subdivision(:lng, :lat, (SELECT cca2 FROM country)) as cca3)
       SELECT
         bc.cca2, bc.name as country_name, bcs.iso_3166, bcs.name as subdivision_name
       FROM bear_country bc
-      LEFT JOIN bear_country_subdivision bcs ON bc.cca2 = bcs.country_cca2 AND bcs.iso_3166 = (SELECT cca3 FROM subdivion)
+      LEFT JOIN bear_country_subdivision bcs ON bc.cca2 = bcs.country_cca2 AND bcs.iso_3166 = (SELECT cca3 FROM subdivision)
       WHERE bc.cca2 = (SELECT cca2 FROM country)
     SQL, bindings: ['lng' => $lng, 'lat' => $lat]);
 

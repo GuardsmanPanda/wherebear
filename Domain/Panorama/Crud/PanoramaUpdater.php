@@ -2,10 +2,11 @@
 
 namespace Domain\Panorama\Crud;
 
-use Carbon\CarbonInterface;
 use Domain\Panorama\Enum\PanoramaTagEnum;
 use Domain\Panorama\Model\Panorama;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
+use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
+use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountrySubdivisionEnum;
 
 final readonly class PanoramaUpdater {
   public function __construct(private Panorama $model) {
@@ -18,31 +19,22 @@ final readonly class PanoramaUpdater {
   }
 
 
-  public function setCapturedDate(CarbonInterface $captured_date): self {
-    if ($captured_date->toDateString() === $this->model->captured_date->toDateString()) {
-      return $this;
+  public function setCountryCca2(string $country_cca2): self {
+    $this->model->country_cca2 = BearCountryEnum::from(value: $country_cca2);
+    return $this;
+  }
+
+  public function setCountrySubdivisionIso3166(string|null $country_subdivision_iso_3166): self {
+    if ($country_subdivision_iso_3166 !== null) {
+      $this->model->country_subdivision_iso_3166 = BearCountrySubdivisionEnum::from(value: $country_subdivision_iso_3166);
+    } else {
+      $this->model->country_subdivision_iso_3166 = null;
     }
-    $this->model->captured_date = $captured_date;
-    return $this;
-  }
-
-  public function setStateName(string|null $state_name): self {
-    $this->model->state_name = $state_name;
-    return $this;
-  }
-
-  public function setCityName(string|null $city_name): self {
-    $this->model->city_name = $city_name;
     return $this;
   }
 
   public function setAddedByUserId(string|null $added_by_user_id): self {
     $this->model->added_by_user_id = $added_by_user_id;
-    return $this;
-  }
-
-  public function setLocation(string|null $location): self {
-    $this->model->location = $location;
     return $this;
   }
 
