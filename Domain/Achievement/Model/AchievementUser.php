@@ -51,12 +51,10 @@ use RuntimeException;
  * @method static int count(array $columns = ['*'])
  * @method static bool exists()
  *
- * @property int $points
  * @property string $user_id
  * @property string $created_at
  * @property string $updated_at
  * @property string $achievement_enum
- * @property CarbonInterface|null $completed_at
  *
  * @property BearUser $user
  * @property Achievement $achievement
@@ -73,11 +71,6 @@ final class AchievementUser extends Model {
     protected $keyType = 'array';
     public $incrementing = false;
     protected $dateFormat = 'Y-m-d\TH:i:sP';
-
-    /** @var array<string, string> $casts */
-    protected $casts = [
-        'completed_at' => 'immutable_datetime',
-    ];
 
     /** @return BelongsTo<BearUser, self> */
     public function user(): BelongsTo {

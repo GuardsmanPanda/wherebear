@@ -15,6 +15,8 @@ return new class extends Migration {
         required_points        integer not null,
         country_cca2           text references bear_country,
         country_cca2_array     text[] NOT NULL,
+        country_subdivision_iso_3166 text references bear_country_subdivision,
+        country_subdivision_iso_3166_array text[] NOT NULL,
         location               geography(Point, 4326),
         location_radius_meters integer,
         geographic_area        geography(Polygon, 4326),

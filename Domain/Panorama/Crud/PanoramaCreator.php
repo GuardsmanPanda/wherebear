@@ -36,7 +36,8 @@ final class PanoramaCreator {
       'cca2' => $cca2,
       'tag' => BearDatabaseService::iterableToPostgres(values: $panorama_tag_array),
       'user' => $added_by_user_id,
-      $longitude, $latitude,
+      'lng' => $longitude,
+      'lat' => $latitude,
     ]);
     return Panorama::findOrFail(id: $id);
   }

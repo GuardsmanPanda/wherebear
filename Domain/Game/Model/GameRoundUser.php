@@ -114,7 +114,7 @@ final class GameRoundUser extends Model {
 
     /** @return BelongsTo<GameRound, self> */
     public function roundNumber(): BelongsTo {
-        return $this->belongsTo(related: GameRound::class, foreignKey: 'round_number', ownerKey: 'game_id');
+        return $this->belongsTo(related: GameRound::class, foreignKey: 'round_number', ownerKey: 'round_number');
     }
 
     protected $guarded = ['game_id', 'round_number', 'user_id', 'updated_at', 'created_at', 'deleted_at'];

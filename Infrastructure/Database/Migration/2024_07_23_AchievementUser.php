@@ -10,8 +10,6 @@ return new class extends Migration {
     Schema::create(table: 'achievement_user', callback: static function (Blueprint $table): void {
       $table->text(column: 'achievement_enum');
       $table->uuid(column: 'user_id');
-      $table->integer(column: 'points');
-      $table->timestampTz(column: 'completed_at')->nullable();
       $table->timestampTz(column: 'created_at')->default(value: DB::raw(value: 'CURRENT_TIMESTAMP'));
       $table->timestampTz(column: 'updated_at')->default(value: DB::raw(value: 'CURRENT_TIMESTAMP'));
 

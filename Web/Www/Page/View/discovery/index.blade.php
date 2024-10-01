@@ -58,35 +58,30 @@
 
 
 <script>
-  const map = L.map('map', {
-    center: [25, 0], zoom: 3, worldCopyJump: true
+  const map = new window.maplibregl.Map({
+    container: 'map', style: {
+      'version': 8, 'sources': {
+        'raster-tiles': {
+          'type': 'raster', 'tiles': ['{{$user->map_style_full_uri}}'], 'tileSize': {{$user->map_style_tile_size}},
+        }
+      }, 'layers': [{'id': 'simple-tiles', 'type': 'raster', 'source': 'raster-tiles'}]
+    }, center: [0, 25], dragRotate: false, keyboard: false, minZoom: 1, maxZoom: 18, zoom: 2
   });
+  map.scrollZoom.setWheelZoomRate(1 / 70);
+  map.scrollZoom.setZoomRate(1 / 70);
+  map.touchZoomRotate.disableRotation();
 
-  const map_icon = L.icon({
-    iconUrl: '{{$user->map_marker_file_path}}', iconSize: [48, 48], iconAnchor: [24, 48], tooltipAnchor: [0, -48],
-  });
-  const small_icon = L.icon({
-    iconUrl: '/static/img/map-marker/default.png', iconSize: [24, 24], iconAnchor: [12, 24],
-  });
-
-  L.tileLayer('{{$user->map_style_full_uri}}', {
-    maxNativeZoom: 17,
-    minZoom: 1,
-    tileSize: {{$user->map_style_tile_size}},
-    zoomOffset: {{$user->map_style_zoom_offset}},
-  }).addTo(map);
 
   map.on('click', function (e) {
+    const lat = e.lngLat.lat;
+    const lng = e.lngLat.lng;
     if (!document.getElementById('enable-click-search').checked) {
-      window.open('https://google.com/maps/@' + e.latlng.lat + ',' + e.latlng.lng + ',' + map.getZoom() + 'z', '', 'width=1300,height=800');
+      window.open('https://google.com/maps/@' + lat + ',' + lng + ',' + map.getZoom() + 'z', '', 'width=1300,height=800');
       return;
     }
 
-    let lat = e.latlng.lat;
-    let lng = e.latlng.lng;
     fetch('/page/discovery/street-view-location-search', {
       method: 'POST',
-
       headers: {
         'Content-Type': 'application/json'
       }, body: JSON.stringify({
@@ -107,10 +102,18 @@
           for (let i = 0; i < json.length; i++) {
             let cur = json[i];
             if (cur.status === 'failed') {
-              L.marker([cur.lat, cur.lng], {icon: small_icon}).addTo(map);
+              new window.maplibregl.Marker({scale: 0.4, color: 'gray'})
+                .setLngLat([cur.lng, cur.lat])
+                .addTo(map)
             }
             if (cur.status === 'new') {
-              L.marker([cur.lat, cur.lng], {icon: map_icon}).addTo(map);
+              const icon = document.createElement('img');
+              icon.src = '{{$user->map_marker_file_path}}'
+              icon.classList.add('drop-shadow');
+              icon.style.height = '32px';
+              new window.maplibregl.Marker({element: icon})
+                .setLngLat([cur.lng, cur.lat])
+                .addTo(map);
             }
           }
           //addGuesses(json)
@@ -157,7 +160,7 @@
         tags_unchecked: tags_unchecked,
       }),
     }).then(resp => resp.json()).then(json => {
-      console.log(json);
+        console.log(json);
       if (json['status'] === 'failed') {
         window.notify.error("Failed to add location to the game, Panorama API error.");
         console.error(json['error']);
@@ -175,7 +178,6 @@
             type: "error", message: "Tags removed<br>" +  json['tags_removed'], duration: 10000,
           });
         }
-
       } else {
         window.notify.open({
           type: "success", message: "Location added to the game!", duration: 10000,
@@ -186,6 +188,14 @@
           });
         }
         document.getElementById('map-url').value = '';
+        const icon = document.createElement('img');
+        icon.src = '{{$user->map_marker_file_path}}'
+        icon.classList.add('drop-shadow');
+        icon.style.height = '32px';
+        new window.maplibregl.Marker({element: icon})
+          .setLngLat([json['lng'], json['lat']])
+          .addTo(map);
+        map.panTo([json['lng'], json['lat']]);
       }
     }).catch(err => {
       window.notify.error("Failed to add location to the game, see console for error.");
@@ -199,12 +209,16 @@
     }
   });
 
-
-  const markLayer = L.markerClusterGroup({maxClusterRadius: 35});
-  const markers = [];
-  @foreach($markers as $marker)
-  markers.push(L.marker([{{$marker->lat}}, {{$marker->lng}}], {icon: small_icon}));
-  @endforeach
-  markLayer.addLayers(markers);
-  map.addLayer(markLayer);
+  const user_panoramas = @json($user_panoramas);
+  const other_panoramas = @json($other_panoramas);
+  user_panoramas.forEach(val => {
+    new window.maplibregl.Marker({scale: 0.5, color: 'orange'})
+      .setLngLat([val.lng, val.lat])
+      .addTo(map)
+  });
+  other_panoramas.forEach(val => {
+    new window.maplibregl.Marker({scale: 0.5})
+      .setLngLat([val.lng, val.lat])
+      .addTo(map)
+  });
 </script>

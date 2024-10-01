@@ -6,7 +6,9 @@ use Domain\Achievement\Enum\AchievementEnum;
 use Domain\Achievement\Enum\AchievementTypeEnum;
 use Domain\Achievement\Model\Achievement;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
+use GuardsmanPanda\Larabear\Infrastructure\Integrity\Service\ValidateAndParseValue;
 use Illuminate\Database\Eloquent\Casts\ArrayObject;
+use InvalidArgumentException;
 
 final class AchievementCrud {
   public static function syncToDatabase(AchievementEnum $enum): void {
@@ -23,6 +25,32 @@ final class AchievementCrud {
     $model->required_points = $data->required_points;
     $model->country_cca2 = $data->country;
     $model->country_cca2_array = new ArrayObject(array: $data->country_array ?? []);
+    $model->country_subdivision_iso_3166 = $data->country_subdivision;
+    $model->country_subdivision_iso_3166_array = new ArrayObject(array: $data->country_subdivision_array ?? []);
+
+    if ($data->achievement_type_enum === AchievementTypeEnum::COUNTRY) {
+      // index of _
+      $index = strpos(haystack: $enum->value, needle: '_') + 1;
+      $value = ValidateAndParseValue::parseInt(value: substr(string: $enum->value, offset: $index), errorMessage: 'Last character in country achievement must be an integer.');
+      $model->required_points = match ($value) {
+        1 => 3,
+        2 => 10,
+        3 => 25,
+        6 => 60,
+        default => throw new InvalidArgumentException(message: 'Invalid country achievement value: ' . $value),
+      };
+      $model->name = $data->country->value . " $model->required_points";
+    }
+
+    if ($data->achievement_type_enum === AchievementTypeEnum::COUNTRY_SUBDIVISION) {
+      $model->name = $data->country_subdivision->value . " $model->required_points";
+    }
+
+    if ($data->achievement_type_enum === AchievementTypeEnum::LEVEL) {
+      $index = strpos(haystack: $enum->value, needle: '_') + 1;
+      $value = ValidateAndParseValue::parseInt(value: substr(string: $enum->value, offset: $index), errorMessage: 'Last character in level achievement must be an integer.');
+      $model->name = "Level " . " $value";
+    }
 
     if ($data->achievement_type_enum === AchievementTypeEnum::LOCATION) {
     } else {

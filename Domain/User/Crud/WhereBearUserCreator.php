@@ -49,9 +49,9 @@ final class WhereBearUserCreator {
 
     $model->save();
 
-    AchievementUserCrud::createOrUpdate(enum: AchievementEnum::LEVEL_0, userId: $model->id, points: $experience);
+    AchievementUserCrud::create(enum: AchievementEnum::LEVEL_0, userId: $model->id);
     if ($experience >= 1) {
-      AchievementUserCrud::createOrUpdate(enum: AchievementEnum::LEVEL_1, userId: $model->id, points: $experience);
+      AchievementUserCrud::create(enum: AchievementEnum::LEVEL_1, userId: $model->id);
     }
 
     return $model;
