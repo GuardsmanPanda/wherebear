@@ -98,11 +98,23 @@
           flag.style.height = '26px';
           flag.setAttribute('tippy', text);
           //window.tippyFunction(flag);
-          window.tippy(flag, {
+          {{-- window.tippy(flag, {
             allowHTML: true, content: element, hideOnClick: false, sticky: 'reference',
-          });
+          }); --}}
 
-          new window.maplibregl.Marker({element: flag})
+          const el = document.createElement('div');
+          el.innerHTML = `
+            <div class="flex flex-col items-center gap-1 relative bottom-8">
+              <div class="flex flex-col items-center p-1 rounded bg-gray-800">
+                <span class="text-xl font-bold">${json.country.name}</span>
+                ${json.data.iso_3166 ? `<span class="text-xs">${json.data.subdivision_name}</span>` : ``} 
+              </div>
+              <img class="w-min h-[26px] rounded border border-gray-900" src="/static/flag/svg/${json.country.cca2}.svg" />
+            </div>
+          `;
+          
+
+          new window.maplibregl.Marker({element: el})
             .setLngLat([lng, lat])
             .addTo(map);
 

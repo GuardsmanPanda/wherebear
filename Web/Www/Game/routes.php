@@ -33,7 +33,8 @@ Route::prefix("{gameId}")->middleware(BearHtmxMiddleware::using(layout_location:
     Route::get(uri: "", action: [GamePlayController::class, 'index']);
     Route::put(uri: "guess", action: [GamePlayController::class, 'guess']);
   });
-  Route::get(uri: "play-dev", action: [GamePlayController::class, 'indexDev']);
+  Route::get(uri: "play-dev", action: [GamePlayController::class, 'roundDev']);
+  Route::get(uri: "result-dev", action: [GamePlayController::class, 'roundResultDev']);
   Route::prefix("result")->group(callback: function () {
     Route::get(uri: "", action: [GameResultController::class, 'index']);
   });

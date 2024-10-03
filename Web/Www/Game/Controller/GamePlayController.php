@@ -115,7 +115,7 @@ final class GamePlayController extends Controller {
     ]);
   }
 
-  public function indexDev(): View {
+  public function roundDev(): View {
     return Resp::view(view: 'game::play.round', data: [
       'countries_used' => [
         'france' => (object) [
@@ -150,6 +150,115 @@ final class GamePlayController extends Controller {
         'map_style_zoom_offset' => 0,
         'map_style_full_uri' => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
       ]
+    ]);
+  }
+
+  public function roundResultDev(): View {
+    return Resp::view(view: 'game::play.new-round-result', data: [
+      'countries_used' => [
+        (object) [
+          'cca2' => 'FR',
+          'name' => 'France',
+          'rank' => 1
+        ],
+        (object) [
+          'cca2' => 'UA',
+          'name' => 'Ukraine',
+          'rank' => 2
+        ],
+        (object) [
+          'cca2' => 'DE',
+          'name' => 'Germany',
+          'rank' => 3
+        ],
+        (object) [
+          'cca2' => 'KR',
+          'name' => 'South Korea',
+          'rank' => 4
+        ],
+      ],
+      'game' => (object) [
+        'id' => 123,
+        'cca2' => 'FR',
+        'country_name' => 'Democratic Republic of the Congo',
+        'current_round' => 2,
+        'number_of_rounds' => 7,
+        'panorama_lat' => 48,
+        'panorama_lng' => 2,
+        'round_result_seconds_remaining' => 14,
+        'state_name' => 'Centre-Val de Loire'
+      ],
+      'guesses' => [
+        (object) [
+          'country_cca2' => 'UA',
+          'country_match' => false,
+          'country_name' => 'Ukraine',
+          'display_name' => 'GreenMonkeyBoy',
+          'distance_meters' => "5",
+          'lat' => 50,
+          'lng' => 4,
+          'map_marker_file_path' => '/static/img/map-marker/chibi/templar-knight.png',
+          'points' => "122",
+          'rank' => "1",
+          'title' => 'Enthusiast Traveler'
+        ],
+        (object) [
+          'country_cca2' => 'FR',
+          'country_match' => false,
+          'country_name' => 'France',
+          'display_name' => 'GuardsmanBob',
+          'distance_meters' => "901",
+          'lat' => 45,
+          'lng' => 12,
+          'map_marker_file_path' => '/static/img/map-marker/monster/24.png',
+          'points' => "110",
+          'rank' => "2",
+          'title' => 'Enthusiast Traveler'
+        ],
+        (object) [
+          'country_cca2' => 'DE',
+          'country_match' => false,
+          'country_name' => 'Germany',
+          'display_name' => 'Adam',
+          'distance_meters' => "5000000",
+          'lat' => 40,
+          'lng' => 4,
+          'map_marker_file_path' => '/static/img/map-marker/monster/2.png',
+          'points' => "110",
+          'rank' => "3",
+          'title' => 'Enthusiast Traveler'
+        ],
+        (object) [
+          'country_cca2' => 'DE',
+          'country_match' => false,
+          'country_name' => 'Germany',
+          'display_name' => 'Eve',
+          'distance_meters' => "20000000",
+          'lat' => 45,
+          'lng' => -10,
+          'map_marker_file_path' => '/static/img/map-marker/default.png',
+          'points' => "110",
+          'rank' => "4",
+          'title' => 'Enthusiast Traveler'
+        ]
+      ],
+      'player_guess' => (object) [
+        'country_cca2' => 'UA',
+        'country_match' => false,
+        'country_name' => 'ukraine',
+        'display_name' => 'Ukraine',
+        'distance_meters' => "50000000",
+        'lat' => 50,
+        'lng' => 4,
+        'map_marker_file_path' => '/static/img/map-marker/chibi/templar-knight.png',
+        'points' => "122",
+        'rank' => '5',
+      ],
+      'isDev' => true,
+      'map' => (object) [
+        'full_uri' => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+        'tile_size' => 256
+      ],
     ]);
   }
 
