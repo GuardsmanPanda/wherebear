@@ -67,6 +67,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $updated_at
  * @property string $created_by_user_id
  * @property string|null $short_code
+ * @property string|null $templated_by_game_id
  * @property CarbonInterface|null $next_round_at
  * @property CarbonInterface|null $round_ends_at
  * @property CarbonInterface|null $country_guess_updated_at
@@ -74,6 +75,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property PanoramaTagEnum|null $panorama_tag_enum
  * @property GamePublicStatusEnum $game_public_status_enum
  *
+ * @property Game|null $templatedByGame
  * @property BearUser $createdByUser
  * @property GameState $gameState
  * @property PanoramaTag|null $panoramaTag
@@ -98,6 +100,11 @@ final class Game extends Model {
         'panorama_tag_enum' => PanoramaTagEnum::class,
         'round_ends_at' => 'immutable_datetime',
     ];
+
+    /** @return BelongsTo<Game, self>|null */
+    public function templatedByGame(): BelongsTo|null {
+        return $this->belongsTo(related: Game::class, foreignKey: 'templated_by_game_id', ownerKey: 'id');
+    }
 
     /** @return BelongsTo<BearUser, self> */
     public function createdByUser(): BelongsTo {

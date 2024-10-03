@@ -4,6 +4,7 @@ namespace Domain\Achievement\Job;
 
 use Domain\Achievement\Action\AchievementGameGuessAction;
 use Domain\Achievement\Action\AchievementUserAssignmentAction;
+use Domain\User\Model\WhereBearUser;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearUser;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -24,7 +25,7 @@ final class AchievementJob implements ShouldQueue {
       DB::beginTransaction();
       AchievementGameGuessAction::updateCorrectGameGuesses(gameId: $this->gameId);
 
-      $users = BearUser::fromQuery(query: <<<SQL
+      $users = WhereBearUser::fromQuery(query: <<<SQL
         SELECT bu.id
         FROM game_user gu
         LEFT JOIN bear_user bu ON gu.user_id = bu.id

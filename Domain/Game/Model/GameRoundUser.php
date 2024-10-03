@@ -4,7 +4,6 @@ namespace Domain\Game\Model;
 
 use Carbon\CarbonInterface;
 use Closure;
-use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearUser;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountrySubdivisionEnum;
@@ -70,7 +69,7 @@ use RuntimeException;
  * @property BearCountry $countryCca2
  * @property BearCountrySubdivision|null $countrySubdivisionIso3166
  * @property GameRound $game
- * @property BearUser $user
+ * @property GameUser $user
  * @property GameRound $roundNumber
  *
  * AUTO GENERATED FILE DO NOT MODIFY
@@ -104,17 +103,17 @@ final class GameRoundUser extends Model {
 
     /** @return BelongsTo<GameRound, self> */
     public function game(): BelongsTo {
-        return $this->belongsTo(related: GameRound::class, foreignKey: 'game_id', ownerKey: 'round_number');
+        return $this->belongsTo(related: GameRound::class, foreignKey: 'game_id', ownerKey: 'game_id');
     }
 
-    /** @return BelongsTo<BearUser, self> */
+    /** @return BelongsTo<GameUser, self> */
     public function user(): BelongsTo {
-        return $this->belongsTo(related: BearUser::class, foreignKey: 'user_id', ownerKey: 'id');
+        return $this->belongsTo(related: GameUser::class, foreignKey: 'user_id', ownerKey: 'user_id');
     }
 
     /** @return BelongsTo<GameRound, self> */
     public function roundNumber(): BelongsTo {
-        return $this->belongsTo(related: GameRound::class, foreignKey: 'round_number', ownerKey: 'round_number');
+        return $this->belongsTo(related: GameRound::class, foreignKey: 'round_number', ownerKey: 'game_id');
     }
 
     protected $guarded = ['game_id', 'round_number', 'user_id', 'updated_at', 'created_at', 'deleted_at'];

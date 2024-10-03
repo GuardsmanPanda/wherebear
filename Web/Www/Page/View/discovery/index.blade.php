@@ -116,19 +116,10 @@
                 .addTo(map);
             }
           }
-          //addGuesses(json)
         });
       }
     });
   });
-
-
-  const addGuesses = function (guesses) {
-    guesses.forEach(val => {
-      if (val.result) L.marker([val.lat, val.lng], {icon: map_icon}).addTo(map); else L.marker([val.lat, val.lng], {icon: small_icon}).addTo(map);
-    });
-  }
-
 
   const add_panorama = function () {
     let panorama_id = "";
