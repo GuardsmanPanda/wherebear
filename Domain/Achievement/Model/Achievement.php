@@ -8,7 +8,9 @@ use Domain\Achievement\Enum\AchievementTypeEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Cast\BearDatabaseArrayCast;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
+use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountrySubdivisionEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Model\BearCountry;
+use GuardsmanPanda\Larabear\Infrastructure\Locale\Model\BearCountrySubdivision;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\ArrayObject;
 use Illuminate\Database\Eloquent\Collection;
@@ -65,10 +67,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $location
  * @property string|null $geographic_area
  * @property ArrayObject<int,string> $country_cca2_array
+ * @property ArrayObject<int,string> $country_subdivision_iso_3166_array
  * @property BearCountryEnum|null $country_cca2
  * @property AchievementTypeEnum $achievement_type_enum
+ * @property BearCountrySubdivisionEnum|null $country_subdivision_iso_3166
  *
  * @property BearCountry|null $countryCca2
+ * @property BearCountrySubdivision|null $countrySubdivisionIso3166
  * @property AchievementType $achievementType
  *
  * AUTO GENERATED FILE DO NOT MODIFY
@@ -87,11 +92,18 @@ final class Achievement extends Model {
         'achievement_type_enum' => AchievementTypeEnum::class,
         'country_cca2' => BearCountryEnum::class,
         'country_cca2_array' => BearDatabaseArrayCast::class,
+        'country_subdivision_iso_3166' => BearCountrySubdivisionEnum::class,
+        'country_subdivision_iso_3166_array' => BearDatabaseArrayCast::class,
     ];
 
     /** @return BelongsTo<BearCountry, self>|null */
     public function countryCca2(): BelongsTo|null {
         return $this->belongsTo(related: BearCountry::class, foreignKey: 'country_cca2', ownerKey: 'cca2');
+    }
+
+    /** @return BelongsTo<BearCountrySubdivision, self>|null */
+    public function countrySubdivisionIso3166(): BelongsTo|null {
+        return $this->belongsTo(related: BearCountrySubdivision::class, foreignKey: 'country_subdivision_iso_3166', ownerKey: 'iso_3166');
     }
 
     /** @return BelongsTo<AchievementType, self> */

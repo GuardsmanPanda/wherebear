@@ -35,24 +35,16 @@ final class PageAchievementLocationController extends Controller {
     $radius = Req::getFloat(key: 'radius');
 
     $loc = DB::selectOne(query: "
-      SELECT
-        bc.name, bc.cca2
-      FROM map_country_boundary mcb
-      LEFT JOIN bear_country bc ON mcb.country_cca2 = bc.cca2
-      WHERE ST_DWithin(mcb.polygon, ST_Point(:lng, :lat, 4326)::geography, 0)
-      ORDER BY mcb.osm_relation_sort_order
-      LIMIT 1
+      SELECT bc.name, bc.cca2
+      FROM bear_country bc
+      where bc.cca2 = wherebear_country(:lng, :lat)
     ", bindings: ['lng' => $lng, 'lat' => $lat]);
 
     $loc2 = DB::selectOne(query: "
-      SELECT
-        bcs.name as subdivision_name
-      FROM wherebear.map_country_subdivision_boundary mcsb
-      LEFT JOIN bear_country_subdivision bcs ON mcsb.country_subdivision_iso_3166 = bcs.iso_3166
-      WHERE ST_DWithin(mcsb.polygon, ST_Point(:lng, :lat, 4326)::geography, 0)
-      ORDER BY bcs.name, mcsb.country_subdivision_iso_3166
-      LIMIT 1
-    ", bindings: ['lng' => $lng, 'lat' => $lat])?->subdivision_name;
+      SELECT bcs.name, bcs.iso_3166
+      FROM bear_country_subdivision bcs
+      WHERE bcs.iso_3166 = wherebear_subdivision(:lng, :lat, :cca2)
+    ", bindings: ['lng' => $lng, 'lat' => $lat, 'cca2' => $loc->cca2]);
 
     $polygon = DB::selectOne(query: "
       SELECT
@@ -61,13 +53,13 @@ final class PageAchievementLocationController extends Controller {
 
     $panoramas = DB::select(query: "
       SELECT
-        p.id, p.country_cca2, p.city_name, p.state_name,
-        ST_Y(p.location::geometry) as lat,
-        ST_X(p.location::geometry) as lng,
+        p.id, p.country_cca2,
+        ST_Y(p.location::geometry) as lat, ST_X(p.location::geometry) as lng,
         st_dwithin(p.location, ST_Point(:lng, :lat, 4326)::geography, :radius) as within
       FROM panorama p
       WHERE ST_DWithin(p.location, ST_Point(:lng, :lat, 4326)::geography, :radius * 2)
     ", bindings: ['lng' => $lng, 'lat' => $lat, 'radius' => $radius]);
+
 
     //$data = NominatimClient::reverseLookup(latitude: $lat, longitude: $lng);
     return new JsonResponse(data: [

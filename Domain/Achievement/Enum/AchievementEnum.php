@@ -6,12 +6,10 @@ use Domain\Achievement\Crud\AchievementCrud;
 use Domain\Achievement\Data\AchievementData;
 use Domain\Map\Data\MapLocationData;
 use GuardsmanPanda\Larabear\Infrastructure\App\Interface\BearDatabaseBackedEnumInterface;
+use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryOrganizationEnum;
 
 enum AchievementEnum: string implements BearDatabaseBackedEnumInterface {
-  // COUNTRY GROUP ACHIEVEMENTS
-  case EUROPEAN_UNION = 'EUROPEAN_UNION';
-
   // LEVEL ACHIEVEMENTS
   case LEVEL_0 = 'LEVEL_0';
   case LEVEL_1 = 'LEVEL_1';
@@ -23,15 +21,26 @@ enum AchievementEnum: string implements BearDatabaseBackedEnumInterface {
   case LEVEL_30 = 'LEVEL_30';
   case LEVEL_35 = 'LEVEL_35';
 
+
+  // COUNTRY GROUP ACHIEVEMENTS
+  case EUROPEAN_UNION = 'EUROPEAN_UNION';
+
+
+  // ANDORRA
+  case AD_1 = 'AD_1';
+
+
   // LOCATION ACHIEVEMENTS
   case TEST_LOCATION = 'TEST_LOCATION';
+
+  // TEST ACHIEVEMENTS
+  case TEST_1 = 'TEST_1';
+  case TEST_2 = 'TEST_2';
+  case TEST_3 = 'TEST_3';
 
 
   public function getAchievementData(): AchievementData {
     return match ($this) {
-      // COUNTRY GROUP ACHIEVEMENTS
-      self::EUROPEAN_UNION => AchievementData::countryArray(title: "United in Diversity!", name: "European Union", country_array: BearCountryOrganizationEnum::EU->getCountryCca2Array()),
-
       // LEVEL ACHIEVEMENTS
       self::LEVEL_0 => AchievementData::level(title: "Novice Navigator", required_points: 0),
       self::LEVEL_1 => AchievementData::level(title: "Beginner Navigator", required_points: 1),
@@ -43,14 +52,27 @@ enum AchievementEnum: string implements BearDatabaseBackedEnumInterface {
       self::LEVEL_30 => AchievementData::level(title: "Legendary Navigator", required_points: 30),
       self::LEVEL_35 => AchievementData::level(title: "Mythical Navigator", required_points: 35),
 
+
+      // COUNTRY GROUP ACHIEVEMENTS
+      self::EUROPEAN_UNION => AchievementData::countryArray(title: "United in Diversity!", name: "European Union", country_array: BearCountryOrganizationEnum::EU->getCountryCca2Array()),
+
+
+      // ANDORRA
+      self::AD_1 => AchievementData::country(title: "Andorra-ble Adventurer", country: BearCountryEnum::AD),
+
+
       // LOCATION ACHIEVEMENTS
       self::TEST_LOCATION => AchievementData::location(
         title: "Test Location",
         name: "Test Location",
         location_data: new MapLocationData(lat: 0, lng: 0, radius_meters: 23)
       ),
-    };
 
+      // TEST ACHIEVEMENTS
+      self::TEST_1 => AchievementData::countryArray(title: "Test 1", name: "Test 1", country_array: ['DK', 'PT']),
+      self::TEST_2 => AchievementData::countryArray(title: "Test 2", name: "Test 2", country_array: ['DK', 'PT', 'US']),
+      self::TEST_3 => AchievementData::mixedArray(title: "Test 3", name: "Test 3", country_array: ['DK', 'PT'], country_subdivision_array: ['PT-14']),
+    };
   }
 
 

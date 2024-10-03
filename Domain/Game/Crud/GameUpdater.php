@@ -83,8 +83,18 @@ final readonly class GameUpdater {
         return $this;
     }
 
+
+    public function setCountryGuessUpdatedAt(CarbonInterface $country_guess_updated_at): self {
+        $this->model->country_guess_updated_at = $country_guess_updated_at;
+        return $this;
+    }
+
     public function getGameStateEnum(): GameStateEnum {
         return $this->model->game_state_enum;
+    }
+
+    public function getCountryGuessUpdatedAt(): CarbonInterface|null {
+        return $this->model->country_guess_updated_at;
     }
 
     public function update(): Game {

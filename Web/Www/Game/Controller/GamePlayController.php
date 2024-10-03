@@ -28,11 +28,9 @@ final class GamePlayController extends Controller {
         ST_Y(p.location::geometry) as panorama_lat,
         ST_X(p.location::geometry) as panorama_lng,
         p.jpg_path, TO_CHAR(p.captured_date, 'Month') as captured_month, TO_CHAR(p.captured_date, 'YYYY') as captured_year,
-        p.state_name, p.city_name,
         bc.cca2, bc.cca3,
         bc.name as country_name, 
-        bc.tld, bc.calling_code, bc.currency_code,
-        bc.dependency_status
+        bc.tld, bc.calling_code, bc.currency_code
       FROM game g
       LEFT JOIN game_round gr ON gr.game_id = g.id AND gr.round_number = g.current_round
       LEFT JOIN panorama p ON p.id = gr.panorama_id

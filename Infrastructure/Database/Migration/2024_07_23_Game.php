@@ -22,13 +22,16 @@ return new class extends Migration {
             $table->timestampTz(column: 'round_ends_at')->nullable();
             $table->timestampTz(column: 'next_round_at')->nullable();
             $table->uuid(column: 'created_by_user_id');
+            $table->uuid(column: 'templated_by_game_id')->nullable();
             $table->text(column: 'short_code')->nullable()->unique();
+            $table->timestampTz(column: 'country_guess_updated_at')->nullable();
             $table->timestampTz(column: 'created_at')->default(value: DB::raw(value: 'CURRENT_TIMESTAMP'));
             $table->timestampTz(column: 'updated_at')->default(value: DB::raw(value: 'CURRENT_TIMESTAMP'));
             $table->foreign("created_by_user_id")->references('id')->on(table: 'bear_user');
             $table->foreign("game_state_enum")->references('enum')->on(table: 'game_state');
             $table->foreign("game_public_status_enum")->references('enum')->on(table: 'game_public_status');
             $table->foreign("panorama_tag_enum")->references('enum')->on(table: 'panorama_tag');
+            $table->foreign("templated_by_game_id")->references('id')->on(table: 'game');
         });
     }
 

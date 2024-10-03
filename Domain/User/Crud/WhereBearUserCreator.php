@@ -3,6 +3,9 @@
 namespace Domain\User\Crud;
 
 use Carbon\CarbonImmutable;
+use Domain\Achievement\Crud\AchievementUserCrud;
+use Domain\Achievement\Enum\AchievementEnum;
+use Domain\Achievement\Model\AchievementUser;
 use Domain\Map\Enum\MapMarkerEnum;
 use Domain\Map\Enum\MapStyleEnum;
 use Domain\User\Enum\UserLevelEnum;
@@ -45,6 +48,12 @@ final class WhereBearUserCreator {
     $model->map_marker_enum = MapMarkerEnum::from(value: $map_marker->enum);
 
     $model->save();
+
+    AchievementUserCrud::create(enum: AchievementEnum::LEVEL_0, userId: $model->id);
+    if ($experience >= 1) {
+      AchievementUserCrud::create(enum: AchievementEnum::LEVEL_1, userId: $model->id);
+    }
+
     return $model;
   }
 }

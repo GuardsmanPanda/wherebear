@@ -20,10 +20,15 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 final class PageDiscoveryController extends Controller {
   public function index(): View {
     return Resp::view(view: 'page::discovery.index', data: [
-      'markers' => DB::select(query: "
+      'user_panoramas' => DB::select(query: "
         SELECT ST_Y(p.location::geometry) as lat, ST_X(p.location::geometry) as lng
         FROM panorama p
-        WHERE p.location IS NOT NULL
+        WHERE p.added_by_user_id IS NOT NULL
+      "),
+      'other_panoramas' => DB::select(query: "
+        SELECT ST_Y(p.location::geometry) as lat, ST_X(p.location::geometry) as lng
+        FROM panorama p
+        WHERE p.added_by_user_id IS NULL
       "),
       'user' => DB::selectOne(query: "
         SELECT
@@ -73,8 +78,6 @@ final class PageDiscoveryController extends Controller {
     }
     return new JsonResponse(data: [
       'country_cca2' => $panorama->country_cca2,
-      'state_name' => $panorama->state_name,
-      'city_name' => $panorama->city_name,
       'lat' => $data->lat,
       'lng' => $data->lng,
       'date' => $data->date,
@@ -106,8 +109,6 @@ final class PageDiscoveryController extends Controller {
         $panorama = PanoramaCreator::createFromStreetViewData(data: $data);
         $results[] = [
           'country_cca2' => $panorama->country_cca2,
-          'state_name' => $panorama->state_name,
-          'city_name' => $panorama->city_name,
           'lat' => $data->lat,
           'lng' => $data->lng,
           'date' => $data->date,

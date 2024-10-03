@@ -6,7 +6,6 @@ use Carbon\CarbonInterface;
 use Domain\Panorama\Model\Panorama;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 use Illuminate\Support\Facades\DB;
-use Integration\Nominatim\Client\NominatimClient;
 use Integration\StreetView\Data\StreetViewPanoramaData;
 
 final class PanoramaCreator {
@@ -19,30 +18,26 @@ final class PanoramaCreator {
     float           $longitude,
     CarbonInterface $captured_date,
     string          $added_by_user_id = null,
-    string          $jpg_path = null,
     array           $panorama_tag_array = [],
   ): Panorama {
     BearDatabaseService::mustBeInTransaction();
     BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST']);
 
-    $data = NominatimClient::reverseLookup(latitude: $latitude, longitude: $longitude);
+    $cca2 = DB::selectOne(query: "SELECT wherebear_country(?, ?) as cca2", bindings: [$longitude, $latitude])->cca2;
 
     DB::insert(query: "
       INSERT INTO panorama (
-          id, captured_date, country_cca2, state_name, city_name, panorama_tag_array, added_by_user_id,
-          location, jpg_path, nominatim_json, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ST_Point(?, ?, 4326)::geography, ?, ?, NOW(), NOW())
+          id, captured_date, country_cca2, country_subdivision_iso_3166, panorama_tag_array, added_by_user_id,
+          location, created_at, updated_at
+      ) VALUES (:id, :date, :cca2, wherebear_subdivision(:lng, :lat, :cca2), :tag, :user, ST_Point(:lng, :lat, 4326)::geography, NOW(), NOW())
     ", bindings: [
-      $id,
-      $captured_date,
-      $data->country_cca2,
-      $data->state_name,
-      $data->city_name,
-      BearDatabaseService::iterableToPostgres(values: $panorama_tag_array),
-      $added_by_user_id,
-      $longitude, $latitude,
-      $jpg_path,
-      $data->nominatim_json_string,
+      'id' => $id,
+      'date' => $captured_date,
+      'cca2' => $cca2,
+      'tag' => BearDatabaseService::iterableToPostgres(values: $panorama_tag_array),
+      'user' => $added_by_user_id,
+      'lng' => $longitude,
+      'lat' => $latitude,
     ]);
     return Panorama::findOrFail(id: $id);
   }

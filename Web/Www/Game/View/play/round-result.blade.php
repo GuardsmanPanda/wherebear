@@ -7,8 +7,6 @@
     <div class="absolute z-50 bg-black bg-opacity-90 font-bold pl-4 pr-4 pt-1 pb-3 rounded-br-md text-emerald-500 text-lg shadow-lg grid"
          style="font-family: 'Inkwell Sans',Verdana,sans-serif; z-index:5000;max-width: 19rem;">
       <div class="text-center text-3xl text-blue-500">{{$game->country_name}}</div>
-      <div class="text-center text-lg text-cyan-400 leading-4">{{$game->state_name}}</div>
-      <div class="text-center text-lg text-cyan-500 leading-6">{{$game->city_name}}</div>
 
       <div class="flex gap-3 justify-center py-2">
         <img src="/static/flag/wavy/{{strtolower($game->cca2)}}.png" width="140" alt="Wavy flag">
@@ -32,9 +30,6 @@
           </div>
         </div>
       </div>
-      @if($game->dependency_status !== null)
-        <div><span class="text-gray-500">Status: </span>{{$game->dependency_status}} </div>
-      @endif
     </div>
 
     <div class="invisible md:visible absolute bottom-7 drop-shadow-lg filter font-bold origin-bottom-left pointer-events-none scale-75 transform"

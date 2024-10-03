@@ -13,7 +13,6 @@ use GuardsmanPanda\Larabear\Infrastructure\Locale\Model\BearCountry;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Model\BearCountrySubdivision;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\ArrayObject;
-use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -60,23 +59,20 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @property int|null $location_box_hash
  * @property string $id
+ * @property string $location
  * @property string $created_at
  * @property string $updated_at
  * @property string|null $jpg_path
- * @property string|null $location
  * @property string|null $avif_path
- * @property string|null $city_name
- * @property string|null $state_name
  * @property string|null $retired_reason
  * @property string|null $added_by_user_id
- * @property ArrayObject|null $nominatim_json
  * @property ArrayObject<int,string> $panorama_tag_array
  * @property CarbonInterface $captured_date
  * @property CarbonInterface|null $retired_at
- * @property BearCountryEnum|null $country_cca2
+ * @property BearCountryEnum $country_cca2
  * @property BearCountrySubdivisionEnum|null $country_subdivision_iso_3166
  *
- * @property BearCountry|null $countryCca2
+ * @property BearCountry $countryCca2
  * @property BearCountrySubdivision|null $countrySubdivisionIso3166
  * @property BearUser|null $addedByUser
  *
@@ -95,13 +91,12 @@ final class Panorama extends Model {
         'captured_date' => 'immutable_date',
         'country_cca2' => BearCountryEnum::class,
         'country_subdivision_iso_3166' => BearCountrySubdivisionEnum::class,
-        'nominatim_json' => AsArrayObject::class,
         'panorama_tag_array' => BearDatabaseArrayCast::class,
         'retired_at' => 'immutable_datetime',
     ];
 
-    /** @return BelongsTo<BearCountry, self>|null */
-    public function countryCca2(): BelongsTo|null {
+    /** @return BelongsTo<BearCountry, self> */
+    public function countryCca2(): BelongsTo {
         return $this->belongsTo(related: BearCountry::class, foreignKey: 'country_cca2', ownerKey: 'cca2');
     }
 
