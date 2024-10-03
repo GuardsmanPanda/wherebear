@@ -4,9 +4,6 @@ import tippy from 'tippy.js';
 
 require('pannellum/build/pannellum.js');
 import maplibregl from 'maplibre-gl';
-import L from "leaflet";
-
-require('leaflet.markercluster');
 
 window.htmx = require('htmx.org/dist/htmx.cjs.js');
 window.confetti = require('canvas-confetti');
