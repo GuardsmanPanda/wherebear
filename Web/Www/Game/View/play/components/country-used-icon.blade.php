@@ -17,7 +17,6 @@ $placeholderTippys = [
   class="flex flex-col w-[40px] h-[28px] rounded {{ $backgroundColor }} {{ $borderColor }} border relative cursor-default"
   @if(!$isPlaceholder)
   style="background-image: url('/static/flag/svg/{{ $cca2 }}.svg'); background-size: cover; background-position: center; box-shadow: inset 0 -4px 1px rgb(0 0 0 / 0.2);"
-  tippy="{{ $name }}"
   @else
   style="box-shadow: inset 0 -4px 1px rgb(0 0 0 / 0.2);"
   tippy="{{ $placeholderTippys[array_rand($placeholderTippys)] }}"

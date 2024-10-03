@@ -26,8 +26,8 @@ function createUniqId() {
   return `${Math.random().toString(36).substring(2)}${Math.random().toString(36).substring(2)}`;
 }
 
-function buildApp() {
-  logStartingBuild('Starting building app...');
+function buildJavascript() {
+  logStartingBuild('Starting building javascript...');
   const storagePath = 'storage/app';
 
   try {
@@ -36,7 +36,7 @@ function buildApp() {
     }
 
     esbuild.buildSync({
-      entryPoints: ['Web/Www/Shared/css/app.css', 'Web/Www/Shared/js/app.js'],
+      entryPoints: ['Web/Www/Shared/js/app.js'],
       entryNames: '[name]',
       sourcemap: true,
       bundle: true,
@@ -46,11 +46,29 @@ function buildApp() {
       outdir: 'public/static/dist',
     });
 
-    fs.writeFileSync(`${storagePath}/app-css-path.txt`, `/static/dist/app.css?id=${createUniqId()}`);
     fs.writeFileSync(`${storagePath}/app-js-path.txt`, `/static/dist/app.js?id=${createUniqId()}`);
-    logCompletedBuild('App build completed');
+    logCompletedBuild('Javascript build completed');
   } catch (error) {
-    console.error('Error building app:', error);
+    console.error('Error building javascript:', error);
+    process.exit(1);
+  }
+}
+
+function buildAppCss() {
+  logStartingBuild('Starting building App CSS...');
+  const storagePath = 'storage/app';
+
+  try {
+    if (!fs.existsSync(storagePath)) {
+      fs.mkdirSync(storagePath, { recursive: true });
+    }
+
+    execSync('npx tailwindcss -i Web/Www/Shared/css/app.css -o public/static/dist/app.css --minify');
+
+    fs.writeFileSync(`${storagePath}/app-css-path.txt`, `/static/dist/app.css?id=${createUniqId()}`);
+    logCompletedBuild('App CSS build completed');
+  } catch (error) {
+    console.error('Error building App CSS:', error);
     process.exit(1);
   }
 }
@@ -133,7 +151,8 @@ function buildLitComponents() {
 
 function build() {
   console.log(`${GREEN_COLOR}STARTING BUILD PROCESS...${DEFAULT_COLOR}`);
-  buildApp();
+  buildJavascript();
+  buildAppCss();
   buildTailwindCss();
   buildTailwindCssForLitComponents();
   buildLitComponents();
