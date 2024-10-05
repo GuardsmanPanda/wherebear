@@ -12,7 +12,8 @@
   "dependencies": {
     "@tailwindcss/forms": "^0.5.7",
     "canvas-confetti": "^1.9.2",
-    "esbuild": "^0.23",
+    "esbuild": "^0.24",
+    "glob": "^10.4.5",
     "htmx.org": "^2.0",
     "lit": "^3.2.0",
     "maplibre-gl": "^4.7.0",

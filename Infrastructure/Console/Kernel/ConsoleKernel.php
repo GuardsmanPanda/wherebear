@@ -2,7 +2,6 @@
 
 namespace Infrastructure\Console\Kernel;
 
-use Domain\Achievement\Action\AchievementGameGuessAction;
 use Domain\Game\Crud\GameRoundDeleter;
 use Domain\Game\Crud\GameUpdater;
 use Domain\Game\Enum\GameStateEnum;
@@ -57,22 +56,7 @@ final class ConsoleKernel extends Kernel {
     });
 
     Artisan::command('zz', function () {
-      $games = DB::select(query: <<<SQL
-        SELECT id
-        FROM game
-        WHERE game_state_enum = 'FINISHED' and country_guess_updated_at IS NULL
-      SQL);
-      foreach ($games as $game) {
-        try {
-          DB::beginTransaction();
-          AchievementGameGuessAction::updateCorrectGameGuesses(gameId: $game->id);
-          DB::commit();
-        } catch (Throwable $e) {
-          DB::rollBack();
-          dump($e);
-          dump("Failed to update game $game->id");
-        }
-      }
+
     });
   }
 }

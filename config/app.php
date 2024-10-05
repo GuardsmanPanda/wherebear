@@ -1,14 +1,13 @@
 <?php declare(strict_types=1);
 
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearEnvService;
-use GuardsmanPanda\Larabear\Infrastructure\Integrity\Service\ValidateAndParseValue;
 use GuardsmanPanda\Larabear\Infrastructure\Laravel\Provider\BearServiceProvider;
 use Illuminate\Broadcasting\BroadcastServiceProvider;
 use Infrastructure\App\Provider\AppServiceProvider;
 use Infrastructure\Http\Provider\RouteServiceProvider;
 
 return [
-  'env' => ValidateAndParseValue::mustBeInArray(value: env(key: 'APP_ENV', default: 'production'), array: ['local', 'production'], errorMessage: 'APP_ENV must be one of: local, production'),
+  'env' => BearEnvService::getStringFromArray(key: 'APP_ENV', array: ['local', 'production']),
   'debug' => BearEnvService::getBool(key: 'APP_DEBUG'),
   'key' => BearEnvService::getString(key: 'APP_KEY'),
   'url' => BearEnvService::getString(key: 'APP_URL'),

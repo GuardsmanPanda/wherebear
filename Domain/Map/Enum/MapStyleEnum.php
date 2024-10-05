@@ -16,7 +16,6 @@ enum MapStyleEnum: string {
   case NAVIGATION_NIGHT = 'NIGHT';
   case DARK = 'DARK';
 
-  //case GOOGLE_STREET_VIEW = 'GOOGLE_STREET_VIEW';
 
   public static function fromRequest(): self {
     return self::from(value: Req::getString(key: 'map_style_enum'));
@@ -26,8 +25,8 @@ enum MapStyleEnum: string {
   public function getName(): string {
     return match ($this) {
       self::DEFAULT, self::OSM => 'Open Street Map',
-      self::SATELLITE_STREETS => 'Satellite Streets',
       self::SATELLITE => 'Satellite (Expert Mode)',
+      self::SATELLITE_STREETS => 'Satellite Streets',
       self::NAVIGATION_NIGHT => 'Navigation Night',
       self::STREETS => 'Pleasant Streets',
       self::DARK => 'Dark Mode',
@@ -38,8 +37,8 @@ enum MapStyleEnum: string {
   public function getExternalPath(): string {
     return match ($this) {
       self::DEFAULT, self::OSM => '{z}/{x}/{y}.png',
-      self::SATELLITE_STREETS => 'styles/v1/mapbox/satellite-streets-v12/tiles/{z}/{x}/{y}',
       self::SATELLITE => 'styles/v1/mapbox/satellite-v9/tiles/{z}/{x}/{y}',
+      self::SATELLITE_STREETS => 'styles/v1/mapbox/satellite-streets-v12/tiles/{z}/{x}/{y}',
       self::NAVIGATION_NIGHT => 'styles/v1/mapbox/navigation-night-v1/tiles/{z}/{x}/{y}',
       self::STREETS => 'styles/v1/mapbox/streets-v12/tiles/{z}/{x}/{y}',
       self::DARK => 'styles/v1/mapbox/dark-v11/tiles/{z}/{x}/{y}',
@@ -66,7 +65,7 @@ enum MapStyleEnum: string {
   public function getExternalApi(): BearExternalApiEnum {
     return match ($this) {
       self::DEFAULT, self::OSM => BearExternalApiEnum::OPENSTREETMAP,
-      self::SATELLITE_STREETS, self::SATELLITE, self::NAVIGATION_NIGHT, self::STREETS, self::DARK => BearExternalApiEnum::MAPBOX,
+      self::SATELLITE_STREETS, self::SATELLITE, self::NAVIGATION_NIGHT, self::STREETS, self::DARK, => BearExternalApiEnum::MAPBOX,
     };
   }
 
@@ -85,10 +84,11 @@ enum MapStyleEnum: string {
 
 
   public function getFullUri(): string {
-    if ($this === self::DEFAULT || $this === self::OSM) {
-      return 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
-    }
-    return "https://tile.gman.bot/$this->value/{z}/{x}/{y}.png";
+    return match ($this) {
+      self::DEFAULT, self::OSM => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+      self::SATELLITE, self::SATELLITE_STREETS => "https://tile.gman.bot/$this->value/{z}/{x}/{y}.jpg",
+      default => "https://tile.gman.bot/$this->value/{z}/{x}/{y}.png",
+    };
   }
 
 

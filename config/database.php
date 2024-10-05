@@ -22,7 +22,7 @@ return [
       'host' => 'morpork', // change back to peer auth when using correct user on linux
       'database' => 'afg',
       'username' => "vimes",
-      'password' => env(key: 'DB_PASSWORD_PREVIOUS'),
+      'password' => BearEnvService::getStringOrNull(key: 'DB_PASSWORD_PREVIOUS'),
       'charset' => 'utf8',
       'prefix_indexes' => true,
       'search_path' => ['afg', 'public'], // REMOVE COMMENT WHEN MIGRATING
