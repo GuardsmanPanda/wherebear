@@ -8,7 +8,6 @@ use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 use Illuminate\Support\Str;
 
 enum MapMarkerEnum: string {
-    case DEFAULT = 'DEFAULT';
     case BOB_DINO = 'BOB_DINO';
 
     case CHIBI_ANUBIS = 'CHIBI_ANUBIS';

@@ -14,7 +14,7 @@ return new class extends Migration {
       $table->integer(column: 'osm_relation_sort_order');
       $table->geography(column: 'polygon', subtype: 'POLYGON');
       $table->timestampTz(column: 'created_at')->default(value: DB::raw(value: 'CURRENT_TIMESTAMP'));
-      $table->foreign('country_code_cca2')->references('cca2')->on(table: 'bear_country');
+      $table->foreign('country_cca2')->references('cca2')->on(table: 'bear_country');
     });
     DB::statement(query: "CREATE INDEX map_country_boundary_polygon_gist ON map_country_boundary USING GIST (polygon)");
   }

@@ -10,8 +10,8 @@
         <button class="py-1 mx-auto hover:scale-110 transition-transform duration-75" hx-dialog-close
                 hx-patch="/game/{{$game_id}}/lobby/update-user"
                 hx-vals='{"map_marker_enum": "{{$marker->enum}}"}'>
-          <img class="h-14" src="/static/img/map-marker/{{$marker->file_name}}"
-               alt="{{$marker->file_name}}">
+          <img class="h-14" src="{{$marker->file_path}}"
+               alt="{{$marker->file_path}}">
         </button>
       @endforeach
     </div>

@@ -86,8 +86,8 @@ enum MapStyleEnum: string {
   public function getFullUri(): string {
     return match ($this) {
       self::DEFAULT, self::OSM => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-      self::SATELLITE, self::SATELLITE_STREETS => "https://tile.gman.bot/$this->value/{z}/{x}/{y}.jpg",
-      default => "https://tile.gman.bot/$this->value/{z}/{x}/{y}.png",
+      self::SATELLITE, self::SATELLITE_STREETS => "https://tile.wherebear.fun/$this->value/{z}/{x}/{y}.jpg",
+      default => "https://tile.wherebear.fun/$this->value/{z}/{x}/{y}.png",
     };
   }
 

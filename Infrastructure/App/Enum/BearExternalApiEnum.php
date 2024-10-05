@@ -65,8 +65,8 @@ enum BearExternalApiEnum: string implements BearExternalApiEnumInterface {
         return null;
     }
 
-    public function metadataJson(): ArrayObject|null {
-        return null;
+    public function metadataJson(): ArrayObject {
+        return new ArrayObject([]);
     }
 
 
