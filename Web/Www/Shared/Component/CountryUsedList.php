@@ -37,9 +37,7 @@ final class CountryUsedList extends Component {
             @endif
             @if($i < count($countries))
               <div tippy="{{ $countries[$i]->name }}">
-              @if(in_array($countries[$i]->rank, [1, 2, 3]))
-                <x-custom-icon :icon="$getRankIcon($countries[$i]->rank)" class="w-5 absolute -top-[1px] -right-[1px] z-20" />
-              @endif
+              
 
               <x-country-used-icon :cca2="$countries[$i]->cca2" :name="$countries[$i]->name" />
               </div>
@@ -52,3 +50,8 @@ final class CountryUsedList extends Component {
     blade;
   }
 }
+/**
+ * @if(in_array($countries[$i]->rank, [1, 2, 3]))
+                <x-custom-icon :icon="$getRankIcon($countries[$i]->rank)" class="w-5 absolute -top-[1px] -right-[1px] z-20" />
+              @endif
+ */

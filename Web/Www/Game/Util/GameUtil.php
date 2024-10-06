@@ -35,8 +35,8 @@ final class GameUtil {
    * - 3 gets "rd"
    * - All other numbers get "th"
    */
-  public static function getOrdinalSuffix(int|string $number): string {
-    return match ((int)$number) {
+  public static function getOrdinalSuffix(int $number): string {
+    return match ($number) {
       1 => 'st',
       2 => 'nd',
       3 => 'rd',

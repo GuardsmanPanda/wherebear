@@ -55,7 +55,7 @@ final class GamePlayController extends Controller {
 
     $user = DB::selectOne(query: <<<SQL
       SELECT
-          u.map_marker_enum,
+          u.id, u.map_marker_enum,
           mm.file_path as map_marker_file_path,
           ms.tile_size as map_style_tile_size,
           ms.zoom_offset as map_style_zoom_offset,
@@ -70,25 +70,63 @@ final class GamePlayController extends Controller {
       return Resp::redirect(url: "/game/$gameId/lobby", message: 'You have not joined the game yet');
     }
 
-    $guesses = null;
     if ($enum === GameStateEnum::IN_PROGRESS_RESULT) {
       $guesses = DB::select(query: "
         SELECT
-            bu.display_name, bu.country_cca2, bc.name as country_name,
-            mm.file_path as map_marker_file_path,
-            gru.distance_meters, gru.points, gru.rank,
-            ST_Y(gru.location::geometry) as lat,
-            ST_X(gru.location::geometry) as lng,
-            p.country_cca2 = gru.country_cca2 as country_match
+          bu.id as user_id, 
+          bu.display_name as user_display_name, 
+          bu.country_cca2 as user_country_cca2, 
+          bc.name as user_country_name,
+          mm.file_path as map_marker_file_path,
+          gru.distance_meters, 
+          gru.points, 
+          gru.rank,
+          ST_Y(gru.location::geometry) as lat,
+          ST_X(gru.location::geometry) as lng,
+          gru.country_cca2,
+          bc1.name as country_name,
+          p.country_cca2 = gru.country_cca2 as country_match,
+          p.country_subdivision_iso_3166 = gru.country_subdivision_iso_3166 as country_subdivision_match
         FROM game_round_user gru
         LEFT JOIN bear_user bu ON bu.id = gru.user_id
         LEFT JOIN map_marker mm ON mm.enum = bu.map_marker_enum
         LEFT JOIN bear_country bc ON bc.cca2 = bu.country_cca2
+        LEFT JOIN bear_country bc1 ON bc1.cca2 = gru.country_cca2
         LEFT JOIN game_round gr ON gr.game_id = gru.game_id AND gr.round_number = gru.round_number
         LEFT JOIN panorama p ON p.id = gr.panorama_id
         WHERE gru.game_id = ? AND gru.round_number = ?
         ORDER BY gru.rank, gru.user_id
       ", bindings: [$gameId, $game->current_round]);
+
+      $user_guess = null;
+      foreach ($guesses as $guess) {
+        if ($guess->user_id === $user->id) {
+          $user_guess = $guess;
+          break;
+        }
+      }
+
+      return Resp::view(view: 'game::play.index', data: [
+        'countries_used' => DB::select(query: "
+          SELECT
+              bc.cca2, bc.name
+          FROM game_round gr
+          LEFT JOIN game g ON g.id = gr.game_id
+          LEFT JOIN panorama p ON p.id = gr.panorama_id
+          LEFT JOIN bear_country bc ON bc.cca2 = p.country_cca2
+          WHERE 
+              gr.game_id = ?
+              AND (gr.round_number < g.current_round OR (gr.round_number = g.current_round AND g.game_state_enum = 'IN_PROGRESS_RESULT'))
+          ORDER BY gr.round_number
+        ", bindings: [$gameId]),
+        'game' => $game,
+        'guesses' => $guesses,
+        'isDev' => false,
+        'panorama_url' =>  "https://panorama.gman.bot/$game->jpg_path",
+        'template' => 'game::play.new-round-result',
+        'user' => $user,
+        'user_guess' => $user_guess,
+      ]);
     }
 
     return Resp::view(view: 'game::play.index', data: [
@@ -105,10 +143,9 @@ final class GamePlayController extends Controller {
         ORDER BY gr.round_number
        ", bindings: [$gameId]),
       'game' => $game,
-      'guesses' => $guesses,
       'isDev' => false,
       'panorama_url' =>  "https://panorama.gman.bot/$game->jpg_path",
-      'template' => $enum === GameStateEnum::IN_PROGRESS ? 'game::play.round' : 'game::play.round-result',
+      'template' => 'game::play.round',
       'user' => $user,
     ]);
   }
@@ -157,22 +194,22 @@ final class GamePlayController extends Controller {
         (object) [
           'cca2' => 'FR',
           'name' => 'France',
-          'rank' => 1
+          'user_rank' => 1
         ],
         (object) [
           'cca2' => 'UA',
           'name' => 'Ukraine',
-          'rank' => 2
+          'user_rank' => 2
         ],
         (object) [
           'cca2' => 'DE',
           'name' => 'Germany',
-          'rank' => 3
+          'user_rank' => 3
         ],
         (object) [
           'cca2' => 'KR',
           'name' => 'South Korea',
-          'rank' => 4
+          'user_rank' => 4
         ],
       ],
       'game' => (object) [
@@ -191,56 +228,56 @@ final class GamePlayController extends Controller {
           'country_cca2' => 'UA',
           'country_match' => false,
           'country_name' => 'Ukraine',
-          'display_name' => 'GreenMonkeyBoy',
+          'user_display_name' => 'GreenMonkeyBoy',
           'distance_meters' => "5",
           'lat' => 50,
           'lng' => 4,
           'map_marker_file_path' => '/static/img/map-marker/chibi/templar-knight.png',
           'points' => "122",
-          'rank' => "1",
+          'rank' => 1,
           'title' => 'Enthusiast Traveler'
         ],
         (object) [
           'country_cca2' => 'FR',
           'country_match' => false,
           'country_name' => 'France',
-          'display_name' => 'GuardsmanBob',
+          'user_display_name' => 'GuardsmanBob',
           'distance_meters' => "901",
           'lat' => 45,
           'lng' => 12,
           'map_marker_file_path' => '/static/img/map-marker/monster/24.png',
           'points' => "110",
-          'rank' => "2",
+          'rank' => 2,
           'title' => 'Enthusiast Traveler'
         ],
         (object) [
           'country_cca2' => 'DE',
           'country_match' => false,
           'country_name' => 'Germany',
-          'display_name' => 'Adam',
+          'user_display_name' => 'Adam',
           'distance_meters' => "5000000",
           'lat' => 40,
           'lng' => 4,
           'map_marker_file_path' => '/static/img/map-marker/monster/2.png',
           'points' => "110",
-          'rank' => "3",
+          'rank' => 3,
           'title' => 'Enthusiast Traveler'
         ],
         (object) [
           'country_cca2' => 'DE',
           'country_match' => false,
           'country_name' => 'Germany',
-          'display_name' => 'Eve',
+          'user_display_name' => 'Eve',
           'distance_meters' => "20000000",
           'lat' => 45,
           'lng' => -10,
           'map_marker_file_path' => '/static/img/map-marker/default.png',
           'points' => "110",
-          'rank' => "4",
+          'rank' => 4,
           'title' => 'Enthusiast Traveler'
         ]
       ],
-      'player_guess' => (object) [
+      'user_guess' => (object) [
         'country_cca2' => 'UA',
         'country_match' => false,
         'country_name' => 'ukraine',
@@ -250,12 +287,12 @@ final class GamePlayController extends Controller {
         'lng' => 4,
         'map_marker_file_path' => '/static/img/map-marker/chibi/templar-knight.png',
         'points' => "122",
-        'rank' => '5',
+        'rank' => 5,
       ],
       'isDev' => true,
-      'map' => (object) [
-        'full_uri' => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-        'tile_size' => 256
+      'user' => (object) [
+        'map_style_full_uri' => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+        'map_style_tile_size' => 256
       ],
     ]);
   }

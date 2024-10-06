@@ -37,8 +37,16 @@ declare(strict_types=1);
   <div x-data="countdown({{ round((float) $game->round_seconds_remaining) }})" class="flex flex-col">
     <div id="guessing-time-progress-bar" class="relative">
       <img src="/static/img/pengu-sign.png" class="absolute -left-1 bottom-[10px] h-20 z-20" alt="Cutest pengu around">
-      <div class="flex justify-center items-center w-12 h-8 absolute bottom-[62px] left-[13px]">
-        <span x-text="timeRemainingSec" class="font-heading text-xl font-medium text-gray-900 select-none z-30"></span>
+      <div class="flex justify-start items-center w-12 h-8 absolute bottom-[60px] left-[13px]">
+        <span x-data
+          :class="{
+              'ml-[19px]': timeRemainingSec.toString().length === 1,
+              'ml-[14px]': timeRemainingSec.toString().length === 2,
+              'ml-[9px]': timeRemainingSec.toString().length === 3
+          }" 
+          x-text="timeRemainingSec" 
+          class="font-heading text-xl font-medium text-gray-900 select-none z-20">
+        </span>
       </div>
       <div class="flex w-full h-4 bg-gray-700 border-y border-gray-900" style="box-shadow: inset 0 4px 1px rgb(0 0 0 / 0.3);">
         <div class="rounded-r" x-bind:style="{ 

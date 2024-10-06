@@ -149,6 +149,42 @@ function buildLitComponents() {
   }
 }
 
+function buildLitDirectives() {
+  logStartingBuild('Starting building Lit directives...');
+  const distPath = 'public/static/dist/lit-directives';
+  const storagePath = 'storage/app/lit-directives';
+
+  try {
+    if (!fs.existsSync(distPath)) {
+      fs.mkdirSync(distPath, { recursive: true });
+    }
+    if (!fs.existsSync(storagePath)) {
+      fs.mkdirSync(storagePath, { recursive: true });
+    }
+
+    esbuild.buildSync({
+      entryPoints: glob.sync(['Web/Www/**/*.lit-directive.js']),
+      entryNames: '[name]',
+      sourcemap: true,
+      bundle: true,
+      minify: true,
+      logLevel: "info",
+      define: { global: "window" },
+      outdir: distPath,
+    });
+
+    const files = fs.readdirSync(distPath);
+    files.forEach(file => {
+      const name = file.split('.js')[0];
+      fs.writeFileSync(`${storagePath}/${name}.txt`, `/static/dist/lit-directives/${name}.js?id=${createUniqId()}`);
+    });
+    logCompletedBuild('Lit directives build completed');
+  } catch (error) {
+    console.error('Error building Lit directives:', error);
+    process.exit(1);
+  }
+}
+
 function build() {
   console.log(`${GREEN_COLOR}STARTING BUILD PROCESS...${DEFAULT_COLOR}`);
   buildJavascript();
@@ -156,6 +192,7 @@ function build() {
   buildTailwindCss();
   buildTailwindCssForLitComponents();
   buildLitComponents();
+  buildLitDirectives();
   console.log(`${GREEN_COLOR}BUILD PROCESS COMPLETED.${DEFAULT_COLOR} ${ROCKET_ICON}\n`);
   console.log(`${CYAN_COLOR}App URL: ${appUrl}${DEFAULT_COLOR}`);
   console.log(`${CYAN_COLOR}Current directory: ${pwd}${DEFAULT_COLOR}`);
