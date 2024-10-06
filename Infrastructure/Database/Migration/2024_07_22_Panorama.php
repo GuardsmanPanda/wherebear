@@ -13,7 +13,7 @@ return new class extends Migration {
         country_cca2        text references bear_country not null,
         country_subdivision_iso_3166 text references bear_country_subdivision,
         added_by_user_id    uuid references bear_user,
-        panorama_tag_array  text[],
+        panorama_tag_array  text[] NOT NULL,
         location            geography(Point, 4326) not null,
         location_box_hash   integer,
         jpg_path            text unique,

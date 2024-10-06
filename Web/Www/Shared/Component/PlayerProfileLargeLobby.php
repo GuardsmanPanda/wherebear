@@ -27,7 +27,7 @@ final class PlayerProfileLargeLobby extends Component {
     return <<<'blade'
     <div {{ $attributes->class(['flex', 'gap-2', 'items-center']) }}">
       <div class="flex w-12 justify-center items-center">
-      <img class="max-w-12 max-h-12 w-auto drop-shadow-md" src="/static/img/map-marker/{{ $icon }}" alt="Map marker">
+      <img class="max-w-12 max-h-12 w-auto drop-shadow-md" src="{{ $icon }}" alt="Map marker">
       </div>
       <div class="flex flex-col flex-1 {{ $level ? 'gap-1' : 'gap-2' }} truncate">
         <span class="font-heading text-xl text-shade-text-title leading-none truncate">{{ $name }}</span>

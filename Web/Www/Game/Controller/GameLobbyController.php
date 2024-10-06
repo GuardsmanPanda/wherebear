@@ -65,7 +65,7 @@ final class GameLobbyController extends Controller {
           SELECT
             bu.display_name, bu.country_cca2, bu.user_level_enum,
             gu.is_ready, bc.name as country_name,
-            mm.file_name as map_marker_file_name
+            mm.file_path as map_marker_file_path
           FROM game_user gu
           LEFT JOIN bear_user bu ON bu.id = gu.user_id
           LEFT JOIN bear_country bc ON bc.cca2 = bu.country_cca2
@@ -101,7 +101,7 @@ final class GameLobbyController extends Controller {
             bu.experience - ul.experience_requirement as current_level_experience,
             (SELECT ul2.experience_requirement FROM user_level ul2 WHERE ul2.enum = bu.user_level_enum + 1) - ul.experience_requirement as next_level_experience,
             gu.is_ready,
-            mm.file_name as map_marker_file_name,
+            mm.file_path as map_marker_file_path,
             ms.name as map_style_name, ms.full_uri as map_style_full_uri,
             COALESCE(uf.file_path, CONCAT('/static/flag/svg/', bu.country_cca2, '.svg')) as flag_file_path,
             COALESCE(uf.description, bc.name) as flag_description
@@ -130,7 +130,7 @@ final class GameLobbyController extends Controller {
       'players' => DB::select(query: "
         SELECT 
             bu.display_name, bu.country_cca2,
-            mm.file_name as map_marker_file_name,
+            mm.file_path as map_marker_file_path,
             gu.is_ready,
             COALESCE(uf.file_path, CONCAT('/static/flag/svg/', bu.country_cca2, '.svg')) as flag_file_path,
             COALESCE(uf.description, bc.name) as flag_description,
@@ -231,11 +231,11 @@ final class GameLobbyController extends Controller {
 
   public function dialogMapMarker(string $gameId): View {
     $markers = DB::select(query: "
-            SELECT enum, file_name, grouping
+            SELECT enum, file_path, grouping
             FROM map_marker
             --WHERE user_level_enum <= 
             WHERE enum != 'DEFAULT'
-            ORDER BY grouping = 'Miscellaneous',  grouping, file_name
+            ORDER BY grouping = 'Miscellaneous',  grouping, file_path
         ");
     return Htmx::dialogView(
       view: 'game::lobby.dialog.map-marker',

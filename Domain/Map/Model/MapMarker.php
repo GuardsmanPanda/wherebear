@@ -55,7 +55,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @property string $enum
  * @property string $grouping
- * @property string $file_name
  * @property string $file_path
  * @property string $created_at
  * @property string|null $permission_enum

@@ -68,7 +68,7 @@ $isPlayerGuest = $user->user_level_enum === 0;
 
     <div class="flex w-full gap-2">
       <div class="flex justify-between gap-2">
-        <x-button-selector label="Marker" imageUrl='/static/img/map-marker/{{ $user->map_marker_file_name }}'
+        <x-button-selector label="Marker" imageUrl='{{ $user->map_marker_file_path }}'
           hx-get="/game/{{$game->id}}/lobby/dialog/map-marker" />
         @if(!$isPlayerGuest)
         <x-button-selector label="Map" :imageUrl="str_replace(search: ['{x}', '{y}', '{z}'], replace: [1614, 1016, 11], subject: $user->map_style_full_uri)"

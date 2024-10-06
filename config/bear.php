@@ -26,7 +26,7 @@ return [
   ],
   'route_usage_log' => [
     'enabled' => true,
-    'log_one_in_every' => 1,
+    'log_one_in_every' => 10,
   ],
   'ui' => [
     'app_css' => file_get_contents(filename: storage_path(path: 'app/app-css-path.txt')),

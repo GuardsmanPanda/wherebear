@@ -24,7 +24,7 @@ final class PlayerProfileSmall extends Component {
     <div {{ $attributes->class(['flex', 'flex-col', 'items-center']) }}>
       <div class="relative z-1">
         <div class="w-16 h-16 rounded-full overflow-hidden flex justify-center items-center bg-tertiary-surface-default border border-shade-border-dark rounded-full">
-          <img class="h-16 w-auto object-cover object-center z-100" src="/static/img/map-marker/{{ $icon }}" alt="Map marker">
+          <img class="h-16 w-auto object-cover object-center z-100" src="{{ $icon }}" alt="Map marker">
         </div>
 
         @isset($isActive)

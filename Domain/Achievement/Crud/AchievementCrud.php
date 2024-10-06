@@ -29,9 +29,15 @@ final class AchievementCrud {
     $model->country_subdivision_iso_3166_array = new ArrayObject(array: $data->country_subdivision_array ?? []);
 
     if ($data->achievement_type_enum === AchievementTypeEnum::COUNTRY) {
+      if ($data->country === null) {
+        throw new InvalidArgumentException(message: 'Country cannot be null for country achievement.');
+      }
       // index of _
-      $index = strpos(haystack: $enum->value, needle: '_') + 1;
-      $value = ValidateAndParseValue::parseInt(value: substr(string: $enum->value, offset: $index), errorMessage: 'Last character in country achievement must be an integer.');
+      $index = strpos(haystack: $enum->value, needle: '_');
+      if ($index === false) {
+        throw new InvalidArgumentException(message: 'Country achievement must have an underscore.');
+      }
+      $value = ValidateAndParseValue::parseInt(value: substr(string: $enum->value, offset: $index + 1), errorMessage: 'Last character in country achievement must be an integer.');
       $model->required_points = match ($value) {
         1 => 3,
         2 => 10,
@@ -43,12 +49,18 @@ final class AchievementCrud {
     }
 
     if ($data->achievement_type_enum === AchievementTypeEnum::COUNTRY_SUBDIVISION) {
+      if ($data->country_subdivision === null) {
+        throw new InvalidArgumentException(message: 'Country subdivision cannot be null for country subdivision achievement.');
+      }
       $model->name = $data->country_subdivision->value . " $model->required_points";
     }
 
     if ($data->achievement_type_enum === AchievementTypeEnum::LEVEL) {
-      $index = strpos(haystack: $enum->value, needle: '_') + 1;
-      $value = ValidateAndParseValue::parseInt(value: substr(string: $enum->value, offset: $index), errorMessage: 'Last character in level achievement must be an integer.');
+      $index = strpos(haystack: $enum->value, needle: '_');
+      if ($index === false) {
+        throw new InvalidArgumentException(message: 'Country achievement must have an underscore.');
+      }
+      $value = ValidateAndParseValue::parseInt(value: substr(string: $enum->value, offset: $index + 1), errorMessage: 'Last character in level achievement must be an integer.');
       $model->name = "Level " . " $value";
     }
 
