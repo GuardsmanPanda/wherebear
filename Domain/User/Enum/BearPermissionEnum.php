@@ -11,6 +11,7 @@ enum BearPermissionEnum: string implements BearPermissionEnumInterface {
   case PANORAMA_DOWNLOAD = 'PANORAMA::DOWNLOAD';
   case PANORAMA_CONTRIBUTE = 'PANORAMA::CONTRIBUTE';
   case PANORAMA_TAG = 'PANORAMA::TAG';
+  case TEMPLATE_EDIT = 'TEMPLATE::EDIT';
   case IS_BOB = 'IS_BOB';
 
   public function getValue(): string {
@@ -23,6 +24,7 @@ enum BearPermissionEnum: string implements BearPermissionEnumInterface {
       self::PANORAMA_DOWNLOAD => 'For the site admin to list panoramas which are not imported into the game yet.',
       self::PANORAMA_CONTRIBUTE => 'Contribute panoramas.',
       self::PANORAMA_TAG => 'Tag panoramas on the game result screen.',
+      self::TEMPLATE_EDIT => 'Edit templates.',
       self::IS_BOB => 'Special things bob can do.',
     };
   }

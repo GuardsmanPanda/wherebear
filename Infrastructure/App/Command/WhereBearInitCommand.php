@@ -30,14 +30,13 @@ final class WhereBearInitCommand extends BearTransactionCommand {
     BearConfigEnum::syncToDatabase();
     BearOauth2ClientEnum::syncToDatabase();
     BearPermissionEnum::syncToDatabase();
-    BearRoleEnum::syncToDatabase();
     BearExternalApiEnum::syncToDatabase();
     GamePublicStatusEnum::syncToDatabase();
     PanoramaTagEnum::syncToDatabase();
     UserFlagEnum::syncToDatabase();
     UserLevelEnum::syncToDatabase();
 
-    WhereBearRolePermissionService::syncRolePermissionsToDatabase(); // Requires Bear Role and Bear Permission.
+    BearRoleEnum::syncToDatabase(); // Requires BearPermissionEnum.
     AchievementEnum::syncToDatabase(); // Requires AchievementTypeEnum.
     GameStateEnum::syncToDatabase(); // Requires UserLevelEnum.
     MapMarkerEnum::syncToDatabase(); // Requires UserLevelEnum.

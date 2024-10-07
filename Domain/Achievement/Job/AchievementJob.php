@@ -5,7 +5,6 @@ namespace Domain\Achievement\Job;
 use Domain\Achievement\Action\AchievementGameGuessAction;
 use Domain\Achievement\Action\AchievementUserAssignmentAction;
 use Domain\User\Model\WhereBearUser;
-use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearUser;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;

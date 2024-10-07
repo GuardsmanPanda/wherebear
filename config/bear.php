@@ -96,10 +96,7 @@ return [
       'bear_error' => ['location' => 'Domain/Larabear/Model'],
       'bear_error_response' => ['location' => 'Domain/Larabear/Model'],
       'bear_external_api' => ['location' => 'Domain/Larabear/Model'],
-      'bear_external_api_auth' => [
-        'enum' => BearExternalApiAuthEnum::class,
-        'location' => 'Domain/Larabear/Model'
-      ],
+      'bear_external_api_auth' => ['location' => 'Domain/Larabear/Model'],
       'bear_idempotency' => ['location' => 'Domain/Larabear/Model'],
       'bear_oauth2_client' => ['location' => 'Domain/Larabear/Model'],
       'bear_oauth2_client_type' => ['location' => 'Domain/Larabear/Model'],

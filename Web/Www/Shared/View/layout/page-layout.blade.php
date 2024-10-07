@@ -17,7 +17,6 @@
   @endif
   <script src="{!! config('bear.ui.app_js') !!}"></script>
   <link rel="stylesheet" href="{!! config('bear.ui.app_css') !!}">
-  <link rel="stylesheet" href="/static/dist/app.css"/>
 </head>
 <body class="min-h-screen bg-gray-950 text-gray-300" hx-target="#primary">
 <div style="display: grid; grid-template-columns: 16rem auto;" class="min-h-screen">
@@ -36,6 +35,10 @@
             @if(BearAuthService::hasPermission(permission: BearPermissionEnum::PANORAMA_DOWNLOAD))
               <x-bear::sidebar.link path="/page/download" icon="key">Download Missing</x-bear::sidebar.link>
             @endif
+          @endif
+          @if(BearAuthService::hasPermission(permission: BearPermissionEnum::TEMPLATE_EDIT))
+            <x-bear::sidebar.divider color="gray-800">Template</x-bear::sidebar.divider>
+            <x-bear::sidebar.link path="/page/template" icon="key">Edit Templates</x-bear::sidebar.link>
           @endif
         </nav>
       </div>

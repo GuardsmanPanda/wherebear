@@ -5,6 +5,7 @@ namespace Domain\Achievement\Crud;
 use Domain\Achievement\Enum\AchievementEnum;
 use Domain\Achievement\Enum\AchievementTypeEnum;
 use Domain\Achievement\Model\Achievement;
+use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearStringService;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 use GuardsmanPanda\Larabear\Infrastructure\Integrity\Service\ValidateAndParseValue;
 use Illuminate\Database\Eloquent\Casts\ArrayObject;
@@ -32,17 +33,13 @@ final class AchievementCrud {
       if ($data->country === null) {
         throw new InvalidArgumentException(message: 'Country cannot be null for country achievement.');
       }
-      // index of _
-      $index = strpos(haystack: $enum->value, needle: '_');
-      if ($index === false) {
-        throw new InvalidArgumentException(message: 'Country achievement must have an underscore.');
-      }
-      $value = ValidateAndParseValue::parseInt(value: substr(string: $enum->value, offset: $index + 1), errorMessage: 'Last character in country achievement must be an integer.');
+      $index = BearStringService::getPosition(haystack: $enum->value, needle: '_') + 1;
+      $value = ValidateAndParseValue::parseInt(value: substr(string: $enum->value, offset: $index), errorMessage: 'Last character in country achievement must be an integer.');
       $model->required_points = match ($value) {
         1 => 3,
         2 => 10,
         3 => 25,
-        6 => 60,
+        4 => 60,
         default => throw new InvalidArgumentException(message: 'Invalid country achievement value: ' . $value),
       };
       $model->name = $data->country->value . " $model->required_points";
@@ -56,11 +53,8 @@ final class AchievementCrud {
     }
 
     if ($data->achievement_type_enum === AchievementTypeEnum::LEVEL) {
-      $index = strpos(haystack: $enum->value, needle: '_');
-      if ($index === false) {
-        throw new InvalidArgumentException(message: 'Country achievement must have an underscore.');
-      }
-      $value = ValidateAndParseValue::parseInt(value: substr(string: $enum->value, offset: $index + 1), errorMessage: 'Last character in level achievement must be an integer.');
+      $index = BearStringService::getPosition(haystack: $enum->value, needle: '_') + 1;
+      $value = ValidateAndParseValue::parseInt(value: substr(string: $enum->value, offset: $index), errorMessage: 'Last character in level achievement must be an integer.');
       $model->name = "Level " . " $value";
     }
 

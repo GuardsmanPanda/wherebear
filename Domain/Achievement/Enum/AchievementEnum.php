@@ -29,6 +29,21 @@ enum AchievementEnum: string implements BearDatabaseBackedEnumInterface {
   // ANDORRA
   case AD_1 = 'AD_1';
 
+  // AUSTRALIA
+  case AU_1 = 'AU_1';
+  case AU_2 = 'AU_2';
+  case AU_3 = 'AU_3';
+
+  // BELIZE
+  case BZ_1 = 'BZ_1';
+  case BZ_2 = 'BZ_2';
+
+  // CANADA
+  case CA_1 = 'CA_1';
+  case CA_2 = 'CA_2';
+  case CA_3 = 'CA_3';
+  case CA_4 = 'CA_4';
+
 
   // LOCATION ACHIEVEMENTS
   case TEST_LOCATION = 'TEST_LOCATION';
@@ -59,6 +74,21 @@ enum AchievementEnum: string implements BearDatabaseBackedEnumInterface {
 
       // ANDORRA
       self::AD_1 => AchievementData::country(title: "Andorra-ble Adventurer", country: BearCountryEnum::AD),
+
+      // AUSTRALIA
+      self::AU_1 => AchievementData::country(title: 'Didgeridoo Dynamo', country: BearCountryEnum::AU),
+      self::AU_2 => AchievementData::country(title: 'G\'day Guru', country: BearCountryEnum::AU),
+      self::AU_3 => AchievementData::country(title: 'Outback Oracle', country: BearCountryEnum::AU),
+
+      // BELIZE
+      self::BZ_1 => AchievementData::country(title: 'Belizean Buccaneer', country: BearCountryEnum::BZ),
+      self::BZ_2 => AchievementData::country(title: 'Sun God of San Pedro', country: BearCountryEnum::BZ),
+
+      // CANADA
+      self::CA_1 => AchievementData::country(title: 'Eh? Sayer Extraordinaire', country: BearCountryEnum::CA),
+      self::CA_2 => AchievementData::country(title: 'Tamer of the Territories', country: BearCountryEnum::CA),
+      self::CA_3 => AchievementData::country(title: 'Connaisseur du Canada', country: BearCountryEnum::CA),
+      self::CA_4 => AchievementData::country(title: 'Mooseketeer of the Maple Leaf', country: BearCountryEnum::CA),
 
 
       // LOCATION ACHIEVEMENTS
