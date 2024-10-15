@@ -15,7 +15,6 @@ use Domain\User\Enum\BearPermissionEnum;
 use Domain\User\Enum\BearRoleEnum;
 use Domain\User\Enum\UserFlagEnum;
 use Domain\User\Enum\UserLevelEnum;
-use Domain\User\Service\WhereBearRolePermissionService;
 use GuardsmanPanda\Larabear\Infrastructure\Console\Service\BearTransactionCommand;
 use Infrastructure\App\Enum\BearConfigEnum;
 use Infrastructure\App\Enum\BearExternalApiEnum;

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Domain\Panorama\Command;
+namespace Domain\Import\Command;
 
 use Domain\Panorama\Crud\PanoramaUpdater;
 use Domain\Panorama\Model\Panorama;
@@ -11,8 +11,8 @@ use Illuminate\Support\Str;
 use RuntimeException;
 use Throwable;
 
-final class PanoramaImportCommand extends Command {
-    protected $signature = 'panorama:import';
+final class ImportPanoramaJpgCommand extends Command {
+    protected $signature = 'import:panorama-jpg';
     protected $description = 'Import all Panorama files.';
 
     public function handle(): void {

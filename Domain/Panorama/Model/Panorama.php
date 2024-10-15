@@ -4,8 +4,10 @@ namespace Domain\Panorama\Model;
 
 use Carbon\CarbonInterface;
 use Closure;
+use GuardsmanPanda\Larabear\Infrastructure\App\DataType\BearPoint;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearUser;
-use GuardsmanPanda\Larabear\Infrastructure\Database\Cast\BearDatabaseArrayCast;
+use GuardsmanPanda\Larabear\Infrastructure\Database\Cast\BearDatabasePointCast;
+use GuardsmanPanda\Larabear\Infrastructure\Database\Cast\BearDatabaseTextArrayCast;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountrySubdivisionEnum;
@@ -59,13 +61,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @property int|null $location_box_hash
  * @property string $id
- * @property string $location
  * @property string $created_at
  * @property string $updated_at
  * @property string|null $jpg_path
  * @property string|null $avif_path
  * @property string|null $retired_reason
  * @property string|null $added_by_user_id
+ * @property BearPoint $location
  * @property ArrayObject<int,string> $panorama_tag_array
  * @property CarbonInterface $captured_date
  * @property CarbonInterface|null $retired_at
@@ -91,7 +93,8 @@ final class Panorama extends Model {
         'captured_date' => 'immutable_date',
         'country_cca2' => BearCountryEnum::class,
         'country_subdivision_iso_3166' => BearCountrySubdivisionEnum::class,
-        'panorama_tag_array' => BearDatabaseArrayCast::class,
+        'location' => BearDatabasePointCast::class,
+        'panorama_tag_array' => BearDatabaseTextArrayCast::class,
         'retired_at' => 'immutable_datetime',
     ];
 

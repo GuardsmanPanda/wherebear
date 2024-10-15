@@ -4,6 +4,8 @@ namespace Domain\Game\Model;
 
 use Carbon\CarbonInterface;
 use Closure;
+use GuardsmanPanda\Larabear\Infrastructure\App\DataType\BearPoint;
+use GuardsmanPanda\Larabear\Infrastructure\Database\Cast\BearDatabasePointCast;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountrySubdivisionEnum;
@@ -60,9 +62,9 @@ use RuntimeException;
  * @property float|null $distance_meters
  * @property string $game_id
  * @property string $user_id
- * @property string $location
  * @property string $created_at
  * @property string $updated_at
+ * @property BearPoint $location
  * @property BearCountryEnum $country_cca2
  * @property BearCountrySubdivisionEnum|null $country_subdivision_iso_3166
  *
@@ -89,6 +91,7 @@ final class GameRoundUser extends Model {
     protected $casts = [
         'country_cca2' => BearCountryEnum::class,
         'country_subdivision_iso_3166' => BearCountrySubdivisionEnum::class,
+        'location' => BearDatabasePointCast::class,
     ];
 
     /** @return BelongsTo<BearCountry, self> */

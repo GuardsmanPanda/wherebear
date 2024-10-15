@@ -5,7 +5,9 @@ namespace Domain\Achievement\Model;
 use Carbon\CarbonInterface;
 use Closure;
 use Domain\Achievement\Enum\AchievementTypeEnum;
-use GuardsmanPanda\Larabear\Infrastructure\Database\Cast\BearDatabaseArrayCast;
+use GuardsmanPanda\Larabear\Infrastructure\App\DataType\BearPointM;
+use GuardsmanPanda\Larabear\Infrastructure\Database\Cast\BearDatabasePointMCast;
+use GuardsmanPanda\Larabear\Infrastructure\Database\Cast\BearDatabaseTextArrayCast;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountrySubdivisionEnum;
@@ -58,14 +60,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static bool exists()
  *
  * @property int $required_points
- * @property int|null $location_radius_meters
  * @property string $enum
  * @property string $name
  * @property string $title
  * @property string $created_at
  * @property string $updated_at
- * @property string|null $location
  * @property string|null $geographic_area
+ * @property BearPointM|null $location
  * @property ArrayObject<int,string> $country_cca2_array
  * @property ArrayObject<int,string> $country_subdivision_iso_3166_array
  * @property BearCountryEnum|null $country_cca2
@@ -91,9 +92,10 @@ final class Achievement extends Model {
     protected $casts = [
         'achievement_type_enum' => AchievementTypeEnum::class,
         'country_cca2' => BearCountryEnum::class,
-        'country_cca2_array' => BearDatabaseArrayCast::class,
+        'country_cca2_array' => BearDatabaseTextArrayCast::class,
         'country_subdivision_iso_3166' => BearCountrySubdivisionEnum::class,
-        'country_subdivision_iso_3166_array' => BearDatabaseArrayCast::class,
+        'country_subdivision_iso_3166_array' => BearDatabaseTextArrayCast::class,
+        'location' => BearDatabasePointMCast::class,
     ];
 
     /** @return BelongsTo<BearCountry, self>|null */

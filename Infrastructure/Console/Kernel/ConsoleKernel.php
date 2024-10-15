@@ -5,9 +5,10 @@ namespace Infrastructure\Console\Kernel;
 use Domain\Game\Crud\GameRoundDeleter;
 use Domain\Game\Crud\GameUpdater;
 use Domain\Game\Enum\GameStateEnum;
+use Domain\Import\Command\ImportFromPreviousGameCommand;
+use Domain\Import\Command\ImportStreetviewsOrgCommand;
+use Domain\Import\Command\ImportPanoramaJpgCommand;
 use Domain\Map\Command\MapSubdivisionBoundaryCheckCommand;
-use Domain\Panorama\Command\PanoramaImportCommand;
-use Domain\Panorama\Command\PanoramaImportFromPreviousGameCommand;
 use Domain\Panorama\Command\PanoramaUpdateCountryAndSubdivisionCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel;
@@ -19,9 +20,10 @@ use Throwable;
 final class ConsoleKernel extends Kernel {
   /** @var array<int, string> $commands @phpstan-ignore-next-line */
   protected $commands = [
+    ImportStreetviewsOrgCommand::class,
+    ImportPanoramaJpgCommand::class,
+    ImportFromPreviousGameCommand::class,
     MapSubdivisionBoundaryCheckCommand::class,
-    PanoramaImportCommand::class,
-    PanoramaImportFromPreviousGameCommand::class,
     PanoramaUpdateCountryAndSubdivisionCommand::class,
     WhereBearInitCommand::class,
   ];
@@ -56,7 +58,6 @@ final class ConsoleKernel extends Kernel {
     });
 
     Artisan::command('zz', function () {
-
     });
   }
 }

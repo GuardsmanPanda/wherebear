@@ -7,12 +7,12 @@
     "php": "^8.3",
     "guardsmanpanda/larabear": "dev-main",
     "guzzlehttp/guzzle": "^7.9",
-    "laravel/framework": "^v11.20",
-    "laravel/reverb": "^v1.1"
+    "laravel/framework": "^v11.28",
+    "laravel/reverb": "^v1.4"
   },
   "require-dev": {
     "ergebnis/phpstan-rules": "^2.2",
-    "phpstan/phpstan": "^1.11",
+    "phpstan/phpstan": "^1.12",
     "phpstan/phpstan-deprecation-rules": "^1.2",
     "phpstan/phpstan-strict-rules": "^1.6",
     "roave/security-advisories": "dev-latest",

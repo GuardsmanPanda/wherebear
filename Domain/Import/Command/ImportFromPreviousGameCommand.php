@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace Domain\Panorama\Command;
+namespace Domain\Import\Command;
 
 use GuardsmanPanda\Larabear\Infrastructure\Console\Service\BearTransactionCommand;
 use Illuminate\Support\Facades\DB;
 use Integration\StreetView\Client\StreetViewClient;
 
-final class PanoramaImportFromPreviousGameCommand extends BearTransactionCommand {
-  protected $signature = 'panorama:import-from-previous-game';
+final class ImportFromPreviousGameCommand extends BearTransactionCommand {
+  protected $signature = 'import:from-previous-game';
   protected $description = 'Import the old Panorama database from the previous game';
 
   protected function handleInTransaction(): void {

@@ -74,11 +74,11 @@ enum MapStyleEnum: string {
     return match ($this) {
       self::DEFAULT => UserLevelEnum::L0,
       self::OSM => UserLevelEnum::L1,
-      self::STREETS => UserLevelEnum::L3,
-      self::SATELLITE_STREETS => UserLevelEnum::L5,
-      self::NAVIGATION_NIGHT => UserLevelEnum::L13,
-      self::DARK => UserLevelEnum::L16,
-      self::SATELLITE => UserLevelEnum::L20,
+      self::STREETS => UserLevelEnum::L2,
+      self::SATELLITE_STREETS => UserLevelEnum::L4,
+      self::NAVIGATION_NIGHT => UserLevelEnum::L5,
+      self::DARK => UserLevelEnum::L6,
+      self::SATELLITE => UserLevelEnum::L10,
     };
   }
 

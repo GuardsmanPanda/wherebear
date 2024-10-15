@@ -35,9 +35,10 @@ final class AuthController extends Controller {
   }
 
   public function createGuest(): Response {
-    $gameId = Req::getString(key: "game_id");
+    $gameId = Req::getUuid(key: "game_id");
+    $display_name = Req::getStringOrNull(key: "display_name");
     $user = WhereBearUserCreator::create(
-      display_name: "Guest-" . BearShortCodeService::generateNextCode(),
+      display_name: $display_name ?? ("Guest-" . BearShortCodeService::generateNextCode()),
       experience: 0,
       user_level_enum: UserLevelEnum::L0,
       country_cca2: Req::ipCountryEnum()

@@ -17,8 +17,7 @@ return new class extends Migration {
         country_cca2_array     text[] NOT NULL,
         country_subdivision_iso_3166 text references bear_country_subdivision,
         country_subdivision_iso_3166_array text[] NOT NULL,
-        location               geography(Point, 4326),
-        location_radius_meters integer,
+        location               geography(PointM, 4326),
         geographic_area        geography(Polygon, 4326),
         created_at             timestamp with time zone default CURRENT_TIMESTAMP not null,
         updated_at             timestamp with time zone default CURRENT_TIMESTAMP not null

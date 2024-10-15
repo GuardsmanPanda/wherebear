@@ -54,7 +54,7 @@ $isPlayerGuest = $user->user_level_enum === 0;
   </div>
 </x-panel>
 
-<x-panel class="m-2">
+<x-panel class="m-2 select-none">
   <x-slot:heading>
     <x-heading label="Player Settings">
       <div class="flex items-center gap-2">
@@ -93,7 +93,7 @@ $isPlayerGuest = $user->user_level_enum === 0;
     </div>
 </x-panel>
 
-<x-panel class="flex flex-col m-2">
+<x-panel class="flex flex-col m-2 select-none">
   <x-slot:heading>
     <x-heading label="Game Settings" />
   </x-slot:heading>
@@ -110,7 +110,7 @@ $isPlayerGuest = $user->user_level_enum === 0;
 
       <div class="flex h-full bg-tertiary-surface-light border border-shade-border-light rounded">
         <div id="game-join-link" class="flex h-full items-center truncate px-2 py-1 border-r border-shade-border-default text-xs lg:text-sm text-shade-text-body">
-          <span class="truncate">{{config(key: 'app.url')}}/g/{{$game->short_code}}</span>
+          <span class="truncate select-all">{{config(key: 'app.url')}}/g/{{$game->short_code}}</span>
         </div>
         <div id="clipboard-icon">
           <x-tooltip label="Copy url to clipboard" :position="TooltipPosition::LEFT" class="flex justify-center items-center p-1">

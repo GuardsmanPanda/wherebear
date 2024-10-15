@@ -19,7 +19,6 @@ use Domain\User\Enum\BearRoleEnum;
 use Domain\User\Enum\UserFlagEnum;
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearArrayService;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
-use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Htmx;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Resp;
@@ -34,7 +33,7 @@ final class GameLobbyController extends Controller {
   public function index(string $gameId): Response|View {
     $game = DB::selectOne(query: "
       SELECT
-          g.id, g.number_of_rounds, g.round_duration_seconds, g.created_by_user_id,
+          g.id, g.number_of_rounds, g.round_duration_seconds, g.created_by_user_id, g.name,
           g.game_state_enum, g.game_public_status_enum,  g.game_public_status_enum = 'PUBLIC' as is_public,
           g.current_round, g.round_result_duration_seconds, g.short_code
       FROM game g
@@ -77,7 +76,7 @@ final class GameLobbyController extends Controller {
     }
 
     // If the user is logged in but not in the game yet, then add them to the game
-    $in_game = BearDatabaseService::exists(sql: "SELECT 1 FROM game_user WHERE game_id = ? AND user_id = ?", bindings: [$game->id, $user_id]);
+    $in_game = DB::selectOne(query: "SELECT 1 FROM game_user WHERE game_id = ? AND user_id = ?", bindings: [$game->id, $user_id]) !== null;
     if ($in_game === false) {
       GameUserCreator::create(game_id: $game->id, user_id: $user_id);
       GameBroadcast::playerUpdate(gameId: $gameId); // Broadcast to all players
@@ -183,7 +182,7 @@ final class GameLobbyController extends Controller {
 
   public function updateSettings(string $gameId): Response|View {
     GameUpdater::fromId(id: $gameId)
-      ->setNumberOfRounds(number_of_rounds: Req::getInt(key: 'number_of_rounds'))
+      ->setNumberOfRounds(number_of_rounds: Req::getInt(key: 'number_of_rounds', min: 1, max: 40))
       ->setRoundDurationSeconds(round_duration_seconds: Req::getInt(key: 'round_duration_seconds'))
       ->setRoundResultDurationSeconds(round_result_duration_seconds: Req::getInt(key: 'round_result_duration_seconds'))
       ->setGamePublicStatusEnum(enum: GamePublicStatusEnum::fromRequest())
@@ -231,12 +230,12 @@ final class GameLobbyController extends Controller {
 
   public function dialogMapMarker(string $gameId): View {
     $markers = DB::select(query: "
-            SELECT enum, file_path, grouping
-            FROM map_marker
-            --WHERE user_level_enum <= 
-            WHERE enum != 'DEFAULT'
-            ORDER BY grouping = 'Miscellaneous',  grouping, file_path
-        ");
+      SELECT enum, file_path, grouping
+      FROM map_marker
+      --WHERE user_level_enum <=  
+      WHERE enum != 'DEFAULT'
+      ORDER BY grouping = 'Miscellaneous',  grouping, file_path
+    ");
     return Htmx::dialogView(
       view: 'game::lobby.dialog.map-marker',
       title: 'Select Map Marker',
@@ -264,12 +263,7 @@ final class GameLobbyController extends Controller {
   }
 
   public function dialogSettings(string $gameId): View {
-    $is_allowed = BearDatabaseService::exists(
-      sql: "
-            SELECT 1 FROM game WHERE id = ? AND created_by_user_id = ?
-            ",
-      bindings: [$gameId, BearAuthService::getUserId()]
-    );
+    $is_allowed = DB::selectOne(query: "SELECT 1 FROM game WHERE id = ? AND created_by_user_id = ?", bindings: [$gameId, BearAuthService::getUserId()]) !== null;
     if ($is_allowed === false) {
       return throw new UnauthorizedHttpException("You are not allowed to edit this game.");
     }
