@@ -1,8 +1,45 @@
-import { LitElement, css, html } from 'lit';
+import { LitElement, css } from 'lit';
 
 import { TailwindStyles } from '../../../../../public/static/dist/lit-tailwind-css';
 
+/**
+ * Base class for buttons that provides basic functionality for handling button states such as
+ * size and mouse interaction events.
+ */
 export class ButtonBase extends LitElement {
+  static properties = {
+    /** The icon position, 'left' or 'right'. */
+    iconPosition: { type: String },
+    /** Whether the button is full rounded.  */
+    isPill: { type: Boolean },
+    /** Determines if the button is selectable. */
+    isSelectable: { type: Boolean },
+    /** Keeps track of whether the button is currently selected. */
+    isSelected: { type: Boolean },
+    /** Sets the size of the button, corresponding to the available size keys: 'sm', 'md', 'lg', 'xl'. */
+    size: { type: String },
+    type: { type: String },
+    /** Tracks whether the mouse has left the button after it was clicked. Used for not applying hover css before the mouse has left the button. */
+    hasMouseLeftAfterClicked: { type: Boolean, state: true },
+  };
+
+  static styles = [css`${TailwindStyles}`, css`
+    .inner-shadow {
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6), inset 0 -3px 1px rgba(0, 0, 0, 0.6);
+    }
+    .inner-shadow:active {
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6), inset 0 -1px 1px rgba(0, 0, 0, 0.6);
+    }
+
+    .inner-shadow-selected {
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6), inset 0 -2px 1px rgba(0, 0, 0, 0.6);
+    }
+    .inner-shadow-selected:active {
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6), inset 0 -1px 1px rgba(0, 0, 0, 0.6);
+    }
+  `];
+
+  /** Defines a mapping between size labels (e.g., 'sm', 'md') and their corresponding height classes in Tailwind CSS syntax. */
   heightClasses = {
     'sm': 'h-[32px]',
     'md': 'h-[40px]',
@@ -10,22 +47,21 @@ export class ButtonBase extends LitElement {
     'xl': 'h-[56px]'
   };
 
-  static properties = {
-    size: { type: String },
-    state: { type: String },
-    isActive: { type: Boolean, state: true },
-    isSelected: { type: Boolean, state: false }
-  };
-
-  static styles = [css`${TailwindStyles}`];
-
   constructor() {
     super();
-    this.size = 'sm';
-    this.isActive = false;
+    this.isSelectable = false;
     this.isSelected = false;
+    this.isPill = false;
+    this.size = 'sm';
+    this.hasMouseLeftAfterClicked = true;
   }
 
+  /** The height class corresponding to the current button size. */
+  get heightClass() {
+    return this.heightClasses[this.size];
+  }
+
+  /** Invoked whenever the element is updated. */
   updated() {
     this.assertSize();
   }
@@ -40,31 +76,30 @@ export class ButtonBase extends LitElement {
     }
   }
 
-  getHeightClass() {
-    return this.heightClasses[this.size];
+  /** Event handler for when the mouse enters the button. */
+  onMouseEnter() {
+    if (this.isSelected) {
+      this.hasMouseLeftAfterClicked = true;
+    }
   }
 
+  /** Event handler for when the mouse leaves the button. */
+  onMouseLeave() {
+    this.hasMouseLeftAfterClicked = true;
+  }
+
+  /** Event handler for when the button is clicked. */
   onClick() {
-    this.isSelected = !this.isSelected;
+    if (this.isSelectable) {
+      this.isSelected = !this.isSelected;
+    }
+
+    this.hasMouseLeftAfterClicked = false;
 
     this.dispatchEvent(new CustomEvent('clicked', {
       detail: { isSelected: this.isSelected },
       bubbles: true,
       composed: true
     }));
-  }
-
-  onMouseDown() {
-    this.isActive = true;
-  }
-
-  onMouseUp() {
-    this.isActive = false;
-  }
-
-  render() {
-    return html`
-      base button
-    `;
   }
 }

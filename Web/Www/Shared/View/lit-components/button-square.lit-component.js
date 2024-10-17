@@ -3,69 +3,101 @@ import { classMap } from 'lit/directives/class-map.js';
 
 import { ButtonBase } from './button-base.lit-component';
 
+/**
+ * Represents a square button with customizable size, color, image, and label.
+ */
 class ButtonSquare extends ButtonBase {
-
   static properties = {
     ...ButtonBase.properties,
+    /** Background color class for the button (e.g., 'bg-blue-400'). */
+    bgColorClass: { type: String },
+    /** The path to the image to display in the button. */
+    imgPath: { type: String },
+    /** The label text to display on the button. */
     label: { type: String },
-    imgPath: { type: String }
+    imgHeightClass: { type: String }
   };
 
-  static styles = [...ButtonBase.styles, css`
-    .shadow-default {
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6), inset 0 -1px 1px rgba(0, 0, 0, 0.6);
-    }
+  static styles = [...ButtonBase.styles, css``];
 
-    .shadow-selected {
-      box-shadow: inset 0 2px 1px rgba(255, 255, 255, 0.6), inset 0 -2px 1px rgba(0, 0, 0, 0.6);
-    }
-  `];
-
-  widthClasses = {
-    'xl': 'w-[56px]'
-  };
-
-  heightClasses = {
+  /** Maps button sizes (e.g., 'xl') to corresponding height classes in Tailwind CSS. */
+  buttonHeightClasses = {
     'xl': 'h-[56px]'
   };
 
   constructor() {
     super();
     this.size = 'xl';
+    this.bgColorClass = 'bg-iris-400';
   }
 
-  getWidthClass() {
-    return this.widthClasses[this.size];
+  /** The CSS class for the button's width based on the current size. */
+  get buttonWidthClass() {
+    return this.buttonWidthClasses[this.size];
   }
 
-  getHeightClass() {
-    return this.heightClasses[this.size];
+  /** The CSS class for the button's height based on the current size. */
+  get buttonHeightClass() {
+    return this.buttonHeightClasses[this.size];
   }
 
-  getActiveHeightClass() {
-    return this.activeHeightClasses[this.size] || this.heightClasses['sm'];
-  }
-
-  getClasses() {
+  /** The dynamic CSS classes for the button. */
+  get buttonClasses() {
     return {
-      [this.getWidthClass()]: true,
-      [this.getHeightClass()]: true,
-      // 'border-t': this.isSelected,
-      // 'border-b': this.isSelected,
-      'bg-gray-800': this.isSelected,
-      // 'shadow-default': !this.isSelected,
-      // 'shadow-selected': this.isSelected,
+      [this.buttonHeightClass]: true,
+      [this.bgColorClass]: true,
+      'aspect-square': true,
+      'inner-shadow': !this.isSelected,
+      'inner-shadow-selected': this.isSelected
+    }
+  }
+
+  /** The dynamic CSS classes for the image inside the button. */
+  get imageClasses() {
+    return {
+      'h-[40px]': !this.imgHeightClass,
+      [this.imgHeightClass]: this.imgHeightClass,
+      '-top-[8px]': !this.isSelected,
+      'group-active:-top-[6px]': true,
+      '-top-[7px]': this.isSelected,
+    }
+  }
+
+  /** The dynamic CSS classes for the label inside the button. */
+  get labelClasses() {
+    return {
+      'top-[33px]': !this.isSelected,
+      'group-active:top-[35px]': true,
+      'top-[34px]': this.isSelected,
+
+    }
+  }
+
+  /** The dynamic CSS classes for the background overlay inside the button. */
+  get backgroundOverlayClasses() {
+    return {
+      'opacity-0': !this.isSelected,
+      'group-hover:opacity-15': this.hasMouseLeftAfterClicked,
+      'group-active:opacity-30': !this.isSelected,
+      'opacity-45': this.isSelected,
+      'group-active:opacity-0': this.isSelected
     }
   }
 
   render() {
     return html`
       <button
-        class="flex flex-col justify-start items-center relative rounded-md bg-gray-700 active:bg-gray-800 border-[2px] border-b-[3px] active:border-t-2 active:border-b-2 border-gray-900 active:shadow-selected ${classMap(this.getClasses())}"
-        @click="${this.onClick}" @mousedown="${this.onMouseDown}" @mouseup="${this.onMouseUp}"
+        class="
+          flex flex-col justify-start items-center relative rounded-md 
+          transition-all duration-100 border border-gray-700
+          group ${classMap(this.buttonClasses)}"
+        @click="${this.onClick}"
+        @mouseenter="${this.onMouseEnter}"
+        @mouseleave="${this.onMouseLeave}"
       >
-        <img src="${this.imgPath}" draggable="false" class="absolute -top-[8px] h-[40px]" />
-        <span class="absolute top-[34px] text-xs text-white text-stroke-2 font-medium">${this.label}</span>
+        <div class="absolute inset-0 bg-black transition-opacity duration-100 pointer-events-none ${classMap(this.backgroundOverlayClasses)}"></div>
+        <img src="${this.imgPath}" draggable="false" class="absolute transition-all duration-100 ${classMap(this.imageClasses)}" />
+        <span class="absolute text-xs text-gray-50 text-stroke-2 text-stroke-gray-700 font-medium transition-all duration-100 ${classMap(this.labelClasses)}">${this.label}</span>
       </button>
     `;
   }
