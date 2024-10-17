@@ -1,7 +1,7 @@
 {
   "name": "guardsmanpanda/wherebear",
   "type": "project",
-  "description": "The Laravel Framework.",
+  "description": "WhereBear",
   "license": "MIT",
   "require": {
     "php": "^8.3",

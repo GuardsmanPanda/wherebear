@@ -254,10 +254,13 @@ final class GameLobbyController extends Controller {
       data: [
         'game_id' => $gameId,
         'map_styles' => DB::select(query: "
-          SELECT enum, name, full_uri
-          FROM map_style
-          WHERE enum != 'DEFAULT'
-        "),
+          SELECT ms.enum, ms.name, ms.full_uri
+          FROM map_style ms
+          WHERE 
+            ms.enum != 'DEFAULT'
+            AND ms.user_level_enum <= (SELECT user_level_enum FROM bear_user WHERE id = ?)
+          ORDER BY ms.user_level_enum, ms.name
+        ", bindings: [BearAuthService::getUserId()]),
       ]
     );
   }

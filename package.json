@@ -1,7 +1,7 @@
 {
-  "name": "funtime-game",
+  "name": "where-bear",
   "version": "0.0.1",
-  "description": "Awesome Funtime Game.",
+  "description": "WhereBear",
   "private": true,
   "scripts": {
     "b": "node Web/Www/esbuild.js",
