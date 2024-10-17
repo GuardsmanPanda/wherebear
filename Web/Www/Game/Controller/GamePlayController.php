@@ -10,6 +10,7 @@ use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Json;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Resp;
+use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -355,13 +356,14 @@ final class GamePlayController extends Controller {
     if ($game->game_state_enum !== GameStateEnum::IN_PROGRESS->value) {
       return Json::serverError(message: 'Game Round is not in progress');
     }
-    GameRoundUserCrud::createOrUpdate(
+    $cca2 = GameRoundUserCrud::createOrUpdate(
       game_id: $gameId,
       round_number: $game->current_round,
       user_id: BearAuthService::getUserId(),
       lng: Req::getFloat(key: 'lng'),
       lat: Req::getFloat(key: 'lat'),
     );
-    return Resp::ok();
+    $country = BearCountryEnum::from(value: $cca2);
+    return Resp::json(data: ['country_cca2' => $country->value, 'country_name' => $country->getCountryData()->name]);
   }
 }
