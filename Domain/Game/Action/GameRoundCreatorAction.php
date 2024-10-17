@@ -9,7 +9,7 @@ use GuardsmanPanda\Larabear\Infrastructure\Error\Crud\BearErrorCreator;
 use Illuminate\Support\Facades\DB;
 
 final class GameRoundCreatorAction {
-    const string SAFETY_PANORAMA_ID = 'CAoSLEFGMVFpcE9pZ3JUek55Um80bkhsR2VoWHZkX2tTaDFlNTBLYmpBVVRNTUFx';
+    const string SAFETY_PANORAMA_ID = 'CAoSLEFGMVFpcE02ZEZUck9MZ0x5OS1XaElySWpTN1U5QlVabUJ5Z3J6RFV4S0R1';
     const int DELAY_PER_ROUND_MS = 1000;
     const int TIER1_COUNTRY_CHANCE = 10;
     const int TIER2_COUNTRY_CHANCE = 10;
