@@ -230,12 +230,11 @@ final class GameLobbyController extends Controller {
 
   public function dialogMapMarker(string $gameId): View {
     $markers = DB::select(query: "
-      SELECT enum, file_path, grouping
-      FROM map_marker
-      --WHERE user_level_enum <=  
-      WHERE enum != 'DEFAULT'
-      ORDER BY grouping = 'Miscellaneous',  grouping, file_path
-    ");
+      SELECT mm.enum, mm.file_path, mm.grouping
+      FROM map_marker mm
+      WHERE user_level_enum <= (SELECT user_level_enum FROM bear_user WHERE id = ?)
+      ORDER BY mm.grouping = 'Miscellaneous',  mm.grouping, mm.file_path
+    ", bindings: [BearAuthService::getUserId()]);
     return Htmx::dialogView(
       view: 'game::lobby.dialog.map-marker',
       title: 'Select Map Marker',

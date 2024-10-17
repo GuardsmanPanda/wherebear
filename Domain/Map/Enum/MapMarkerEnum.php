@@ -51,6 +51,7 @@ enum MapMarkerEnum: string {
 
     public function getUserLevelRequirement(): UserLevelEnum {
         return match ($this) {
+            self::BOB_DINO => UserLevelEnum::L6,
             self::PLANET_14 => UserLevelEnum::L26,
             default => UserLevelEnum::L0,
         };
