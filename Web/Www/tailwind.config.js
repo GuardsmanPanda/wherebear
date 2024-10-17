@@ -6,14 +6,43 @@ module.exports = {
     'Web/Www/**/*.lit-component.js',
     'Web/Www/Shared/Component/**/*.php',
     'vendor/guardsmanpanda/larabear/src/Web/Www/**/*.php'
-  ], theme: {
+  ],
+  theme: {
     fontFamily: {
       body: 'Roboto',
       heading: 'Baloo'
-    }, extend: {
+    },
+    extend: {
       screens: {
         sm: '460px',
-      }, colors: {
+      },
+      colors: {
+        gray: {
+          0: '#FFFFFF',
+          50: '#EFF1F4',
+          100: '#E0E2E9',
+          200: '#C2C7D3',
+          300: '#A5ABBD',
+          400: '#8891A8',
+          500: '#6D7793',
+          600: '#4F576C',
+          700: '#333847',
+          800: '#191C25',
+          900: '#0D1016'
+        },
+        iris: {
+          50: '#EEF3FE',
+          100: '#DDE7FC',
+          200: '#BCCEF8',
+          300: '#9CB6F4',
+          400: '#7D9DEE',
+          500: '#5F83E7',
+          600: '#5271C9',
+          700: '#4460AB',
+          800: '#384F8F',
+          900: '#2C3F73',
+          950: '#202F59',
+        },
         primary: {
           surface: {
             subtle: "#aed581",
