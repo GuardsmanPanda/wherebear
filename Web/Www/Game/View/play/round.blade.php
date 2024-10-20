@@ -16,7 +16,7 @@
     <div id="panorama"></div>
 
     <div>
-      <div id="smallScreenMap"
+      <div id="smallScreenMap" tabIndex="-1"
         class="block sm:hidden absolute top-0 w-full h-full z-10 border-r-2 border-gray-800 transition-all duration-300"
         :class="{ '-right-[2px]': screens.small.isVisible, 'right-full': !screens.small.isVisible }"
         x-transition:enter="transition ease-out duration-300"
@@ -24,7 +24,8 @@
         x-transition:enter-end="translate-x-0"
         x-transition:leave="transition ease-in duration-300"
         x-transition:leave-start="translate-x-0"
-        x-transition:leave-end="translate-x-full">
+        x-transition:leave-end="translate-x-full"
+        @keyup.esc="closeSmallMap()">
       </div>
 
       <div id="largeScreenMap"
@@ -48,10 +49,10 @@
       imgPath="/static/img/icon/map-with-marker.svg"
       bgColorClass="bg-iris-400"
       class="block sm:hidden absolute top-1/2 right-0 mr-2"
-      x-on:clicked="switchSmallMapVisibility()"
+      x-on:clicked="openSmallMap()"
     ></lit-button-square>
 
-    <div class="flex justify-center items-center min-w-40 absolute bottom-2 right-0 -skew-x-12 mr-[10px] ml-24 px-3 py-1 rounded border border-gray-700 bg-gray-50">
+    <div class="flex justify-center items-center min-w-40 absolute bottom-2 right-0 z-10 -skew-x-12 mr-[10px] ml-24 px-3 py-1 rounded border border-gray-700 bg-gray-50">
        <div class="flex justify-center items-center h-4 absolute -top-[8px] right-2 skew-x-12 rounded pl-3 pr-1 border border-gray-800 bg-gray-700">
         <img src="/static/img/icon/marker-red.svg" width="28" height="28" class="absolute -top-[10px] left-0 transform -translate-x-1/2" />
         <span class="text-xs text-gray-50 font-medium">Your Guess</span>
@@ -79,7 +80,7 @@
       this._container.setAttribute('imgPath', '/static/img/icon/cross.svg');
       this._container.setAttribute('size', 'sm');
       this._container.setAttribute('bgColorClass', 'bg-gray-400');
-      this._container.setAttribute('x-on:click', 'switchSmallMapVisibility()');
+      this._container.setAttribute('x-on:click', 'closeSmallMap()');
       
       this._container.className = 'maplibregl-ctrl';
 
@@ -105,6 +106,7 @@
         small: {
           divId: 'smallScreenMap',
           map: null,
+          mapElement: null,
           mapIcon: null,
           marker: null,
           isVisible: false,
@@ -197,6 +199,13 @@
           }
         }
       },
+      closeSmallMap() {
+        this.screens.small.isVisible = false;
+      },
+      openSmallMap() {
+        this.screens.small.isVisible = true;
+        this.screens.small.mapElement.focus();
+      },
       createMap(divId) {
         const map = new maplibregl.Map({
           container: divId, 
@@ -272,9 +281,6 @@
           this.screens.small.isVisible = false;
         }, 1600);
       },
-      switchSmallMapVisibility() {
-        this.screens.small.isVisible = !this.screens.small.isVisible;
-      },
       init() {
         const mapMarker = `<lit-map-marker iconFilePath="{{ $user->map_marker_file_path }}"></lit-map-marker>`;
 
@@ -295,6 +301,8 @@
           });
         });
 
+        this.screens.small.mapElement = document.getElementById(this.screens.small.divId);
+
         // Initialize the large screen map
         let largeMapIcon = document.createElement('div');
         largeMapIcon.innerHTML = mapMarker;
@@ -314,7 +322,7 @@
           // In case the user click then drag
           this.screens.large.hasDragged = true;
           this.screens.large.hasClicked = false;
-        })  
+        });
       },
     }
   }
