@@ -42,7 +42,6 @@
         x-on:mouseleave="screens.large.onMouseLeave();"
       >
       </div>
-
     </div>
 
     <lit-button-square label="GUESS" 
@@ -51,6 +50,15 @@
       class="block sm:hidden absolute top-1/2 right-0 mr-2"
       x-on:clicked="switchSmallMapVisibility()"
     ></lit-button-square>
+
+    <div class="flex justify-center items-center min-w-40 absolute bottom-2 right-0 -skew-x-12 mr-[10px] ml-24 px-3 py-1 rounded border border-gray-700 bg-gray-50">
+       <div class="flex justify-center items-center h-4 absolute -top-[8px] right-2 skew-x-12 rounded pl-3 pr-1 border border-gray-800 bg-gray-700">
+        <img src="/static/img/icon/marker-red.svg" width="28" height="28" class="absolute -top-[10px] left-0 transform -translate-x-1/2" />
+        <span class="text-xs text-gray-50 font-medium">Your Guess</span>
+      </div>
+      <span x-text="guessedCountry" class="skew-x-12 text-lg text-gray-700 font-medium"></span>
+      <span x-show="!guessedCountry" class="skew-x-12 text-lg text-gray-700 font-medium">...</span>
+    </div>
   </div>
 
   <x-play-footer
@@ -86,11 +94,12 @@
 
   function state(isDev) {
     return {
+      closeSmallScreenVisibilityTimeout: null,
       firstGuessMade: false,
+      guessedCountry: null,
       mapIcon: null,
       marker: null,
       markerLngLat: null,
-      closeSmallScreenVisibilityTimeout: null,
       requestThrottleTimeout: null,
       screens: {
         small: {
@@ -233,7 +242,7 @@
       },
       saveMarkerLocation(latlng, callback) {
         if (isDev) {
-          callback();
+          callback({ country_cca2: 'FR', country_name: 'France' });
         } else {
           fetch('/game/{{ $game->id }}/play/guess', {
             method: 'PUT',
@@ -246,7 +255,10 @@
               if (!resp.ok) {
                 return Promise.reject(resp);
               }
-              callback();
+              return resp.json();
+            })
+            .then((data) => {
+              callback(data);
             })
             .catch((error) => console.error(error.statusText || error));
         }
@@ -275,9 +287,11 @@
         this.screens.small.map.addControl(new CloseMapButtonControl());
 
         this.screens.small.map.on('click', e => {
-          this.saveMarkerLocation(e.lngLat, () => {
+          // data: {country_cca2: 'FR', country_name: 'France'}
+          this.saveMarkerLocation(e.lngLat, (data) => {
             this.placeMarkerOnMaps(e.lngLat);
             this.scheduleSmallScreenClose();
+            this.guessedCountry = data.country_name;
           });
         });
 
@@ -288,9 +302,11 @@
         this.screens.large.map = this.createMap(this.screens.large.divId);
 
         this.screens.large.map.on('click', e => {
-          this.saveMarkerLocation(e.lngLat, () => {
+          // data: {country_cca2: 'FR', country_name: 'France'}
+          this.saveMarkerLocation(e.lngLat, (data) => {
             this.placeMarkerOnMaps(e.lngLat);
             this.screens.large.hasClicked = true;
+            this.guessedCountry = data.country_name;
           });
         });  
 
