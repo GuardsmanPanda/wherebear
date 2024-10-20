@@ -9,16 +9,18 @@ import { ButtonBase } from './button-base.lit-component';
 class Button extends ButtonBase {
   static properties = {
     ...ButtonBase.properties,
+
     /** Background color class for the button (e.g., 'bg-blue-400'). */
     bgColorClass: { type: String },
+
     /** The path to the image to display in the button. */
     imgPath: { type: String },
+
     /** The label text to display on the button. */
     label: { type: String },
   };
 
   static styles = [...ButtonBase.styles];
-
 
   constructor() {
     super();
