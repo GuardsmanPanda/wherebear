@@ -569,73 +569,6 @@
     }
   }
 
-  function countdownState(durationSec) {
-    return {
-      intervalDurationMs: 1000,
-      timeRemainingSec: durationSec,
-      timerInterval: null,
-      start() {
-        const tick = () => {
-          if (this.timeRemainingSec <= 0) {
-            clearInterval(this.timerInterval);
-            this.timeRemainingSec = 0;
-          } else {
-            this.timeRemainingSec--;
-          }
-        };
-
-        tick();
-        this.timerInterval = setInterval(() => {
-          tick();
-        }, this.intervalDurationMs);
-      },
-      init() {
-        setTimeout(() => {
-          this.start();
-        }, 1100);
-      },
-      destroy() {
-        clearInterval(this.timerInterval);
-      },
-    }
-  }
-
-  function progressBarState(durationSec) {
-    return {
-      percentage: 100,
-      durationSec: durationSec,
-      innerBgColorCls: "bg-yellow-300",
-      timerInterval: null,
-      intervalDurationMs: 1000,
-      start() {
-        const totalStepCount = (durationSec * 1000) / this.intervalDurationMs;
-        const percentageStep = (100 / (totalStepCount));
-
-        const tick = () => {
-          if (this.percentage <= 0) {
-            clearInterval(this.timerInterval);
-            this.percentage = 0;
-          } else {
-            this.percentage = Math.max(this.percentage - percentageStep, 0);
-          }
-        };
-
-        tick();
-        this.timerInterval = setInterval(() => {
-          tick();
-        }, this.intervalDurationMs);
-      },
-      init() {
-        setTimeout(() => {
-          this.start();
-        }, 100);
-      },
-      destroy() {
-        clearInterval(this.timerInterval);
-      },
-    }
-  }
-
   const map = new window.maplibregl.Map({
     container: 'map', 
     style: {
@@ -662,11 +595,9 @@
     attributionControl: false
   })
 
-
   map.scrollZoom.setWheelZoomRate(1 / 75);
   map.scrollZoom.setZoomRate(1 / 75);
   map.touchZoomRotate.disableRotation();
-
 
   const playerGuesses = @json($guesses);
   playerGuesses.forEach(guess => {
