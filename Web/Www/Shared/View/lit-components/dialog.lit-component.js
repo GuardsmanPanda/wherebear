@@ -22,12 +22,6 @@ class Dialog extends LitElement {
     /** Maximum height of the content area in pixels. */
     maxHeightPx: { type: Number },
 
-    /** Top offset for the dialog in pixels */
-    offsetTopPx: { type: Number },
-
-    /** Bottom offset for the dialog in pixels */
-    offsetBottomPx: { type: Number },
-
     /** Tracks whether the dialog has a footer. */
     hasFooter: { type: Boolean, state: true },
 
