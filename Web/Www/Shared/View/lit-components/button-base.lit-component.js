@@ -10,15 +10,19 @@ export class ButtonBase extends LitElement {
   static properties = {
     /** The icon position, 'left' or 'right'. */
     iconPosition: { type: String },
+
     /** Whether the button is full rounded.  */
     isPill: { type: Boolean },
+
     /** Determines if the button is selectable. */
     isSelectable: { type: Boolean },
+
     /** Keeps track of whether the button is currently selected. */
     isSelected: { type: Boolean },
+
     /** Sets the size of the button, corresponding to the available size keys: 'sm', 'md', 'lg', 'xl'. */
     size: { type: String },
-    type: { type: String },
+
     /** Tracks whether the mouse has left the button after it was clicked. Used for not applying hover css before the mouse has left the button. */
     hasMouseLeftAfterClicked: { type: Boolean, state: true },
   };
