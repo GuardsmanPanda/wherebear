@@ -62,7 +62,7 @@ final class ConsoleKernel extends Kernel {
     });
 
     Artisan::command('zz', function () {
-      $game = Game::find(id: 'dbaf2aef-a513-4543-a831-4938d4420b7a');
+      $game = Game::findOrFail(id: 'dbaf2aef-a513-4543-a831-4938d4420b7a');
       $gameRounds = new GameRoundCreatorAction(game: $game);
       $gameRounds->createAllRounds();
     });

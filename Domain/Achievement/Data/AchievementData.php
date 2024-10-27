@@ -3,7 +3,7 @@
 namespace Domain\Achievement\Data;
 
 use Domain\Achievement\Enum\AchievementTypeEnum;
-use Domain\Map\Data\MapLocationData;
+use GuardsmanPanda\Larabear\Infrastructure\App\DataType\BearPointM;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountrySubdivisionEnum;
 
@@ -21,7 +21,7 @@ final readonly class AchievementData {
     public array|null                      $country_array = null,
     public BearCountrySubdivisionEnum|null $country_subdivision = null,
     public array|null                      $country_subdivision_array = null,
-    public MapLocationData|null            $location_data = null,
+    public BearPointM|null                 $point_radius = null,
   ) {
   }
 
@@ -98,13 +98,13 @@ final readonly class AchievementData {
   }
 
 
-  public static function location(string $title, string $name, MapLocationData $location_data): self {
+  public static function location(string $title, string $name, BearPointM $point_radius): self {
     return new self(
       title: $title,
       achievement_type_enum: AchievementTypeEnum::LOCATION,
       name: $name,
       required_points: 1,
-      location_data: $location_data,
+      point_radius: $point_radius,
     );
   }
 }

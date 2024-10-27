@@ -96,11 +96,11 @@ final class PageDiscoveryController extends Controller {
     $results = [];
     for ($i = 0; $i <= $retries; $i++) {
       $newPos = MapService::offsetLatLng(lat: $lat, lng: $lng, meters: Req::getFloat(key: 'distance'));
-      $data = StreetViewClient::fromLocation(latitude: $newPos->lat, longitude: $newPos->lng);
+      $data = StreetViewClient::fromLocation(latitude: $newPos->latitude, longitude: $newPos->longitude);
       if ($data === null) {
         $results[] = [
-          'lat' => $newPos->lat,
-          'lng' => $newPos->lng,
+          'lat' => $newPos->latitude,
+          'lng' => $newPos->longitude,
           'status' => 'failed',
         ];
         continue;

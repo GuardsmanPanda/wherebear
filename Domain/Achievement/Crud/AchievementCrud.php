@@ -5,6 +5,7 @@ namespace Domain\Achievement\Crud;
 use Domain\Achievement\Enum\AchievementEnum;
 use Domain\Achievement\Enum\AchievementTypeEnum;
 use Domain\Achievement\Model\Achievement;
+use GuardsmanPanda\Larabear\Infrastructure\App\DataType\BearPointM;
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearStringService;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 use GuardsmanPanda\Larabear\Infrastructure\Integrity\Service\ValidateAndParseValue;
@@ -28,6 +29,7 @@ final class AchievementCrud {
     $model->country_cca2_array = new ArrayObject(array: $data->country_array ?? []);
     $model->country_subdivision_iso_3166 = $data->country_subdivision;
     $model->country_subdivision_iso_3166_array = new ArrayObject(array: $data->country_subdivision_array ?? []);
+    $model->location = $data->point_radius;
 
     if ($data->achievement_type_enum === AchievementTypeEnum::COUNTRY) {
       if ($data->country === null) {
@@ -56,11 +58,6 @@ final class AchievementCrud {
       $index = BearStringService::getPosition(haystack: $enum->value, needle: '_') + 1;
       $value = ValidateAndParseValue::parseInt(value: substr(string: $enum->value, offset: $index), errorMessage: 'Last character in level achievement must be an integer.');
       $model->name = "Level " . " $value";
-    }
-
-    if ($data->achievement_type_enum === AchievementTypeEnum::LOCATION) {
-    } else {
-      $model->location = null;
     }
 
     $model->save();

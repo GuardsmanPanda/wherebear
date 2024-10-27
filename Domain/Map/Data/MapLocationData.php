@@ -3,6 +3,6 @@
 namespace Domain\Map\Data;
 
 readonly final class MapLocationData {
-    public function __construct(public float $lat, public float $lng, int $radius_meters = 0) {
+    public function __construct(public float $longitude, public float $latitude) {
     }
 }

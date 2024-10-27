@@ -60,8 +60,8 @@ final class GameRoundCalculateResultAction {
           game_id: $gameId,
           round_number: $roundNumber,
           user_id: $player->user_id,
-          lng: $newPos->lng,
-          lat: $newPos->lat,
+          lng: $newPos->longitude,
+          lat: $newPos->latitude,
         );
       }
       DB::commit();
@@ -98,8 +98,8 @@ final class GameRoundCalculateResultAction {
           game_id: $gameId,
           round_number: $roundNumber,
           user_id: $user_id,
-          lng: $newPos->lng,
-          lat: $newPos->lat,
+          lng: $newPos->longitude,
+          lat: $newPos->latitude,
         );
       }
       DB::commit();

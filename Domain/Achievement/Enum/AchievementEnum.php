@@ -4,7 +4,7 @@ namespace Domain\Achievement\Enum;
 
 use Domain\Achievement\Crud\AchievementCrud;
 use Domain\Achievement\Data\AchievementData;
-use Domain\Map\Data\MapLocationData;
+use GuardsmanPanda\Larabear\Infrastructure\App\DataType\BearPointM;
 use GuardsmanPanda\Larabear\Infrastructure\App\Interface\BearDatabaseBackedEnumInterface;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryOrganizationEnum;
@@ -95,7 +95,7 @@ enum AchievementEnum: string implements BearDatabaseBackedEnumInterface {
       self::TEST_LOCATION => AchievementData::location(
         title: "Test Location",
         name: "Test Location",
-        location_data: new MapLocationData(lat: 0, lng: 0, radius_meters: 23)
+        point_radius: new BearPointM(longitude: 0.0, latitude: 0.0, measurement: 23)
       ),
 
       // TEST ACHIEVEMENTS
