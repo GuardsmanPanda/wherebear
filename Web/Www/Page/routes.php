@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Web\Www\Page\Controller\PageDiscoveryController;
 use Web\Www\Page\Controller\PageDownloadController;
 use Web\Www\Page\Controller\PageAchievementLocationController;
+use Web\Www\Page\Controller\PageTemplateController;
 
 Route::prefix('discovery')->middleware([BearPermissionMiddleware::using(permission: BearPermissionEnum::PANORAMA_CONTRIBUTE)])->group(callback: function () {
   Route::get(uri: '', action: [PageDiscoveryController::class, 'index']);
@@ -22,4 +23,11 @@ Route::prefix('download')->middleware([BearPermissionMiddleware::using(permissio
   Route::get(uri: '', action: [PageDownloadController::class, 'index']);
 });
 
+Route::prefix('template')->middleware([BearPermissionMiddleware::using(permission: BearPermissionEnum::TEMPLATE_CREATE)])->group(callback: function () {
+  Route::get(uri: '', action: [PageTemplateController::class, 'index']);
+  Route::post(uri: '', action: [PageTemplateController::class, 'create']);
+  Route::get(uri: 'create', action: [PageTemplateController::class, 'createDialog']);
+  Route::delete(uri: '{id}', action: [PageTemplateController::class, 'delete']);
 
+  Route::get(uri: '{id}/panorama', action: [PageTemplateController::class, 'panorama']);
+});

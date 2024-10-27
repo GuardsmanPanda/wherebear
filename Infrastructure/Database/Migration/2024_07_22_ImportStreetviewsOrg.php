@@ -10,12 +10,12 @@ return new class extends Migration {
     Schema::create(table: 'import_streetviews_org', callback: static function (Blueprint $table): void {
       $table->integer(column: 'id')->primary();
       $table->text(column: 'sid');
-      $table->text(column: 'panoid');
+      $table->text(column: 'panoid')->unique()->nullable();
       $table->geography(column: 'location', subtype: 'POINTZM');
-      $table->text(column: 'score')->nullable();
       $table->text(column: 'display_title')->nullable();
       $table->text(column: 'sv_description')->nullable();
       $table->timestampTz(column: 'created_at')->default(value: DB::raw(value: 'CURRENT_TIMESTAMP'));
+      $table->timestampTz(column: 'updated_at')->default(value: DB::raw(value: 'CURRENT_TIMESTAMP'));
     });
   }
 

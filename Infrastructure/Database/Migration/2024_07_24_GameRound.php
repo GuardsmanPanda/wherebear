@@ -6,22 +6,23 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    public function up(): void {
-        Schema::create(table: 'game_round', callback: static function (Blueprint $table): void {
-            $table->uuid(column: 'game_id');
-            $table->integer(column: 'round_number');
-            $table->text(column: 'panorama_id')->nullable();
-            $table->text(column: 'panorama_pick_strategy')->default(value: 'Unknown');
-            $table->timestampTz(column: 'created_at')->default(value: DB::raw(value: 'CURRENT_TIMESTAMP'));
-            $table->timestampTz(column: 'updated_at')->default(value: DB::raw(value: 'CURRENT_TIMESTAMP'));
-            $table->foreign("game_id")->references('id')->on(table: 'game');
-            $table->foreign("panorama_id")->references('id')->on(table: 'panorama');
-            $table->primary(columns: ['game_id', 'round_number']);
-        });
-    }
+  public function up(): void {
+    Schema::create(table: 'game_round', callback: static function (Blueprint $table): void {
+      $table->uuid(column: 'game_id');
+      $table->integer(column: 'round_number');
+      $table->text(column: 'panorama_id')->nullable();
+      $table->text(column: 'panorama_pick_strategy');
+      $table->timestampTz(column: 'created_at')->default(value: DB::raw(value: 'CURRENT_TIMESTAMP'));
+      $table->timestampTz(column: 'updated_at')->default(value: DB::raw(value: 'CURRENT_TIMESTAMP'));
+      $table->foreign("game_id")->references('id')->on(table: 'game');
+      $table->foreign("panorama_id")->references('id')->on(table: 'panorama');
+      $table->primary(columns: ['game_id', 'round_number']);
+      $table->index(columns: ['created_at']);
+    });
+  }
 
 
-    public function down(): void {
-        Schema::dropIfExists(table: 'game_round');
-    }
+  public function down(): void {
+    Schema::dropIfExists(table: 'game_round');
+  }
 };

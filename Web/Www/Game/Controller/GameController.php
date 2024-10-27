@@ -4,6 +4,7 @@ namespace Web\Www\Game\Controller;
 
 use Domain\Game\Crud\GameCreator;
 use Domain\Game\Crud\GameDeleter;
+use Domain\Game\Crud\GameUserCreator;
 use Domain\Game\Enum\GamePublicStatusEnum;
 use Domain\Game\Enum\GameStateEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
@@ -29,8 +30,9 @@ final class GameController extends Controller {
       number_of_rounds: Req::getInt(key: 'number_of_rounds'),
       round_duration_seconds: Req::getInt(key: 'round_duration_seconds'),
       round_result_duration_seconds: Req::getInt(key: 'round_result_duration_seconds'),
-      game_public_status: GamePublicStatusEnum::from(value: Req::getString(key: 'game_public_status')),
+      game_public_status: GamePublicStatusEnum::fromRequest(),
     );
+    GameUserCreator::create(game_id: $game->id, user_id: BearAuthService::getUserId(), is_observer: Req::getBool(key: 'is_observer'));
     return Htmx::redirect(url: "/game/$game->id/lobby");
   }
 

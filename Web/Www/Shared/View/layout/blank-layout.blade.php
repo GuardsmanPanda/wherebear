@@ -12,6 +12,7 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
   @endif
   <link rel="stylesheet" href="{!! config('bear.ui.app_css') !!}">
+  <link rel="stylesheet" href="{!! config('bear.ui.tailwind_css') !!}">
   @yield('styles')
 </head>
 <body class="min-h-screen grid place-items-center bg-gray-900 text-gray-300">

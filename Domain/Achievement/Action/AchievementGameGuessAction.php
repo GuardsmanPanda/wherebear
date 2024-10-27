@@ -24,9 +24,12 @@ final class AchievementGameGuessAction {
         SELECT
           gru.user_id, gru.country_cca2
         FROM game_round_user gru
-        JOIN game_round gr ON gr.game_id = gru.game_id AND gr.round_number = gru.round_number
+        LEFT JOIN game_round gr ON gr.game_id = gru.game_id AND gr.round_number = gru.round_number
+        LEFT JOIN game g ON g.id = gr.game_id
         LEFT JOIN panorama p ON p.id = gr.panorama_id
-        WHERE gru.game_id = ? AND gru.country_cca2 = p.country_cca2
+        WHERE 
+          gru.game_id = ? AND gru.country_cca2 = p.country_cca2
+          AND g.templated_by_game_id IS NULL
       )
       INSERT INTO achievement_country_guess (user_id, country_cca2, count)
       SELECT user_id, country_cca2, 1
@@ -42,9 +45,12 @@ final class AchievementGameGuessAction {
         SELECT
           gru.user_id, gru.country_subdivision_iso_3166
         FROM game_round_user gru
-        JOIN game_round gr ON gr.game_id = gru.game_id AND gr.round_number = gru.round_number
-        LEFT JOIN panorama p ON p.id = gr.panorama_id
-        WHERE gru.game_id = ? AND gru.country_subdivision_iso_3166 = p.country_subdivision_iso_3166
+        LEFT JOIN game_round gr ON gr.game_id = gru.game_id AND gr.round_number = gru.round_number
+        LEFT JOIN game g ON g.id = gr.game_id
+       LEFT JOIN panorama p ON p.id = gr.panorama_id
+        WHERE 
+          gru.game_id = ? AND gru.country_subdivision_iso_3166 = p.country_subdivision_iso_3166
+          AND g.templated_by_game_id IS NULL
       )
       INSERT INTO achievement_country_subdivision_guess (user_id, country_subdivision_iso_3166, count)
       SELECT user_id, country_subdivision_iso_3166, 1

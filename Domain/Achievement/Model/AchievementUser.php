@@ -55,6 +55,7 @@ use RuntimeException;
  * @property string $created_at
  * @property string $updated_at
  * @property string $achievement_enum
+ * @property CarbonInterface|null $seen_at
  *
  * @property BearUser $user
  * @property Achievement $achievement
@@ -71,6 +72,11 @@ final class AchievementUser extends Model {
     protected $keyType = 'array';
     public $incrementing = false;
     protected $dateFormat = 'Y-m-d\TH:i:sP';
+
+    /** @var array<string, string> $casts */
+    protected $casts = [
+        'seen_at' => 'immutable_datetime',
+    ];
 
     /** @return BelongsTo<BearUser, self> */
     public function user(): BelongsTo {

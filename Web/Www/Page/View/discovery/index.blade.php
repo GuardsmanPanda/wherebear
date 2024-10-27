@@ -1,9 +1,10 @@
 <?php declare(strict_types=1); ?>
+@php use Domain\User\Enum\BearPermissionEnum;use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService; @endphp
 <div class="h-full w-full flex flex-col">
   <x-bear::form.text id="map-url" required="" class="text-gray-700" autocomplete="off"></x-bear::form.text>
   <div id="tags" class="mt-1">
     <h3 class="font-bold text-teal-500">Tags</h3>
-    <div class="flex gap-6 ml-2 items-center">
+    <div class="flex gap-4 ml-2 items-center">
       <div class="flex items-center">
         <label class="mr-2 font-medium text-gray-400" for="GREAT">GREAT</label>
         <input id="GREAT" type="checkbox" name="tag" value="GREAT">
@@ -20,6 +21,16 @@
         <label class="mr-2 font-medium text-amber-400" for="DIFFICULT">DIFFICULT</label>
         <input id="DIFFICULT" type="checkbox" name="tag" value="DIFFICULT">
       </div>
+      @if(BearAuthService::hasPermission(permission: BearPermissionEnum::IS_BOB))
+        <div class="flex items-center">
+          <label class="mr-2 font-medium text-blue-400" for="GOOGLE">GOOGLE</label>
+          <input id="GOOGLE" type="checkbox" name="tag" value="GOOGLE">
+        </div>
+        <div class="flex items-center">
+          <label class="mr-2 font-medium text-blue-400" for="HIDDEN">HIDDEN</label>
+          <input id="HIDDEN" type="checkbox" name="tag" value="HIDDEN">
+        </div>
+      @endif
     </div>
   </div>
   <hr class="mt-2 mb-1  border-gray-600 border-2">
@@ -81,8 +92,7 @@
     }
 
     fetch('/page/discovery/street-view-location-search', {
-      method: 'POST',
-      headers: {
+      method: 'POST', headers: {
         'Content-Type': 'application/json'
       }, body: JSON.stringify({
         lat: lat,
@@ -144,14 +154,10 @@
       method: 'POST', headers: {
         'Content-Type': 'application/json'
       }, body: JSON.stringify({
-        panorama_id: panorama_id,
-        lat: text[0],
-        lng: text[1],
-        tags_checked: tags_checked,
-        tags_unchecked: tags_unchecked,
+        panorama_id: panorama_id, lat: text[0], lng: text[1], tags_checked: tags_checked, tags_unchecked: tags_unchecked,
       }),
     }).then(resp => resp.json()).then(json => {
-        console.log(json);
+      console.log(json);
       if (json['status'] === 'failed') {
         window.notify.error("Failed to add location to the game, Panorama API error.");
         console.error(json['error']);
@@ -161,12 +167,12 @@
         });
         if (json['tags_added'].length > 0) {
           window.notify.open({
-            type: "success", message: "Tags added<br>" +  json['tags_added'], duration: 10000,
+            type: "success", message: "Tags added<br>" + json['tags_added'], duration: 10000,
           });
         }
         if (json['tags_removed'].length > 0) {
           window.notify.open({
-            type: "error", message: "Tags removed<br>" +  json['tags_removed'], duration: 10000,
+            type: "error", message: "Tags removed<br>" + json['tags_removed'], duration: 10000,
           });
         }
       } else {
@@ -175,7 +181,7 @@
         });
         if (json['tags_added'].length > 0) {
           window.notify.open({
-            type: "success", message: "Tags added<br>" +  json['tags_added'], duration: 10000,
+            type: "success", message: "Tags added<br>" + json['tags_added'], duration: 10000,
           });
         }
         document.getElementById('map-url').value = '';

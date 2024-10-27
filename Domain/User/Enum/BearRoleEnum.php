@@ -9,6 +9,7 @@ use GuardsmanPanda\Larabear\Infrastructure\Auth\Interface\BearRoleEnumInterface;
 
 enum BearRoleEnum: string implements BearRoleEnumInterface {
   case ADMIN = 'ADMIN';
+  case BEAR = 'BEAR';
 
   public function getValue(): string {
     return $this->value;
@@ -17,6 +18,7 @@ enum BearRoleEnum: string implements BearRoleEnumInterface {
   public function getDescription(): string {
     return match ($this) {
       self::ADMIN => 'Allows the user to do everything.',
+      self::BEAR => 'A bear can do whatever it wants to.',
     };
   }
 
@@ -28,6 +30,14 @@ enum BearRoleEnum: string implements BearRoleEnumInterface {
       self::ADMIN => [
         BearPermissionEnum::GAME_CREATE,
         BearPermissionEnum::PANORAMA_CONTRIBUTE,
+      ],
+      self::BEAR => [
+        BearPermissionEnum::GAME_CREATE,
+        BearPermissionEnum::IS_BOB,
+        BearPermissionEnum::PANORAMA_CONTRIBUTE,
+        BearPermissionEnum::PANORAMA_DOWNLOAD,
+        BearPermissionEnum::PANORAMA_TAG,
+        BearPermissionEnum::TEMPLATE_CREATE,
       ],
     };
   }

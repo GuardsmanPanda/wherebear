@@ -29,7 +29,10 @@ final class GameRoundCalculateResultAction {
       FROM game_user gu
       LEFT JOIN game g ON g.id = gu.game_id
       LEFT JOIN game_round_user gru ON gru.user_id = gu.user_id AND gru.game_id = gu.game_id AND gru.round_number = g.current_round
-      WHERE gu.game_id = ? AND gru.location IS NULL
+      WHERE 
+        gu.game_id = ?
+        AND gru.location IS NULL
+        AND gu.is_observer = FALSE
     ", bindings: [$gameId]);
 
     if (count($players) === 0) {
@@ -78,14 +81,13 @@ final class GameRoundCalculateResultAction {
   private static function superFallbackGuesses(string $gameId, int $roundNumber, array $players): void {
     $playerCount = count($players);
     $locations = DB::select(query: "
-            SELECT 
-                ST_X(p.location::geometry) as lng,
-                ST_Y(p.location::geometry) as lat
-            FROM panorama p
-            WHERE p.location IS NOT NULL
-            ORDER BY random()
-            LIMIT ?
-        ", bindings: [$playerCount]);
+      SELECT 
+        ST_X(p.location::geometry) as lng,
+        ST_Y(p.location::geometry) as lat
+      FROM panorama p
+      ORDER BY random()
+      LIMIT ?
+    ", bindings: [$playerCount]);
     try {
       DB::beginTransaction();
       for ($i = 0; $i < $playerCount; $i++) {

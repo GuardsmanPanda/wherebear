@@ -36,7 +36,7 @@
               <x-bear::sidebar.link path="/page/download" icon="key">Download Missing</x-bear::sidebar.link>
             @endif
           @endif
-          @if(BearAuthService::hasPermission(permission: BearPermissionEnum::TEMPLATE_EDIT))
+          @if(BearAuthService::hasPermission(permission: BearPermissionEnum::TEMPLATE_CREATE))
             <x-bear::sidebar.divider color="gray-800">Template</x-bear::sidebar.divider>
             <x-bear::sidebar.link path="/page/template" icon="key">Edit Templates</x-bear::sidebar.link>
           @endif

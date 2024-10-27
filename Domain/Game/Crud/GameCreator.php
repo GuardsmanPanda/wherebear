@@ -5,6 +5,7 @@ namespace Domain\Game\Crud;
 use Domain\Game\Enum\GamePublicStatusEnum;
 use Domain\Game\Enum\GameStateEnum;
 use Domain\Game\Model\Game;
+use Domain\Panorama\Enum\PanoramaTagEnum;
 use GuardsmanPanda\Larabear\Infrastructure\App\Enum\BearSeverityEnum;
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearShortCodeService;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
@@ -21,6 +22,7 @@ final readonly class GameCreator {
     int                  $round_result_duration_seconds,
     GamePublicStatusEnum $game_public_status,
     GameStateEnum        $game_state_enum = GameStateEnum::WAITING_FOR_PLAYERS,
+    PanoramaTagEnum|null  $panorama_tag_enum = null,
   ): Game {
     BearDatabaseService::mustBeInTransaction();
     BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST']);
@@ -35,6 +37,7 @@ final readonly class GameCreator {
     $model->round_result_duration_seconds = $round_result_duration_seconds;
     $model->created_by_user_id = BearAuthService::getUser()->id;
     $model->game_public_status_enum = $game_public_status;
+    $model->panorama_tag_enum = $panorama_tag_enum;
     $model->is_forced_start = false;
     $model->current_round = 0;
 

@@ -2,10 +2,13 @@
 
 namespace Infrastructure\Console\Kernel;
 
+use Domain\Game\Action\GameRoundCreatorAction;
 use Domain\Game\Crud\GameRoundDeleter;
 use Domain\Game\Crud\GameUpdater;
 use Domain\Game\Enum\GameStateEnum;
+use Domain\Game\Model\Game;
 use Domain\Import\Command\ImportFromPreviousGameCommand;
+use Domain\Import\Command\ImportMapcrunchComCommand;
 use Domain\Import\Command\ImportStreetviewsOrgCommand;
 use Domain\Import\Command\ImportPanoramaJpgCommand;
 use Domain\Map\Command\MapSubdivisionBoundaryCheckCommand;
@@ -20,9 +23,10 @@ use Throwable;
 final class ConsoleKernel extends Kernel {
   /** @var array<int, string> $commands @phpstan-ignore-next-line */
   protected $commands = [
-    ImportStreetviewsOrgCommand::class,
-    ImportPanoramaJpgCommand::class,
     ImportFromPreviousGameCommand::class,
+    ImportMapcrunchComCommand::class,
+    ImportPanoramaJpgCommand::class,
+    ImportStreetviewsOrgCommand::class,
     MapSubdivisionBoundaryCheckCommand::class,
     PanoramaUpdateCountryAndSubdivisionCommand::class,
     WhereBearInitCommand::class,
@@ -58,6 +62,9 @@ final class ConsoleKernel extends Kernel {
     });
 
     Artisan::command('zz', function () {
+      $game = Game::find(id: 'dbaf2aef-a513-4543-a831-4938d4420b7a');
+      $gameRounds = new GameRoundCreatorAction(game: $game);
+      $gameRounds->createAllRounds();
     });
   }
 }

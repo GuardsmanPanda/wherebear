@@ -21,10 +21,15 @@
   </fieldset>
   <fieldset class="flex gap-3 px-3 border border-gray-400 pb-3 mt-2">
     <legend class="px-1.5">Public Status</legend>
-    <label class="font-bold">Public<input type="radio" name="game_public_status" value="PUBLIC" class="ml-1" checked></label>
+    <label class="font-bold">Public<input type="radio" name="game_public_status_enum" value="PUBLIC" class="ml-1" checked></label>
     @if(BearAuthService::hasPermission(permission: BearPermissionEnum::IS_BOB))
-      <label class="font-bold">Google<input type="radio" name="game_public_status" value="GOOGLE" class="ml-1"></label>
+      <label class="font-bold">Google<input type="radio" name="game_public_status_enum" value="GOOGLE" class="ml-1"></label>
     @endif
-    <label class="font-bold">Private<input type="radio" name="game_public_status" value="PRIVATE" class="ml-1"></label>
+    <label class="font-bold">Private<input type="radio" name="game_public_status_enum" value="PRIVATE" class="ml-1"></label>
+  </fieldset>
+  <fieldset class="flex gap-3 px-3 border border-gray-400 pb-3 mt-2">
+    <legend class="px-1.5">Join As</legend>
+    <label class="font-bold">Player<input type="radio" name="is_observer" value="false" class="ml-1" checked></label>
+    <label class="font-bold">Observer<input type="radio" name="is_observer" value="true" class="ml-1"></label>
   </fieldset>
 </x-bear::dialog.create>
