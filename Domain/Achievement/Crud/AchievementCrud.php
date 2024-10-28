@@ -5,7 +5,6 @@ namespace Domain\Achievement\Crud;
 use Domain\Achievement\Enum\AchievementEnum;
 use Domain\Achievement\Enum\AchievementTypeEnum;
 use Domain\Achievement\Model\Achievement;
-use GuardsmanPanda\Larabear\Infrastructure\App\DataType\BearPointM;
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearStringService;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 use GuardsmanPanda\Larabear\Infrastructure\Integrity\Service\ValidateAndParseValue;
