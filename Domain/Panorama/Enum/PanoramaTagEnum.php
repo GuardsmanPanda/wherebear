@@ -3,9 +3,10 @@
 namespace Domain\Panorama\Enum;
 
 use Domain\Panorama\Crud\PanoramaTagCrud;
+use GuardsmanPanda\Larabear\Infrastructure\App\Interface\BearDatabaseBackedEnumInterface;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 
-enum PanoramaTagEnum: string {
+enum PanoramaTagEnum : string implements BearDatabaseBackedEnumInterface {
   // Special Feature Tags
   case BROKEN = 'BROKEN';
   case HIDDEN = 'HIDDEN';

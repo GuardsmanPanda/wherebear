@@ -4,10 +4,11 @@ namespace Domain\Map\Enum;
 
 use Domain\Map\Crud\MapStyleCrud;
 use Domain\User\Enum\UserLevelEnum;
+use GuardsmanPanda\Larabear\Infrastructure\App\Interface\BearDatabaseBackedEnumInterface;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 use Infrastructure\App\Enum\BearExternalApiEnum;
 
-enum MapStyleEnum: string {
+enum MapStyleEnum: string implements BearDatabaseBackedEnumInterface {
   case DEFAULT = 'DEFAULT';
   case OSM = 'OSM';
   case SATELLITE = 'SATELLITE';

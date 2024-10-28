@@ -38,6 +38,7 @@ final readonly class GameUpdater {
     }
 
     public function setNumberOfRounds(int $number_of_rounds): self {
+        $this->model->experience_points = $number_of_rounds + 3;
         $this->model->number_of_rounds = $number_of_rounds;
         return $this;
     }

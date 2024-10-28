@@ -60,6 +60,7 @@ return [
         'location' => 'Domain/Game/Model',
       ],
       'game_user' => ['location' => 'Domain/Game/Model', 'log_exclude_columns' => ['is_ready']],
+      'import_status' => ['location' => 'Domain/Import/Model'],
       'map_marker' => [
         'enum' => MapMarkerEnum::class,
         'location' => 'Domain/Map/Model'

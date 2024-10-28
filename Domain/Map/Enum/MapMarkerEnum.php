@@ -4,10 +4,11 @@ namespace Domain\Map\Enum;
 
 use Domain\Map\Crud\MapMarkerCrud;
 use Domain\User\Enum\UserLevelEnum;
+use GuardsmanPanda\Larabear\Infrastructure\App\Interface\BearDatabaseBackedEnumInterface;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 use Illuminate\Support\Str;
 
-enum MapMarkerEnum: string {
+enum MapMarkerEnum: string implements BearDatabaseBackedEnumInterface {
   case BOB_DINO = 'BOB_DINO';
 
   case CHIBI_ANUBIS = 'CHIBI_ANUBIS';

@@ -22,7 +22,8 @@ final readonly class GameCreator {
     int                  $round_result_duration_seconds,
     GamePublicStatusEnum $game_public_status,
     GameStateEnum        $game_state_enum = GameStateEnum::WAITING_FOR_PLAYERS,
-    PanoramaTagEnum|null  $panorama_tag_enum = null,
+    PanoramaTagEnum|null $panorama_tag_enum = null,
+    Game|null            $templated_by_game = null
   ): Game {
     BearDatabaseService::mustBeInTransaction();
     BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST']);
@@ -40,6 +41,15 @@ final readonly class GameCreator {
     $model->panorama_tag_enum = $panorama_tag_enum;
     $model->is_forced_start = false;
     $model->current_round = 0;
+
+    if ($templated_by_game !== null) {
+      $model->templated_by_game_id = $templated_by_game->id;
+    }
+
+    $model->experience_points = match ($game_state_enum) {
+      GameStateEnum::TEMPLATE => 0,
+      default => $number_of_rounds + 3,
+    };
 
     $model->save();
 

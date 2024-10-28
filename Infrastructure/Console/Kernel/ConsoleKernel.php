@@ -8,6 +8,7 @@ use Domain\Game\Crud\GameUpdater;
 use Domain\Game\Enum\GameStateEnum;
 use Domain\Game\Model\Game;
 use Domain\Import\Command\ImportFromPreviousGameCommand;
+use Domain\Import\Command\ImportIntoPanoramaTableCommand;
 use Domain\Import\Command\ImportMapcrunchComCommand;
 use Domain\Import\Command\ImportStreetviewsOrgCommand;
 use Domain\Import\Command\ImportPanoramaJpgCommand;
@@ -24,6 +25,7 @@ final class ConsoleKernel extends Kernel {
   /** @var array<int, string> $commands @phpstan-ignore-next-line */
   protected $commands = [
     ImportFromPreviousGameCommand::class,
+    ImportIntoPanoramaTableCommand::class,
     ImportMapcrunchComCommand::class,
     ImportPanoramaJpgCommand::class,
     ImportStreetviewsOrgCommand::class,

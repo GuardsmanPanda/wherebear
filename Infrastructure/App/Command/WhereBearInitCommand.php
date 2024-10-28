@@ -6,6 +6,7 @@ use Domain\Achievement\Enum\AchievementEnum;
 use Domain\Achievement\Enum\AchievementTypeEnum;
 use Domain\Game\Enum\GamePublicStatusEnum;
 use Domain\Game\Enum\GameStateEnum;
+use Domain\Import\Enum\ImportStatusEnum;
 use Domain\Map\Crud\MapCountryBoundaryCrud;
 use Domain\Map\Crud\MapCountrySubdivisionBoundaryCrud;
 use Domain\Map\Enum\MapMarkerEnum;
@@ -31,6 +32,7 @@ final class WhereBearInitCommand extends BearTransactionCommand {
     BearPermissionEnum::syncToDatabase();
     BearExternalApiEnum::syncToDatabase();
     GamePublicStatusEnum::syncToDatabase();
+    ImportStatusEnum::syncToDatabase();
     PanoramaTagEnum::syncToDatabase();
     UserFlagEnum::syncToDatabase();
     UserLevelEnum::syncToDatabase();
