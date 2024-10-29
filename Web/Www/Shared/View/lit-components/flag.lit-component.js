@@ -35,10 +35,6 @@ class Flag extends LitElement {
     }
   }
 
-  createRenderRoot() {
-    return this;
-  }
-
   render() {
     return html`
       <div class="flex items-center justify-center w-full h-full">

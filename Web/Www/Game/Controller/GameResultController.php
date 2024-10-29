@@ -89,6 +89,7 @@ final class GameResultController extends Controller {
 
     return Resp::view(view: 'game::result.index', data: [
       'game' => $game,
+      'levelPercentage' => floor(num: $user->current_level_experience_points * 100 / $user->next_level_experience_points_requirement),
       'rounds' => $rounds,
       'players' => $players,
       'user' => $user

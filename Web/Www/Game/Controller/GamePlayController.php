@@ -95,9 +95,9 @@ final class GamePlayController extends Controller {
         SELECT
           bu.id as user_id, 
           bu.display_name as user_display_name, 
-          bu.country_cca2 as user_country_cca2, 
+          COALESCE(bu.user_flag_enum, bu.country_cca2) as user_country_cca2, 
           bu.user_level_enum as level,
-          bc.name as user_country_name,
+          COALESCE(uf.description, bc.name) as user_country_name,
           mm.file_path as map_marker_file_path,
           gru.distance_meters, 
           gru.points::INTEGER, 
@@ -110,6 +110,7 @@ final class GamePlayController extends Controller {
           p.country_subdivision_iso_3166 = gru.country_subdivision_iso_3166 as country_subdivision_match
         FROM game_round_user gru
         LEFT JOIN bear_user bu ON bu.id = gru.user_id
+        LEFT JOIN user_flag uf ON uf.enum = bu.user_flag_enum
         LEFT JOIN map_marker mm ON mm.enum = bu.map_marker_enum
         LEFT JOIN bear_country bc ON bc.cca2 = bu.country_cca2
         LEFT JOIN bear_country bc1 ON bc1.cca2 = gru.country_cca2

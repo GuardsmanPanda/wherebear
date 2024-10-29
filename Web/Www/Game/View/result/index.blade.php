@@ -1,7 +1,5 @@
 <?php declare(strict_types=1); 
   use Web\Www\Game\Util\GameUtil;
-
-  $levelPercentage = floor($user->current_level_experience_points * 100 / $user->next_level_experience_points_requirement);
 ?>
 
 <div x-data="state" class="flex flex-col h-screen bg-iris-200">
@@ -81,7 +79,7 @@
               <span class="absolute text-white font-heading text-xl font-bold text-stroke-2 text-stroke-iris-900">XP</span>
               <img class="w-8" src="/static/img/icon/emblem.svg" />
             </div>
-            <span class="font-heading text-lg font-bold text-white text-stroke-2 text-stroke-iris-900">{{ $game->experience_points }}</span>
+            <span class="font-heading text-lg font-bold text-white text-stroke-2 text-stroke-iris-900">+{{ $game->experience_points }}</span>
           </div>
         </div>
       </div>
