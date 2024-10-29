@@ -73,12 +73,12 @@ final class GamePlayController extends Controller {
       return Resp::redirect(url: "/game/$gameId/lobby", message: 'You have not joined the game yet');
     }
 
-    $countries_used = DB::select(query: <<<SQL
+    $rounds = DB::select(query: <<<SQL
       SELECT
-        bc.cca2, bc.name,
+        bc.cca2 as country_cca2, bc.name as country_name,
         gru.rank as user_rank,
-        p.country_cca2 = gru.country_cca2 as country_match,
-        p.country_subdivision_iso_3166 = gru.country_subdivision_iso_3166 as country_subdivision_match
+        p.country_cca2 = gru.country_cca2 as country_match_user_guess,
+        p.country_subdivision_iso_3166 = gru.country_subdivision_iso_3166 as country_subdivision_match_user_guess
       FROM game_round gr
       LEFT JOIN game g ON g.id = gr.game_id
       LEFT JOIN panorama p ON p.id = gr.panorama_id
@@ -96,6 +96,7 @@ final class GamePlayController extends Controller {
           bu.id as user_id, 
           bu.display_name as user_display_name, 
           bu.country_cca2 as user_country_cca2, 
+          bu.user_level_enum as level,
           bc.name as user_country_name,
           mm.file_path as map_marker_file_path,
           gru.distance_meters, 
@@ -126,7 +127,7 @@ final class GamePlayController extends Controller {
         }
       }
       return Resp::view(view: 'game::play.index', data: [
-        'countries_used' => $countries_used,
+        'rounds' => $rounds,
         'game' => $game,
         'guesses' => $guesses,
         'isDev' => false,
@@ -138,7 +139,7 @@ final class GamePlayController extends Controller {
     }
 
     return Resp::view(view: 'game::play.index', data: [
-      'countries_used' => $countries_used,
+      'rounds' => $rounds,
       'game' => $game,
       'isDev' => false,
       'panorama_url' =>  "https://panorama.gman.bot/$game->jpg_path",
@@ -149,34 +150,34 @@ final class GamePlayController extends Controller {
 
   public function roundDev(): View {
     return Resp::view(view: 'game::play.round', data: [
-      'countries_used' => [
+      'rounds' => [
         (object) [
-          'cca2' => 'FR',
-          'name' => 'France',
+          'country_cca2' => 'FR',
+          'country_name' => 'France',
+          'country_match_user_guess' => true,
+          'country_subdivision_match_user_guess' => false,
           'user_rank' => 1,
-          'country_match' => true,
-          'country_subdivision_match' => false
         ],
         (object) [
-          'cca2' => 'UA',
-          'name' => 'Ukraine',
+          'country_cca2' => 'UA',
+          'country_name' => 'Ukraine',
+          'country_match_user_guess' => true,
+          'country_subdivision_match_user_guess' => true,
           'user_rank' => 2,
-          'country_match' => true,
-          'country_subdivision_match' => true
         ],
         (object) [
-          'cca2' => 'DE',
-          'name' => 'Germany',
+          'country_cca2' => 'DE',
+          'country_name' => 'Germany',
+          'country_match_user_guess' => false,
+          'country_subdivision_match_user_guess' => false,
           'user_rank' => 3,
-          'country_match' => false,
-          'country_subdivision_match' => false
         ],
         (object) [
-          'cca2' => 'KR',
-          'name' => 'South Korea',
+          'country_cca2' => 'KR',
+          'country_name' => 'South Korea',
+          'country_match_user_guess' => true,
+          'country_subdivision_match_user_guess' => true,
           'user_rank' => 4,
-          'country_match' => true,
-          'country_subdivision_match' => true
         ],
       ],
       'game' => (object) [
@@ -200,34 +201,34 @@ final class GamePlayController extends Controller {
 
   public function roundResultDev(): View {
     return Resp::view(view: 'game::play.round-result', data: [
-      'countries_used' => [
+      'rounds' => [
         (object) [
-          'cca2' => 'FR',
-          'name' => 'France',
+          'country_cca2' => 'FR',
+          'country_name' => 'France',
+          'country_match_user_guess' => true,
+          'country_subdivision_match_user_guess' => false,
           'user_rank' => 1,
-          'country_match' => true,
-          'country_subdivision_match' => false
         ],
         (object) [
-          'cca2' => 'UA',
-          'name' => 'Ukraine',
+          'country_cca2' => 'UA',
+          'country_name' => 'Ukraine',
+          'country_match_user_guess' => true,
+          'country_subdivision_match_user_guess' => true,
           'user_rank' => 2,
-          'country_match' => true,
-          'country_subdivision_match' => true
         ],
         (object) [
-          'cca2' => 'DE',
-          'name' => 'Germany',
+          'country_cca2' => 'DE',
+          'country_name' => 'Germany',
+          'country_match_user_guess' => false,
+          'country_subdivision_match_user_guess' => false,
           'user_rank' => 3,
-          'country_match' => false,
-          'country_subdivision_match' => false
         ],
         (object) [
-          'cca2' => 'KR',
-          'name' => 'South Korea',
+          'country_cca2' => 'KR',
+          'country_name' => 'South Korea',
+          'country_match_user_guess' => true,
+          'country_subdivision_match_user_guess' => true,
           'user_rank' => 4,
-          'country_match' => true,
-          'country_subdivision_match' => true
         ],
       ],
       'game' => (object) [
@@ -256,7 +257,8 @@ final class GamePlayController extends Controller {
           'map_marker_file_path' => '/static/img/map-marker/chibi/templar-knight.png',
           'points' => 122,
           'rank' => 1,
-          'title' => 'Enthusiast Traveler'
+          'level' => 4,
+          'title' => 'Digital Guinea Pig'
         ],
         (object) [
           'country_cca2' => 'FR',
@@ -272,7 +274,8 @@ final class GamePlayController extends Controller {
           'map_marker_file_path' => '/static/img/map-marker/monster/24.png',
           'points' => 110,
           'rank' => 2,
-          'title' => 'Enthusiast Traveler'
+          'level' => 4,
+          'title' => 'Digital Guinea Pig'
         ],
         (object) [
           'country_cca2' => 'DE',
@@ -288,7 +291,8 @@ final class GamePlayController extends Controller {
           'map_marker_file_path' => '/static/img/map-marker/monster/2.png',
           'points' => 69,
           'rank' => 3,
-          'title' => 'Enthusiast Traveler'
+          'level' => 4,
+          'title' => 'Digital Guinea Pig'
         ],
         (object) [
           'country_cca2' => 'DE',
@@ -304,7 +308,8 @@ final class GamePlayController extends Controller {
           'map_marker_file_path' => '/static/img/map-marker/default.png',
           'points' => 42,
           'rank' => 4,
-          'title' => 'Enthusiast Traveler'
+          'level' => 4,
+          'title' => 'Digital Guinea Pig'
         ],
         (object) [
           'country_cca2' => 'UA',
@@ -320,7 +325,8 @@ final class GamePlayController extends Controller {
           'map_marker_file_path' => '/static/img/map-marker/chibi/templar-knight.png',
           'points' => 13,
           'rank' => 5,
-          'title' => 'Enthusiast Traveler'
+          'level' => 4,
+          'title' => 'Digital Guinea Pig'
         ],
       ],
       'user_guess' => (object) [
@@ -337,6 +343,7 @@ final class GamePlayController extends Controller {
         'lng' => 4,
         'map_marker_file_path' => '/static/img/map-marker/chibi/templar-knight.png',
         'points' => 122,
+        'level' => 4,
         'rank' => 5,
       ],
       'isDev' => true,

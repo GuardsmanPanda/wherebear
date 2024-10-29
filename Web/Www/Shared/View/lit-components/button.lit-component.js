@@ -95,7 +95,7 @@ class Button extends ButtonBase {
     return html`
       <button
         class="
-          flex justify-center items-center w-full
+          flex relative justify-center items-center w-full
           transition-all duration-100 border border-gray-950
           group ${classMap(this.buttonClasses)}"
         @click="${this.onClick}"

@@ -37,7 +37,6 @@
                     {{ number_format($user_guess->points, 2) }}
                 @endif
               </span>
-
             </div>
       
             <div
@@ -66,7 +65,6 @@
                   '-left-[2px]' => !$isMatch && $user_guess->country_cca2 === 'NP',
                   'left-0 transform -translate-x-1/2 border border-gray-700 rounded' => !$isMatch && $user_guess->country_cca2 !== 'NP'
                 ])>
-
 
               @php
               $distanceAndUnit = GameUtil::getDistanceAndUnit(distanceMeters: $user_guess->distance_meters);
@@ -102,9 +100,10 @@
               name="{{ $guess->user_display_name }}"
               countryCCA2="{{ $guess->user_country_cca2 }}"
               countryName="{{ $guess->user_country_name }}"
+              level="{{ $guess->level }}"
               rank="{{ $guess->rank }}"
               points="{{ $guess->points }}"
-              honorificTitle="Enthusiast Traveler">
+              honorificTitle="Digital Guinea Pig">
             </lit-player-result-item>    
           @endforeach
         </div>
@@ -115,7 +114,7 @@
   </div>
   <x-play-footer
     secondsRemaining="{{ $game->round_result_seconds_remaining }}"
-    :countriesUsed="$countries_used"
+    :rounds="$rounds"
     :totalRoundCount="$game->number_of_rounds"
     :currentRound="$game->current_round"
     page="round-result"

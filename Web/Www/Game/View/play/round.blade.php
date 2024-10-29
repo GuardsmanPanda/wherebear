@@ -64,7 +64,7 @@
 
   <x-play-footer
     secondsRemaining="{{ $game->round_seconds_remaining }}"
-    :countriesUsed="$countries_used"
+    :rounds="$rounds"
     :totalRoundCount="$game->number_of_rounds"
     :currentRound="$game->current_round"
     :selectedRound="$game->current_round"

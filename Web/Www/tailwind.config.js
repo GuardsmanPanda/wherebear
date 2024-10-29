@@ -30,6 +30,19 @@ module.exports = {
           800: '#191C25',
           900: '#0D1016'
         },
+        honey: {
+          50: '#FDF9F0',
+          100: '#FBF3E1',
+          200: '#F6E7C3',
+          300: '#F1DAA4',
+          400: '#EDCE83',
+          500: '#E8C15F',
+          600: '#CAA752',
+          700: '#AC8F44',
+          800: '#907738',
+          900: '#745F2C',
+          950: '#594920',
+        },
         iris: {
           50: '#EEF3FE',
           100: '#DDE7FC',
@@ -185,6 +198,20 @@ module.exports = {
             dark: "#eab308"
           },
           text: "#eab308"
+        },
+        rank: {
+          first: {
+            default: '#F5D83A',
+            dark: '#EECB0C',
+          },
+          second: {
+            default: '#B1D2EB',
+            dark: '#89BBE1'
+          },
+          third: {
+            default: '#F3A965',
+            dark: '#EF8D34'
+          }
         }
 
       },
