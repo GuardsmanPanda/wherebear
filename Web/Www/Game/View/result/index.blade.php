@@ -1,65 +1,140 @@
-<?php declare(strict_types=1); ?>
-@php use Illuminate\Support\Facades\DB;use Web\Www\Game\Render\GameRoundResultRender; @endphp
-<div class="flex px-4 bg-gray-900 min-h-screen">
-  <div class="w-80">
-    @foreach($rounds as $round)
-      @if(!$loop->first)
-        <hr class="border-gray-700">
-      @endif
-      <div class="pb-3 pt-1 transform hover:scale-105 hover:cursor-pointer duration-50"
-           hx-get="/game/{{$game->id}}/result/round/{{$round->round_number}}" hx-target="#round-details">
-        <div class="text-center font-bold text-xl truncate">{{$round->country_name}}</div>
-        <div class="flex">
-          <img src="/static/flag/wavy/{{strtolower($round->cca2)}}.png" width="80"
-               alt="Wavy flag">
-          <div class="pl-2 flex flex-col justify-between leading-4">
-            @foreach(DB::select(<<<SQL
-                SELECT u.display_name, u.id FROM game_round_user gru
-                LEFT JOIN bear_user u ON u.id = gru.user_id
-                WHERE gru.game_id = ? AND gru.round_number = ? ORDER BY gru.points DESC LIMIT 3
-            SQL, [$game->id, $round->round_number]) as $ru)
-              <div class="flex gap-1">
-                <img width="20" alt="rank icon"
-                     src="/static/img/icon/{{$loop->index === 0 ? '1st' : ($loop->index === 1 ? '2nd' :'3rd')}}.webp">
-                <div class="truncate @if($user->id === $ru->id) text-green-500 font-medium @endif">{{$ru->display_name}}</div>
-              </div>
-            @endforeach
-          </div>
-        </div>
-      </div>
-    @endforeach
+<?php declare(strict_types=1); 
+  use Web\Www\Game\Util\GameUtil;
 
+  $levelPercentage = floor($user->current_level_experience_points * 100 / $user->next_level_experience_points_requirement);
+?>
+
+<div x-data="state" class="flex flex-col h-screen bg-iris-200">
+  <div class="flex justify-between items-center h-12 relative border-b-2 border-gray-700 bg-iris-500 shadow-lg">
+    <div class="flex flex-1 pl-2">
+      <lit-button imgPath="/static/img/icon/cross.svg" size="md" bgColorClass="bg-red-500" x-on:clicked="navigateHome()"></lit-button>
+    </div>
+    {{-- <div class="flex h-14 absolute top-0 left-0">
+      <div class="flex justify-center items-center w-12 relative z-20 border-b border-gray-700 bg-[#E83D2D] inner-shadow">
+        <img class="w-8 relative left-[6px] z-20" src="/static/img/icon/cross.svg" />
+        <div class="w-6 h-14 absolute top-0 -right-[10px] z-10 -skew-x-12 rounded-br border-r border-b border-gray-700 bg-[#E83D2D] inner-shadow"></div>
+      </div>
+    </div> --}}
+    <div class="flex justify-center flex-grow">
+      <span class="font-heading text-2xl font-bold text-white text-stroke-2 text-stroke-iris-900">GAME RESULT</span>
+    </div>
+    <div class="flex-1"></div>
   </div>
-  <div id="panorama" class="flex-grow flex-shrink">
-    panorama
-  </div>
-  <div class="w-80">
-    @foreach($players as $player)
-      @if(!$loop->first)
-        <hr class="border-gray-700">
-      @endif
-      <div class="flex items-center px-4 py-2 rounded-md shadow-xl">
-        <div class="text-center font-medium text-gray-500 text-2xl">{{$player->rank}}</div>
-        <img class="h-12 ml-1" src="{{$player->map_marker_file_path}}"
-             alt="Map Marker">
-        <img class="w-12 shadow-md mx-1" src="/static/flag/svg/{{$player->country_cca2}}.svg"
-             alt="Country Flag" tippy="{{$player->country_name}}">
-        <div class="text-gray-300 ml-2 flex-grow">
-          <div class="font-bold text-lg">
-            {{$player->display_name}}
+
+  <lit-panel label="Stats" class="relative mx-2 mt-5">
+    <div class="flex flex-col gap-4 px-2 pt-4 pb-2">
+      <div class="flex h-16 gap-2">
+        <div class="flex shrink-0 justify-center items-end">
+          <img src="{{ $user->map_marker_file_path }}" class="max-w-full max-h-full" />
+        </div>
+
+        <div class="flex flex-col flex-grow mr-24 sm:mr-32 justify-between">
+          <span class="font-heading text-xl font-bold text-white text-stroke-2 text-stroke-iris-900">{{ $user->display_name }}</span>
+          <div class="flex gap-2">
+            <div class="flex flex-none justify-center items-center relative">
+              <span class="absolute text-white font-heading text-xl font-bold text-stroke-2 text-stroke-iris-900">{{ $user->level }}</span>
+              <img class="w-8" src="/static/img/icon/emblem.svg" />
+            </div>
+            <div class="flex flex-col items-center w-full max-w-64">
+              <span class="font-heading text-sm font-semibold text-white text-stroke-2 text-stroke-iris-900">{{ $user->current_level_experience_points }}/{{ $user->next_level_experience_points_requirement }}</span>
+              <lit-progress-bar class="w-full relative bottom-0.5" percentage="{{ $levelPercentage }}" innerBgColorClass="bg-yellow-500" tippy="{{ $levelPercentage }}%"></lit-progress-bar>
+            </div>
           </div>
-          <div class="font-medium text-gray-400 flex justify-between items-center">
-            {!! GameRoundResultRender::renderPoints(points: $player->points) !!}
+        </div>
+        <div class="flex flex-none w-24 sm:w-32 h-[86px] absolute -top-[8px] -right-1 justify-center items-center">
+          <div class="flex relative left-1 z-10 items-end">
+            <span class="font-heading text-5xl sm:text-6xl text-gray-50 font-bold text-stroke-2 text-stroke-gray-700">{{ $user->rank }}</span>
+            <span class="relative bottom-1 font-heading text-xl sm:text-2xl text-gray-50 font-bold text-stroke-2 text-stroke-gray-700">{{ GameUtil::getOrdinalSuffix($user->rank) }}</span>
+          </div>
+          <svg class="absolute w-full h-full" viewBox="0 0 123 74" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <g filter="url(#filter0_i_1214_13529)">
+              <path d="M16.6769 3.0332C17.1208 1.25091 18.7216 0 20.5583 0H119C121.209 0 123 1.79086 123 4V70C123 72.2091 121.209 74 119 74H4.11857C1.5177 74 -0.391467 71.5569 0.237167 69.0332L16.6769 3.0332Z" fill="{{ GameUtil::getHexaColorByRank($user->rank) }}"/>
+            </g>
+            <path d="M20.5583 0.5H119C120.933 0.5 122.5 2.067 122.5 4V70C122.5 71.933 120.933 73.5 119 73.5H4.11857C1.84281 73.5 0.172288 71.3623 0.722342 69.154L17.1621 3.15405C17.5505 1.59454 18.9511 0.5 20.5583 0.5Z" stroke="#333847"/>
+            <defs>
+              <filter id="filter0_i_1214_13529" x="0.116608" y="-2" width="122.883" height="76" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+                <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+                <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+                <feOffset dy="-4"/>
+                <feGaussianBlur stdDeviation="1"/>
+                <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+                <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.4 0"/>
+                <feBlend mode="normal" in2="shape" result="effect1_innerShadow_1214_13529"/>
+              </filter>
+            </defs>
+          </svg>
+        </div>
+      </div>
+      <div class="flex justify-around p-2 rounded border border-iris-500 bg-iris-300">
+        <div class="flex flex-col items-center">
+          <span class="font-heading text-base font-bold text-white text-stroke-2 text-stroke-iris-900">Points</span>
+          <div class="flex justify-center items-center w-32 h-6 relative rounded bg-iris-500">
+            <img src="/static/img/icon/star-gold.svg" class="w-8 aspect-auto absolute -top-[6px] left-0 transform -translate-x-1/2" />
+            <span class="font-heading text-lg font-bold text-white text-stroke-2 text-stroke-iris-900">{{ $user->points }}</span>
+          </div>
+        </div>
+        <div class="flex flex-col items-center">
+          <span class="font-heading text-base font-bold text-white text-stroke-2 text-stroke-iris-900">Experience</span>
+          <div class="flex justify-center items-center w-32 h-6 relative rounded bg-iris-500">
+            <div class="flex justify-center items-center absolute left-0 transform -translate-x-1/2">
+              <span class="absolute text-white font-heading text-xl font-bold text-stroke-2 text-stroke-iris-900">XP</span>
+              <img class="w-8" src="/static/img/icon/emblem.svg" />
+            </div>
+            <span class="font-heading text-lg font-bold text-white text-stroke-2 text-stroke-iris-900">{{ $game->experience_points }}</span>
           </div>
         </div>
       </div>
-    @endforeach
+    </div>
+  </lit-panel>
+
+  <div class="flex flex-col flex-1 min-h-0">
+    <lit-panel label="Ranking" class="mx-2 mt-5 mb-3 min-h-0">
+      <div class="flex flex-col flex-1 overflow-y-auto gap-2 px-2 py-4">
+        @foreach ($players as $player)
+          <lit-player-result-item
+            rank="{{ $player->rank }}"
+            rankSelected="{{ $player->rank === $user->rank ? $player->rank : '' }}"
+            honorificTitle="Digital Guinea Pig"
+            name="{{ $player->display_name }}"
+            iconPath="{{ $player->map_marker_file_path }}"
+            points="{{ $player->points }}"
+            countryCCA2="{{ $player->country_cca2 }}"
+            countryName="{{ $player->country_name }}"
+            level="{{ $player->level }}">
+          </lit-player-result-item>
+        @endforeach
+      </div>
+    </lit-panel>
   </div>
+  
+  <lit-round-list 
+    rounds="{{ json_encode($rounds) }}"
+    totalRoundCount="{{ count($rounds) }}"
+    class="border-t border-gray-700 bg-iris-500"
+    x-on:clicked="selectCountry($event)"
+  ></lit-round-list>
 </div>
+
 <script>
-  @if($user->id === $players[0]->user_id)
-  window.confetti({
-    particleCount: 150,
-  });
-  @endif
+  function state() {
+    return {
+      navigateHome() {
+        window.location.href = '/';
+      },
+      selectCountry(e) {
+        console.log(e.detail.countryCCA2);
+      },
+      init() {
+        const userRank = parseInt('{{ $user->rank }}');
+        if (userRank === 1) {
+          setTimeout(() => {
+            window.confetti({
+              particleCount: 150
+            });
+          }, 500);
+        }
+      }
+    }
+  }
 </script>

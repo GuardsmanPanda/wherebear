@@ -43,4 +43,16 @@ final class GameUtil {
       default => 'th'
     };
   }
+
+  /**
+   * Get the hexadecimal color based on a rank (1st, 2nd, 3rd etc.).
+   */
+  public static function getHexaColorByRank(int $rank): string {
+    return match ($rank) {
+      1 => '#F5D83A',
+      2 => '#B1D2EB',
+      3 => '#F3A965',
+      default => '#EDCE83'
+    };
+  }
 }
