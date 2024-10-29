@@ -68,7 +68,7 @@ final class GameResultController extends Controller {
     $players = DB::select(query: <<<SQL
       SELECT
         u.id as user_id, u.display_name, 
-        COALESCE(u.user_flag_enum, u.country_cca2) as country_cca2, -- TODO: fix
+        COALESCE(u.user_flag_enum, u.country_cca2) as country_cca2,
         u.user_level_enum as level,
         mm.file_path as map_marker_file_path,
         COALESCE(uf.description, bc.name) as country_name,
