@@ -67,14 +67,18 @@ final class GameResultController extends Controller {
 
     $players = DB::select(query: <<<SQL
       SELECT
-        u.id as user_id, u.display_name, u.country_cca2, u.user_level_enum as level, mm.file_path as map_marker_file_path,
-        bc.name as country_name,
+        u.id as user_id, u.display_name, 
+        COALESCE(u.user_flag_enum, u.country_cca2) as country_cca2, -- TODO: fix
+        u.user_level_enum as level,
+        mm.file_path as map_marker_file_path,
+        COALESCE(uf.description, bc.name) as country_name,
         gu.points,
         RANK() OVER (ORDER BY gu.points DESC)
       FROM game_user gu
       LEFT JOIN bear_user u ON u.id = gu.user_id
       LEFT JOIN map_marker mm ON mm.enum = u.map_marker_enum
       LEFT JOIN bear_country bc ON bc.cca2 = u.country_cca2
+      LEFT JOIN user_flag uf ON uf.enum = u.user_flag_enum
       WHERE gu.game_id = ?
       ORDER BY gu.points DESC, u.id
     SQL, bindings: [$gameId]);

@@ -28,7 +28,7 @@ enum UserFlagEnum: string implements BearDatabaseBackedEnumInterface {
 
 
   public function getFilePath(): string {
-    return "/static/flag/user/" . strtolower(string: $this->value) . ".svg";
+    return "/static/flag/svg/$this->value.svg";
   }
 
 
