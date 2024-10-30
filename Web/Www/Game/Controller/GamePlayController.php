@@ -135,7 +135,7 @@ final class GamePlayController extends Controller {
         'game' => $game,
         'guesses' => $guesses,
         'isDev' => false,
-        'panorama_url' => App::isProduction() ? "https://panorama.wherebear/$game->jpg_path" : "https://panorama.gman.bot/$game->jpg_path",
+        'panorama_url' => App::isProduction() ? "https://panorama.wherebear.fun/$game->jpg_path" : "https://panorama.gman.bot/$game->jpg_path",
         'template' => 'game::play.round-result',
         'user' => $user,
         'user_guess' => $user_guess,
@@ -146,7 +146,7 @@ final class GamePlayController extends Controller {
       'rounds' => $rounds,
       'game' => $game,
       'isDev' => false,
-      'panorama_url' => App::isProduction() ? "https://panorama.wherebear/$game->jpg_path" : "https://panorama.gman.bot/$game->jpg_path",
+      'panorama_url' => App::isProduction() ? "https://panorama.wherebear.fun/$game->jpg_path" : "https://panorama.gman.bot/$game->jpg_path",
       'template' => 'game::play.round',
       'user' => $user,
     ]);

@@ -61,7 +61,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $round_duration_seconds
  * @property int $round_result_duration_seconds
  * @property bool $is_forced_start
- * @property bool $is_country_restricted
  * @property string $id
  * @property string $name
  * @property string $created_at
