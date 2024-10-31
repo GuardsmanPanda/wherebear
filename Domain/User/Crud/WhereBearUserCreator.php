@@ -5,9 +5,9 @@ namespace Domain\User\Crud;
 use Carbon\CarbonImmutable;
 use Domain\Achievement\Crud\AchievementUserCrud;
 use Domain\Achievement\Enum\AchievementEnum;
-use Domain\Achievement\Model\AchievementUser;
 use Domain\Map\Enum\MapMarkerEnum;
 use Domain\Map\Enum\MapStyleEnum;
+use Domain\User\Enum\UserFlagEnum;
 use Domain\User\Enum\UserLevelEnum;
 use Domain\User\Model\WhereBearUser;
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearRegexService;
@@ -23,6 +23,7 @@ final class WhereBearUserCreator {
     UserLevelEnum   $user_level_enum,
     string          $email = null,
     BearCountryEnum $country_cca2 = null,
+    UserFlagEnum|null $user_flag_enum = null
   ): WhereBearUser {
     BearDatabaseService::mustBeInTransaction();
     BearDatabaseService::mustBeProperHttpMethod(verbs: ['GET', 'POST']);
@@ -37,6 +38,7 @@ final class WhereBearUserCreator {
     $model->country_cca2 = $country_cca2;
     $model->last_login_at = CarbonImmutable::now();
     $model->map_style_enum = MapStyleEnum::DEFAULT;
+    $model->user_flag_enum = $user_flag_enum;
 
     $map_marker = DB::selectOne(query: "
       SELECT enum

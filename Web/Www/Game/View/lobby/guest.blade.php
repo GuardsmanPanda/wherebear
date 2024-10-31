@@ -6,13 +6,18 @@
   <div class="mx-auto text-orange-600 font-medium text-xl">
     Please log in or join as a guest to play.
   </div>
-  <div>
-    <div class="text-sm">Optional - Name Yourself.</div>
-    <input id="display_name" name="display_name" class="w-48 mt-2 px-2 py-1 border-2 border-gray-700 rounded" type="text">
+  <div class="flex items-center">
+    <label class="mr-2 font-medium text-gray-400" for="anonymous">Join Anonymously</label>
+    <input id="anonymous" type="checkbox" name="anonymous" value="true">
   </div>
   <button class="mx-auto ring-1 font-medium shadow shadow-gray-700 ring-gray-700 px-4 py-1 mt-2 hover:scale-110 rounded duration-75 transition-all"
-          hx-post="/auth/guest" hx-vals='{"game_id": "{{$game->id}}"}' hx-include="#display_name">
+          hx-post="/auth/guest" hx-vals='{"game_id": "{{$game->id}}"}' hx-include="#anonymous">
     Continue as Guest
+  </button>
+  <button
+    class="whitespace-nowrap font-medium inline-flex rounded transition-all hover:scale-105 items-center shadow hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 border px-5 h-9 text-indigo-50 bg-indigo-600 border-indigo-600 shadow-indigo-600/20 focus:ring-indigo-700 mx-auto mt-2"
+    hx-post="/auth/social-redirect" hx-include="#anonymous" hx-vals='{"oauth2_client": "GOOGLE", "game_id": "{{$game->id}}"}'>
+    Sign In With Google
   </button>
   <hr class="mx-5 mt-4 mb-2 pb-0.5 border-gray-700 border-dashed border-b-2">
   <div class="mx-auto text-gray-600 font-medium text-xl">Players</div>
