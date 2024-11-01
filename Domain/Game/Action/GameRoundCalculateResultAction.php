@@ -125,7 +125,7 @@ final class GameRoundCalculateResultAction {
             CASE 
               WHEN gru.country_cca2 = p.country_cca2 THEN 20 
               ELSE 0
-            END) / rr_rank.number_of_rounds
+            END)
         FROM 
           panorama p,
           (SELECT
