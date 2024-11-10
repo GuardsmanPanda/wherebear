@@ -17,6 +17,7 @@
   @endif
   <script src="{!! config('bear.ui.app_js') !!}"></script>
   <link rel="stylesheet" href="{!! config('bear.ui.app_css') !!}">
+  <link rel="stylesheet" href="{!! config('bear.ui.tailwind_css') !!}">
 </head>
 <body class="min-h-screen bg-gray-950 text-gray-300" hx-target="#primary">
 <div style="display: grid; grid-template-columns: 16rem auto;" class="min-h-screen">

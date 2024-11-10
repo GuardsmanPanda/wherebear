@@ -275,8 +275,9 @@ final class GameLobbyController extends Controller {
       data: [
         'game' => DB::selectOne(query: "
           SELECT
-              g.id, g.number_of_rounds, g.round_duration_seconds,
-              g.round_result_duration_seconds, g.game_public_status_enum
+            g.id, g.number_of_rounds, g.round_duration_seconds,
+            g.round_result_duration_seconds, g.game_public_status_enum,
+            g.templated_by_game_id
           FROM game g
           WHERE g.id = ?
         ", bindings: [$gameId]),

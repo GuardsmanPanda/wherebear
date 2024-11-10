@@ -7,6 +7,7 @@ use Domain\Game\Crud\GameDeleter;
 use Domain\Game\Crud\GameUserCreator;
 use Domain\Game\Enum\GamePublicStatusEnum;
 use Domain\Game\Enum\GameStateEnum;
+use Domain\Game\Model\Game;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Htmx;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
@@ -24,17 +25,56 @@ final class GameController extends Controller {
     ]);
   }
 
+  public function createFromTemplateDialog(): View {
+    $templates = DB::select(query: "
+      SELECT
+        g.id,
+        g.name,
+        g.number_of_rounds,
+        g.panorama_tag_enum,
+        bu.display_name
+      FROM game g
+      LEFT JOIN bear_user bu ON g.created_by_user_id = bu.id
+      WHERE 
+        g.game_state_enum = 'TEMPLATE'
+        AND g.number_of_rounds = (
+          SELECT COUNT(*)
+          FROM game_round gr
+          WHERE gr.game_id = g.id
+        )
+      ORDER BY g.name, g.created_at DESC
+    ");
+    return Htmx::dialogView(view: 'game::create-from-template', title: "Create Game From Template", data: [
+      'display_name' => BearAuthService::getUser()->display_name,
+      'templates' => $templates,
+    ]);
+  }
+
   public function create(): Response {
     $game = GameCreator::create(
       name: Req::getString(key: 'name'),
-      number_of_rounds: Req::getInt(key: 'number_of_rounds'),
       round_duration_seconds: Req::getInt(key: 'round_duration_seconds'),
       round_result_duration_seconds: Req::getInt(key: 'round_result_duration_seconds'),
       game_public_status: GamePublicStatusEnum::fromRequest(),
+      number_of_rounds: Req::getInt(key: 'number_of_rounds'),
     );
     GameUserCreator::create(game_id: $game->id, user_id: BearAuthService::getUserId(), is_observer: Req::getBool(key: 'is_observer'));
     return Htmx::redirect(url: "/game/$game->id/lobby");
   }
+
+
+  public function createFromTemplate(string $templateId): Response {
+    $game = GameCreator::create(
+      name: Req::getString(key: 'name'),
+      round_duration_seconds: Req::getInt(key: 'round_duration_seconds'),
+      round_result_duration_seconds: Req::getInt(key: 'round_result_duration_seconds'),
+      game_public_status: GamePublicStatusEnum::fromRequest(),
+      templated_by_game: Game::findOrFail(id: $templateId),
+    );
+    GameUserCreator::create(game_id: $game->id, user_id: BearAuthService::getUserId(), is_observer: Req::getBool(key: 'is_observer'));
+    return Htmx::redirect(url: "/game/$game->id/lobby");
+  }
+
 
   public function delete(string $gameId): Response {
     GameDeleter::deleteFromId(id: $gameId);

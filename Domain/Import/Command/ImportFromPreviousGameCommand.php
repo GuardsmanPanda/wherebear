@@ -58,7 +58,7 @@ final class ImportFromPreviousGameCommand extends BearTransactionCommand {
           created_at: CarbonImmutable::createFromDate(year: 2021, month: 1, day: 1),
         );
         $total++;
-        if ($total > 500) {
+        if ($total > 1500) {
           break;
         }
       }

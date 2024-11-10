@@ -2,6 +2,7 @@
 
 namespace Domain\Game\Crud;
 
+use Domain\Game\Model\Game;
 use Domain\Game\Model\GameRound;
 use GuardsmanPanda\Larabear\Infrastructure\App\Enum\BearSeverityEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
@@ -52,6 +53,35 @@ final class GameRoundCreator {
       DB::rollBack();
       BearErrorCreator::create(message: "Failed to create game round [{$e->getMessage()}]", severity: BearSeverityEnum::CRITICAL, exception: $e);
       throw new RuntimeException(message: "Failed to create game round [{$e->getMessage()}]", previous: $e);
+    }
+  }
+
+
+  public static function createFromTemplate(Game $game, Game $template): void {
+    BearDatabaseService::mustBeInTransaction();
+    BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST']);
+
+    $rounds = DB::select(query: "
+      SELECT
+        gr.round_number,
+        gr.panorama_id
+      FROM game_round gr
+      WHERE gr.game_id = :game_id
+      ORDER BY gr.round_number
+    ", bindings: ['game_id' => $template->id]);
+
+    if (count($rounds) !== $template->number_of_rounds) {
+      BearErrorCreator::create(message: "Template game has incorrect number of rounds", severity: BearSeverityEnum::CRITICAL);
+      throw new RuntimeException(message: "Template game has incorrect number of rounds");
+    }
+
+    foreach ($rounds as $round) {
+      self::create(
+        game_id: $game->id,
+        round_number: $round->round_number,
+        panorama_pick_strategy: 'Template',
+        panorama_id: $round->panorama_id
+      );
     }
   }
 }

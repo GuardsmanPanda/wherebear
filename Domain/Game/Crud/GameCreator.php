@@ -13,20 +13,28 @@ use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 use GuardsmanPanda\Larabear\Infrastructure\Error\Crud\BearErrorCreator;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Str;
+use RuntimeException;
 
 final readonly class GameCreator {
   public static function create(
     string               $name,
-    int                  $number_of_rounds,
     int                  $round_duration_seconds,
     int                  $round_result_duration_seconds,
     GamePublicStatusEnum $game_public_status,
+    int|null             $number_of_rounds = null,
     GameStateEnum        $game_state_enum = GameStateEnum::WAITING_FOR_PLAYERS,
     PanoramaTagEnum|null $panorama_tag_enum = null,
     Game|null            $templated_by_game = null
   ): Game {
     BearDatabaseService::mustBeInTransaction();
     BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST']);
+
+    if ($number_of_rounds === null) {
+      if ($templated_by_game === null) {
+        throw new RuntimeException("Number of rounds must be provided if not templated by a game.");
+      }
+      $number_of_rounds = $templated_by_game->number_of_rounds;
+    }
 
     $model = new Game();
     $model->id = Str::uuid()->toString();
@@ -67,6 +75,12 @@ final readonly class GameCreator {
         );
       }
     }
+
+    // Create All the rounds for template games
+    if ($templated_by_game !== null) {
+      GameRoundCreator::createFromTemplate(game: $model, template: $templated_by_game);
+    }
+
     return $model;
   }
 }
