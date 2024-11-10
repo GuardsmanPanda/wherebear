@@ -27,7 +27,11 @@ Route::prefix('template')->middleware([BearPermissionMiddleware::using(permissio
   Route::get(uri: '', action: [PageTemplateController::class, 'index']);
   Route::post(uri: '', action: [PageTemplateController::class, 'create']);
   Route::get(uri: 'create', action: [PageTemplateController::class, 'createDialog']);
-  Route::delete(uri: '{id}', action: [PageTemplateController::class, 'delete']);
-
-  Route::get(uri: '{id}/panorama', action: [PageTemplateController::class, 'panorama']);
+  Route::prefix('{gameId}')->group(callback: function () {
+    Route::delete(uri: '', action: [PageTemplateController::class, 'delete']);
+    Route::get(uri: '/panorama', action: [PageTemplateController::class, 'panorama']);
+    Route::get(uri: '/panorama/{round}', action: [PageTemplateController::class, 'panoramaSelector']);
+    Route::post(uri: '/panorama/{round}', action: [PageTemplateController::class, 'panoramaSelectForRound']);
+    Route::delete(uri: '/panorama/{round}', action: [PageTemplateController::class, 'deletePanoramaRound'])->middleware([BearPermissionMiddleware::using(permission: BearPermissionEnum::TEMPLATE_ROUND_DELETE)]);
+  });
 });

@@ -99,27 +99,27 @@ final class WhereBearUser extends Model {
         'user_level_enum' => UserLevelEnum::class,
     ];
 
-    /** @return BelongsTo<BearCountry, self>|null */
+    /** @return BelongsTo<BearCountry, $this>|null */
     public function countryCca2(): BelongsTo|null {
         return $this->belongsTo(related: BearCountry::class, foreignKey: 'country_cca2', ownerKey: 'cca2');
     }
 
-    /** @return BelongsTo<MapStyle, self> */
+    /** @return BelongsTo<MapStyle, $this> */
     public function mapStyle(): BelongsTo {
         return $this->belongsTo(related: MapStyle::class, foreignKey: 'map_style_enum', ownerKey: 'enum');
     }
 
-    /** @return BelongsTo<UserFlag, self>|null */
+    /** @return BelongsTo<UserFlag, $this>|null */
     public function userFlag(): BelongsTo|null {
         return $this->belongsTo(related: UserFlag::class, foreignKey: 'user_flag_enum', ownerKey: 'enum');
     }
 
-    /** @return BelongsTo<UserLevel, self> */
+    /** @return BelongsTo<UserLevel, $this> */
     public function userLevel(): BelongsTo {
         return $this->belongsTo(related: UserLevel::class, foreignKey: 'user_level_enum', ownerKey: 'enum');
     }
 
-    /** @return BelongsTo<MapMarker, self> */
+    /** @return BelongsTo<MapMarker, $this> */
     public function mapMarker(): BelongsTo {
         return $this->belongsTo(related: MapMarker::class, foreignKey: 'map_marker_enum', ownerKey: 'enum');
     }

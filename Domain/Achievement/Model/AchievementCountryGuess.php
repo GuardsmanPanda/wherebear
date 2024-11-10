@@ -80,12 +80,12 @@ final class AchievementCountryGuess extends Model {
         'country_cca2' => BearCountryEnum::class,
     ];
 
-    /** @return BelongsTo<BearCountry, self> */
+    /** @return BelongsTo<BearCountry, $this> */
     public function countryCca2(): BelongsTo {
         return $this->belongsTo(related: BearCountry::class, foreignKey: 'country_cca2', ownerKey: 'cca2');
     }
 
-    /** @return BelongsTo<BearUser, self> */
+    /** @return BelongsTo<BearUser, $this> */
     public function user(): BelongsTo {
         return $this->belongsTo(related: BearUser::class, foreignKey: 'user_id', ownerKey: 'id');
     }

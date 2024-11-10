@@ -98,17 +98,17 @@ final class Achievement extends Model {
         'location' => BearDatabasePointMCast::class,
     ];
 
-    /** @return BelongsTo<BearCountry, self>|null */
+    /** @return BelongsTo<BearCountry, $this>|null */
     public function countryCca2(): BelongsTo|null {
         return $this->belongsTo(related: BearCountry::class, foreignKey: 'country_cca2', ownerKey: 'cca2');
     }
 
-    /** @return BelongsTo<BearCountrySubdivision, self>|null */
+    /** @return BelongsTo<BearCountrySubdivision, $this>|null */
     public function countrySubdivisionIso3166(): BelongsTo|null {
         return $this->belongsTo(related: BearCountrySubdivision::class, foreignKey: 'country_subdivision_iso_3166', ownerKey: 'iso_3166');
     }
 
-    /** @return BelongsTo<AchievementType, self> */
+    /** @return BelongsTo<AchievementType, $this> */
     public function achievementType(): BelongsTo {
         return $this->belongsTo(related: AchievementType::class, foreignKey: 'achievement_type_enum', ownerKey: 'enum');
     }

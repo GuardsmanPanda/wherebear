@@ -78,12 +78,12 @@ final class AchievementUser extends Model {
         'seen_at' => 'immutable_datetime',
     ];
 
-    /** @return BelongsTo<BearUser, self> */
+    /** @return BelongsTo<BearUser, $this> */
     public function user(): BelongsTo {
         return $this->belongsTo(related: BearUser::class, foreignKey: 'user_id', ownerKey: 'id');
     }
 
-    /** @return BelongsTo<Achievement, self> */
+    /** @return BelongsTo<Achievement, $this> */
     public function achievement(): BelongsTo {
         return $this->belongsTo(related: Achievement::class, foreignKey: 'achievement_enum', ownerKey: 'enum');
     }

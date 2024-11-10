@@ -74,11 +74,10 @@ enum MapStyleEnum: string implements BearDatabaseBackedEnumInterface {
   public function getUserLevelRequirement(): UserLevelEnum {
     return match ($this) {
       self::DEFAULT => UserLevelEnum::L0,
-      self::OSM => UserLevelEnum::L1,
-      self::STREETS => UserLevelEnum::L2,
-      self::SATELLITE_STREETS => UserLevelEnum::L4,
+      self::OSM, self::STREETS => UserLevelEnum::L1,
+      self::SATELLITE_STREETS => UserLevelEnum::L3,
       self::NAVIGATION_NIGHT => UserLevelEnum::L5,
-      self::DARK => UserLevelEnum::L6,
+      self::DARK => UserLevelEnum::L7,
       self::SATELLITE => UserLevelEnum::L10,
     };
   }

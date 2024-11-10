@@ -21,7 +21,7 @@ final class GameRoundCreatorAction {
   const int FILLER_COUNTRY_CHANCE = 30;
   const int RANDOM_COUNTRY_CHANCE = 30;
 
-  const int CONTRIBUTOR_PRIORITY_CHANCE = 20;
+  const int CONTRIBUTOR_PRIORITY_CHANCE = 50;
   const int USER_UPLOAD_PRIORITY_CHANCE = 50;
 
   /** @var array<string> $CL1 */

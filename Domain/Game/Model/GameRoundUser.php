@@ -94,27 +94,27 @@ final class GameRoundUser extends Model {
         'location' => BearDatabasePointCast::class,
     ];
 
-    /** @return BelongsTo<BearCountry, self> */
+    /** @return BelongsTo<BearCountry, $this> */
     public function countryCca2(): BelongsTo {
         return $this->belongsTo(related: BearCountry::class, foreignKey: 'country_cca2', ownerKey: 'cca2');
     }
 
-    /** @return BelongsTo<BearCountrySubdivision, self>|null */
+    /** @return BelongsTo<BearCountrySubdivision, $this>|null */
     public function countrySubdivisionIso3166(): BelongsTo|null {
         return $this->belongsTo(related: BearCountrySubdivision::class, foreignKey: 'country_subdivision_iso_3166', ownerKey: 'iso_3166');
     }
 
-    /** @return BelongsTo<GameRound, self> */
+    /** @return BelongsTo<GameRound, $this> */
     public function game(): BelongsTo {
         return $this->belongsTo(related: GameRound::class, foreignKey: 'game_id', ownerKey: 'game_id');
     }
 
-    /** @return BelongsTo<GameUser, self> */
+    /** @return BelongsTo<GameUser, $this> */
     public function user(): BelongsTo {
         return $this->belongsTo(related: GameUser::class, foreignKey: 'user_id', ownerKey: 'user_id');
     }
 
-    /** @return BelongsTo<GameRound, self> */
+    /** @return BelongsTo<GameRound, $this> */
     public function roundNumber(): BelongsTo {
         return $this->belongsTo(related: GameRound::class, foreignKey: 'round_number', ownerKey: 'game_id');
     }

@@ -2,9 +2,11 @@
 
 namespace Domain\Panorama\Crud;
 
+use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
 use Domain\Panorama\Model\Panorama;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Integration\StreetView\Data\StreetViewPanoramaData;
 
@@ -19,6 +21,7 @@ final class PanoramaCreator {
     CarbonInterface $captured_date,
     string          $added_by_user_id = null,
     array           $panorama_tag_array = [],
+    CarbonImmutable $created_at = null
   ): Panorama {
     BearDatabaseService::mustBeInTransaction();
     BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST']);
@@ -28,8 +31,8 @@ final class PanoramaCreator {
     DB::insert(query: "
       INSERT INTO panorama (
           id, captured_date, country_cca2, country_subdivision_iso_3166, panorama_tag_array, added_by_user_id,
-          location, created_at, updated_at
-      ) VALUES (:id, :date, :cca2, wherebear_subdivision(:lng, :lat, :cca2), :tag, :user, ST_Point(:lng, :lat, 4326)::geography, NOW(), NOW())
+          location, created_at
+      ) VALUES (:id, :date, :cca2, wherebear_subdivision(:lng, :lat, :cca2), :tag, :user, ST_Point(:lng, :lat, 4326)::geography, :created_at)
     ", bindings: [
       'id' => $id,
       'date' => $captured_date,
@@ -38,6 +41,7 @@ final class PanoramaCreator {
       'user' => $added_by_user_id,
       'lng' => $longitude,
       'lat' => $latitude,
+      'created_at' => $created_at ?? Carbon::now(),
     ]);
     return Panorama::findOrFail(id: $id);
   }
@@ -48,7 +52,8 @@ final class PanoramaCreator {
   public static function createFromStreetViewData(
     StreetViewPanoramaData $data,
     array $panorama_tag_array = [],
-    string $added_by_user_id = null
+    string $added_by_user_id = null,
+    CarbonImmutable $created_at = null
   ): Panorama {
     return PanoramaCreator::create(
       id: $data->panoId,
@@ -57,6 +62,7 @@ final class PanoramaCreator {
       captured_date: $data->date,
       added_by_user_id: $added_by_user_id,
       panorama_tag_array: $panorama_tag_array,
+      created_at: $created_at
     );
   }
 }

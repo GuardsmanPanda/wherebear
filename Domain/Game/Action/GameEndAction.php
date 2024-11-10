@@ -38,17 +38,17 @@ final class GameEndAction {
       WITH user_exp AS (
         SELECT
           bu2.id, 
-            (SELECT COUNT(*)
-             FROM game_round_user
-             WHERE user_id = bu2.id
-            ) + 
-            (SELECT COUNT(*) * 3
-             FROM game_user gu
-             LEFT JOIN game g ON g.id = gu.game_id
-             WHERE user_id = bu2.id AND g.game_state_enum != 'TEMPLATE'
-            ) as experience
+          CASE 
+            WHEN bu2.email IS NULL THEN 0
+            ELSE (
+              SELECT SUM(g.experience_points)
+              FROM game_user gu
+              LEFT JOIN game g ON g.id = gu.game_id
+            ) + 1
+          END as experience
         FROM bear_user bu2
         LEFT JOIN game_user gu2 ON gu2.user_id = bu2.id
+        LEFT JOIN game g2 ON g2.id = gu2.game_id
         WHERE gu2.game_id = ?
       )
       UPDATE bear_user bu SET

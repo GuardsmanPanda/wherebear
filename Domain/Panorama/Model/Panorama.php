@@ -98,17 +98,17 @@ final class Panorama extends Model {
         'retired_at' => 'immutable_datetime',
     ];
 
-    /** @return BelongsTo<BearCountry, self> */
+    /** @return BelongsTo<BearCountry, $this> */
     public function countryCca2(): BelongsTo {
         return $this->belongsTo(related: BearCountry::class, foreignKey: 'country_cca2', ownerKey: 'cca2');
     }
 
-    /** @return BelongsTo<BearCountrySubdivision, self>|null */
+    /** @return BelongsTo<BearCountrySubdivision, $this>|null */
     public function countrySubdivisionIso3166(): BelongsTo|null {
         return $this->belongsTo(related: BearCountrySubdivision::class, foreignKey: 'country_subdivision_iso_3166', ownerKey: 'iso_3166');
     }
 
-    /** @return BelongsTo<BearUser, self>|null */
+    /** @return BelongsTo<BearUser, $this>|null */
     public function addedByUser(): BelongsTo|null {
         return $this->belongsTo(related: BearUser::class, foreignKey: 'added_by_user_id', ownerKey: 'id');
     }

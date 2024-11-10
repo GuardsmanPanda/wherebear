@@ -101,27 +101,27 @@ final class Game extends Model {
         'round_ends_at' => 'immutable_datetime',
     ];
 
-    /** @return BelongsTo<Game, self>|null */
+    /** @return BelongsTo<Game, $this>|null */
     public function templatedByGame(): BelongsTo|null {
         return $this->belongsTo(related: Game::class, foreignKey: 'templated_by_game_id', ownerKey: 'id');
     }
 
-    /** @return BelongsTo<BearUser, self> */
+    /** @return BelongsTo<BearUser, $this> */
     public function createdByUser(): BelongsTo {
         return $this->belongsTo(related: BearUser::class, foreignKey: 'created_by_user_id', ownerKey: 'id');
     }
 
-    /** @return BelongsTo<GameState, self> */
+    /** @return BelongsTo<GameState, $this> */
     public function gameState(): BelongsTo {
         return $this->belongsTo(related: GameState::class, foreignKey: 'game_state_enum', ownerKey: 'enum');
     }
 
-    /** @return BelongsTo<PanoramaTag, self>|null */
+    /** @return BelongsTo<PanoramaTag, $this>|null */
     public function panoramaTag(): BelongsTo|null {
         return $this->belongsTo(related: PanoramaTag::class, foreignKey: 'panorama_tag_enum', ownerKey: 'enum');
     }
 
-    /** @return BelongsTo<GamePublicStatus, self> */
+    /** @return BelongsTo<GamePublicStatus, $this> */
     public function gamePublicStatus(): BelongsTo {
         return $this->belongsTo(related: GamePublicStatus::class, foreignKey: 'game_public_status_enum', ownerKey: 'enum');
     }

@@ -83,12 +83,12 @@ final class GameUser extends Model {
         'achievements_calculated_at' => 'immutable_datetime',
     ];
 
-    /** @return BelongsTo<Game, self> */
+    /** @return BelongsTo<Game, $this> */
     public function game(): BelongsTo {
         return $this->belongsTo(related: Game::class, foreignKey: 'game_id', ownerKey: 'id');
     }
 
-    /** @return BelongsTo<BearUser, self> */
+    /** @return BelongsTo<BearUser, $this> */
     public function user(): BelongsTo {
         return $this->belongsTo(related: BearUser::class, foreignKey: 'user_id', ownerKey: 'id');
     }

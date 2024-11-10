@@ -14,6 +14,7 @@
   <fieldset class="flex gap-3 px-3 border border-gray-400 pb-3 mt-2">
     <legend class="px-1.5">Tag</legend>
     <label class="font-bold">None<input type="radio" name="panorama_tag_enum" value="" class="ml-1" checked></label>
+    <label class="font-bold">Animal<input type="radio" name="panorama_tag_enum" value="ANIMAL" class="ml-1"></label>
     @if(BearAuthService::hasPermission(permission: BearPermissionEnum::IS_BOB))
       <label class="font-bold">Google<input type="radio" name="panorama_tag_enum" value="GOOGLE" class="ml-1"></label>
     @endif
