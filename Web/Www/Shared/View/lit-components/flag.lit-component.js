@@ -15,14 +15,15 @@ import { tooltip } from './tippy.lit-directive';
  * the Shadow DOM. I have not checked on other browsers yet. 
  * 
  * Example:
- * <lit-flag CCA2="FR" name="France" class="w-full"></lit-flag>
+ * <lit-flag cca2="FR" filePath="/static/flag/svg/FR.svg" description="France" class="w-full"></lit-flag>
  */
 class Flag extends LitElement {
   static properties = {
-    CCA2: { type: String },
-    name: { type: String },
+    cca2: { type: String },
+    description: { type: String },
+    filePath: { type: String },
+    maxHeightClass: { type: String },
     roundedClass: { type: String },
-    maxHeightClass: { type: String }
   }
 
   static styles = css`${TailwindStyles}`;
@@ -31,7 +32,7 @@ class Flag extends LitElement {
     return {
       [this.roundedClass]: this.roundedClass,
       [this.maxHeightClass]: this.maxHeightClass,
-      'border': this.CCA2 !== 'NP'
+      'border': this.cca2 !== 'NP'
     }
   }
 
@@ -39,10 +40,10 @@ class Flag extends LitElement {
     return html`
       <div class="flex items-center justify-center w-full h-full">
         <img 
-          src="/static/flag/svg/${this.CCA2}.svg" 
+          src="${this.filePath}"
           class="w-full h-full border-gray-700 ${classMap(this.imgClasses)}"
-          alt="${this.name}"
-          ${tooltip(this.name)} />
+          alt="${this.description}"
+          ${tooltip(this.description)} />
       </div>
     `;
   }

@@ -1,7 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Web\Www\Game\Controller;
 
+use Domain\Game\Broadcast\GameBroadcast;
 use Domain\Game\Crud\GameCreator;
 use Domain\Game\Crud\GameDeleter;
 use Domain\Game\Crud\GameUserCreator;
@@ -38,7 +41,8 @@ final class GameController extends Controller {
 
   public function delete(string $gameId): Response {
     GameDeleter::deleteFromId(id: $gameId);
-    return Htmx::redirect(url: '/');
+    GameBroadcast::gameDelete(gameId: $gameId);
+    return new Response();
   }
 
   public function redirectFromShortCode(string $shortCode): RedirectResponse {

@@ -73,6 +73,8 @@ final class GameResultController extends Controller {
         mm.file_path as map_marker_file_path,
         COALESCE(uf.description, bc.name) as country_name,
         gu.points,
+        COALESCE(uf.file_path, CONCAT('/static/flag/svg/', u.country_cca2, '.svg')) as flag_file_path,
+        COALESCE(uf.description, bc.name) as flag_description,
         RANK() OVER (ORDER BY gu.points DESC)
       FROM game_user gu
       LEFT JOIN bear_user u ON u.id = gu.user_id

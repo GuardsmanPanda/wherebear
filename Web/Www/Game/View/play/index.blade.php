@@ -7,7 +7,7 @@
   const currentRound = {{ $game->current_round }};
   pusher = new Pusher('6csm0edgczin2onq92lm', window.pusher_data);
   channel = pusher.subscribe('game.{{$game->id}}');
-  channel.bind('round.event', function (data) {
+  channel.bind('game.round.update', function (data) {
     if (data.GameStateEnum === '{{GameStateEnum::IN_PROGRESS_CALCULATING->value}}') {
       // Todo: Hide the map to guesses can't be made.
     } else {

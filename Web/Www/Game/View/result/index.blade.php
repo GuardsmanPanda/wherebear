@@ -91,6 +91,8 @@
       <div class="flex flex-col flex-1 overflow-y-auto gap-2 px-2 py-4">
         @foreach ($players as $player)
           <lit-player-result-item
+            flagFilePath="{{ $player->flag_file_path }}"
+            flagDescription="{{ $player->flag_description }}"
             rank="{{ $player->rank }}"
             rankSelected="{{ $player->rank === $user->rank ? $player->rank : '' }}"
             honorificTitle="Digital Guinea Pig"
@@ -98,7 +100,6 @@
             iconPath="{{ $player->map_marker_file_path }}"
             points="{{ $player->points }}"
             countryCCA2="{{ $player->country_cca2 }}"
-            countryName="{{ $player->country_name }}"
             level="{{ $player->level }}">
           </lit-player-result-item>
         @endforeach

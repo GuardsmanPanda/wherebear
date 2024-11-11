@@ -9,15 +9,16 @@ import { TailwindStyles } from '../../../../../public/static/dist/lit-tailwind-c
  */
 class PlayerResultItem extends LitElement {
   static properties = {
+    countryCca2: { type: String },
     distanceMeters: { type: Number },
+    flagFilePath: { type: String },
+    flagDescription: { type: String },
+    honorificTitle: { type: String },
     iconPath: { type: String },
+    level: { type: Number },
     name: { type: String },
     points: { type: Number },
     rank: { type: Number },
-    honorificTitle: { type: String },
-    countryCCA2: { type: String },
-    countryName: { type: String },
-    level: { type: Number },
     rankSelected: { type: Number }
   }
 
@@ -128,7 +129,7 @@ class PlayerResultItem extends LitElement {
           <div class="flex flex-col gap-0.5 w-full h-full px-2">
             <div class="flex items-center gap-1">
               <div class="flex flex-none items-center w-5 h-5">
-                <lit-flag CCA2="${this.countryCCA2}" name="${this.countryName}" roundedClass="rounded-sm" maxHeightClass="max-h-5" class="w-full"></lit-flag>
+                <lit-flag cca2="${this.countryCca2}" filePath="${this.flagFilePath}" description="${this.flagDescription}" roundedClass="rounded-sm" maxHeightClass="max-h-5" class="w-5"></lit-flag>
               </div>
 
               <div class="text-sm sm:text-base text-gray-700 font-medium truncate">${this.name}</div>

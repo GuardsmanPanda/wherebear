@@ -1,9 +1,9 @@
+import maplibregl from 'maplibre-gl';
+import { Notyf } from 'notyf';
 import Pusher from 'pusher-js';
-import {Notyf} from 'notyf';
 import tippy from 'tippy.js';
 
 require('pannellum/build/pannellum.js');
-import maplibregl from 'maplibre-gl';
 
 window.htmx = require('htmx.org/dist/htmx.cjs.js');
 window.confetti = require('canvas-confetti');
@@ -16,7 +16,7 @@ window.pusher_data = {
 }
 
 const tippyFunction = function (el) {
-  const inDialog = document.getElementById('dialog').contains(el);
+  const inDialog = document.getElementById('dialog')?.contains(el);
   tippy(el, {
     content: el.getAttribute('tippy'),
     appendTo: () => inDialog ? document.getElementById('dialog') : document.body,
@@ -65,9 +65,9 @@ window.onload = () => {
   window.notify = new Notyf({
     duration: 4000,
     ripple: true,
-    position: {x: 'right', y: 'top'},
+    position: { x: 'right', y: 'top' },
     dismissible: true,
-    types: [{type: 'success', background: 'rgb(16 185 129)'}, {type: 'error', background: 'rgb(182,40,40)'}, {
+    types: [{ type: 'success', background: 'rgb(16 185 129)' }, { type: 'error', background: 'rgb(182,40,40)' }, {
       type: 'info',
       background: 'rgb(31 41 55)'
     }, {
@@ -83,7 +83,7 @@ htmx.on("htmx:afterRequest", event => {
       document.getElementById('dialog').close();
     }
   } else {
-    toast('error', 'Something went wrong');
+    //toast('error', 'Something went wrong');
   }
 });
 

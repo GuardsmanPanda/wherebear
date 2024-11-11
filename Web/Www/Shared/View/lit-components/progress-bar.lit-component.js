@@ -3,6 +3,7 @@ import { classMap } from 'lit/directives/class-map.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
 import { TailwindStyles } from '../../../../../public/static/dist/lit-tailwind-css';
+import { tooltip } from './tippy.lit-directive';
 
 /**
  * A custom progress bar component that visually represents a progress value
@@ -30,6 +31,9 @@ class ProgressBar extends LitElement {
 
     /** The current progress of the progress bar as a percentage (0 to 100). */
     percentage: { type: Number },
+
+    /** Whether the percentage is displayed as tooltip. */
+    showPercentageTooltip: { type: Boolean },
 
     /** 
      * Determines whether the sides of the progress bar are flat or rounded. 
@@ -70,6 +74,7 @@ class ProgressBar extends LitElement {
     this.sideFlated = false;
     this.percentage = null;
     this.showInnerBar = true;
+    this.showPercentageTooltip = false;
     this.sideUnbordered = false;
     this.widthTransitionDurationMs = 1000;
   }
@@ -123,11 +128,16 @@ class ProgressBar extends LitElement {
     }
   }
 
+  get roundedPercentage() {
+    return this.percentage < 1 ? 1 : Math.floor(this.percentage);
+  }
+
   render() {
     return html`
       <div 
         class="flex w-full h-4 border-y bg-gray-500 border-gray-700 ${classMap(this.outterBarClasses)}"
-        style="box-shadow: inset 0 4px 1px rgb(0 0 0 / 0.3);">
+        style="box-shadow: inset 0 4px 1px rgb(0 0 0 / 0.3);"
+        ${this.showPercentageTooltip ? tooltip(`${this.roundedPercentage}%`) : ''}>
         <div
           class="border-l-0 border-gray-700 ${classMap(this.innerBarClasses)}"
           style="${styleMap(this.innerBarStyles)}">

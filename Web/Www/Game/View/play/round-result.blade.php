@@ -28,7 +28,7 @@
           <div class="relative left-1.5 mt-1">
             <div class="flex justify-center w-[72px] relative rounded border border-gray-700 bg-iris-500">
               <div class="w-6 aspect-auto absolute -top-[4px] left-0 transform -translate-x-1/2">
-                <x-custom-icon icon="star" />
+                <img src="/static/img/icon/star-gold.svg" />
               </div>
               <span class="text-xs text-gray-0 font-medium">
                 @if(floor($user_guess->points) == $user_guess->points)
@@ -40,31 +40,18 @@
             </div>
       
             <div
-              class="flex justify-center items-center mt-3 rounded border border-gray-700 bg-iris-500 
-              {{ $user_guess->country_cca2 === 'NP' ? 'w-[74px] relative right-[2px]' : 'w-[72px] relative' }}">
-
-              @php 
-                $iconPath = '';
-                $isMatch = $user_guess->country_subdivision_match || $user_guess->country_match;
-
-                if($user_guess->country_subdivision_match) {
-                  $iconPath = '/static/img/icon/clover-gold.svg';
-                } elseif ($user_guess->country_match) {
-                  $iconPath = '/static/img/icon/clover-green.svg';
-                } else {
-                  $iconPath = '/static/flag/svg/'.$user_guess->country_cca2.'.svg';
-                }
-              @endphp
-
-              <img src="{{ $iconPath }}"
-                @class([
-                  'absolute',
-                  'h-7' => $isMatch,
-                  'h-5' => !$isMatch,
-                  '-left-[14px]' => $isMatch,
-                  '-left-[2px]' => !$isMatch && $user_guess->country_cca2 === 'NP',
-                  'left-0 transform -translate-x-1/2 border border-gray-700 rounded' => !$isMatch && $user_guess->country_cca2 !== 'NP'
-                ])>
+              class="flex justify-center items-center mt-3 rounded border border-gray-700 bg-iris-500">
+              @if($user_guess->country_match || $user_guess->country_subdivision_match)
+                <img src="/static/img/icon/clover-{{ $user_guess->country_match ? 'gold' : 'green' }}.svg" class="h-7 absolute left-0 transform -translate-x-1/2" />
+              @else
+                <lit-flag
+                  cca2="{{ $user_guess->country_cca2 }}"
+                  filePath="{{ $user_guess->flag_file_path }}"
+                  description="{{ $user_guess->country_name }}"
+                  roundedClass="rounded-sm"
+                  class="h-5 absolute {{ $user_guess->country_cca2 === 'NP' ? 'left-2' : 'left-0' }} transform -translate-x-1/2">
+                </lit-flag>
+              @endif
 
               @php
               $distanceAndUnit = GameUtil::getDistanceAndUnit(distanceMeters: $user_guess->distance_meters);
@@ -99,8 +86,9 @@
               iconPath="{{ $guess->map_marker_file_path }}"
               name="{{ $guess->user_display_name }}"
               countryCCA2="{{ $guess->user_country_cca2 }}"
-              countryName="{{ $guess->user_country_name }}"
-              level="{{ $guess->level }}"
+              flagFilePath="{{ $guess->user_flag_file_path }}"
+              flagDescription="{{ $guess->user_flag_description }}"
+              level="{{ $guess->user_level }}"
               rank="{{ $guess->rank }}"
               points="{{ $guess->points }}"
               honorificTitle="Digital Guinea Pig">

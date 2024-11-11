@@ -30,16 +30,46 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 final class GameLobbyController extends Controller {
-  public function index(string $gameId): Response|View {
-    $game = DB::selectOne(query: "
+  private function getGame(string $gameId) {
+    $game = DB::selectOne(query: <<<SQL
       SELECT
-          g.id, g.number_of_rounds, g.round_duration_seconds, g.created_by_user_id, g.name,
-          g.game_state_enum, g.game_public_status_enum,  g.game_public_status_enum = 'PUBLIC' as is_public,
-          g.current_round, g.round_result_duration_seconds, g.short_code
+        g.id, g.number_of_rounds, g.round_duration_seconds, g.created_by_user_id, g.name,
+        g.game_state_enum, g.game_public_status_enum = 'PUBLIC' as is_public,
+        g.current_round, g.round_result_duration_seconds, g.short_code
       FROM game g
       WHERE g.id = ?
-    ", bindings: [$gameId]);
+    SQL, bindings: [$gameId]);
 
+    $game->total_game_time_mn = round(num: ($game->number_of_rounds * ($game->round_duration_seconds + $game->round_result_duration_seconds + 1) + 90) / 60);
+
+    return $game;
+  }
+
+  private function getPlayer(string $gameId, string $userId) {
+    $player = DB::selectOne(query: <<<SQL
+      SELECT 
+        bu.id, bu.display_name, bu.country_cca2, bu.user_level_enum as level,
+        gu.is_ready, gu.is_observer,
+        mm.file_path as map_marker_file_path,
+        ms.enum as map_style_enum,
+        COALESCE(uf.file_path, CONCAT('/static/flag/svg/', bu.country_cca2, '.svg')) as flag_file_path,
+        COALESCE(uf.description, bc.name) as flag_description
+      FROM game_user gu
+      LEFT JOIN bear_user bu ON bu.id = gu.user_id
+      LEFT JOIN bear_country bc ON bc.cca2 = bu.country_cca2
+      LEFT JOIN map_marker mm ON mm.enum = bu.map_marker_enum
+      LEFT JOIN map_style ms ON ms.enum = bu.map_style_enum
+      LEFT JOIN user_flag uf ON uf.enum = bu.user_flag_enum
+      WHERE gu.game_id = ? AND gu.user_id = ?
+    SQL, bindings: [$gameId, $userId]);
+
+    $player->title = "Digital Guinea Pig";
+
+    return $player;
+  }
+
+  public function index(string $gameId): Response|View {
+    $game = $this->getGame($gameId);
     if ($game === null) {
       return Resp::redirect(url: '/', message: 'Game not found');
     }
@@ -60,9 +90,9 @@ final class GameLobbyController extends Controller {
     if ($user_id === null) {
       return Resp::view(view: "game::lobby.guest", data: [
         'game' => $game,
-        'players' => DB::select(query: "
+        'players' => DB::select(query: <<<SQL
           SELECT
-            bu.display_name, bu.country_cca2, bu.user_level_enum,
+            bu.display_name, bu.country_cca2, bu.user_level_enum as level,
             gu.is_ready, bc.name as country_name,
             mm.file_path as map_marker_file_path
           FROM game_user gu
@@ -71,7 +101,7 @@ final class GameLobbyController extends Controller {
           LEFT JOIN map_marker mm ON mm.enum = bu.map_marker_enum
           WHERE gu.game_id = ?
           ORDER BY bu.id = ? DESC, bu.display_name, bu.country_cca2, bu.id
-        ", bindings: [$game->id, $user_id]),
+        SQL, bindings: [$game->id, $user_id]),
       ]);
     }
 
@@ -79,7 +109,6 @@ final class GameLobbyController extends Controller {
     $in_game = DB::selectOne(query: "SELECT 1 FROM game_user WHERE game_id = ? AND user_id = ?", bindings: [$game->id, $user_id]) !== null;
     if ($in_game === false) {
       GameUserCreator::create(game_id: $game->id, user_id: $user_id);
-      GameBroadcast::playerUpdate(gameId: $gameId); // Broadcast to all players
       return $this->index($gameId);
     }
 
@@ -91,64 +120,82 @@ final class GameLobbyController extends Controller {
       return Resp::redirect(url: "/game/$gameId/play");
     }
 
-    $template = Req::hxRequest() ? 'game::lobby.main' : 'game::lobby.layout';
-    return Resp::view(view: $template, data: [
-      'game' => $game,
-      'user' => DB::selectOne(query: "
-        SELECT 
-            bu.id, bu.display_name, bu.user_level_enum, bu.map_marker_enum, bu.map_style_enum,
-            bu.experience - ul.experience_requirement as current_level_experience,
-            (SELECT ul2.experience_requirement FROM user_level ul2 WHERE ul2.enum = bu.user_level_enum + 1) - ul.experience_requirement as next_level_experience,
-            gu.is_ready,
-            mm.file_path as map_marker_file_path,
-            ms.name as map_style_name, ms.full_uri as map_style_full_uri,
-            COALESCE(uf.file_path, CONCAT('/static/flag/svg/', bu.country_cca2, '.svg')) as flag_file_path,
-            COALESCE(uf.description, bc.name) as flag_description
-        FROM bear_user bu
-        LEFT JOIN game_user gu ON gu.user_id = bu.id AND gu.game_id = ?
-        LEFT JOIN map_marker mm ON mm.enum = bu.map_marker_enum
-        LEFT JOIN map_style ms ON ms.enum = bu.map_style_enum
-        LEFT JOIN bear_country bc ON bc.cca2 = bu.country_cca2
-        LEFT JOIN user_level ul ON ul.enum = bu.user_level_enum
-        LEFT JOIN user_flag uf ON uf.enum = bu.user_flag_enum
-        WHERE bu.id = ?
-      ", bindings: [$game->id, $user_id]),
-    ]);
-  }
+    $user = DB::selectOne(query: <<<SQL
+      SELECT 
+        bu.id, bu.display_name, bu.user_level_enum as level, bu.map_marker_enum, bu.map_style_enum,
+        bu.experience - ul.experience_requirement as current_level_experience_points,
+        (SELECT ul2.experience_requirement FROM user_level ul2 WHERE ul2.enum = bu.user_level_enum + 1) - ul.experience_requirement as next_level_experience_points_requirement,
+        gu.is_ready,
+        mm.file_path as map_marker_file_path,
+        COALESCE(uf.file_path, CONCAT('/static/flag/svg/', bu.country_cca2, '.svg')) as flag_file_path,
+        COALESCE(uf.description, bc.name) as flag_description
+      FROM bear_user bu
+      LEFT JOIN game_user gu ON gu.user_id = bu.id AND gu.game_id = ?
+      LEFT JOIN map_marker mm ON mm.enum = bu.map_marker_enum
+      LEFT JOIN bear_country bc ON bc.cca2 = bu.country_cca2
+      LEFT JOIN user_level ul ON ul.enum = bu.user_level_enum
+      LEFT JOIN user_flag uf ON uf.enum = bu.user_flag_enum
+      WHERE bu.id = ?
+    SQL, bindings: [$game->id, $user_id]);
 
+    $user->title = 'Digital Guinea Pig';
+    $user->level_percentage = $user->current_level_experience_points * 100 / $user->next_level_experience_points_requirement;
+    $user->display_level_percentage = $user->level_percentage < 1 ? 1 : floor($user->level_percentage);
+    $user->isHost = $game->created_by_user_id === BearAuthService::getUserId();
+    $user->isGuest = $user->level === 0;
 
-  public function playerList(string $gameId): View|Response {
-    $enum = GameStateEnum::fromGameId(gameId: $gameId);
-    if ($enum->isInProgress()) {
-      return Htmx::redirect(url: "/game/$gameId/play");
-    } else if ($enum->isFinished()) {
-      return Htmx::redirect(url: "/game/$gameId/result");
+    $players = DB::select(query: <<<SQL
+      SELECT 
+        bu.id, bu.display_name, bu.country_cca2, bu.user_level_enum as level,
+        gu.is_ready, gu.is_observer,
+        mm.file_path as map_marker_file_path,
+        ms.enum as map_style_enum,
+        COALESCE(uf.file_path, CONCAT('/static/flag/svg/', bu.country_cca2, '.svg')) as flag_file_path,
+        COALESCE(uf.description, bc.name) as flag_description
+      FROM game_user gu
+      LEFT JOIN bear_user bu ON bu.id = gu.user_id
+      LEFT JOIN bear_country bc ON bc.cca2 = bu.country_cca2
+      LEFT JOIN map_marker mm ON mm.enum = bu.map_marker_enum
+      LEFT JOIN map_style ms ON ms.enum = bu.map_style_enum
+      LEFT JOIN user_flag uf ON uf.enum = bu.user_flag_enum
+      WHERE gu.game_id = ?
+      ORDER BY bu.id = ? DESC, bu.display_name, bu.country_cca2, bu.id
+    SQL, bindings: [$gameId, BearAuthService::getUserId()]);
+
+    $players = array_map(function ($player) {
+      $player->title = "Digital Guinea Pig";
+      return $player;
+    }, $players);
+
+    $player = null;
+    foreach ($players as $player) {
+      if ($player->id === BearAuthService::getUserId()) {
+        $player = $player;
+        break;
+      }
     }
 
-    return Resp::view(view: 'game::lobby.player-list', data: [
-      'players' => DB::select(query: "
-        SELECT 
-            bu.display_name, bu.country_cca2,
-            mm.file_path as map_marker_file_path,
-            gu.is_ready,
-            COALESCE(uf.file_path, CONCAT('/static/flag/svg/', bu.country_cca2, '.svg')) as flag_file_path,
-            COALESCE(uf.description, bc.name) as flag_description,
-            bu.user_level_enum,
-            (SELECT COUNT(*) FROM game_user WHERE user_id = bu.id) as game_count
-        FROM game_user gu
-        LEFT JOIN bear_user bu ON bu.id = gu.user_id
-        LEFT JOIN bear_country bc ON bc.cca2 = bu.country_cca2
-        LEFT JOIN map_marker mm ON mm.enum = bu.map_marker_enum
-        LEFT JOIN user_flag uf ON uf.enum = bu.user_flag_enum
-        WHERE gu.game_id = ?
-        ORDER BY bu.id = ? DESC, bu.display_name, bu.country_cca2, bu.id
-      ", bindings: [$gameId, BearAuthService::getUserId()]),
+    GameBroadcast::playerJoin(gameId: $gameId, player: $player);
+
+    return Resp::view(view: 'game::lobby.index', data: [
+      'game' => $game,
+      'observerCount' => array_reduce($players, function ($sum, $player) {
+        $sum += $player->is_observer ? 1 : 0;
+        return $sum;
+      }),
+      'players' => $players,
+      'playerCount' => count($players),
+      'readyPlayerCount' => array_reduce($players, function ($sum, $item) {
+        $sum += $item->is_ready ? 1 : 0;
+        return $sum;
+      }),
+      'user' => $user,
     ]);
   }
 
-
-  public function updateUser(string $gameId): Response|View {
+  public function updateUser(string $gameId): Response {
     $updater = WhereBearUserUpdater::fromId(id: BearAuthService::getUserId());
+
     if (Req::has(key: 'map_marker_enum')) {
       $updater->setMapMarkerEnum(map_marker_enum: MapMarkerEnum::fromRequest());
     }
@@ -165,20 +212,20 @@ final class GameLobbyController extends Controller {
       $updater->setUserFlag(enum: UserFlagEnum::fromRequest());
     }
     $updater->update();
-    GameBroadcast::playerUpdate(gameId: $gameId, playerId: BearAuthService::getUserId()); // Broadcast to all players
-    return $this->index($gameId);
+
+    GameBroadcast::playerUpdate(gameId: $gameId, player: $this->getPlayer($gameId, BearAuthService::getUserId()));
+    return new Response();
   }
 
-
-  public function updateGameUser(string $gameId): Response|View {
+  public function updateGameUser(string $gameId): Response {
     $updater = GameUserUpdater::fromGameIdAndUserId(game_id: $gameId, user_id: BearAuthService::getUserId());
     $updater->setIsReady(is_ready: Req::getBool(key: 'is_ready'));
     $updater->update();
-    GameStartAction::placeInQueueIfAble(gameId: $gameId);
-    GameBroadcast::playerUpdate(gameId: $gameId, playerId: BearAuthService::getUserId()); // Broadcast to all players
-    return $this->index($gameId);
-  }
 
+    GameBroadcast::playerUpdate(gameId: $gameId, player: $this->getPlayer($gameId, BearAuthService::getUserId()));
+    GameStartAction::placeInQueueIfAble(gameId: $gameId);
+    return new Response();
+  }
 
   public function updateSettings(string $gameId): Response|View {
     GameUpdater::fromId(id: $gameId)
@@ -187,9 +234,10 @@ final class GameLobbyController extends Controller {
       ->setRoundResultDurationSeconds(round_result_duration_seconds: Req::getInt(key: 'round_result_duration_seconds'))
       ->setGamePublicStatusEnum(enum: GamePublicStatusEnum::fromRequest())
       ->update();
-    return $this->index($gameId);
-  }
 
+    GameBroadcast::gameUpdate(gameId: $gameId, game: $this->getGame($gameId));
+    return new Response();
+  }
 
   public function forceStartGame(string $gameId): Response|View {
     $creator = DB::selectOne(query: "SELECT created_by_user_id FROM game WHERE id = ?", bindings: [$gameId])->created_by_user_id;
@@ -198,16 +246,14 @@ final class GameLobbyController extends Controller {
     }
     GameUpdater::fromId(id: $gameId)->setIsForcedStart(is_forced_start: true)->update();
     GameStartAction::placeInQueueIfAble(gameId: $gameId);
-    return $this->index($gameId);
+    return new Response();
   }
-
 
   public function leaveGame(string $gameId): Response {
     GameUserDeleter::deleteFromGameAndUserId(gameId: $gameId, userId: BearAuthService::getUserId());
-    GameBroadcast::playerUpdate(gameId: $gameId, playerId: BearAuthService::getUserId()); // Broadcast to all players
+    GameBroadcast::playerLeave(gameId: $gameId, playerId: BearAuthService::getUserId());
     return Htmx::redirect(url: '/', message: 'Left Game.');
   }
-
 
   public function dialogNameFlag(string $gameId): View {
     return Htmx::dialogView(
@@ -227,14 +273,13 @@ final class GameLobbyController extends Controller {
     );
   }
 
-
   public function dialogMapMarker(string $gameId): View {
-    $markers = DB::select(query: "
+    $markers = DB::select(query: <<<SQL
       SELECT mm.enum, mm.file_path, mm.grouping
       FROM map_marker mm
       WHERE user_level_enum <= (SELECT user_level_enum FROM bear_user WHERE id = ?)
       ORDER BY mm.grouping = 'Miscellaneous',  mm.grouping, mm.file_path
-    ", bindings: [BearAuthService::getUserId()]);
+    SQL, bindings: [BearAuthService::getUserId()]);
     return Htmx::dialogView(
       view: 'game::lobby.dialog.map-marker',
       title: 'Select Map Marker',
@@ -245,21 +290,20 @@ final class GameLobbyController extends Controller {
     );
   }
 
-
   public function dialogMapStyle(string $gameId): View {
     return Htmx::dialogView(
       view: 'game::lobby.dialog.map-style',
       title: 'Select Map Style',
       data: [
         'game_id' => $gameId,
-        'map_styles' => DB::select(query: "
+        'map_styles' => DB::select(query: <<<SQL
           SELECT ms.enum, ms.name, ms.full_uri
           FROM map_style ms
           WHERE 
             ms.enum != 'DEFAULT'
             AND ms.user_level_enum <= (SELECT user_level_enum FROM bear_user WHERE id = ?)
           ORDER BY ms.user_level_enum, ms.name
-        ", bindings: [BearAuthService::getUserId()]),
+        SQL, bindings: [BearAuthService::getUserId()]),
       ]
     );
   }
@@ -273,13 +317,13 @@ final class GameLobbyController extends Controller {
       view: 'game::lobby.dialog.game-settings',
       title: 'Game Settings',
       data: [
-        'game' => DB::selectOne(query: "
+        'game' => DB::selectOne(query: <<<SQL
           SELECT
               g.id, g.number_of_rounds, g.round_duration_seconds,
               g.round_result_duration_seconds, g.game_public_status_enum
           FROM game g
           WHERE g.id = ?
-        ", bindings: [$gameId]),
+        SQL, bindings: [$gameId]),
       ]
     );
   }

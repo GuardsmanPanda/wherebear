@@ -91,34 +91,35 @@ final class GamePlayController extends Controller {
     SQL, bindings: [BearAuthService::getUserId(), $gameId]);
 
     if ($enum === GameStateEnum::IN_PROGRESS_RESULT) {
-      $guesses = DB::select(query: "
+      $guesses = DB::select(query: <<<SQL
         SELECT
-          bu.id as user_id, 
+          bu.id as user_id,
           bu.display_name as user_display_name, 
           COALESCE(bu.user_flag_enum, bu.country_cca2) as user_country_cca2, 
-          bu.user_level_enum as level,
-          COALESCE(uf.description, bc.name) as user_country_name,
+          bu.user_level_enum as user_level,
+          COALESCE(uf.file_path, CONCAT('/static/flag/svg/', bu.country_cca2, '.svg')) as user_flag_file_path,
+          COALESCE(uf.description, bc.name) as user_flag_description,
           mm.file_path as map_marker_file_path,
           gru.distance_meters, 
           gru.points::INTEGER, 
           gru.rank,
-          ST_Y(gru.location::geometry) as lat,
-          ST_X(gru.location::geometry) as lng,
           gru.country_cca2,
-          bc1.name as country_name,
+          bc.name as country_name,
           p.country_cca2 = gru.country_cca2 as country_match,
-          p.country_subdivision_iso_3166 = gru.country_subdivision_iso_3166 as country_subdivision_match
+          p.country_subdivision_iso_3166 = gru.country_subdivision_iso_3166 as country_subdivision_match,
+          CONCAT('/static/flag/svg/', gru.country_cca2, '.svg') as flag_file_path,
+          ST_Y(gru.location::geometry) as lat,
+          ST_X(gru.location::geometry) as lng
         FROM game_round_user gru
         LEFT JOIN bear_user bu ON bu.id = gru.user_id
         LEFT JOIN user_flag uf ON uf.enum = bu.user_flag_enum
         LEFT JOIN map_marker mm ON mm.enum = bu.map_marker_enum
-        LEFT JOIN bear_country bc ON bc.cca2 = bu.country_cca2
-        LEFT JOIN bear_country bc1 ON bc1.cca2 = gru.country_cca2
+        LEFT JOIN bear_country bc ON bc.cca2 = gru.country_cca2
         LEFT JOIN game_round gr ON gr.game_id = gru.game_id AND gr.round_number = gru.round_number
         LEFT JOIN panorama p ON p.id = gr.panorama_id
         WHERE gru.game_id = ? AND gru.round_number = ?
         ORDER BY gru.rank, gru.user_id
-      ", bindings: [$gameId, $game->current_round]);
+      SQL, bindings: [$gameId, $game->current_round]);
 
       $user_guess = null;
       foreach ($guesses as $guess) {
@@ -204,7 +205,7 @@ final class GamePlayController extends Controller {
     return Resp::view(view: 'game::play.round-result', data: [
       'rounds' => [
         (object) [
-          'country_cca2' => 'FR',
+          'country_cca2' => 'NP',
           'country_name' => 'France',
           'country_match_user_guess' => true,
           'country_subdivision_match_user_guess' => false,
@@ -245,13 +246,15 @@ final class GamePlayController extends Controller {
       ],
       'guesses' => [
         (object) [
-          'country_cca2' => 'UA',
+          'country_cca2' => 'NP',
           'country_match' => false,
-          'country_name' => 'Ukraine',
+          'country_name' => 'Nepal',
           'country_subdivision_name' => 'Sub',
+          'flag_file_path' => '/static/flag/svg/UA.svg',
           'user_country_cca2' => 'UA',
-          'user_country_name' => 'Ukraine',
           'user_display_name' => 'GreenMonkeyBoy',
+          'user_flag_file_path' => '/static/flag/svg/UA.svg',
+          'user_flag_description' => 'Ukraine',
           'distance_meters' => "5",
           'lat' => 50,
           'lng' => 4,
@@ -266,9 +269,11 @@ final class GamePlayController extends Controller {
           'country_match' => false,
           'country_name' => 'France',
           'country_subdivision_name' => 'Sub',
-          'user_country_cca2' => 'FR',
-          'user_country_name' => 'France',
+          'flag_file_path' => '/static/flag/svg/FR.svg',
+          'user_country_cca2' => 'DN',
           'user_display_name' => 'GuardsmanBob',
+          'user_flag_file_path' => '/static/flag/svg/DN.svg',
+          'user_flag_description' => 'Denmark',
           'distance_meters' => "901",
           'lat' => 45,
           'lng' => 12,
@@ -283,9 +288,11 @@ final class GamePlayController extends Controller {
           'country_match' => false,
           'country_name' => 'Germany',
           'country_subdivision_name' => 'Sub',
+          'flag_file_path' => '/static/flag/svg/DE.svg',
           'user_country_cca2' => 'JP',
-          'user_country_name' => 'Japan',
           'user_display_name' => 'Adam',
+          'user_flag_file_path' => '/static/flag/svg/JP.svg',
+          'user_flag_description' => 'Japan',
           'distance_meters' => "50000",
           'lat' => 40,
           'lng' => 4,
@@ -300,9 +307,11 @@ final class GamePlayController extends Controller {
           'country_match' => false,
           'country_name' => 'Germany',
           'country_subdivision_name' => 'Sub',
+          'flag_file_path' => '/static/flag/svg/DE.svg',
           'user_country_cca2' => 'SK',
-          'user_country_name' => 'South Korea',
           'user_display_name' => 'Eve',
+          'user_flag_file_path' => '/static/flag/svg/SK.svg',
+          'user_flag_description' => 'South Korea',
           'distance_meters' => "2000000",
           'lat' => 45,
           'lng' => -10,
@@ -317,9 +326,11 @@ final class GamePlayController extends Controller {
           'country_match' => false,
           'country_name' => 'Ukraine',
           'country_subdivision_name' => 'Sub',
-          'user_country_cca2' => 'NP',
-          'user_country_name' => 'Australia',
+          'flag_file_path' => '/static/flag/svg/UA.svg',
+          'user_country_cca2' => 'PIRATE',
           'user_display_name' => 'GreenMonkeyBoy',
+          'user_flag_file_path' => '/static/flag/svg/PIRATE.svg',
+          'user_flag_description' => 'Yarrrrr',
           'distance_meters' => "20000000",
           'lat' => 50,
           'lng' => 4,
@@ -331,14 +342,17 @@ final class GamePlayController extends Controller {
         ],
       ],
       'user_guess' => (object) [
-        'country_cca2' => 'UA',
+        'country_cca2' => 'FR',
         'country_match' => false,
         'country_name' => 'Ukraine',
         'country_subdivision_match' => false,
         'country_subdivision_name' => 'Sub',
+        'flag_file_path' => '/static/flag/svg/FR.svg',
         'user_country_cca2' => 'AU',
         'user_country_name' => 'Australia',
         'user_display_name' => 'GreenMonkeyBoy',
+        'user_flag_file_path' => '/static/flag/svg/NP.svg',
+        'user_flag_description' => 'Ukraine',
         'distance_meters' => "50000000",
         'lat' => 50,
         'lng' => 4,

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1); ?>
 <x-bear::dialog.basic>
-  <div class="grid" hx-target="#lobby">
+  <div class="grid">
     @foreach($map_styles as $style)
       <button class="px-0.5 py-1 hover:scale-110 transition-transform duration-75" hx-dialog-close
               hx-patch="/game/{{$game_id}}/lobby/update-user"
