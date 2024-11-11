@@ -18,4 +18,10 @@ final class PanoramaTagCrud {
         $model->save();
         return $model;
     }
+
+    public static function delete(PanoramaTag $tag): void {
+        BearDatabaseService::mustBeInTransaction();
+        BearDatabaseService::mustBeProperHttpMethod(verbs: ['DELETE']);
+        $tag->delete();
+    }
 }

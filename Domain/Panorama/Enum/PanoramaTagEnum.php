@@ -3,6 +3,7 @@
 namespace Domain\Panorama\Enum;
 
 use Domain\Panorama\Crud\PanoramaTagCrud;
+use Domain\Panorama\Model\PanoramaTag;
 use GuardsmanPanda\Larabear\Infrastructure\App\Interface\BearDatabaseBackedEnumInterface;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 
@@ -15,7 +16,6 @@ enum PanoramaTagEnum : string implements BearDatabaseBackedEnumInterface {
 
   // Normal Tags
   case ANIMAL = 'ANIMAL';
-  case DIFFICULT = 'DIFFICULT';
   case FUNNY = 'FUNNY';
   case GREAT = 'GREAT';
   case LANDSCAPE = 'LANDSCAPE';
@@ -39,11 +39,15 @@ enum PanoramaTagEnum : string implements BearDatabaseBackedEnumInterface {
       self::GREAT => 'Great Panorama, should be prioritized.',
       self::LANDSCAPE => 'The landscape is the only clue to the location.',
       self::ANIMAL => 'Panorama contains animals as the focus.',
-      self::DIFFICULT => 'An experienced player would have a hard time guessing this panorama.',
     };
   }
 
   public static function syncToDatabase(): void {
+    foreach (PanoramaTag::all() as $tag) {
+      if (PanoramaTagEnum::tryFrom($tag->enum) === null) {
+        PanoramaTagCrud::delete(tag: $tag);
+      }
+    }
     foreach (PanoramaTagEnum::cases() as $enum) {
       PanoramaTagCrud::syncToDatabase(tag_enum: $enum);
     }

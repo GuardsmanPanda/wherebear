@@ -23,10 +23,6 @@
         <label class="mr-2 font-medium text-gray-400" for="ANIMAL">ANIMAL</label>
         <input id="ANIMAL" type="checkbox" name="tag" value="ANIMAL">
       </div>
-      <div class="flex items-center">
-        <label class="mr-2 font-medium text-amber-400" for="DIFFICULT">DIFFICULT</label>
-        <input id="DIFFICULT" type="checkbox" name="tag" value="DIFFICULT">
-      </div>
       @if(BearAuthService::hasPermission(permission: BearPermissionEnum::IS_BOB))
         <div class="flex items-center">
           <label class="mr-2 font-medium text-blue-400" for="GOOGLE">GOOGLE</label>
