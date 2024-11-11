@@ -84,12 +84,12 @@ final class MapStyle extends Model {
         'user_level_enum' => UserLevelEnum::class,
     ];
 
-    /** @return BelongsTo<BearExternalApi, self> */
+    /** @return BelongsTo<BearExternalApi, $this> */
     public function externalApi(): BelongsTo {
         return $this->belongsTo(related: BearExternalApi::class, foreignKey: 'external_api_enum', ownerKey: 'enum');
     }
 
-    /** @return BelongsTo<UserLevel, self> */
+    /** @return BelongsTo<UserLevel, $this> */
     public function userLevel(): BelongsTo {
         return $this->belongsTo(related: UserLevel::class, foreignKey: 'user_level_enum', ownerKey: 'enum');
     }

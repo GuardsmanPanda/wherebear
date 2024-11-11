@@ -12,6 +12,9 @@ use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Resp;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Env;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -133,7 +136,7 @@ final class GamePlayController extends Controller {
         'game' => $game,
         'guesses' => $guesses,
         'isDev' => false,
-        'panorama_url' =>  "https://panorama.gman.bot/$game->jpg_path",
+        'panorama_url' => App::isProduction() ? "https://panorama.wherebear.fun/$game->jpg_path" : "https://panorama.gman.bot/$game->jpg_path",
         'template' => 'game::play.round-result',
         'user' => $user,
         'user_guess' => $user_guess,
@@ -144,7 +147,7 @@ final class GamePlayController extends Controller {
       'rounds' => $rounds,
       'game' => $game,
       'isDev' => false,
-      'panorama_url' =>  "https://panorama.gman.bot/$game->jpg_path",
+      'panorama_url' => App::isProduction() ? "https://panorama.wherebear.fun/$game->jpg_path" : "https://panorama.gman.bot/$game->jpg_path",
       'template' => 'game::play.round',
       'user' => $user,
     ]);

@@ -13,6 +13,8 @@ use Web\Www\Game\Controller\GameResultController;
 
 Route::get(uri: "create", action: [GameController::class, 'createDialog'])->middleware([BearPermissionMiddleware::using(permission: BearPermissionEnum::GAME_CREATE)]);
 Route::post(uri: "", action: [GameController::class, 'create'])->middleware([BearPermissionMiddleware::using(permission: BearPermissionEnum::GAME_CREATE)]);
+Route::get(uri: "create-from-template", action: [GameController::class, 'createFromTemplateDialog'])->middleware([BearPermissionMiddleware::using(permission: BearPermissionEnum::GAME_CREATE_TEMPLATED_GAME)]);
+Route::post(uri: "create-from-template/{templateId}", action: [GameController::class, 'createFromTemplate'])->middleware([BearPermissionMiddleware::using(permission: BearPermissionEnum::GAME_CREATE_TEMPLATED_GAME)]);
 
 Route::prefix("{gameId}")->middleware(BearHtmxMiddleware::using(layout_location: 'layout.layout'))->group(callback: function () {
   Route::prefix("lobby")->group(callback: function () {

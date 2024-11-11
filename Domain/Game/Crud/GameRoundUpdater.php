@@ -11,6 +11,10 @@ final readonly class GameRoundUpdater {
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST', 'PATCH']);
     }
 
+    public static function fromGameIdAndRound(string $game_id, int $round): GameRoundUpdater {
+        return new GameRoundUpdater(model: GameRound::findOrFail(ids: ['game_id' => $game_id, 'round_number' => $round]));
+    }
+
     public function setPanoramaPickStrategy(string $panorama_pick_strategy): self {
         $this->model->panorama_pick_strategy = $panorama_pick_strategy;
         return $this;

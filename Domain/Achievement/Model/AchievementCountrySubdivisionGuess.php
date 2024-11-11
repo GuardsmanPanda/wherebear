@@ -80,12 +80,12 @@ final class AchievementCountrySubdivisionGuess extends Model {
         'country_subdivision_iso_3166' => BearCountrySubdivisionEnum::class,
     ];
 
-    /** @return BelongsTo<BearCountrySubdivision, self> */
+    /** @return BelongsTo<BearCountrySubdivision, $this> */
     public function countrySubdivisionIso3166(): BelongsTo {
         return $this->belongsTo(related: BearCountrySubdivision::class, foreignKey: 'country_subdivision_iso_3166', ownerKey: 'iso_3166');
     }
 
-    /** @return BelongsTo<BearUser, self> */
+    /** @return BelongsTo<BearUser, $this> */
     public function user(): BelongsTo {
         return $this->belongsTo(related: BearUser::class, foreignKey: 'user_id', ownerKey: 'id');
     }

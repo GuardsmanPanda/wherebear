@@ -5,6 +5,12 @@
   <div id="tags" class="mt-1">
     <h3 class="font-bold text-teal-500">Tags</h3>
     <div class="flex gap-4 ml-2 items-center">
+      @if(BearAuthService::hasPermission(permission: BearPermissionEnum::PANORAMA_TAG_DAILY))
+        <div class="flex items-center">
+          <label class="mr-2 font-medium text-gray-400" for="DAILY">DAILY</label>
+          <input id="DAILY" type="checkbox" name="tag" value="DAILY">
+        </div>
+      @endif
       <div class="flex items-center">
         <label class="mr-2 font-medium text-gray-400" for="GREAT">GREAT</label>
         <input id="GREAT" type="checkbox" name="tag" value="GREAT">
@@ -16,10 +22,6 @@
       <div class="flex items-center">
         <label class="mr-2 font-medium text-gray-400" for="ANIMAL">ANIMAL</label>
         <input id="ANIMAL" type="checkbox" name="tag" value="ANIMAL">
-      </div>
-      <div class="flex items-center">
-        <label class="mr-2 font-medium text-amber-400" for="DIFFICULT">DIFFICULT</label>
-        <input id="DIFFICULT" type="checkbox" name="tag" value="DIFFICULT">
       </div>
       @if(BearAuthService::hasPermission(permission: BearPermissionEnum::IS_BOB))
         <div class="flex items-center">
@@ -37,36 +39,11 @@
   <div class="mt-1">
     <h3 class="font-bold text-teal-500">Map Options</h3>
     <div class="flex ml-2 items-center">
-      <div class="flex items-center">
-        <label class="mr-2 font-medium text-gray-400" for="enable-click-search">Click to Search</label>
-        <input type="checkbox" id="enable-click-search" checked>
-      </div>
-      <div class="flex items-center ml-4">
-        <label class="mr-2 font-medium text-gray-400" for="retries">Retries</label>
-        <input type="number" id="retries" min="1" max="50" value="10"
-               class="rounded py-0.5 px-1 text-sm text-gray-600">
-      </div>
-      <div class="flex items-center ml-4">
-        <label class="mr-2 font-medium text-gray-400" for="distance">Distance</label>
-        <input type="range" id="distance" min="20" max="100000" value="1000">
-      </div>
-      <div class="flex items-center ml-4">
-        <label class="mr-1 font-medium text-gray-400" for="year">From Year</label>
-        <select id="year" class="rounded h-6 text-sm text-gray-600 py-0.5 mx-1">
-          <option value="2020">2010</option>
-          <option value="2020">2015</option>
-          <option value="2020" selected>2020</option>
-          <option value="2021">2021</option>
-          <option value="2022">2022</option>
-          <option value="2023">2023</option>
-          <option value="2024">2024</option>
-        </select>
-      </div>
+      Country Dropdown
     </div>
   </div>
   <div id="map" class="w-full flex-grow my-4"></div>
 </div>
-
 
 <script>
   const map = new window.maplibregl.Map({
@@ -84,51 +61,7 @@
 
 
   map.on('click', function (e) {
-    const lat = e.lngLat.lat;
-    const lng = e.lngLat.lng;
-    if (!document.getElementById('enable-click-search').checked) {
-      window.open('https://google.com/maps/@' + lat + ',' + lng + ',' + map.getZoom() + 'z', '', 'width=1300,height=800');
-      return;
-    }
-
-    fetch('/page/discovery/street-view-location-search', {
-      method: 'POST', headers: {
-        'Content-Type': 'application/json'
-      }, body: JSON.stringify({
-        lat: lat,
-        lng: lng,
-        distance: document.getElementById('distance').value,
-        retries: document.getElementById('retries').value,
-        year: document.getElementById('year').value,
-      }),
-    }).then(resp => {
-      if (!resp.ok) {
-        resp.text().then(text => {
-          window.notify.error(text);
-        })
-      } else {
-        //document.getElementById('map-url').value = '';
-        resp.json().then(json => {
-          for (let i = 0; i < json.length; i++) {
-            let cur = json[i];
-            if (cur.status === 'failed') {
-              new window.maplibregl.Marker({scale: 0.4, color: 'gray'})
-                .setLngLat([cur.lng, cur.lat])
-                .addTo(map)
-            }
-            if (cur.status === 'new') {
-              const icon = document.createElement('img');
-              icon.src = '{{$user->map_marker_file_path}}'
-              icon.classList.add('drop-shadow');
-              icon.style.height = '32px';
-              new window.maplibregl.Marker({element: icon})
-                .setLngLat([cur.lng, cur.lat])
-                .addTo(map);
-            }
-          }
-        });
-      }
-    });
+    window.open('https://google.com/maps/@' + e.lngLat.lat + ',' + e.lngLat.lng + ',' + (map.getZoom() + 1) + 'z', '', 'width=1300,height=800');
   });
 
   const add_panorama = function () {
@@ -163,16 +96,16 @@
         console.error(json['error']);
       } else if (json['exists']) {
         window.notify.open({
-          type: "warning", message: "This location has already been discovered!", duration: 10000,
+          type: "warning", message: "This location has already been discovered!", duration: 14000,
         });
         if (json['tags_added'].length > 0) {
           window.notify.open({
-            type: "success", message: "Tags added<br>" + json['tags_added'], duration: 10000,
+            type: "success", message: "Tags added<br>" + json['tags_added'], duration: 14000,
           });
         }
         if (json['tags_removed'].length > 0) {
           window.notify.open({
-            type: "error", message: "Tags removed<br>" + json['tags_removed'], duration: 10000,
+            type: "error", message: "Tags removed<br>" + json['tags_removed'], duration: 14000,
           });
         }
       } else {
@@ -204,18 +137,5 @@
     if (event.key === 'Enter') {
       add_panorama();
     }
-  });
-
-  const user_panoramas = @json($user_panoramas);
-  const other_panoramas = @json($other_panoramas);
-  user_panoramas.forEach(val => {
-    new window.maplibregl.Marker({scale: 0.5, color: 'orange'})
-      .setLngLat([val.lng, val.lat])
-      .addTo(map)
-  });
-  other_panoramas.forEach(val => {
-    new window.maplibregl.Marker({scale: 0.5})
-      .setLngLat([val.lng, val.lat])
-      .addTo(map)
   });
 </script>

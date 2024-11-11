@@ -20,16 +20,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 final class PageDiscoveryController extends Controller {
   public function index(): View {
     return Resp::view(view: 'page::discovery.index', data: [
-      'user_panoramas' => DB::select(query: "
-        SELECT ST_Y(p.location::geometry) as lat, ST_X(p.location::geometry) as lng
-        FROM panorama p
-        WHERE p.added_by_user_id IS NOT NULL
-      "),
-      'other_panoramas' => DB::select(query: "
-        SELECT ST_Y(p.location::geometry) as lat, ST_X(p.location::geometry) as lng
-        FROM panorama p
-        WHERE p.added_by_user_id IS NULL
-      "),
       'user' => DB::selectOne(query: "
         SELECT
             m.file_path as map_marker_file_path,
@@ -85,40 +75,5 @@ final class PageDiscoveryController extends Controller {
       'tags_added' => $tags_added,
       'tags_removed' => $tags_removed,
     ]);
-  }
-
-
-  public function searchFromStreetViewLocation(): JsonResponse {
-    $retries = Req::getInt(key: 'retries');
-    $retries = min(max($retries, 0), 50);
-    $lat = Req::getFloat(key: 'lat');
-    $lng = Req::getFloat(key: 'lng');
-    $results = [];
-    for ($i = 0; $i <= $retries; $i++) {
-      $newPos = MapService::offsetLatLng(lat: $lat, lng: $lng, meters: Req::getFloat(key: 'distance'));
-      $data = StreetViewClient::fromLocation(latitude: $newPos->latitude, longitude: $newPos->longitude);
-      if ($data === null) {
-        $results[] = [
-          'lat' => $newPos->latitude,
-          'lng' => $newPos->longitude,
-          'status' => 'failed',
-        ];
-        continue;
-      }
-      if (!PanoramaService::panoramaExists(id: $data->panoId)) {
-        $panorama = PanoramaCreator::createFromStreetViewData(data: $data);
-        $results[] = [
-          'country_cca2' => $panorama->country_cca2,
-          'lat' => $data->lat,
-          'lng' => $data->lng,
-          'date' => $data->date,
-          'status' => 'new',
-        ];
-        break;
-      } else {
-        $results[] = ['statue' => 'exists'];
-      }
-    }
-    return new JsonResponse(data: $results);
   }
 }

@@ -2,6 +2,7 @@
 
 namespace Infrastructure\App\Enum;
 
+use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 use GuardsmanPanda\Larabear\Infrastructure\Oauth2\Crud\BearOauth2ClientCreator;
 use GuardsmanPanda\Larabear\Infrastructure\Oauth2\Enum\LarabearOauth2ClientTypeEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Oauth2\Model\BearOauth2Client;
@@ -9,6 +10,10 @@ use GuardsmanPanda\Larabear\Infrastructure\Oauth2\Model\BearOauth2Client;
 enum BearOauth2ClientEnum: string {
     case TWITCH = 'TWITCH';
     case GOOGLE = 'GOOGLE';
+
+    public static function fromRequest(): self {
+      return self::from(value: Req::getString(key: 'oauth2_client'));
+    }
 
     public function getDescription(): string {
         return match ($this) {

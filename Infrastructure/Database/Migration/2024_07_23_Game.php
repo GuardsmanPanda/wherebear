@@ -19,7 +19,6 @@ return new class extends Migration {
       $table->integer(column: 'round_result_duration_seconds');
       $table->integer(column: 'experience_points');
       $table->text(column: 'panorama_tag_enum')->nullable();
-      $table->boolean(column: 'is_country_restricted');
       $table->timestampTz(column: 'round_ends_at')->nullable();
       $table->timestampTz(column: 'next_round_at')->nullable();
       $table->uuid(column: 'created_by_user_id');

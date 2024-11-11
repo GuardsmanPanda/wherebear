@@ -10,3 +10,4 @@ Route::get(uri: 'user-settings', action: [AuthSettingsController::class, 'userSe
 Route::patch(uri: 'user-settings', action: [AuthSettingsController::class, 'userSettingsPatch']);
 
 Route::post(uri: 'guest', action: [AuthController::class, 'createGuest']);
+Route::post(uri: 'social-redirect', action: [AuthController::class, 'socialRedirect']);

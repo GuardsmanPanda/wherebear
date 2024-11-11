@@ -23,7 +23,10 @@ final class AchievementUserAssignmentAction {
       FROM bear_user bu
       LEFT JOIN achievement a ON achievement_type_enum = 'LEVEL'
       LEFT JOIN achievement_user au ON a.enum = au.achievement_enum AND au.user_id = bu.id
-      WHERE bu.id = ? AND au.user_id IS NULL AND bu.experience >= a.required_points
+      WHERE 
+        bu.id = ?
+        AND au.user_id IS NULL
+        AND a.required_points <= (SELECT enum FROM user_level WHERE experience_requirement <= bu.experience ORDER BY enum DESC LIMIT 1)
     SQL, bindings: [$userId]);
     foreach ($all as $a) {
       $enum = AchievementEnum::from($a->enum);

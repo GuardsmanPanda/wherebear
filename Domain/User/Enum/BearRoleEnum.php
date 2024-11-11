@@ -31,14 +31,7 @@ enum BearRoleEnum: string implements BearRoleEnumInterface {
         BearPermissionEnum::GAME_CREATE,
         BearPermissionEnum::PANORAMA_CONTRIBUTE,
       ],
-      self::BEAR => [
-        BearPermissionEnum::GAME_CREATE,
-        BearPermissionEnum::IS_BOB,
-        BearPermissionEnum::PANORAMA_CONTRIBUTE,
-        BearPermissionEnum::PANORAMA_DOWNLOAD,
-        BearPermissionEnum::PANORAMA_TAG,
-        BearPermissionEnum::TEMPLATE_CREATE,
-      ],
+      self::BEAR => BearPermissionEnum::cases(),
     };
   }
 

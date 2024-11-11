@@ -7,14 +7,15 @@ use Domain\Map\Enum\MapMarkerEnum;
 use Domain\Map\Enum\MapStyleEnum;
 use Domain\User\Enum\UserFlagEnum;
 use Domain\User\Model\WhereBearUser;
+use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearShortCodeService;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 final readonly class WhereBearUserUpdater {
   public function __construct(private WhereBearUser $model) {
     BearDatabaseService::mustBeInTransaction();
-    BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST', 'PATCH']);
   }
 
   public static function fromId(string $id): self {
@@ -60,6 +61,21 @@ final readonly class WhereBearUserUpdater {
       return $this;
     }
     $this->model->last_login_at = $last_login_at;
+    return $this;
+  }
+
+
+  public function makeAnonymous(): self {
+    $this->model->user_flag_enum = UserFlagEnum::UNKNOWN;
+    $this->model->display_name = 'Player-' . BearShortCodeService::generateNextCode();
+    $map_marker = DB::selectOne(query: "
+      SELECT enum
+      FROM map_marker
+      WHERE user_level_enum <= ?
+      ORDER BY random()
+      LIMIT 1
+    ", bindings: [$this->model->user_level_enum->value]);
+    $this->model->map_marker_enum = MapMarkerEnum::from(value: $map_marker->enum);
     return $this;
   }
 

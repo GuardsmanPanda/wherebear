@@ -69,7 +69,7 @@
           <span class="font-heading text-base font-bold text-white text-stroke-2 text-stroke-iris-900">Points</span>
           <div class="flex justify-center items-center w-32 h-6 relative rounded bg-iris-500">
             <img src="/static/img/icon/star-gold.svg" class="w-8 aspect-auto absolute -top-[6px] left-0 transform -translate-x-1/2" />
-            <span class="font-heading text-lg font-bold text-white text-stroke-2 text-stroke-iris-900">{{ $user->points }}</span>
+            <span class="font-heading text-lg font-bold text-white text-stroke-2 text-stroke-iris-900" tippy="{{ round((float)$user->points,2) }}">{{ round((float)$user->points) }}</span>
           </div>
         </div>
         <div class="flex flex-col items-center">
@@ -98,7 +98,7 @@
             honorificTitle="Digital Guinea Pig"
             name="{{ $player->display_name }}"
             iconPath="{{ $player->map_marker_file_path }}"
-            points="{{ $player->points }}"
+            points="{{ round((float)$user->points) }}"
             countryCCA2="{{ $player->country_cca2 }}"
             level="{{ $player->level }}">
           </lit-player-result-item>

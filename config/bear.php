@@ -11,7 +11,6 @@ use Domain\Panorama\Enum\PanoramaTagEnum;
 use Domain\User\Enum\UserFlagEnum;
 use Domain\User\Enum\UserLevelEnum;
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearEnvService;
-use GuardsmanPanda\Larabear\Integration\ExternalApi\Enum\BearExternalApiAuthEnum;
 
 return [
   'cookie' => [
