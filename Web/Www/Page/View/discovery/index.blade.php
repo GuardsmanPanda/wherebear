@@ -65,7 +65,7 @@
 
 
   map.on('click', function (e) {
-    window.open('https://google.com/maps/@' + e.lngLat.lat + ',' + e.lngLat.lng + ',' + map.getZoom() + 'z', '', 'width=1300,height=800');
+    window.open('https://google.com/maps/@' + e.lngLat.lat + ',' + e.lngLat.lng + ',' + (map.getZoom() + 1) + 'z', '', 'width=1300,height=800');
   });
 
   const add_panorama = function () {
