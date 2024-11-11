@@ -94,7 +94,7 @@
               <span class="font-heading font-bold text-sm text-iris-800">Invite Link</span>
               <div x-data="gameTinyUrlState" class="flex h-8">
                 <div class="flex items-center w-full h-full px-2 rounded-l border border-r-0 border-iris-300 bg-iris-200 truncate">
-                  <span x-ref="url" class="text-xs text-gray-800 max-w-[132px] min-[680px]:max-w-none truncate select-all">{{ config(key: 'app.url') }}/g/{{ $game->short_code }}</span>
+                  <span x-ref="url" class="text-xs text-gray-800 sm:max-w-[132px] min-[680px]:max-w-none truncate select-all">{{ config(key: 'app.url') }}/g/{{ $game->short_code }}</span>
                 </div>
                 <div x-ref="clipboardIcon" class="w-8 shrink-0 rounded-r border border-iris-300 py-0.5 bg-iris-400 hover:bg-iris-500 cursor-pointer" x-on:click="copyUrlToClipboard()">
                   <img src="/static/img/icon/copy.svg" class="w-full h-full hover:brightness-90" />
