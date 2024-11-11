@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Domain\Game\Action;
 
@@ -60,7 +62,7 @@ final class GameEndAction {
     SQL, bindings: [$game->id]);
 
     $game = GameService::setGameState(gameId: $game->id, state: GameStateEnum::FINISHED);
-    GameBroadcast::roundEvent(gameId: $game->id, roundNumber: $game->current_round, gameStateEnum: GameStateEnum::FINISHED);
+    GameBroadcast::gameRoundUpdate(gameId: $game->id, roundNumber: $game->current_round, gameStateEnum: GameStateEnum::FINISHED);
     AchievementJob::dispatch($game->id);
     return $game;
   }

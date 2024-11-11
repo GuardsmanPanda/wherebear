@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Domain\Game\Action;
 
@@ -30,13 +32,124 @@ final class GameRoundCreatorAction {
   private array $CL2 = ['AL', 'AU', 'BA', 'BG', 'BY', 'CA', 'CN', 'CZ', 'GE', 'HR', 'JP', 'KR', 'LU', 'NZ', 'RS', 'RU', 'SI', 'SK', 'UA', 'VA', 'XK'];
   /** @var array<string> $filler */
   private array $filler = [
-    'CA', 'US', 'MX', 'CU',
-    'AR', 'CL', 'UY', 'BR', 'PY', 'PE', 'BO', 'EC', 'CO', 'VE',
-    'AU', 'NZ', 'ID', 'MY', 'BN', 'SG', 'PH',
-    'ZA', 'BW', 'KE', 'UG', 'NG', 'GH', 'SN', 'MA', 'TN', 'EG', 'ZM', 'ZW',
-    'RU', 'IN', 'MN', 'CN', 'JP', 'KR', 'TW', 'VN', 'LA', 'NP', 'BT', 'KH', 'TH', 'MM', 'BD', 'MO', 'HK',
-    'PK', 'KZ', 'IR', 'IQ', 'AE', 'KW', 'BH', 'QA', 'SA', 'JO', 'PS', 'IL', 'LB', 'TR', 'GE', 'AZ', 'AM',
-    'GL', 'IS', 'NO', 'SE', 'FI', 'FO', 'AX', 'ET', 'LV', 'EE', 'DK', 'GB', 'IE', 'PT', 'ES', 'FR', 'LU', 'BE', 'NL', 'AD', 'MC', 'DE', 'CH', 'AT', 'CZ', 'SK', 'PL', 'LI', 'VA', 'BY', 'UA', 'MD', 'HU', 'RO', 'SI', 'HR', 'BA', 'ME', 'RS', 'BG', 'GR', 'AL', 'XK', 'MK',
+    // North America
+    'CA',
+    'US',
+    'MX',
+    'CU',
+    // South America
+    'AR',
+    'CL',
+    'UY',
+    'BR',
+    'PY',
+    'PE',
+    'BO',
+    'EC',
+    'CO',
+    'VE',
+    // Oceania
+    'AU',
+    'NZ',
+    'ID',
+    'MY',
+    'BN',
+    'SG',
+    'PH',
+    // Africa
+    'ZA',
+    'BW',
+    'KE',
+    'UG',
+    'NG',
+    'GH',
+    'SN',
+    'MA',
+    'TN',
+    'EG',
+    'ZM',
+    'ZW',
+    // East Asia & Southeast Asia
+    'RU',
+    'IN',
+    'MN',
+    'CN',
+    'JP',
+    'KR',
+    'TW',
+    'VN',
+    'LA',
+    'NP',
+    'BT',
+    'KH',
+    'TH',
+    'MM',
+    'BD',
+    'MO',
+    'HK',
+    // Middle East & Central Asia
+    'PK',
+    'KZ',
+    'IR',
+    'IQ',
+    'AE',
+    'KW',
+    'BH',
+    'QA',
+    'SA',
+    'JO',
+    'PS',
+    'IL',
+    'LB',
+    'TR',
+    'GE',
+    'AZ',
+    'AM',
+    // Europe
+    'GL',
+    'IS',
+    'NO',
+    'SE',
+    'FI',
+    'FO',
+    'AX',
+    'ET',
+    'LV',
+    'EE',
+    'DK',
+    'GB',
+    'IE',
+    'PT',
+    'ES',
+    'FR',
+    'LU',
+    'BE',
+    'NL',
+    'AD',
+    'MC',
+    'DE',
+    'CH',
+    'AT',
+    'CZ',
+    'SK',
+    'PL',
+    'LI',
+    'VA',
+    'BY',
+    'UA',
+    'MD',
+    'HU',
+    'RO',
+    'SI',
+    'HR',
+    'BA',
+    'ME',
+    'RS',
+    'BG',
+    'GR',
+    'AL',
+    'XK',
+    'MK',
   ];
 
   /** @var array<string> $countries_used */
@@ -185,7 +298,7 @@ final class GameRoundCreatorAction {
         panorama_id: $id
       );
 
-      GameBroadcast::prep(gameId: $this->game->id, message: "Round $i of $rounds selected", stage: 2 + $i);
+      GameBroadcast::gameStageUpdate(gameId: $this->game->id, message: "Round $i of $rounds selected", stage: 2 + $i);
       usleep(microseconds: self::DELAY_PER_ROUND_MS * 1000);
     }
   }

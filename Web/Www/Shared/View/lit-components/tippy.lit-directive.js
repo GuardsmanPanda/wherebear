@@ -8,6 +8,13 @@ class TooltipDirective extends Directive {
 
   update(part, [content]) {
     const element = part.element;
+
+    // Destroy existing tooltip instance if it exists
+    if (element._tippy) {
+      element._tippy.destroy();
+    }
+
+    // Initialize a new tippy instance with updated content
     tippy(element, {
       content: content,
     });

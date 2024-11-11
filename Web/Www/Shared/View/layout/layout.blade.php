@@ -47,7 +47,7 @@ declare(strict_types=1); ?>
 </head>
 
 <body>
-  <div id="primary" hx-target="#primary" class="bg-tertiary-surface-subtle font-body text-shade-text-body">
+  <div id="primary" hx-target="#primary" class="bg-gray-50 font-body text-shade-text-body">
     {!! $content !!}
   </div>
   @if(App::isLocal())

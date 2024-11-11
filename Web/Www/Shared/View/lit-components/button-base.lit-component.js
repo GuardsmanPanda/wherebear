@@ -29,26 +29,27 @@ export class ButtonBase extends LitElement {
 
   static styles = [css`${TailwindStyles}`, css`
     .inner-shadow {
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6), inset 0 -3px 1px rgba(0, 0, 0, 0.6);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6), inset 0 -2px 0 rgba(0, 0, 0, 0.6);
     }
     .inner-shadow:active {
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6), inset 0 -1px 1px rgba(0, 0, 0, 0.6);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 -1px 0 rgba(0, 0, 0, 0.6);
     }
 
     .inner-shadow-selected {
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6), inset 0 -2px 1px rgba(0, 0, 0, 0.6);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6), inset 0 -2px 0 rgba(0, 0, 0, 0.6);
     }
     .inner-shadow-selected:active {
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6), inset 0 -1px 1px rgba(0, 0, 0, 0.6);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6), inset 0 -1px 0 rgba(0, 0, 0, 0.6);
     }
   `];
 
   /** Defines a mapping between size labels (e.g., 'sm', 'md') and their corresponding height classes in Tailwind CSS syntax. */
   heightClasses = {
-    'sm': 'h-[32px]',
-    'md': 'h-[40px]',
-    'lg': 'h-[48px]',
-    'xl': 'h-[56px]'
+    'xs': 'h-6',
+    'sm': 'h-8',
+    'md': 'h-10',
+    'lg': 'h-12',
+    'xl': 'h-14'
   };
 
   constructor() {

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1); ?>
 @php use Domain\User\Enum\BearPermissionEnum;use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService; @endphp
-<x-bear::dialog.update hx-patch="/game/{{$game->id}}/lobby/settings" hx-target="#lobby">
+<x-bear::dialog.update hx-patch="/game/{{$game->id}}/lobby/settings">
   @if($game->templated_by_game_id === null)
     <x-bear::form.number id="number_of_rounds" required min="1" max="40">{{$game->number_of_rounds}}</x-bear::form.number>
   @endif
