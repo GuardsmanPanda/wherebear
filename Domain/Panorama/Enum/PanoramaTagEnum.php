@@ -37,9 +37,9 @@ enum PanoramaTagEnum : string implements BearDatabaseBackedEnumInterface {
       self::FUNNY => 'At least amusing.',
       self::GOOGLE => 'Google Office.',
       self::GREAT => 'Great Panorama, should be prioritized.',
-      self::LANDSCAPE => 'Landscape is the primary focus, minimal human activity visible.',
+      self::LANDSCAPE => 'The landscape is the only clue to the location.',
       self::ANIMAL => 'Panorama contains animals as the focus.',
-      self::DIFFICULT => 'AN experienced player would have a hard time guessing this panorama.',
+      self::DIFFICULT => 'An experienced player would have a hard time guessing this panorama.',
     };
   }
 

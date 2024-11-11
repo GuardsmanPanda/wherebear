@@ -11,7 +11,6 @@ use Web\Www\Page\Controller\PageTemplateController;
 Route::prefix('discovery')->middleware([BearPermissionMiddleware::using(permission: BearPermissionEnum::PANORAMA_CONTRIBUTE)])->group(callback: function () {
   Route::get(uri: '', action: [PageDiscoveryController::class, 'index']);
   Route::post(uri: 'street-view', action: [PageDiscoveryController::class, 'addFromStreetViewData']);
-  Route::post(uri: 'street-view-location-search', action: [PageDiscoveryController::class, 'searchFromStreetViewLocation']);
 });
 
 Route::prefix('achievement-location')->middleware([])->group(callback: function () {
