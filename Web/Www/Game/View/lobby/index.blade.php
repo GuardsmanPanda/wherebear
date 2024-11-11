@@ -1,3 +1,5 @@
+<?php declare(strict_types=1); ?>
+
 <div x-data="state('{{ $game->id }}', '{{ $user->id }}')" class="flex flex-col max-w-5xl h-screen mx-auto lg:border-x border-gray-700 select-none">
   <!-- Header -->
   <div x-ref="header" class="flex h-14 shrink-0 justify-between items-center px-2 border-b border-gray-700 bg-iris-500">

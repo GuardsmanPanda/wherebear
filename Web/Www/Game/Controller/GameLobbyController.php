@@ -26,11 +26,12 @@ use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use stdClass;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 final class GameLobbyController extends Controller {
-  private function getGame(string $gameId) {
+  private function getGame(string $gameId): ?stdClass {
     $game = DB::selectOne(query: <<<SQL
       SELECT
         g.id, g.number_of_rounds, g.round_duration_seconds, g.created_by_user_id, g.name,
@@ -45,7 +46,7 @@ final class GameLobbyController extends Controller {
     return $game;
   }
 
-  private function getPlayer(string $gameId, string $userId) {
+  private function getPlayer(string $gameId, string $userId): ?stdClass {
     $player = DB::selectOne(query: <<<SQL
       SELECT 
         bu.id, bu.display_name, bu.country_cca2, bu.user_level_enum as level,
@@ -168,9 +169,9 @@ final class GameLobbyController extends Controller {
     }, $players);
 
     $player = null;
-    foreach ($players as $player) {
-      if ($player->id === BearAuthService::getUserId()) {
-        $player = $player;
+    foreach ($players as $n) {
+      if ($n->id === BearAuthService::getUserId()) {
+        $player = $n;
         break;
       }
     }
@@ -235,7 +236,10 @@ final class GameLobbyController extends Controller {
       ->setGamePublicStatusEnum(enum: GamePublicStatusEnum::fromRequest())
       ->update();
 
-    GameBroadcast::gameUpdate(gameId: $gameId, game: $this->getGame($gameId));
+    $game = $this->getGame($gameId);
+    if ($game !== null) {
+      GameBroadcast::gameUpdate(gameId: $gameId, game: $game);
+    }
     return new Response();
   }
 

@@ -6,6 +6,7 @@ namespace Domain\Game\Broadcast;
 
 use Domain\Game\Enum\GameStateEnum;
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearBroadcastService;
+use stdClass;
 
 final class GameBroadcast {
   public static function gameDelete(string $gameId): void {
@@ -15,7 +16,7 @@ final class GameBroadcast {
     );
   }
 
-  public static function gameUpdate(string $gameId, $game): void {
+  public static function gameUpdate(string $gameId, stdClass $game): void {
     BearBroadcastService::broadcastNow(
       channel: 'game.' . $gameId,
       event: 'game.update',
@@ -42,7 +43,7 @@ final class GameBroadcast {
     );
   }
 
-  public static function playerJoin(string $gameId, $player): void {
+  public static function playerJoin(string $gameId, stdClass $player): void {
     BearBroadcastService::broadcastNow(
       channel: 'game.' . $gameId,
       event: 'player.join',
@@ -50,7 +51,7 @@ final class GameBroadcast {
     );
   }
 
-  public static function playerUpdate(string $gameId, $player = null): void {
+  public static function playerUpdate(string $gameId, stdClass $player = null): void {
     BearBroadcastService::broadcastNow(
       channel: 'game.' . $gameId,
       event: 'player.update',
