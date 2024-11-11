@@ -11,6 +11,7 @@ use Domain\Game\Crud\GameUserCreator;
 use Domain\Game\Enum\GamePublicStatusEnum;
 use Domain\Game\Enum\GameStateEnum;
 use Domain\Game\Model\Game;
+use Domain\User\Enum\BearPermissionEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Htmx;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
@@ -80,6 +81,10 @@ final class GameController extends Controller {
 
 
   public function delete(string $gameId): Response {
+    $game = Game::findOrFail(id: $gameId);
+    if ($game->created_by_user_id !== BearAuthService::getUserId() && !BearAuthService::hasPermission(permission: BearPermissionEnum::IS_BOB)) {
+      return Htmx::redirect(url: '/', message: "You do not have permission to delete this game");
+    }
     GameDeleter::deleteFromId(id: $gameId);
     GameBroadcast::gameDelete(gameId: $gameId);
     return new Response();
