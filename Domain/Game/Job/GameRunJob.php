@@ -50,14 +50,15 @@ final class GameRunJob implements ShouldQueue, ShouldBeUnique {
   }
 
   private function startConfirmingReady(Game $game): Game {
-    GameBroadcast::gameStageUpdate(gameId: $game->id, message: 'Game Starting', stage: 1);
+    GameBroadcast::gameStageUpdate(gameId: $game->id, message: 'Worker Ready', stage: 0);
     return GameService::setGameState(gameId: $game->id, state: GameStateEnum::CONFIRMING);
   }
 
 
   private function confirmReady(Game $game): Game {
-    GameBroadcast::gameStageUpdate(gameId: $game->id, message: 'Game Starting', stage: 1);
-    sleep(seconds: 8); // Wait for all players to confirm they are ready.
+    sleep(seconds: 3); // Wait for all players to confirm they are ready.
+    GameBroadcast::gameStageUpdate(gameId: $game->id, message: 'Confirming Players', stage: 1);
+    sleep(seconds: 6); // Wait for all players to confirm they are ready.
     if (GameService::canGameStart(gameId: $game->id, expectState: GameStateEnum::CONFIRMING)) {
       return GameService::setGameState(gameId: $game->id, state: GameStateEnum::SELECTING);
     }
@@ -68,9 +69,11 @@ final class GameRunJob implements ShouldQueue, ShouldBeUnique {
   }
 
   private function startGame(Game $game): Game {
-    GameBroadcast::gameStageUpdate(gameId: $game->id, message: 'Selecting Panoramas..', stage: 2);
-    $round_creator = new GameRoundCreatorAction(game: $game);
-    $round_creator->createAllRounds();
+    if ($game->templated_by_game_id === null) {
+      GameBroadcast::gameStageUpdate(gameId: $game->id, message: 'Selecting Panoramas..', stage: 2);
+      $round_creator = new GameRoundCreatorAction(game: $game);
+      $round_creator->createAllRounds();
+    }
     GameBroadcast::gameStageUpdate(gameId: $game->id, message: 'Loading First Round', stage: 3 + $game->number_of_rounds);
     return GameService::nextGameRound(game: $game);
   }

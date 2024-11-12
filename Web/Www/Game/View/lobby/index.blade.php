@@ -5,7 +5,7 @@
   <div x-ref="header" class="flex h-14 shrink-0 justify-between items-center px-2 border-b border-gray-700 bg-iris-500">
     <div class="flex w-16">
       @if($user->isHost)
-        <lit-button imgPath="/static/img/icon/cross.svg" size="md" bgColorClass="bg-red-500" hx-delete="/game/{{$game->id}}" hx-swap="none"></lit-button>
+        <lit-button imgPath="/static/img/icon/cross.svg" size="md" bgColorClass="bg-red-500" hx-delete="/game/{{$game->id}}" hx-swap="none" hx-confirm="Are you Sure you wish to DELETE the game?"></lit-button>
       @else
         <lit-button imgPath="/static/img/icon/arrow-back.svg" size="md" bgColorClass="bg-red-500" hx-delete="/game/{{$game->id}}/lobby/leave" hx-swap="none"></lit-button>
       @endif
@@ -78,7 +78,7 @@
           @if($user->isHost)
           <div slot="right" class="flex items-center gap-2">
             <lit-button label="Edit" size="xs" bgColorClass="bg-orange-400" class="w-16" hx-get="/game/{{$game->id}}/lobby/dialog/settings"></lit-button>
-            <lit-button label="Start" size="xs" bgColorClass="bg-iris-400" class="w-16" hx-post="/game/{{$game->id}}/start" hx-swap="none"></lit-button>
+            <lit-button label="Start" size="xs" bgColorClass="bg-iris-400" class="w-16" hx-post="/game/{{$game->id}}/start" hx-swap="none" hx-confirm="Confirm that you wish to START the game?"></lit-button>
           </div>
           @endif
         </lit-panel-header>
