@@ -24,7 +24,6 @@ class Label extends LitElement {
       [this.heightClass]: true,
       [this.bgColorClass]: this.bgColorClass,
       [this.widthClass]: this.widthClass,
-      'justify-center': this.iconPath,
       'justify-center': !this.iconPath,
       'pl-7': this.iconPath,
       'pl-1': !this.iconPath,
