@@ -14,6 +14,7 @@ final class MapStyleCrud {
         $model = MapStyle::find(id: $enum->value) ?? new MapStyle();
         $model->enum = $enum->value;
         $model->name = $enum->getName();
+        $model->short_name = $enum->getShortName();
         $model->external_api_enum = $enum->getExternalApi()->value;
         $model->tile_size = $enum->getTileSize();
         $model->zoom_offset = $enum->getZoomOffset();

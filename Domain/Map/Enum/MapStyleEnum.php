@@ -35,6 +35,19 @@ enum MapStyleEnum: string implements BearDatabaseBackedEnumInterface {
   }
 
 
+  public function getShortName(): string {
+    return match ($this) {
+      self::DEFAULT => 'Default',
+      self::OSM => 'Street',
+      self::SATELLITE => 'Expert',
+      self::SATELLITE_STREETS => 'Satellite',
+      self::NAVIGATION_NIGHT => 'Night',
+      self::STREETS => 'Pleasant',
+      self::DARK => 'Dark',
+    };
+  }
+
+
   public function getExternalPath(): string {
     return match ($this) {
       self::DEFAULT, self::OSM => '{z}/{x}/{y}.png',
