@@ -52,7 +52,7 @@ final class GameLobbyController extends Controller {
         bu.id, bu.display_name, bu.country_cca2, bu.user_level_enum as level,
         gu.is_ready, gu.is_observer,
         mm.file_path as map_marker_file_path,
-        ms.enum as map_style_enum,
+        ms.enum as map_style_enum, ms.short_name as map_style_short_name,
         COALESCE(uf.file_path, CONCAT('/static/flag/svg/', bu.country_cca2, '.svg')) as flag_file_path,
         COALESCE(uf.description, bc.name) as flag_description
       FROM game_user gu
@@ -150,7 +150,7 @@ final class GameLobbyController extends Controller {
         bu.id, bu.display_name, bu.country_cca2, bu.user_level_enum as level,
         gu.is_ready, gu.is_observer,
         mm.file_path as map_marker_file_path,
-        ms.enum as map_style_enum,
+        ms.enum as map_style_enum, ms.short_name as map_style_short_name,
         COALESCE(uf.file_path, CONCAT('/static/flag/svg/', bu.country_cca2, '.svg')) as flag_file_path,
         COALESCE(uf.description, bc.name) as flag_description
       FROM game_user gu

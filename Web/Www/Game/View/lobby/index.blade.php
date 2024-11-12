@@ -47,7 +47,7 @@
               </div>
               <div class="flex">
                 @if(!$user->isGuest)
-                  <lit-button :label="getMapStyleShortName(user.map_style_enum)" size="xs" :bgColorClass="user.map_style_enum === 'SATELLITE' ? 'bg-red-500' : 'bg-iris-500'" contentAlignment="left" imgPath="/static/img/icon/map.svg" lowercased class="w-[100px]" hx-get="/game/{{$game->id}}/lobby/dialog/map-style"></lit-button>
+                  <lit-button :label="user.map_style_short_name" size="xs" :bgColorClass="user.map_style_enum === 'SATELLITE' ? 'bg-red-500' : 'bg-iris-500'" contentAlignment="left" imgPath="/static/img/icon/map.svg" lowercased class="w-[100px]" hx-get="/game/{{$game->id}}/lobby/dialog/map-style"></lit-button>
                 @endif
               </div>
             </div>
@@ -206,7 +206,7 @@
                 <span x-text="player.title" class="leading-none font-heading font-medium text-sm text-gray-800 truncate"></span>
               </div>
               <lit-label 
-                :label="getMapStyleShortName(player.map_style_enum)"
+                :label="player.map_style_short_name"
                 size="xs" :type="player.map_style_enum === 'SATELLITE' ? 'error' : 'dark'"
                 iconPath="/static/img/icon/map.svg"
                 class="w-[80px] ml-1">
@@ -235,18 +235,6 @@
       players: @json($players),
       get user() {
         return this.players.find(n => n.id === userId);
-      },
-      getMapStyleShortName(mapStyleEnum) {
-        switch(mapStyleEnum){
-          case 'OSM': return 'Street';
-          case 'NIGHT': return 'Night';
-          case 'SATELLITE_STREETS': return 'Satellite';
-          case 'DARK': return 'Dark';
-          case 'DEFAULT': return 'Default';
-          case 'STREETS': return 'Pleasant';
-          case 'SATELLITE': return 'Expert';
-          default: return 'Map';
-        };
       },
       get readyPlayerCount() {
         return this.players.filter(n => n.is_ready).length;
