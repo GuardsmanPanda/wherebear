@@ -17,7 +17,7 @@
       </div>
     </div>
     <div class="flex justify-end w-24">
-      <div class="block sm:hidden w-full">
+      <div class="block lobby-sm:hidden w-full">
         <lit-button label="Wait" size="md" bgColorClass="bg-gray-500" hx-patch="/game/{{$game->id}}/lobby/update-game-user" hx-vals='{"is_ready": false}' hx-swap="none" x-show="user.is_ready"></lit-button>
         <lit-button label="Ready" size="md" bgColorClass="bg-pistachio-400" hx-patch="/game/{{$game->id}}/lobby/update-game-user" hx-vals='{"is_ready": true}' hx-swap="none" x-show="!user.is_ready"></lit-button>
       </div>
@@ -29,7 +29,7 @@
     <!-- Left Column -->
     <div class="flex flex-col w-full h-full">
       <!-- Scrollable Content -->
-      <div class="flex flex-col w-full sm:h-full overflow-y-auto">
+      <div class="flex flex-col w-full lobby-sm:h-full overflow-y-auto">
         <lit-panel-header label="PROFILE"></lit-panel-header>
         <div class="py-2">
           <div class="flex gap-2 mx-2">
@@ -47,7 +47,7 @@
               </div>
               <div class="flex">
                 @if(!$user->isGuest)
-                  <lit-button :label="userMapStyleShortName" size="xs" contentAlignment="left" imgPath="/static/img/icon/map.svg" class="w-24" hx-get="/game/{{$game->id}}/lobby/dialog/map-style"></lit-button>
+                  <lit-button :label="getMapStyleShortName(user.map_style_enum)" size="xs" :bgColorClass="user.map_style_enum === 'SATELLITE' ? 'bg-red-500' : 'bg-iris-500'" contentAlignment="left" imgPath="/static/img/icon/map.svg" lowercased class="w-[100px]" hx-get="/game/{{$game->id}}/lobby/dialog/map-style"></lit-button>
                 @endif
               </div>
             </div>
@@ -94,7 +94,7 @@
               <span class="font-heading font-bold text-sm text-iris-800">Invite Link</span>
               <div x-data="gameTinyUrlState" class="flex h-8">
                 <div class="flex items-center w-full h-full px-2 rounded-l border border-r-0 border-iris-300 bg-iris-200 truncate">
-                  <span x-ref="url" class="text-xs text-gray-800 sm:max-w-[132px] min-[680px]:max-w-none truncate select-all">{{ config(key: 'app.url') }}/g/{{ $game->short_code }}</span>
+                  <span x-ref="url" class="text-xs text-gray-800 lobby-sm:max-w-[132px] min-[720px]:max-w-none truncate select-all">{{ config(key: 'app.url') }}/g/{{ $game->short_code }}</span>
                 </div>
                 <div x-ref="clipboardIcon" class="w-8 shrink-0 rounded-r border border-iris-300 py-0.5 bg-iris-400 hover:bg-iris-500 cursor-pointer" x-on:click="copyUrlToClipboard()">
                   <img src="/static/img/icon/copy.svg" class="w-full h-full hover:brightness-90" />
@@ -136,14 +136,14 @@
             </div>
           </div>
 
-          <div class="block sm:hidden mt-2 mx-2">
+          <div class="block lobby-sm:hidden mt-2 mx-2">
             @include('game::lobby.total-game-time')
           </div>
         </div>
       </div>
       <!-- Expandable Panel -->
       <div x-ref="playersSubstitute" class="hidden flex-1 min-h-[142px]"></div>
-      <div x-ref="players" data-state="collapsed" class="flex flex-col sm:hidden flex-1 min-h-[142px] z-10 px-2 bg-iris-500 border border-t-2 border-b-0 border-gray-700 rounded-t-2xl transition-[height] duration-700 ease-in-out">
+      <div x-ref="players" data-state="collapsed" class="flex flex-col lobby-sm:hidden flex-1 min-h-[142px] z-10 px-2 bg-iris-500 border border-t-2 border-b-0 border-gray-700 rounded-t-2xl transition-[height] duration-700 ease-in-out">
         <div class="flex justify-between items-center py-2 border-b border-gray-50 cursor-pointer" x-on:click="togglePlayerListSize">
           <div></div>
           <div class="font-heading font-bold text-base text-gray-0 text-stroke-2 text-stroke-iris-800">PLAYERS</div>
@@ -174,12 +174,12 @@
         </div>
       </div> --}}
 
-      <div class="hidden sm:block">
+      <div class="hidden lobby-sm:block">
         @include('game::lobby.total-game-time')
       </div>
     </div>
     <!-- Right Column -->
-    <div class="hidden sm:flex flex-col shrink-0 w-[280px] h-full border-l border-gray-700">
+    <div class="hidden lobby-sm:flex flex-col shrink-0 w-[320px] h-full overflow-hidden border-l border-gray-700">
       <lit-panel-header label="STATUS">
         <lit-label slot="right" :label="user.is_ready ? 'Ready' : 'Pending...'" size="sm" :bgColorClass="user.is_ready ? 'bg-pistachio-400' : 'bg-gray-500'" widthClass="w-24"></lit-label>
       </lit-panel-header>
@@ -195,18 +195,28 @@
             'from-pistachio-400 to-pistachio-500': player.is_ready, 
             'from-gray-50 to-gray-100': !player.is_ready 
             }">
-            <div class="flex flex-none justify-start items-end w-12 h-12">
+            <div class="flex flex-none justify-center items-end w-16 h-16">
               <img :src="player.map_marker_file_path" class="max-w-full max-h-full self-end object-contain" draggable="false" />
             </div>
-            <div class="flex flex-col gap-0 w-full overflow-hidden">
-              <span x-text="player.display_name" class="leading-none font-heading font-semibold text-base truncate"  :class="{ 'text-iris-800': !player.is_ready, 'text-gray-0 text-stroke-2 text-stroke-pistachio-900': player.is_ready }"></span>
-              <span x-text="player.title" class="font-heading font-semibold text-sm text-gray-800 truncate"></span>
-            </div>
-            <div class="flex flex-col gap-1">
-              <div class="flex justify-center items-center w-6 h-5">
-                <lit-flag :cca2="player.country_cca2" :filePath="player.flag_file_path" :description="player.flag_description" roundedClass="rounded-sm" maxHeightClass="max-h-5" class="w-6" draggable="false"></lit-flag>
+            <div class="flex flex-col gap-[10px] w-full overflow-hidden">
+              <div class="flex flex-col w-full">
+                <span x-text="player.display_name" class="leading-none font-heading font-semibold text-lg truncate" 
+                  :class="{ 'text-iris-800': !player.is_ready, 'text-gray-0 text-stroke-2 text-stroke-pistachio-900': player.is_ready }">
+                </span>
+                <span x-text="player.title" class="leading-none font-heading font-medium text-sm text-gray-800 truncate"></span>
               </div>
-              <lit-level-emblem :level="player.level" size="xs"></lit-level-emblem>
+              <lit-label 
+                :label="getMapStyleShortName(player.map_style_enum)"
+                size="xs" :type="player.map_style_enum === 'SATELLITE' ? 'error' : 'dark'"
+                iconPath="/static/img/icon/map.svg"
+                class="w-[80px] ml-1">
+              </lit-label>
+            </div>
+            <div class="flex flex-col justify-between items-end">
+              <div class="flex items-center w-8 h-6">
+                <lit-flag :cca2="player.country_cca2" :filePath="player.flag_file_path" :description="player.flag_description" roundedClass="rounded-sm" maxHeightClass="max-h-6" class="w-8" draggable="false"></lit-flag>
+              </div>
+              <lit-level-emblem :level="player.level" size="sm"></lit-level-emblem>
             </div>
           </div>
         </template>
@@ -226,16 +236,16 @@
       get user() {
         return this.players.find(n => n.id === userId);
       },
-      get userMapStyleShortName() {
-        switch(this.user.map_style_enum){
-          case 'OSM': return 'OSM';
-          case 'NIGHT': return 'NIGHT';
-          case 'SATELLITE_STREETS': return 'SAT STR';
-          case 'DARK': return 'DARK';
-          case 'DEFAULT': return 'DEFLT';
-          case 'STREETS': return 'PLE STR';
-          case 'SATELLITE': return 'SAT';
-          default: return 'MAP';
+      getMapStyleShortName(mapStyleEnum) {
+        switch(mapStyleEnum){
+          case 'OSM': return 'Street';
+          case 'NIGHT': return 'Night';
+          case 'SATELLITE_STREETS': return 'Satellite';
+          case 'DARK': return 'Dark';
+          case 'DEFAULT': return 'Default';
+          case 'STREETS': return 'Pleasant';
+          case 'SATELLITE': return 'Expert';
+          default: return 'Map';
         };
       },
       get readyPlayerCount() {

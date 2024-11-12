@@ -12,6 +12,9 @@ module.exports = {
       heading: 'Baloo'
     },
     extend: {
+      screens: {
+        'lobby-sm': '680px'
+      },
       colors: {
         gray: {
           0: '#FFFFFF',
@@ -51,6 +54,19 @@ module.exports = {
           800: '#558B2F',
           900: '#33691E',
           950: '#21510E',
+        },
+        poppy: {
+          50: '#FFEDEA',
+          100: '#FFDCD5',
+          200: '#FFB9AD',
+          300: '#FA9484',
+          400: '#F26D5B',
+          500: '#E83D2D',
+          600: '#CA3426',
+          700: '#AC2B1F',
+          800: '#902218',
+          900: '#741A11',
+          950: '#59120B',
         },
         iris: {
           50: '#EEF3FE',

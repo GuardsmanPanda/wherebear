@@ -1,4 +1,4 @@
-import { LitElement, css, html } from 'lit';
+import { LitElement, css, html, nothing } from 'lit';
 import { classMap } from 'lit/directives/class-map.js';
 
 import { TailwindStyles } from '../../../../../public/static/dist/lit-tailwind-css';
@@ -10,9 +10,11 @@ class Label extends LitElement {
   static properties = {
     label: { type: String },
     bgColorClass: { type: String },
+    iconPath: { type: String },
     isPill: { type: Boolean },
     size: { type: String },
-    widthClass: { type: String }
+    widthClass: { type: String },
+    type: { type: String }
   }
 
   static styles = css`${TailwindStyles}`;
@@ -22,16 +24,32 @@ class Label extends LitElement {
       [this.heightClass]: true,
       [this.bgColorClass]: this.bgColorClass,
       [this.widthClass]: this.widthClass,
-      '-skew-x-6': !this.isPill,
+      'justify-center': this.iconPath,
+      'justify-center': !this.iconPath,
+      'pl-7': this.iconPath,
+      'pl-1': !this.iconPath,
+      '-skew-x-6': !this.isPill && this.size !== 'xs',
+      '-skew-x-12': !this.isPill && this.size === 'xs',
       'rounded': !this.isPill,
-      'rounded-full': this.isPill
+      'rounded-full': this.isPill,
+      'bg-pistachio-500': this.type === 'success',
+      'bg-poppy-500': this.type === 'error',
+      'bg-gray-600': this.type === 'dark',
+    }
+  }
+
+  get imgClasses() {
+    return {
+      'skew-x-6': !this.isPill && this.size !== 'xs',
+      'skew-x-12': !this.isPill && this.size === 'xs',
     }
   }
 
   get labelClasses() {
     return {
       [this.textSizeClass]: true,
-      'skew-x-6': !this.isPill
+      'skew-x-6': !this.isPill && this.size !== 'xs',
+      'skew-x-12': !this.isPill && this.size === 'xs',
     }
   }
 
@@ -53,7 +71,8 @@ class Label extends LitElement {
 
   render() {
     return html`
-      <div class="flex justify-center items-center px-2 border border-gray-700 ${classMap(this.classes)}">
+      <div class="flex items-center relative pr-1 border border-gray-700 ${classMap(this.classes)}">
+        ${this.iconPath ? html`<img src="${this.iconPath}" class="h-4 absolute -top-1 left-1 ${classMap(this.imgClasses)}" />` : nothing}
         <span class="font-heading font-semibold text-gray-0 text-stroke-2 text-stroke-gray-700 ${classMap(this.labelClasses)}">${this.label}</span>
       </div>
     `;
