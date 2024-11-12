@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 
+use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearEnvService;
+
 return [
     'default' => 'database',
     'connections' => [
@@ -9,7 +11,7 @@ return [
         'database' => [
             'driver' => 'database',
             'table' => 'job_queue',
-            'queue' => 'default',
+            'queue' => BearEnvService::getStringOrDefault(key: 'QUEUE_NAME', default: 'default'),
             'retry_after' => 90,
             'after_commit' => false,
         ],

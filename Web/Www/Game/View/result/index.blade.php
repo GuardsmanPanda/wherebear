@@ -98,7 +98,7 @@
             honorificTitle="Digital Guinea Pig"
             name="{{ $player->display_name }}"
             iconPath="{{ $player->map_marker_file_path }}"
-            points="{{ round((float)$user->points) }}"
+            points="{{ round((float)$player->points) }}"
             countryCCA2="{{ $player->country_cca2 }}"
             level="{{ $player->level }}">
           </lit-player-result-item>

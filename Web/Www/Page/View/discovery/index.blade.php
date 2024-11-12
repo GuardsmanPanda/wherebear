@@ -12,10 +12,6 @@
         </div>
       @endif
       <div class="flex items-center">
-        <label class="mr-2 font-medium text-gray-400" for="GREAT">GREAT</label>
-        <input id="GREAT" type="checkbox" name="tag" value="GREAT">
-      </div>
-      <div class="flex items-center">
         <label class="mr-2 font-medium text-gray-400" for="LANDSCAPE">LANDSCAPE</label>
         <input id="LANDSCAPE" type="checkbox" name="tag" value="LANDSCAPE">
       </div>
@@ -65,12 +61,8 @@
   });
 
   const add_panorama = function () {
-    let panorama_id = "";
     let text = "";
     try {
-      // Regex for extracting panorama id, which is the string aster !1s
-      const re = "!1s([^!]+)!2e";
-      panorama_id = document.getElementById('map-url').value.match(re)[1];
       text = document.getElementById('map-url').value.split('@')[1].split(',');
     } catch (e) {
       window.notify.error("Failed to parse URL, is this a valid Street View URL?");
@@ -87,7 +79,7 @@
       method: 'POST', headers: {
         'Content-Type': 'application/json'
       }, body: JSON.stringify({
-        panorama_id: panorama_id, lat: text[0], lng: text[1], tags_checked: tags_checked, tags_unchecked: tags_unchecked,
+        street_view_url: document.getElementById('map-url').value, lat: text[0], lng: text[1], tags_checked: tags_checked, tags_unchecked: tags_unchecked,
       }),
     }).then(resp => resp.json()).then(json => {
       console.log(json);
