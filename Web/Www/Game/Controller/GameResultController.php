@@ -86,12 +86,13 @@ final class GameResultController extends Controller {
     SQL, bindings: [$gameId]);
 
     $user_result = collect($players)->first(fn($n) => $n->user_id === BearAuthService::getUserId());
-    $user->rank = $user_result->rank;
+
+    $user->levelPercentage = floor(num: $user->current_level_experience_points * 100 / $user->next_level_experience_points_requirement);
     $user->points = $user_result->points;
+    $user->rank = $user_result->rank;
 
     return Resp::view(view: 'game::result.index', data: [
       'game' => $game,
-      'levelPercentage' => floor(num: $user->current_level_experience_points * 100 / $user->next_level_experience_points_requirement),
       'rounds' => $rounds,
       'players' => $players,
       'user' => $user
@@ -111,6 +112,63 @@ final class GameResultController extends Controller {
         'panorama_lat' => 48,
         'panorama_lng' => 2,
         'round_result_seconds_remaining' => 14
+      ],
+      'players' => [
+        (object) [
+          'country_cca2' => 'NP',
+          'country_name' => 'Nepal',
+          'display_name' => 'GreenMonkeyBoy',
+          'flag_file_path' => '/static/flag/svg/NP.svg',
+          'flag_description' => 'Nepal',
+          'level' => 3,
+          'map_marker_file_path' => '/static/img/map-marker/monster/1.png',
+          'points' => 124,
+          'rank' => 1,
+        ],
+        (object) [
+          'country_cca2' => 'RAINBOW',
+          'country_name' => '',
+          'display_name' => 'GuardsmanBob',
+          'flag_file_path' => '/static/flag/svg/RAINBOW.svg',
+          'flag_description' => 'Taste The Rainbow!',
+          'level' => 49,
+          'map_marker_file_path' => '/static/img/map-marker/monster/2.png',
+          'points' => 97,
+          'rank' => 2,
+        ],
+        (object) [
+          'country_cca2' => 'UA',
+          'country_name' => 'Ukraine',
+          'display_name' => 'BorschtBoss',
+          'flag_file_path' => '/static/flag/svg/UA.svg',
+          'flag_description' => 'Ukraine',
+          'level' => 7,
+          'map_marker_file_path' => '/static/img/map-marker/planet/2.png',
+          'points' => 12,
+          'rank' => 3,
+        ],
+        (object) [
+          'country_cca2' => 'KR',
+          'country_name' => 'South Korea',
+          'display_name' => 'KittyCat',
+          'flag_file_path' => '/static/flag/svg/KR.svg',
+          'flag_description' => 'South Korea',
+          'level' => 16,
+          'map_marker_file_path' => '/static/img/map-marker/chibi/anubis.png',
+          'points' => 9,
+          'rank' => 4,
+        ],
+        (object) [
+          'country_cca2' => 'RU',
+          'country_name' => 'Russia',
+          'display_name' => 'Kirby',
+          'flag_file_path' => '/static/flag/svg/RU.svg',
+          'flag_description' => 'Russia',
+          'level' => 1,
+          'map_marker_file_path' => '/static/img/map-marker/monster/land-2.png',
+          'points' => 1,
+          'rank' => 5,
+        ]
       ],
       'rounds' => [
         (object) [
@@ -142,57 +200,11 @@ final class GameResultController extends Controller {
           'country_subdivision_match' => true
         ],
       ],
-      'players' => [
-        (object) [
-          'display_name' => 'GreenMonkeyBoy',
-          'map_marker_file_path' => '/static/img/map-marker/monster/1.png',
-          'country_cca2' => 'NP',
-          'country_name' => 'France',
-          'level' => 3,
-          'points' => 124,
-          'rank' => 1,
-        ],
-        (object) [
-          'display_name' => 'GuardsmanBob',
-          'map_marker_file_path' => '/static/img/map-marker/monster/2.png',
-          'country_cca2' => 'ZW',
-          'country_name' => 'Denmark',
-          'level' => 49,
-          'points' => 97,
-          'rank' => 2,
-        ],
-        (object) [
-          'display_name' => 'BorschtBoss',
-          'map_marker_file_path' => '/static/img/map-marker/planet/2.png',
-          'country_cca2' => 'UA',
-          'country_name' => 'Ukraine',
-          'level' => 7,
-          'points' => 12,
-          'rank' => 3,
-        ],
-        (object) [
-          'display_name' => 'KittyCat',
-          'map_marker_file_path' => '/static/img/map-marker/chibi/anubis.png',
-          'country_cca2' => 'KR',
-          'country_name' => 'South Korea',
-          'level' => 16,
-          'points' => 9,
-          'rank' => 4,
-        ],
-        (object) [
-          'display_name' => 'Kirby',
-          'map_marker_file_path' => '/static/img/map-marker/monster/land-2.png',
-          'country_cca2' => 'RU',
-          'country_name' => 'Russia',
-          'level' => 1,
-          'points' => 1,
-          'rank' => 5,
-        ]
-      ],
       'user' => (object) [
         'current_level_experience_points' => 45,
         'display_name' => 'GreenMonkeyBoy',
         'level' => 2,
+        'levelPercentage' => 25,
         'map_marker_file_path' => '/static/img/map-marker/monster/1.png',
         'next_level_experience_points_requirement' => 78,
         'points' => 124,
