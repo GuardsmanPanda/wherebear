@@ -7,7 +7,7 @@
       @if($user->isHost)
         <lit-button imgPath="/static/img/icon/cross.svg" size="md" bgColorClass="bg-red-500" hx-delete="/game/{{$game->id}}" hx-swap="none" hx-confirm="Are you Sure you wish to DELETE the game?"></lit-button>
       @else
-        <lit-button imgPath="/static/img/icon/arrow-back.svg" size="md" bgColorClass="bg-red-500" hx-delete="/game/{{$game->id}}/lobby/leave" hx-swap="none"></lit-button>
+        <lit-button imgPath="/static/img/icon/arrow-back.svg" size="md" bgColorClass="bg-gray-400" hx-delete="/game/{{$game->id}}/lobby/leave" hx-swap="none"></lit-button>
       @endif
     </div>
     <div class="flex flex-col flex-1 items-center">
