@@ -11,6 +11,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Web\Www\Game\Util\GameUtil;
 
 final class GameResultController extends Controller {
   public function index(string $gameId): View|RedirectResponse {
@@ -44,27 +45,6 @@ final class GameResultController extends Controller {
       ORDER BY gr.round_number
     SQL, bindings: [BearAuthService::getUserId(), $gameId]);
 
-    $user = DB::selectOne(query: <<<SQL
-      SELECT
-        u.id, 
-        u.display_name, 
-        u.user_level_enum as level, 
-        u.experience - ul.experience_requirement as current_level_experience_points,
-        ul2.experience_requirement - ul.experience_requirement as next_level_experience_points_requirement,
-        u.map_style_enum,
-        mm.file_path as map_marker_file_path
-      FROM bear_user u
-      LEFT JOIN map_marker mm ON mm.enum = u.map_marker_enum
-      LEFT JOIN game_user gu ON gu.user_id = u.id
-      LEFT JOIN user_level ul ON ul.enum = u.user_level_enum
-      LEFT JOIN user_level ul2 ON ul2.enum = u.user_level_enum + 1
-      WHERE u.id = ? AND gu.game_id = ?
-    SQL, bindings: [BearAuthService::getUserId(), $gameId]);
-
-    if ($user === null) {
-      return Resp::redirect(url: "/", message: "You did not participate in this game");
-    }
-
     $players = DB::select(query: <<<SQL
       SELECT
         u.id as user_id, u.display_name, 
@@ -85,11 +65,38 @@ final class GameResultController extends Controller {
       ORDER BY gu.points DESC, u.id
     SQL, bindings: [$gameId]);
 
+    foreach ($players as $player) {
+      $player->detailed_points = GameUtil::getDetailedPoints($player->points);
+      $player->rounded_points = GameUtil::getRoundedPoints($player->points);
+    }
+
+    $user = DB::selectOne(query: <<<SQL
+      SELECT
+        u.id, 
+        u.display_name, 
+        u.user_level_enum as level, 
+        u.experience - ul.experience_requirement as current_level_experience_points,
+        ul2.experience_requirement - ul.experience_requirement as next_level_experience_points_requirement,
+        u.map_style_enum,
+        mm.file_path as map_marker_file_path
+      FROM bear_user u
+      LEFT JOIN map_marker mm ON mm.enum = u.map_marker_enum
+      LEFT JOIN game_user gu ON gu.user_id = u.id
+      LEFT JOIN user_level ul ON ul.enum = u.user_level_enum
+      LEFT JOIN user_level ul2 ON ul2.enum = u.user_level_enum + 1
+      WHERE u.id = ? AND gu.game_id = ?
+    SQL, bindings: [BearAuthService::getUserId(), $gameId]);
+
+    if ($user === null) {
+      return Resp::redirect(url: "/", message: "You did not participate in this game");
+    }
     $user_result = collect($players)->first(fn($n) => $n->user_id === BearAuthService::getUserId());
 
+    $user->detailed_points = GameUtil::getDetailedPoints($user_result->points);
     $user->levelPercentage = floor(num: $user->current_level_experience_points * 100 / $user->next_level_experience_points_requirement);
     $user->points = $user_result->points;
     $user->rank = $user_result->rank;
+    $user->rounded_points = GameUtil::getRoundedPoints($user_result->points);
 
     return Resp::view(view: 'game::result.index', data: [
       'game' => $game,
@@ -117,57 +124,67 @@ final class GameResultController extends Controller {
         (object) [
           'country_cca2' => 'NP',
           'country_name' => 'Nepal',
+          'detailed_points' => "127.51",
           'display_name' => 'GreenMonkeyBoy',
           'flag_file_path' => '/static/flag/svg/NP.svg',
           'flag_description' => 'Nepal',
           'level' => 3,
           'map_marker_file_path' => '/static/img/map-marker/monster/1.png',
-          'points' => 124,
+          'points' => "127.510",
           'rank' => 1,
+          'rounded_points' => 127
         ],
         (object) [
           'country_cca2' => 'RAINBOW',
           'country_name' => '',
+          'detailed_points' => '97.50',
           'display_name' => 'GuardsmanBob',
           'flag_file_path' => '/static/flag/svg/RAINBOW.svg',
           'flag_description' => 'Taste The Rainbow!',
           'level' => 49,
           'map_marker_file_path' => '/static/img/map-marker/monster/2.png',
-          'points' => 97,
+          'points' => 97.500,
           'rank' => 2,
+          'rounded_points' => 98
         ],
         (object) [
           'country_cca2' => 'UA',
           'country_name' => 'Ukraine',
+          'detailed_points' => "12.02",
           'display_name' => 'BorschtBoss',
           'flag_file_path' => '/static/flag/svg/UA.svg',
           'flag_description' => 'Ukraine',
           'level' => 7,
           'map_marker_file_path' => '/static/img/map-marker/planet/2.png',
-          'points' => 12,
+          'points' => 12.019,
           'rank' => 3,
+          'rounded_points' => 12
         ],
         (object) [
           'country_cca2' => 'KR',
           'country_name' => 'South Korea',
+          'detailed_points' => "9.00",
           'display_name' => 'KittyCat',
           'flag_file_path' => '/static/flag/svg/KR.svg',
           'flag_description' => 'South Korea',
           'level' => 16,
           'map_marker_file_path' => '/static/img/map-marker/chibi/anubis.png',
-          'points' => 9,
+          'points' => 9.0,
           'rank' => 4,
+          'rounded_points' => 9
         ],
         (object) [
           'country_cca2' => 'RU',
           'country_name' => 'Russia',
+          'detailed_points' => "0.10",
           'display_name' => 'Kirby',
           'flag_file_path' => '/static/flag/svg/RU.svg',
           'flag_description' => 'Russia',
           'level' => 1,
           'map_marker_file_path' => '/static/img/map-marker/monster/land-2.png',
-          'points' => 1,
+          'points' => 0.1,
           'rank' => 5,
+          'rounded_points' => 0
         ]
       ],
       'rounds' => [
@@ -202,13 +219,15 @@ final class GameResultController extends Controller {
       ],
       'user' => (object) [
         'current_level_experience_points' => 45,
+        'detailed_points' => '124.47',
         'display_name' => 'GreenMonkeyBoy',
         'level' => 2,
         'levelPercentage' => 25,
         'map_marker_file_path' => '/static/img/map-marker/monster/1.png',
         'next_level_experience_points_requirement' => 78,
-        'points' => 124,
-        'rank' => 2
+        'points' => 124.465789,
+        'rank' => 2,
+        'rounded_points' => 124
       ]
     ]);
   }
