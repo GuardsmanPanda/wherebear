@@ -51,7 +51,7 @@ final class GameLobbyController extends Controller {
       SELECT 
         bu.id, bu.display_name, bu.country_cca2, bu.user_level_enum as level,
         gu.is_ready, gu.is_observer,
-        mm.file_path as map_marker_file_path,
+        mm.file_path as map_marker_file_path, mm.map_anchor as map_marker_map_anchor,
         ms.enum as map_style_enum, ms.short_name as map_style_short_name,
         COALESCE(uf.file_path, CONCAT('/static/flag/svg/', bu.country_cca2, '.svg')) as flag_file_path,
         COALESCE(uf.description, bc.name) as flag_description
@@ -127,7 +127,7 @@ final class GameLobbyController extends Controller {
         bu.experience - ul.experience_requirement as current_level_experience_points,
         (SELECT ul2.experience_requirement FROM user_level ul2 WHERE ul2.enum = bu.user_level_enum + 1) - ul.experience_requirement as next_level_experience_points_requirement,
         gu.is_ready,
-        mm.file_path as map_marker_file_path,
+        mm.file_path as map_marker_file_path, mm.map_anchor as map_marker_map_anchor,
         COALESCE(uf.file_path, CONCAT('/static/flag/svg/', bu.country_cca2, '.svg')) as flag_file_path,
         COALESCE(uf.description, bc.name) as flag_description
       FROM bear_user bu
@@ -149,7 +149,7 @@ final class GameLobbyController extends Controller {
       SELECT 
         bu.id, bu.display_name, bu.country_cca2, bu.user_level_enum as level,
         gu.is_ready, gu.is_observer,
-        mm.file_path as map_marker_file_path,
+        mm.file_path as map_marker_file_path, mm.map_anchor as map_marker_map_anchor,
         ms.enum as map_style_enum, ms.short_name as map_style_short_name,
         COALESCE(uf.file_path, CONCAT('/static/flag/svg/', bu.country_cca2, '.svg')) as flag_file_path,
         COALESCE(uf.description, bc.name) as flag_description
