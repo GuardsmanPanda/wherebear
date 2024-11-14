@@ -1,7 +1,7 @@
 <?php declare(strict_types=1); ?>
 @php use Web\Www\Game\Util\GameUtil; @endphp
 
-<div x-data="state({{ $game->round_result_seconds_remaining - 1 }})" @keyup.right="nextTexture()" @keyup.left="previousTexture()" class="flex flex-col h-screen">
+<div x-data="state({{ $game->round_result_seconds_remaining - 1 }})" @keyup.right="nextTexture()" @keyup.left="previousTexture()" class="flex flex-col h-screen select-none">
   <div class="relative flex-1 overflow-hidden">
     <div class="flex justify-between items-start bg-iris-400 texture border-b-2 border-gray-700" :style="{ 'background-image': `url(https://www.transparenttextures.com/patterns/${texture}.png)` }">
       <div class="flex gap-2 w-full relative pr-[122px]">
@@ -30,13 +30,7 @@
               <div class="w-6 aspect-auto absolute -top-[4px] left-0 transform -translate-x-1/2">
                 <img src="/static/img/icon/star-gold.svg" />
               </div>
-              <span class="text-xs text-gray-0 font-medium">
-                @if(floor($user_guess->points) == $user_guess->points)
-                    {{ number_format($user_guess->points, 0) }}
-                @else
-                    {{ number_format($user_guess->points, 2) }}
-                @endif
-              </span>
+              <span class="text-xs text-gray-0 font-medium" tippy="{{ $user_guess->detailed_points }}">{{ $user_guess->rounded_points }}</span>
             </div>
       
             <div
@@ -82,16 +76,17 @@
         <div slot="content" class="flex flex-col gap-2">
           @foreach ($guesses as $guess)
             <lit-player-result-item 
-              distanceMeters="{{ $guess->distance_meters }}"
-              iconPath="{{ $guess->map_marker_file_path }}"
-              name="{{ $guess->user_display_name }}"
               countryCCA2="{{ $guess->user_country_cca2 }}"
+              detailedPoints="{{ $guess->detailed_points }}"
+              distanceMeters="{{ $guess->distance_meters }}"
               flagFilePath="{{ $guess->user_flag_file_path }}"
               flagDescription="{{ $guess->user_flag_description }}"
+              honorificTitle="Digital Guinea Pig"
+              iconPath="{{ $guess->map_marker_file_path }}"
               level="{{ $guess->user_level }}"
+              name="{{ $guess->user_display_name }}"
               rank="{{ $guess->rank }}"
-              points="{{ $guess->points }}"
-              honorificTitle="Digital Guinea Pig">
+              roundedPoints="{{ $guess->rounded_points }}">
             </lit-player-result-item>    
           @endforeach
         </div>

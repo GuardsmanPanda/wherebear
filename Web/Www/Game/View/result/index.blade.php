@@ -2,7 +2,7 @@
   use Web\Www\Game\Util\GameUtil;
 ?>
 
-<div x-data="state" class="flex flex-col h-screen bg-iris-200">
+<div x-data="state" class="flex flex-col h-screen bg-iris-200 select-none">
   <div class="flex justify-between items-center h-12 relative border-b-2 border-gray-700 bg-iris-500 shadow-lg">
     <div class="flex flex-1 pl-2">
       <lit-button imgPath="/static/img/icon/cross.svg" size="md" bgColorClass="bg-red-500" x-on:clicked="navigateHome()"></lit-button>
@@ -19,7 +19,7 @@
     <div class="flex-1"></div>
   </div>
 
-  <lit-panel label="Stats" class="relative mx-2 mt-5">
+  <lit-panel label="Stats" class="relative mx-2 mt-5 select-none">
     <div class="flex flex-col gap-4 px-2 pt-4 pb-2">
       <div class="flex h-16 gap-2">
         <div class="flex shrink-0 justify-center items-end">
@@ -27,7 +27,7 @@
         </div>
 
         <div class="flex flex-col flex-grow mr-24 sm:mr-32 justify-between">
-          <span class="font-heading text-xl font-bold text-white text-stroke-2 text-stroke-iris-900">{{ $user->display_name }}</span>
+          <span class="font-heading text-xl font-bold text-white text-stroke-2 text-stroke-iris-900 select-text">{{ $user->display_name }}</span>
           <div class="flex gap-2">
             <div class="flex flex-none justify-center items-center relative">
               <span class="absolute text-white font-heading text-xl font-bold text-stroke-2 text-stroke-iris-900">{{ $user->level }}</span>
@@ -69,7 +69,7 @@
           <span class="font-heading text-base font-bold text-white text-stroke-2 text-stroke-iris-900">Points</span>
           <div class="flex justify-center items-center w-32 h-6 relative rounded bg-iris-500">
             <img src="/static/img/icon/star-gold.svg" class="w-8 aspect-auto absolute -top-[6px] left-0 transform -translate-x-1/2" />
-            <span class="font-heading text-lg font-bold text-white text-stroke-2 text-stroke-iris-900" tippy="{{ round((float)$user->points,2) }}">{{ round((float)$user->points) }}</span>
+            <span class="font-heading text-lg font-bold text-white text-stroke-2 text-stroke-iris-900" tippy="{{ $user->detailed_points }}">{{ $user->rounded_points}}</span>
           </div>
         </div>
         <div class="flex flex-col items-center">
@@ -91,6 +91,7 @@
       <div class="flex flex-col flex-1 overflow-y-auto gap-2 px-2 py-4">
         @foreach ($players as $player)
           <lit-player-result-item
+            detailedPoints="{{ $player->detailed_points }}"
             flagFilePath="{{ $player->flag_file_path }}"
             flagDescription="{{ $player->flag_description }}"
             rank="{{ $player->rank }}"
@@ -98,7 +99,7 @@
             honorificTitle="Digital Guinea Pig"
             name="{{ $player->display_name }}"
             iconPath="{{ $player->map_marker_file_path }}"
-            points="{{ round((float)$player->points) }}"
+            roundedPoints="{{ $player->rounded_points }}"
             countryCCA2="{{ $player->country_cca2 }}"
             level="{{ $player->level }}">
           </lit-player-result-item>

@@ -12,13 +12,12 @@ use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Resp;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Env;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Web\Www\Game\Util\GameUtil;
 
 final class GamePlayController extends Controller {
   public function index(string $gameId): View|RedirectResponse {
@@ -126,6 +125,9 @@ final class GamePlayController extends Controller {
 
       $user_guess = null;
       foreach ($guesses as $guess) {
+        $guess->detailed_points = GameUtil::getDetailedPoints($guess->points);
+        $guess->rounded_points = GameUtil::getRoundedPoints($guess->points);
+
         if ($guess->user_id === $user->id) {
           $user_guess = $guess;
           break;

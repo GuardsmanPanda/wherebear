@@ -55,4 +55,28 @@ final class GameUtil {
       default => '#EDCE83'
     };
   }
+
+  /**
+   * Rounds the provided points to the nearest whole number.
+   * This function is useful for displaying integer point values.
+   *
+   * @param float|int|string $points The point value to round.
+   * @return int The rounded point value as an integer.
+   */
+  public static function getRoundedPoints($points) {
+    $points = (float)$points;
+    return (int)round($points);
+  }
+
+  /**
+   * Rounds the provided points to two decimal places and formats as a string.
+   * This function ensures two decimal precision, useful for detailed display.
+   *
+   * @param float|int|string $points The point value to round and format.
+   * @return string The rounded point value as a string with two decimal places.
+   */
+  public static function getDetailedPoints($points) {
+    $points = (float)$points;
+    return number_format(round($points, 2), 2, '.', '');
+  }
 }

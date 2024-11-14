@@ -2,6 +2,7 @@ import { LitElement, css, html } from 'lit';
 import { classMap } from 'lit/directives/class-map.js';
 
 import { TailwindStyles } from '../../../../../public/static/dist/lit-tailwind-css';
+import { tooltip } from './tippy.lit-directive';
 
 /**
  * A game result item for a player in a list.
@@ -10,6 +11,7 @@ import { TailwindStyles } from '../../../../../public/static/dist/lit-tailwind-c
 class PlayerResultItem extends LitElement {
   static properties = {
     countryCca2: { type: String },
+    detailedPoints: { type: String },
     distanceMeters: { type: Number },
     flagFilePath: { type: String },
     flagDescription: { type: String },
@@ -17,9 +19,9 @@ class PlayerResultItem extends LitElement {
     iconPath: { type: String },
     level: { type: Number },
     name: { type: String },
-    points: { type: Number },
     rank: { type: Number },
-    rankSelected: { type: Number }
+    rankSelected: { type: Number },
+    roundedPoints: { type: Number }
   }
 
   static styles = css`${TailwindStyles}`;
@@ -93,7 +95,7 @@ class PlayerResultItem extends LitElement {
     return html`
       <div class="flex justify-between items-center w-14 sm:w-[72px] mr-4">
         <img src="/static/img/icon/star-gold.svg" class="w-5 sm:w-6 relative bottom-[2px]" />
-        <div class="font-heading text-xl sm:text-2xl font-semibold text-[#F5D83A] text-stroke-2 text-stroke-gray-700">${this.points}</div>
+        <div class="font-heading text-xl sm:text-2xl font-semibold text-[#F5D83A] text-stroke-2 text-stroke-gray-700" ${tooltip(this.detailedPoints)}>${this.roundedPoints}</div>
       </div>
     `;
   }
@@ -105,7 +107,7 @@ class PlayerResultItem extends LitElement {
           <div class="w-5 sm:w-6 aspect-auto absolute -top-[4px] left-0 transform -translate-x-1/2">
             <img src="/static/img/icon/star-gold.svg" />
           </div>
-          <span class="text-sm text-gray-50 font-medium">${this.points}</span>
+          <span class="text-sm text-gray-50 font-medium" ${tooltip(this.detailedPoints)}>${this.roundedPoints}</span>
         </div>
           
         <div class="flex justify-center items-center w-16 sm:w-20 h-4 sm:h-5 relative rounded border border-gray-800 ${this.distanceClasses}">
@@ -117,7 +119,7 @@ class PlayerResultItem extends LitElement {
 
   render() {
     return html`${this.bgColor}
-      <div class="flex h-14 sm:h-16 relative rounded border border-gray-700 ${classMap(this.classes)}">
+      <div class="flex h-14 sm:h-16 relative rounded border border-gray-700 select-none ${classMap(this.classes)}">
         <div class="flex justify-center items-center w-14 sm:w-16 rounded-l shrink-0 border-r border-gray-300
         00 ${classMap(this.rankClasses)}">${this.getRankTemplate()}</div>
 
@@ -132,14 +134,14 @@ class PlayerResultItem extends LitElement {
                 <lit-flag cca2="${this.countryCca2}" filePath="${this.flagFilePath}" description="${this.flagDescription}" roundedClass="rounded-sm" maxHeightClass="max-h-5" class="w-5"></lit-flag>
               </div>
 
-              <div class="text-sm sm:text-base text-gray-700 font-medium truncate">${this.name}</div>
+              <div class="text-sm sm:text-base text-gray-700 font-medium truncate select-text">${this.name}</div>
             </div>
             <div class="flex items-center gap-1">
               <div class="flex justify-center items-center w-5 shrink-0">
                 <img src="/static/img/icon/emblem.svg" class="h-5" />
                 <span class="absolute text-white font-heading text-base font-bold text-stroke-2 text-stroke-iris-900">${this.level}</span>
               </div>
-              <div class="text-xs sm:text-sm text-gray-700 truncate">${this.honorificTitle}</div>
+              <div class="text-xs sm:text-sm text-gray-700 truncate select-text">${this.honorificTitle}</div>
             </div>
           </div>
         </div>
