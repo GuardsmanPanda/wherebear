@@ -102,6 +102,18 @@ enum MapMarkerEnum: string implements BearDatabaseBackedEnumInterface {
   }
 
 
+  public function getMapAnchor(): string {
+    $value = $this->value;
+    if (str_starts_with(haystack: $value, needle: 'PLANET')) {
+      return 'center';
+    }
+    return match ($this) {
+      self::MONSTER_FLYING_1, self::MONSTER_FLYING_2, self::MONSTER_FLYING_3, self::MONSTER_FLYING_4 => 'center',
+      default => 'bottom',
+    };
+  }
+
+
   public function getGrouping(): string {
     return Str::title(value: explode(separator: '_', string: $this->value)[0]);
   }

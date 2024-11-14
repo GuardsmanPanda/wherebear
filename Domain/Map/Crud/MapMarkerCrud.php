@@ -16,6 +16,7 @@ final class MapMarkerCrud {
         $model->file_path = $enum->getFilePath();
         $model->user_level_enum = $enum->getUserLevelRequirement();
         $model->grouping = $enum->getGrouping();
+        $model->map_anchor = $enum->getMapAnchor();
 
         $model->save();
         return $model;
