@@ -61,13 +61,6 @@
   });
 
   const add_panorama = function () {
-    let text = "";
-    try {
-      text = document.getElementById('map-url').value.split('@')[1].split(',');
-    } catch (e) {
-      window.notify.error("Failed to parse URL, is this a valid Street View URL?");
-      return;
-    }
     let tag_elements = document.getElementById('tags').querySelectorAll('input[type="checkbox"]');
     let tags_unchecked = [];
     let tags_checked = [];
@@ -79,7 +72,7 @@
       method: 'POST', headers: {
         'Content-Type': 'application/json'
       }, body: JSON.stringify({
-        street_view_url: document.getElementById('map-url').value, lat: text[0], lng: text[1], tags_checked: tags_checked, tags_unchecked: tags_unchecked,
+        street_view_url: document.getElementById('map-url').value, tags_checked: tags_checked, tags_unchecked: tags_unchecked,
       }),
     }).then(resp => resp.json()).then(json => {
       console.log(json);
@@ -87,8 +80,12 @@
         window.notify.error("Failed to add location to the game, Panorama API error.");
         console.error(json['error']);
       } else if (json['exists']) {
+        let message = "This location has already been discovered!";
+        if (!json['from_id']) {
+          message += "<br> *** From: Location ***";
+        }
         window.notify.open({
-          type: "warning", message: "This location has already been discovered!", duration: 14000,
+          type: "warning", message: message, duration: 14000,
         });
         if (json['tags_added'].length > 0) {
           window.notify.open({
@@ -101,8 +98,12 @@
           });
         }
       } else {
+        let message = "Location added to the game!";
+        if (!json['from_id']) {
+          message += "<br> *** From: Location ***";
+        }
         window.notify.open({
-          type: "success", message: "Location added to the game!", duration: 10000,
+          type: "success", message: message, duration: 10000,
         });
         if (json['tags_added'].length > 0) {
           window.notify.open({

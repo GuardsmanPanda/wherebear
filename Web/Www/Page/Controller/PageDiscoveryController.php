@@ -37,7 +37,7 @@ final class PageDiscoveryController extends Controller {
 
 
   public function addFromStreetViewData(): JsonResponse {
-    $data = StreetViewClient::fromLocation(latitude: Req::getFloat(key: 'lat'), longitude: Req::getFloat(key: 'lng'));
+    $data = StreetViewClient::fromUrl(url: Req::getString(key: 'street_view_url'));
     if ($data === null) {
       return new JsonResponse(data: ['status' => 'failed']);
     }
@@ -50,8 +50,6 @@ final class PageDiscoveryController extends Controller {
       return new JsonResponse(data: ['status' => 'failed']);
     }
     $text = $response->body();
-    dd($data, $text);
-
 
     $panorama = Panorama::find(id: $data->panoId);
     $exists = $panorama !== null;
@@ -83,6 +81,7 @@ final class PageDiscoveryController extends Controller {
       'lat' => $data->lat,
       'lng' => $data->lng,
       'date' => $data->date,
+      'from_id' => $data->from_id,
       'exists' => $exists,
       'tags_added' => $tags_added,
       'tags_removed' => $tags_removed,

@@ -13,10 +13,11 @@ final readonly class StreetViewPanoramaData {
     public string          $copyright,
     public CarbonImmutable $date,
     public string          $status, // Should always be 'OK', as this class is only returned when a panorama is found.
+    public bool            $from_id = true,
   ) {
   }
 
-  public static function fromResponse(Response $response): self|null {
+  public static function fromResponse(Response $response, bool $from_id = true): self|null {
     if ($response->status() !== 200) {
       return null;
     }
@@ -31,6 +32,7 @@ final readonly class StreetViewPanoramaData {
       copyright: $data['copyright'],
       date: CarbonImmutable::parse($data['date'] . '-01'),
       status: $data['status'],
+      from_id: $from_id,
     );
   }
 }
