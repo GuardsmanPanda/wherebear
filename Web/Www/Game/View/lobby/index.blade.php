@@ -142,8 +142,8 @@
         </div>
       </div>
       <!-- Expandable Panel -->
-      <div x-ref="playersSubstitute" class="hidden flex-1 min-h-[142px]"></div>
-      <div x-ref="players" data-state="collapsed" class="flex flex-col lobby-sm:hidden flex-1 min-h-[142px] z-10 px-2 bg-iris-500 border border-t-2 border-b-0 border-gray-700 rounded-t-2xl transition-[height] duration-700 ease-in-out">
+      <div x-ref="playersSubstitute" class="hidden flex-1 min-h-[150px]"></div>
+      <div x-ref="players" data-state="collapsed" class="flex flex-col lobby-sm:hidden flex-1 min-h-[150px] z-10 px-2 bg-iris-500 border border-t-2 border-b-0 border-gray-700 rounded-t-2xl transition-[height] duration-700 ease-in-out">
         <div class="flex justify-between items-center py-2 border-b border-gray-50 cursor-pointer" x-on:click="togglePlayerListSize">
           <div></div>
           <div class="font-heading font-bold text-base text-gray-0 text-stroke-2 text-stroke-iris-800">PLAYERS</div>
@@ -154,26 +154,34 @@
           </div>
         </div>
         <div x-ref="playerList" class="py-2">
-          @include('game::lobby.player-list')
-        </div>
-      </div> 
-      
-      {{-- <div x-ref="players" data-state="collapsed" style="height: 148px" class="grow z-10 bg-iris-500 transition-[height] duration-700 ease-in-out">
-        <div class="flex justify-between items-center py-2 border-b border-gray-50 cursor-pointer" x-on:click="togglePlayerListSize">
-          <div></div>
-          <div class="font-heading font-bold text-base text-gray-0 text-stroke-2 text-stroke-iris-800">PLAYERS</div>
-          <div x-ref="playersToggleSizeIcon" class="w-4 mr-4 transition-transform duration-1000 ease-in-out">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#EFF1F4" class="size-6">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-            </svg>
+          <div class="grid grid-cols-3 min-[420px]:grid-cols-4 min-[520px]:grid-cols-5 min-[622px]:grid-cols-6 gap-4">
+            <template x-for="player in players">
+              <div class="flex flex-col w-20 justify-center items-center">
+                <div class="flex w-full h-4 justify-center items-center px-0.5 rounded-t border border-b-0 border-gray-700 bg-gray-600" :tippy="player.display_name">
+                  <span x-text="player.display_name" class="font-heading font-medium text-xs text-gray-0 truncate"></span>
+                </div>
+                <div class="flex flex-none justify-center w-20 h-16 relative border-x border-gray-700 bg-gradient-to-t"
+                  :class="{ 
+                    'items-center': player.map_marker_map_anchor === 'center',
+                    'items-end': player.map_marker_map_anchor === 'bottom',
+                    'from-gray-200 to-gray-300': !player.is_ready,
+                    'from-pistachio-300 to-pistachio-500': player.is_ready
+                  }">
+                  <img src="/static/img/icon/check-green.svg" draggable="false" class="h-6 absolute -top-2 -right-2 z-10 transform-[opacity] duration-100" :class="{ 'opacity-100': player.is_ready, 'opacity-0': !player.is_ready }" />
+                  <img :src="player.map_marker_file_path" draggable="false" class="max-w-[72px]" :class="{
+                    'max-h-14': player.map_marker_map_anchor === 'center',
+                    'max-h-16 relative top-[4px]': player.map_marker_map_anchor === 'bottom'
+                  }" />
+                </div>
+                <div class="flex flex-none w-full h-[10px] relative rounded-b border border-gray-700 bg-gray-600">
+                  <lit-flag :cca2="player.country_cca2" :filePath="player.flag_file_path" :description="player.flag_description" roundedClass="rounded-sm" class="absolute bottom-[2px] right-[3px] h-4" draggable="false"></lit-flag>
+                  <lit-level-emblem :level="player.level" size="xs" class="absolute -left-[4px] -bottom-[3px]"><lit-level-emblem>
+                </div>
+              </div>
+            </template>
           </div>
         </div>
-        <div x-ref="playerList" class="overflow-y-auto">
-          @include('game::lobby.player-list')
-          player list<br>player list<br>player list<br>player list<br>player list<br>player list<br>player list<br>player list<br>LAST<br>
-        </div>
-      </div> --}}
-
+      </div> 
       <div class="hidden lobby-sm:block">
         @include('game::lobby.total-game-time')
       </div>
@@ -233,6 +241,24 @@
       game: @json($game),
       gameStageText: 'Waiting for players...',
       players: @json($players),
+      /** Returns a list of players for dev purpose only. */
+      get playersDev() {
+        const players = [];
+        for(i=0; i<10;i++) {
+          players.push( {
+            id: 'id',
+            display_name: 'GreenMonkeyBoy',
+            is_ready: true,
+            country_cca2: 'FR',
+            flag_file_path: '/static/flag/svg/FR.svg',
+            flag_description: 'desc',
+            level: 8,
+            map_marker_file_path: 'https://gmb.gman.bot/static/img/map-marker/chibi/greek-warrior.png',
+            map_marker_map_anchor: 'bottom'
+          });
+        }
+        return players;
+      },
       get user() {
         return this.players.find(n => n.id === userId);
       },
@@ -278,7 +304,7 @@
           setTimeout(() => {
             this.$refs.players.style.removeProperty('width');
             this.$refs.players.classList.remove('fixed', 'bottom-0');
-            this.$refs.players.classList.add('flex', 'flex-1', 'min-h-[142px]');
+            this.$refs.players.classList.add('flex', 'flex-1', 'min-h-[150px]');
             this.$refs.players.classList.remove('transition-[height]', `duration-${this.animationDurationMs}`);
 
             this.$refs.playersSubstitute.classList.remove('block');
