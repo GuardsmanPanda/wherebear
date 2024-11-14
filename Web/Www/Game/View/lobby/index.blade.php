@@ -33,8 +33,8 @@
         <lit-panel-header label="PROFILE"></lit-panel-header>
         <div class="py-2">
           <div class="flex gap-2 mx-2">
-            <div class="flex flex-none justify-start items-end w-[72px] h-[72px]">
-              <img :src="user.map_marker_file_path" class="max-w-full max-h-full self-end object-contain cursor-pointer" draggable="false" hx-get="/game/{{$game->id}}/lobby/dialog/map-marker" />
+            <div class="flex flex-none justify-center w-[72px] h-[72px]" :class="{ 'items-end': user.map_marker_map_anchor === 'bottom', 'items-center': user.map_marker_map_anchor === 'center' }">
+              <img :src="user.map_marker_file_path" class="max-w-full max-h-full object-contain cursor-pointer" draggable="false" hx-get="/game/{{$game->id}}/lobby/dialog/map-marker" />
             </div>
 
             <div class="flex flex-col justify-between w-full overflow-hidden">
@@ -203,8 +203,11 @@
             'from-pistachio-400 to-pistachio-500': player.is_ready, 
             'from-gray-50 to-gray-100': !player.is_ready 
             }">
-            <div class="flex flex-none justify-center items-end w-16 h-16">
-              <img :src="player.map_marker_file_path" class="max-w-full max-h-full self-end object-contain" draggable="false" />
+            <div class="flex flex-none justify-center w-16 h-16" :class="{ 'items-end': player.map_marker_map_anchor === 'bottom', 'items-center': player.map_marker_map_anchor === 'center' }">
+              <img :src="player.map_marker_file_path" 
+                class="max-w-full max-h-full object-contain"
+                draggable="false" 
+              />
             </div>
             <div class="flex flex-col gap-[10px] w-full overflow-hidden">
               <div class="flex flex-col w-full">
