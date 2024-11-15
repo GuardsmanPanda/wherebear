@@ -41,16 +41,6 @@ final class PageDiscoveryController extends Controller {
     if ($data === null) {
       return new JsonResponse(data: ['status' => 'failed']);
     }
-    $url = Req::getString(key: 'street_view_url');
-    $response = Http::withCookies([
-      'CONSENT' => 'PENDING+987',
-      'SOCS' => 'CAESHAgBEhJnd3NfMjAyMzA4MTAtMF9SQzIaAmRlIAEaBgiAo_CmBg' ,
-    ], 'www.google.com')->get(url: $url);
-    if ($response->status() !== 200) {
-      return new JsonResponse(data: ['status' => 'failed']);
-    }
-    $text = $response->body();
-
     $panorama = Panorama::find(id: $data->panoId);
     $exists = $panorama !== null;
     $tags_added = [];
@@ -81,8 +71,9 @@ final class PageDiscoveryController extends Controller {
       'lat' => $data->lat,
       'lng' => $data->lng,
       'date' => $data->date,
-      'from_id' => $data->from_id,
       'exists' => $exists,
+      'from_id' => $data->from_id,
+      'panorama_id' => $panorama->id,
       'tags_added' => $tags_added,
       'tags_removed' => $tags_removed,
     ]);
