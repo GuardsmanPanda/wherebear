@@ -155,7 +155,7 @@
         </div>
         <div x-ref="playerList" class="py-2">
           <div class="grid grid-cols-3 min-[420px]:grid-cols-4 min-[520px]:grid-cols-5 min-[622px]:grid-cols-6 gap-4">
-            <template x-for="player in players">
+            <template x-for="player in playerList">
               <div class="flex flex-col w-20 justify-center items-center">
                 <div class="flex w-full h-4 justify-center items-center px-0.5 rounded-t border border-b-0 border-gray-700 bg-gray-600" :tippy="player.display_name">
                   <span x-text="player.display_name" class="font-heading font-medium text-xs text-gray-0 truncate"></span>
@@ -198,11 +198,15 @@
 
       <lit-panel-header label="PLAYERS"></lit-panel-header>
       <div class="overflow-y-auto">
-        <template x-for="player in players">
-          <div class="flex gap-2 p-2 border-b border-gray-300 bg-gradient-to-t" :class="{ 
+        <template x-for="player in playerList">
+          <div class="flex gap-2 relative overflow-hidden p-2 border-b border-gray-300 bg-gradient-to-t" :class="{ 
             'from-pistachio-400 to-pistachio-500': player.is_ready, 
             'from-gray-50 to-gray-100': !player.is_ready 
             }">
+            <div x-show="player.is_host" class="flex justify-center items-center w-16 h-4 absolute top-2 -left-4 border border-gray-700 -rotate-45 bg-gradient-to-t from-yellow-300 to-yellow-400">
+              <span class="font-heading font-semibold text-xs text-gray-0 text-stroke-2 text-stroke-gray-700">HOST</span>
+            </div>
+
             <div class="flex flex-none justify-center w-16 h-16" :class="{ 'items-end': player.map_marker_map_anchor === 'bottom', 'items-center': player.map_marker_map_anchor === 'center' }">
               <img :src="player.map_marker_file_path" 
                 class="max-w-full max-h-full object-contain"
@@ -244,8 +248,15 @@
       game: @json($game),
       gameStageText: 'Waiting for players...',
       players: @json($players),
+      get playerList() {
+        const hostPlayer = this.players.find(n => n.is_host);
+        const noHostPlayers = this.players
+          .filter(n => n.is_host ? false : true)
+          .sort((a,b) => a.created_at < b.created_at ? -1 : a.created_at > b.created_at ? 1 : 0);
+        return [hostPlayer, ...noHostPlayers];
+      },
       /** Returns a list of players for dev purpose only. */
-      get playersDev() {
+      get playerListDev() {
         const players = [];
         for(i=0; i<10;i++) {
           players.push( {
