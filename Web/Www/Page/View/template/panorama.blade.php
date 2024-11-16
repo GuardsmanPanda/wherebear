@@ -30,6 +30,10 @@
       <td class="px-4 py-3">{{$round->captured_date}}</td>
       <td class="px-4 py-2">
         @if($round->panorama_id !== null)
+          <button type="button"
+                  class="text-blue-500 hover:text-white border border-blue-500 hover:bg-blue-500 font-medium rounded-md text-sm ml-1 px-2.5 py-0.5 hover:scale-110 transition-all duration-75 text-center"
+                  onclick="window.open('/panorama/{{$round->panorama_id}}/view', 'pano-round', 'popup')">View Panorama
+          </button>
           @if(BearAuthService::hasPermission(BearPermissionEnum::TEMPLATE_ROUND_DELETE))
             <button type="button"
                     class="text-red-500 hover:text-white border border-red-500 hover:bg-red-600 font-medium rounded-md text-sm ml-1 px-2.5 py-0.5 hover:scale-110 transition-all duration-75 text-center"

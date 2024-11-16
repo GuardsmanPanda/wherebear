@@ -122,6 +122,15 @@ final class PageTemplateController extends Controller {
             LEFT JOIN panorama p ON p.id = gr.panorama_id
             WHERE gr.game_id = :game_id
           )
+          AND p.id NOT IN (
+            SELECT
+              gr.panorama_id
+            FROM game_round gr
+            LEFT JOIN game g ON g.id = gr.game_id
+            WHERE 
+              g.game_state_enum = 'TEMPLATE'
+              AND g.panorama_tag_enum = (SELECT g.panorama_tag_enum FROM game g WHERE g.id = :game_id)
+          )
         ORDER BY bc.name, bcs.name, p.captured_date DESC
       ", bindings: ['game_id' => $gameId]),
     ]);

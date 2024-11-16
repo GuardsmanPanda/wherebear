@@ -9,6 +9,7 @@ use Illuminate\Support\ServiceProvider;
 
 final class AppServiceProvider extends ServiceProvider {
   public function boot(): void {
+    $this->loadViewsFrom(base_path(path: 'Web/Www/App/View'), namespace: 'app');
     $this->loadViewsFrom(base_path(path: 'Web/Www/Auth/View'), namespace: 'auth');
     $this->loadViewsFrom(base_path(path: 'Web/Www/FlagGame/View'), namespace: 'flag-game');
     $this->loadViewsFrom(base_path(path: 'Web/Www/Game/View'), namespace: 'game');

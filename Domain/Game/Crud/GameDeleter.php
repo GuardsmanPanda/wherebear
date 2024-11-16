@@ -16,6 +16,7 @@ final class GameDeleter {
       throw new UnauthorizedException(message: 'You can only delete games that you created');
     }
 
+    GameRoundDeleter::deleteAllGameRounds(gameId: $model->id);
     GameUserDeleter::deleteFromGameId(gameId: $model->id);
 
     $model->delete();

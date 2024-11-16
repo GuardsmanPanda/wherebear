@@ -176,7 +176,7 @@ final class GameRoundCreatorAction {
       LEFT JOIN (
         SELECT p2.id
         FROM panorama p2
-        LEFT JOIN game_round gr2 ON p2.id = gr2.panorama_id AND gr2.created_at > NOW() - INTERVAL '200 DAY'
+        LEFT JOIN game_round gr2 ON p2.id = gr2.panorama_id AND gr2.created_at > NOW() - INTERVAL '400 DAY'
         LEFT JOIN game_user gu2 ON gr2.game_id = gu2.game_id
         LEFT JOIN game_user gu3 ON gu2.user_id = gu3.user_id AND gu3.game_id = :game_id
         WHERE gr2.game_id IS NOT NULL AND gu3.user_id IS NOT NULL
@@ -188,7 +188,7 @@ final class GameRoundCreatorAction {
         LEFT JOIN game_round gr2 ON p2.id = gr2.panorama_id AND gr2.created_at > NOW() - INTERVAL '26 DAY'
         LEFT JOIN game_user gu2 ON gr2.game_id = gu2.game_id
         LEFT JOIN game_user gu3 ON gu2.user_id = gu3.user_id AND gu3.game_id = :game_id
-        LEFT JOIN panorama p3 ON st_distance(p2.location, p3.location) < 7000
+        LEFT JOIN panorama p3 ON st_distance(p2.location, p3.location) < 8000
         WHERE gr2.game_id IS NOT NULL AND gu3.user_id IS NOT NULL
         GROUP BY p3.id
       ) as used_panorama_area ON p.id = used_panorama_area.id

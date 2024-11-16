@@ -27,7 +27,7 @@
           </button>
           <button type="button"
                   class="text-blue-500 hover:text-white border border-blue-500 hover:bg-blue-500 font-medium rounded-md text-sm ml-1 px-2.5 py-0.5 hover:scale-110 transition-all duration-75 text-center"
-                  hx-get="/something" hx-target="#panorama-select">View Panorama
+                  onclick="window.open('/panorama/{{$panorama->id}}/view', 'pano', 'popup')">View Panorama
           </button>
         @endif
       </td>

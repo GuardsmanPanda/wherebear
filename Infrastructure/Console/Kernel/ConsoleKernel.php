@@ -18,6 +18,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Infrastructure\App\Command\WhereBearInitCommand;
 use Throwable;
 
@@ -64,9 +65,7 @@ final class ConsoleKernel extends Kernel {
     });
 
     Artisan::command('zz', function () {
-      $game = Game::findOrFail(id: 'b49bb1d4-fe98-4666-8d83-ca8f2dc7909e');
-      $gameRounds = new GameRoundCreatorAction(game: $game);
-      $gameRounds->createAllRounds();
+
     });
   }
 }
