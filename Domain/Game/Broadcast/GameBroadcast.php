@@ -43,27 +43,27 @@ final class GameBroadcast {
     );
   }
 
-  public static function playerJoin(string $gameId, stdClass $player): void {
+  public static function gameUserJoin(string $gameId, stdClass $gameUser): void {
     BearBroadcastService::broadcastNow(
       channel: 'game.' . $gameId,
-      event: 'player.join',
-      data: ['player' => $player]
+      event: 'game-user.join',
+      data: ['gameUser' => $gameUser]
     );
   }
 
-  public static function playerUpdate(string $gameId, stdClass $player = null): void {
+  public static function gameUserUpdate(string $gameId, stdClass $gameUser = null): void {
     BearBroadcastService::broadcastNow(
       channel: 'game.' . $gameId,
-      event: 'player.update',
-      data: ['player' => $player]
+      event: 'game-user.update',
+      data: ['gameUser' => $gameUser]
     );
   }
 
-  public static function playerLeave(string $gameId, string $playerId): void {
+  public static function gameUserLeave(string $gameId, string $gameUserId): void {
     BearBroadcastService::broadcastNow(
       channel: 'game.' . $gameId,
-      event: 'player.leave',
-      data: ['playerId' => $playerId]
+      event: 'game-user.leave',
+      data: ['gameUserId' => $gameUserId]
     );
   }
 }

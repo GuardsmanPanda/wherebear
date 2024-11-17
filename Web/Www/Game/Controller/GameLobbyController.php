@@ -36,7 +36,8 @@ final class GameLobbyController extends Controller {
       SELECT
         g.id, g.number_of_rounds, g.round_duration_seconds, g.created_by_user_id, g.name,
         g.game_state_enum, g.game_public_status_enum = 'PUBLIC' as is_public,
-        g.current_round, g.round_result_duration_seconds, g.short_code
+        g.current_round, g.round_result_duration_seconds, g.short_code,
+        CASE WHEN g.templated_by_game_id IS NOT NULL THEN 'templated' ELSE 'normal' END as type
       FROM game g
       WHERE g.id = ?
     SQL, bindings: [$gameId]);
@@ -46,8 +47,8 @@ final class GameLobbyController extends Controller {
     return $game;
   }
 
-  private function getPlayer(string $gameId, string $userId): ?stdClass {
-    $player = DB::selectOne(query: <<<SQL
+  private function getGameUser(string $gameId, string $userId): ?stdClass {
+    $gameUser = DB::selectOne(query: <<<SQL
       SELECT 
         bu.id, bu.display_name, bu.country_cca2, bu.user_level_enum as level,
         gu.is_ready, gu.is_observer, gu.created_at,
@@ -66,9 +67,9 @@ final class GameLobbyController extends Controller {
       WHERE gu.game_id = ? AND gu.user_id = ?
     SQL, bindings: [$gameId, $userId]);
 
-    $player->title = "Digital Guinea Pig";
+    $gameUser->title = "Digital Guinea Pig";
 
-    return $player;
+    return $gameUser;
   }
 
   public function index(string $gameId): Response|View {
@@ -93,7 +94,7 @@ final class GameLobbyController extends Controller {
     if ($user_id === null) {
       return Resp::view(view: "game::lobby.guest", data: [
         'game' => $game,
-        'players' => DB::select(query: <<<SQL
+        'gameUsers' => DB::select(query: <<<SQL
           SELECT
             bu.display_name, bu.country_cca2, bu.user_level_enum as level,
             gu.is_ready, bc.name as country_name,
@@ -128,7 +129,7 @@ final class GameLobbyController extends Controller {
         bu.id, bu.display_name, bu.user_level_enum as level, bu.map_marker_enum, bu.map_style_enum,
         bu.experience - ul.experience_requirement as current_level_experience_points,
         (SELECT ul2.experience_requirement FROM user_level ul2 WHERE ul2.enum = bu.user_level_enum + 1) - ul.experience_requirement as next_level_experience_points_requirement,
-        gu.is_ready,
+        gu.is_ready, gu.is_observer,
         mm.file_path as map_marker_file_path, mm.map_anchor as map_marker_map_anchor,
         COALESCE(uf.file_path, CONCAT('/static/flag/svg/', bu.country_cca2, '.svg')) as flag_file_path,
         COALESCE(uf.description, bc.name) as flag_description
@@ -141,13 +142,14 @@ final class GameLobbyController extends Controller {
       WHERE bu.id = ?
     SQL, bindings: [$game->id, $user_id]);
 
+    $user->can_observe = $game->created_by_user_id === BearAuthService::getUserId() || $game->type === 'templated';
     $user->title = 'Digital Guinea Pig';
     $user->level_percentage = $user->current_level_experience_points * 100 / $user->next_level_experience_points_requirement;
     $user->display_level_percentage = $user->level_percentage < 1 ? 1 : floor($user->level_percentage);
     $user->isHost = $game->created_by_user_id === BearAuthService::getUserId();
     $user->isGuest = $user->level === 0;
 
-    $players = DB::select(query: <<<SQL
+    $gameUsers = DB::select(query: <<<SQL
       SELECT 
         bu.id, bu.display_name, bu.country_cca2, bu.user_level_enum as level,
         gu.is_ready, gu.is_observer, gu.created_at,
@@ -167,33 +169,24 @@ final class GameLobbyController extends Controller {
       ORDER BY bu.id = ? DESC, bu.display_name, bu.country_cca2, bu.id
     SQL, bindings: [$gameId, BearAuthService::getUserId()]);
 
-    $players = array_map(function ($player) {
-      $player->title = "Digital Guinea Pig";
-      return $player;
-    }, $players);
+    $gameUsers = array_map(function ($gameUser) {
+      $gameUser->title = "Digital Guinea Pig";
+      return $gameUser;
+    }, $gameUsers);
 
-    $player = null;
-    foreach ($players as $n) {
+    $gameUser = null;
+    foreach ($gameUsers as $n) {
       if ($n->id === BearAuthService::getUserId()) {
-        $player = $n;
+        $gameUser = $n;
         break;
       }
     }
 
-    GameBroadcast::playerJoin(gameId: $gameId, player: $player);
+    GameBroadcast::gameUserJoin(gameId: $gameId, gameUser: $gameUser);
 
     return Resp::view(view: 'game::lobby.index', data: [
       'game' => $game,
-      'observerCount' => array_reduce($players, function ($sum, $player) {
-        $sum += $player->is_observer ? 1 : 0;
-        return $sum;
-      }),
-      'players' => $players,
-      'playerCount' => count($players),
-      'readyPlayerCount' => array_reduce($players, function ($sum, $item) {
-        $sum += $item->is_ready ? 1 : 0;
-        return $sum;
-      }),
+      'gameUsers' => $gameUsers,
       'user' => $user,
     ]);
   }
@@ -218,16 +211,22 @@ final class GameLobbyController extends Controller {
     }
     $updater->update();
 
-    GameBroadcast::playerUpdate(gameId: $gameId, player: $this->getPlayer($gameId, BearAuthService::getUserId()));
+    GameBroadcast::gameUserUpdate(gameId: $gameId, gameUser: $this->getGameUser($gameId, BearAuthService::getUserId()));
     return new Response();
   }
 
   public function updateGameUser(string $gameId): Response {
     $updater = GameUserUpdater::fromGameIdAndUserId(game_id: $gameId, user_id: BearAuthService::getUserId());
-    $updater->setIsReady(is_ready: Req::getBool(key: 'is_ready'));
+
+    if (Req::has(key: 'is_ready')) {
+      $updater->setIsReady(is_ready: Req::getBool(key: 'is_ready'));
+    }
+    if (Req::has(key: 'is_observer')) {
+      $updater->setIsObserver(is_observer: Req::getBool(key: 'is_observer'));
+    }
     $updater->update();
 
-    GameBroadcast::playerUpdate(gameId: $gameId, player: $this->getPlayer($gameId, BearAuthService::getUserId()));
+    GameBroadcast::gameUserUpdate(gameId: $gameId, gameUser: $this->getGameUser($gameId, BearAuthService::getUserId()));
     GameStartAction::placeInQueueIfAble(gameId: $gameId);
     return new Response();
   }
@@ -259,7 +258,7 @@ final class GameLobbyController extends Controller {
 
   public function leaveGame(string $gameId): Response {
     GameUserDeleter::deleteFromGameAndUserId(gameId: $gameId, userId: BearAuthService::getUserId());
-    GameBroadcast::playerLeave(gameId: $gameId, playerId: BearAuthService::getUserId());
+    GameBroadcast::gameUserLeave(gameId: $gameId, gameUserId: BearAuthService::getUserId());
     return Htmx::redirect(url: '/', message: 'Left Game.');
   }
 
