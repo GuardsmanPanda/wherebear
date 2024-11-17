@@ -573,7 +573,7 @@
     keyboard: false, 
     minZoom: 1, 
     maxZoom: 18, 
-    zoom: 3,
+    zoom: 5,
     attributionControl: false
   })
 

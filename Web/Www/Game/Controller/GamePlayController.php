@@ -54,7 +54,6 @@ final class GamePlayController extends Controller {
       if ($game->last_updated_seconds_ago > 30) {
         return Resp::redirect(url: "/", message: 'Game Broke, Sorry');
       }
-      dump($game);
       return Resp::view(view: 'game::play.round-result-wait', data: ['game' => $game]);
     }
 
