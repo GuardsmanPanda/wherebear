@@ -46,6 +46,7 @@ final class GameEndAction {
               SELECT SUM(g.experience_points)
               FROM game_user gu
               LEFT JOIN game g ON g.id = gu.game_id
+              WHERE gu.user_id = bu2.id
             ) + 1
           END as experience
         FROM bear_user bu2
