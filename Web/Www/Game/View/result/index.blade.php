@@ -35,7 +35,7 @@
             </div>
             <div class="flex flex-col items-center w-full max-w-64">
               <span class="font-heading text-sm font-semibold text-white text-stroke-2 text-stroke-iris-900">{{ $user->current_level_experience_points }}/{{ $user->next_level_experience_points_requirement }}</span>
-              <lit-progress-bar class="w-full relative bottom-0.5" percentage="{{ $user->levelPercentage }}" innerBgColorClass="bg-yellow-500" tippy="{{ $user->levelPercentage }}%"></lit-progress-bar>
+              <lit-progress-bar class="w-full relative bottom-0.5" percentage="{{ $user->level_percentage }}" innerBgColorClass="bg-yellow-500" tippy="{{ $user->level_percentage }}%"></lit-progress-bar>
             </div>
           </div>
         </div>

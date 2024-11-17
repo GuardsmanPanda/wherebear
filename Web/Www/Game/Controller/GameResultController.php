@@ -52,7 +52,8 @@ final class GameResultController extends Controller {
         u.user_level_enum as level,
         mm.file_path as map_marker_file_path,
         COALESCE(uf.description, bc.name) as country_name,
-        gu.points,
+        round(gu.points)::integer as rounded_points,
+        round(gu.points::numeric, 2) as detailed_points,
         COALESCE(uf.file_path, CONCAT('/static/flag/svg/', u.country_cca2, '.svg')) as flag_file_path,
         COALESCE(uf.description, bc.name) as flag_description,
         RANK() OVER (ORDER BY gu.points DESC)
@@ -65,11 +66,6 @@ final class GameResultController extends Controller {
       ORDER BY gu.points DESC, u.id
     SQL, bindings: [$gameId]);
 
-    foreach ($players as $player) {
-      $player->detailed_points = GameUtil::getDetailedPoints($player->points);
-      $player->rounded_points = GameUtil::getRoundedPoints($player->points);
-    }
-
     $user = DB::selectOne(query: <<<SQL
       SELECT
         u.id, 
@@ -77,26 +73,23 @@ final class GameResultController extends Controller {
         u.user_level_enum as level, 
         u.experience - ul.experience_requirement as current_level_experience_points,
         ul2.experience_requirement - ul.experience_requirement as next_level_experience_points_requirement,
+        ((u.experience - ul.experience_requirement) * 100 / (ul2.experience_requirement - ul.experience_requirement))::integer as level_percentage,
         u.map_style_enum,
-        mm.file_path as map_marker_file_path
+        mm.file_path as map_marker_file_path,
+        round(gu.points)::integer as rounded_points,
+        round(gu.points::numeric, 2) as detailed_points,
+        (SELECT COUNT(*) FROM game_user WHERE game_id = :game_id AND points > gu.points) + 1 as rank
       FROM bear_user u
       LEFT JOIN map_marker mm ON mm.enum = u.map_marker_enum
       LEFT JOIN game_user gu ON gu.user_id = u.id
       LEFT JOIN user_level ul ON ul.enum = u.user_level_enum
       LEFT JOIN user_level ul2 ON ul2.enum = u.user_level_enum + 1
-      WHERE u.id = ? AND gu.game_id = ?
-    SQL, bindings: [BearAuthService::getUserId(), $gameId]);
+      WHERE u.id = :user_id AND gu.game_id = :game_id
+    SQL, bindings: ['user_id' => BearAuthService::getUserId(), 'game_id' => $gameId]);
 
     if ($user === null) {
       return Resp::redirect(url: "/", message: "You did not participate in this game");
     }
-    $user_result = collect($players)->first(fn($n) => $n->user_id === BearAuthService::getUserId());
-
-    $user->detailed_points = GameUtil::getDetailedPoints($user_result->points);
-    $user->levelPercentage = floor(num: $user->current_level_experience_points * 100 / $user->next_level_experience_points_requirement);
-    $user->points = $user_result->points;
-    $user->rank = $user_result->rank;
-    $user->rounded_points = GameUtil::getRoundedPoints($user_result->points);
 
     return Resp::view(view: 'game::result.index', data: [
       'game' => $game,
@@ -222,7 +215,7 @@ final class GameResultController extends Controller {
         'detailed_points' => '124.47',
         'display_name' => 'GreenMonkeyBoy',
         'level' => 2,
-        'levelPercentage' => 25,
+        'level_percentage' => 25,
         'map_marker_file_path' => '/static/img/map-marker/monster/1.png',
         'next_level_experience_points_requirement' => 78,
         'points' => 124.465789,
