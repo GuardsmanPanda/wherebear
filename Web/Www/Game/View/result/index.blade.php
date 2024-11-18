@@ -39,14 +39,19 @@
             </div>
           </div>
         </div>
+       
         <div class="flex flex-none w-24 sm:w-32 h-[86px] absolute -top-[8px] -right-1 justify-center items-center">
           <div class="flex relative left-1 z-10 items-end">
-            <span class="font-heading text-5xl sm:text-6xl text-gray-50 font-bold text-stroke-2 text-stroke-gray-700">{{ $user->rank }}</span>
-            <span class="relative bottom-1 font-heading text-xl sm:text-2xl text-gray-50 font-bold text-stroke-2 text-stroke-gray-700">{{ GameUtil::getOrdinalSuffix($user->rank) }}</span>
+            @if($user->is_player)
+              <span class="font-heading text-5xl sm:text-6xl text-gray-50 font-bold text-stroke-2 text-stroke-gray-700">{{ $user->rank }}</span>
+              <span class="relative bottom-1 font-heading text-xl sm:text-2xl text-gray-50 font-bold text-stroke-2 text-stroke-gray-700">{{ GameUtil::getOrdinalSuffix($user->rank) }}</span>
+            @else
+              <span class="font-heading text-5xl sm:text-6xl text-gray-50 font-bold text-stroke-2 text-stroke-gray-700">-</span>
+            @endif
           </div>
           <svg class="absolute w-full h-full" viewBox="0 0 123 74" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
             <g filter="url(#filter0_i_1214_13529)">
-              <path d="M16.6769 3.0332C17.1208 1.25091 18.7216 0 20.5583 0H119C121.209 0 123 1.79086 123 4V70C123 72.2091 121.209 74 119 74H4.11857C1.5177 74 -0.391467 71.5569 0.237167 69.0332L16.6769 3.0332Z" fill="{{ GameUtil::getHexaColorByRank($user->rank) }}"/>
+              <path d="M16.6769 3.0332C17.1208 1.25091 18.7216 0 20.5583 0H119C121.209 0 123 1.79086 123 4V70C123 72.2091 121.209 74 119 74H4.11857C1.5177 74 -0.391467 71.5569 0.237167 69.0332L16.6769 3.0332Z" fill="{{ $user->is_player ? GameUtil::getHexaColorByRank($user->rank) : '#4F576C' }}"/>
             </g>
             <path d="M20.5583 0.5H119C120.933 0.5 122.5 2.067 122.5 4V70C122.5 71.933 120.933 73.5 119 73.5H4.11857C1.84281 73.5 0.172288 71.3623 0.722342 69.154L17.1621 3.15405C17.5505 1.59454 18.9511 0.5 20.5583 0.5Z" stroke="#333847"/>
             <defs>

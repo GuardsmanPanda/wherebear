@@ -17,7 +17,7 @@ final class GameResultController extends Controller {
   public function index(string $gameId): View|RedirectResponse {
     $game = DB::selectOne(query: <<<SQL
       SELECT
-          g.id, g.game_state_enum, g.experience_points
+        g.id, g.game_state_enum, g.experience_points
       FROM game g
       WHERE g.id = ?
     SQL, bindings: [$gameId]);
@@ -45,7 +45,7 @@ final class GameResultController extends Controller {
       ORDER BY gr.round_number
     SQL, bindings: [BearAuthService::getUserId(), $gameId]);
 
-    $players = DB::select(query: <<<SQL
+    $game_users = DB::select(query: <<<SQL
       SELECT
         u.id as user_id, u.display_name, 
         COALESCE(u.user_flag_enum, u.country_cca2) as country_cca2,
@@ -56,7 +56,8 @@ final class GameResultController extends Controller {
         round(gu.points::numeric, 2) as detailed_points,
         COALESCE(uf.file_path, CONCAT('/static/flag/svg/', u.country_cca2, '.svg')) as flag_file_path,
         COALESCE(uf.description, bc.name) as flag_description,
-        RANK() OVER (ORDER BY gu.points DESC)
+        RANK() OVER (ORDER BY gu.points DESC),
+        CASE WHEN gu.is_observer IS NOT TRUE THEN true ELSE false END as is_player
       FROM game_user gu
       LEFT JOIN bear_user u ON u.id = gu.user_id
       LEFT JOIN map_marker mm ON mm.enum = u.map_marker_enum
@@ -65,6 +66,10 @@ final class GameResultController extends Controller {
       WHERE gu.game_id = ?
       ORDER BY gu.points DESC, u.id
     SQL, bindings: [$gameId]);
+
+    $players = array_filter($game_users, function ($game_user) {
+      return $game_user->is_player;
+    });
 
     $user = DB::selectOne(query: <<<SQL
       SELECT
@@ -78,7 +83,8 @@ final class GameResultController extends Controller {
         mm.file_path as map_marker_file_path,
         round(gu.points)::integer as rounded_points,
         round(gu.points::numeric, 2) as detailed_points,
-        (SELECT COUNT(*) FROM game_user WHERE game_id = :game_id AND points > gu.points) + 1 as rank
+        (SELECT COUNT(*) FROM game_user WHERE game_id = :game_id AND points > gu.points) + 1 as rank,
+        CASE WHEN gu.is_observer IS NOT TRUE THEN true ELSE false END as is_player
       FROM bear_user u
       LEFT JOIN map_marker mm ON mm.enum = u.map_marker_enum
       LEFT JOIN game_user gu ON gu.user_id = u.id
@@ -93,8 +99,8 @@ final class GameResultController extends Controller {
 
     return Resp::view(view: 'game::result.index', data: [
       'game' => $game,
-      'rounds' => $rounds,
       'players' => $players,
+      'rounds' => $rounds,
       'user' => $user
     ]);
   }
@@ -112,6 +118,36 @@ final class GameResultController extends Controller {
         'panorama_lat' => 48,
         'panorama_lng' => 2,
         'round_result_seconds_remaining' => 14
+      ],
+      'rounds' => [
+        (object) [
+          'country_cca2' => 'FR',
+          'country_name' => 'France',
+          'user_rank' => 1,
+          'country_match_user_guess' => true,
+          'country_subdivision_match' => false
+        ],
+        (object) [
+          'country_cca2' => 'UA',
+          'country_name' => 'Ukraine',
+          'user_rank' => 2,
+          'country_match_user_guess' => true,
+          'country_subdivision_match' => true
+        ],
+        (object) [
+          'country_cca2' => 'DE',
+          'country_name' => 'Germany',
+          'user_rank' => 3,
+          'country_match_user_guess' => false,
+          'country_subdivision_match' => false
+        ],
+        (object) [
+          'country_cca2' => 'KR',
+          'country_name' => 'South Korea',
+          'user_rank' => 4,
+          'country_match_user_guess' => true,
+          'country_subdivision_match' => true
+        ],
       ],
       'players' => [
         (object) [
@@ -179,36 +215,6 @@ final class GameResultController extends Controller {
           'rank' => 5,
           'rounded_points' => 0
         ]
-      ],
-      'rounds' => [
-        (object) [
-          'country_cca2' => 'FR',
-          'country_name' => 'France',
-          'user_rank' => 1,
-          'country_match_user_guess' => true,
-          'country_subdivision_match' => false
-        ],
-        (object) [
-          'country_cca2' => 'UA',
-          'country_name' => 'Ukraine',
-          'user_rank' => 2,
-          'country_match_user_guess' => true,
-          'country_subdivision_match' => true
-        ],
-        (object) [
-          'country_cca2' => 'DE',
-          'country_name' => 'Germany',
-          'user_rank' => 3,
-          'country_match_user_guess' => false,
-          'country_subdivision_match' => false
-        ],
-        (object) [
-          'country_cca2' => 'KR',
-          'country_name' => 'South Korea',
-          'user_rank' => 4,
-          'country_match_user_guess' => true,
-          'country_subdivision_match' => true
-        ],
       ],
       'user' => (object) [
         'current_level_experience_points' => 45,
