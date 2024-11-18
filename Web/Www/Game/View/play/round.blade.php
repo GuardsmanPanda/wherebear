@@ -56,7 +56,7 @@
     ></lit-button-square>
     @endif
 
-    @if($user->is_player)
+    @if($user->is_player && $user->is_guess_indicator_allowed)
     <div class="flex justify-center items-center min-w-40 absolute bottom-2 right-0 z-10 -skew-x-12 mr-[10px] ml-24 px-3 py-1 rounded border border-gray-700 bg-gray-50">
        <div class="flex justify-center items-center h-4 absolute -top-[8px] right-2 skew-x-12 rounded pl-3 pr-1 border border-gray-800 bg-gray-700">
         <img src="/static/img/icon/marker-red.svg" width="28" height="28" class="absolute -top-[10px] left-0 transform -translate-x-1/2" />
