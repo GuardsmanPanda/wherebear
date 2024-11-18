@@ -15,6 +15,7 @@
 
     <div id="panorama"></div>
 
+    @if($user->is_player)
     <div>
       <div id="smallScreenMap" tabIndex="-1"
         class="block sm:hidden absolute top-0 w-full h-full z-10 border-r-2 border-gray-800 transition-all duration-300"
@@ -44,14 +45,18 @@
       >
       </div>
     </div>
+    @endif
 
+    @if($user->is_player)
     <lit-button-square label="GUESS" 
       imgPath="/static/img/icon/map-with-marker.svg"
       bgColorClass="bg-iris-400"
       class="block sm:hidden absolute top-1/2 right-0 mr-2"
       x-on:clicked="openSmallMap()"
     ></lit-button-square>
+    @endif
 
+    @if($user->is_player)
     <div class="flex justify-center items-center min-w-40 absolute bottom-2 right-0 z-10 -skew-x-12 mr-[10px] ml-24 px-3 py-1 rounded border border-gray-700 bg-gray-50">
        <div class="flex justify-center items-center h-4 absolute -top-[8px] right-2 skew-x-12 rounded pl-3 pr-1 border border-gray-800 bg-gray-700">
         <img src="/static/img/icon/marker-red.svg" width="28" height="28" class="absolute -top-[10px] left-0 transform -translate-x-1/2" />
@@ -60,6 +65,7 @@
       <span x-text="guessedCountry" class="skew-x-12 text-lg text-gray-700 font-medium"></span>
       <span x-show="!guessedCountry" class="skew-x-12 text-lg text-gray-700 font-medium">...</span>
     </div>
+    @endif
   </div>
 
   <x-play-footer
@@ -199,6 +205,7 @@
           }
         }
       },
+      user: @json($user),
       closeSmallMap() {
         this.screens.small.isVisible = false;
       },
@@ -284,45 +291,47 @@
       init() {
         const mapMarker = `<lit-map-marker iconFilePath="{{ $user->map_marker_file_path }}"></lit-map-marker>`;
 
-        // Initialize the small screen map
-        let smallMapIcon = document.createElement('div');
-        smallMapIcon.innerHTML = mapMarker;
-        this.screens.small.mapIcon = smallMapIcon;
-        this.screens.small.map = this.createMap(this.screens.small.divId);
+        if (this.user.is_player) {
+          // Initialize the small screen map
+          let smallMapIcon = document.createElement('div');
+          smallMapIcon.innerHTML = mapMarker;
+          this.screens.small.mapIcon = smallMapIcon;
+          this.screens.small.map = this.createMap(this.screens.small.divId);
 
-        this.screens.small.map.addControl(new CloseMapButtonControl());
+          this.screens.small.map.addControl(new CloseMapButtonControl());
 
-        this.screens.small.map.on('click', e => {
-          // data: {country_cca2: 'FR', country_name: 'France'}
-          this.saveMarkerLocation(e.lngLat, (data) => {
-            this.placeMarkerOnMaps(e.lngLat);
-            this.scheduleSmallScreenClose();
-            this.guessedCountry = data.country_name;
+          this.screens.small.map.on('click', e => {
+            // data: {country_cca2: 'FR', country_name: 'France'}
+            this.saveMarkerLocation(e.lngLat, (data) => {
+              this.placeMarkerOnMaps(e.lngLat);
+              this.scheduleSmallScreenClose();
+              this.guessedCountry = data.country_name;
+            });
           });
-        });
 
-        this.screens.small.mapElement = document.getElementById(this.screens.small.divId);
+          this.screens.small.mapElement = document.getElementById(this.screens.small.divId);
 
-        // Initialize the large screen map
-        let largeMapIcon = document.createElement('div');
-        largeMapIcon.innerHTML = mapMarker;
-        this.screens.large.mapIcon = largeMapIcon;
-        this.screens.large.map = this.createMap(this.screens.large.divId);
+          // Initialize the large screen map
+          let largeMapIcon = document.createElement('div');
+          largeMapIcon.innerHTML = mapMarker;
+          this.screens.large.mapIcon = largeMapIcon;
+          this.screens.large.map = this.createMap(this.screens.large.divId);
 
-        this.screens.large.map.on('click', e => {
-          // data: {country_cca2: 'FR', country_name: 'France'}
-          this.saveMarkerLocation(e.lngLat, (data) => {
-            this.placeMarkerOnMaps(e.lngLat);
-            this.screens.large.hasClicked = true;
-            this.guessedCountry = data.country_name;
+          this.screens.large.map.on('click', e => {
+            // data: {country_cca2: 'FR', country_name: 'France'}
+            this.saveMarkerLocation(e.lngLat, (data) => {
+              this.placeMarkerOnMaps(e.lngLat);
+              this.screens.large.hasClicked = true;
+              this.guessedCountry = data.country_name;
+            });
+          });  
+
+          this.screens.large.map.on('drag', e => {
+            // In case the user click then drag
+            this.screens.large.hasDragged = true;
+            this.screens.large.hasClicked = false;
           });
-        });  
-
-        this.screens.large.map.on('drag', e => {
-          // In case the user click then drag
-          this.screens.large.hasDragged = true;
-          this.screens.large.hasClicked = false;
-        });
+        }
       },
     }
   }

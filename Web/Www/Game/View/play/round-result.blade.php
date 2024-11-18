@@ -12,6 +12,7 @@
         </div>
       </div>
 
+      @if($user_guess)
       <div class="absolute top-0 right-2 z-10">
         <img class="relative bottom-[7px]" src="/static/img/ui/ribbon-emblem.png" />
 
@@ -64,6 +65,7 @@
          </div>
         </div>
       </div>
+      @endif
     </div>
 
     <div class="flex justify-end gap-2 absolute bottom-0 w-full p-2">
@@ -73,22 +75,26 @@
         iconPath="/static/img/icon/podium.svg"
         x-on:closed="onRankingDialogClosed()"
       >
-        <div slot="content" class="flex flex-col gap-2">
-          @foreach ($guesses as $guess)
-            <lit-player-result-item 
-              countryCCA2="{{ $guess->user_country_cca2 }}"
-              detailedPoints="{{ $guess->detailed_points }}"
-              distanceMeters="{{ $guess->distance_meters }}"
-              flagFilePath="{{ $guess->user_flag_file_path }}"
-              flagDescription="{{ $guess->user_flag_description }}"
-              honorificTitle="Digital Guinea Pig"
-              iconPath="{{ $guess->map_marker_file_path }}"
-              level="{{ $guess->user_level }}"
-              name="{{ $guess->user_display_name }}"
-              rank="{{ $guess->rank }}"
-              roundedPoints="{{ $guess->rounded_points }}">
-            </lit-player-result-item>    
-          @endforeach
+        <div slot="content" class="flex flex-col gap-2 min-w-64">
+          @if(count($guesses) === 0)
+            <p class=" text-base text-gray-800">There are no players in this game.</p>
+          @else
+            @foreach ($guesses as $guess)
+              <lit-player-result-item 
+                countryCCA2="{{ $guess->user_country_cca2 }}"
+                detailedPoints="{{ $guess->detailed_points }}"
+                distanceMeters="{{ $guess->distance_meters }}"
+                flagFilePath="{{ $guess->user_flag_file_path }}"
+                flagDescription="{{ $guess->user_flag_description }}"
+                honorificTitle="Digital Guinea Pig"
+                iconPath="{{ $guess->map_marker_file_path }}"
+                level="{{ $guess->user_level }}"
+                name="{{ $guess->user_display_name }}"
+                rank="{{ $guess->rank }}"
+                roundedPoints="{{ $guess->rounded_points }}">
+              </lit-player-result-item>    
+            @endforeach
+          @endif
         </div>
       </lit-dialog>
       <lit-button-square label="Ranking" imgPath="/static/img/icon/podium.svg" size="xl" bgColorClass="bg-gray-600" class="z-10" isSelectable="true" :isSelected="isRankingButtonSelected" x-on:clicked="onSwitchRankingButtonClicked($event);" ></lit-button-square>

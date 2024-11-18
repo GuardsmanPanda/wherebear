@@ -21,7 +21,7 @@ use Web\Www\Game\Util\GameUtil;
 
 final class GamePlayController extends Controller {
   public function index(string $gameId): View|RedirectResponse {
-    $game = DB::selectOne(query: "
+    $game = DB::selectOne(query: <<<SQL
       SELECT
         g.id, g.game_state_enum, g.number_of_rounds, g.current_round,
         CEIL(EXTRACT(EPOCH FROM g.round_ends_at - NOW()))::INTEGER as round_seconds_remaining,
@@ -41,7 +41,7 @@ final class GamePlayController extends Controller {
       LEFT JOIN bear_country bc ON bc.cca2 = p.country_cca2
       LEFT JOIN bear_country_subdivision bcs ON bcs.iso_3166 = p.country_subdivision_iso_3166
       WHERE g.id = ?
-    ", bindings: [$gameId]);
+    SQL, bindings: [$gameId]);
 
     $enum = GameStateEnum::from(value: $game->game_state_enum);
     if ($enum->isStarting()) {
@@ -63,7 +63,9 @@ final class GamePlayController extends Controller {
           mm.file_path as map_marker_file_path,
           ms.tile_size as map_style_tile_size,
           ms.zoom_offset as map_style_zoom_offset,
-          ms.full_uri as map_style_full_uri
+          ms.full_uri as map_style_full_uri,
+          gu.is_observer,
+          CASE WHEN gu.is_observer IS NOT TRUE THEN true ELSE false END as is_player
       FROM bear_user u
       LEFT JOIN game_user gu ON gu.user_id = u.id
       LEFT JOIN map_marker mm ON mm.enum = u.map_marker_enum
@@ -74,22 +76,38 @@ final class GamePlayController extends Controller {
       return Resp::redirect(url: "/game/$gameId/lobby", message: 'You have not joined the game yet');
     }
 
-    $rounds = DB::select(query: <<<SQL
-      SELECT
-        bc.cca2 as country_cca2, bc.name as country_name,
-        gru.rank as user_rank,
-        p.country_cca2 = gru.country_cca2 as country_match_user_guess,
-        p.country_subdivision_iso_3166 = gru.country_subdivision_iso_3166 as country_subdivision_match_user_guess
-      FROM game_round gr
-      LEFT JOIN game g ON g.id = gr.game_id
-      LEFT JOIN panorama p ON p.id = gr.panorama_id
-      LEFT JOIN bear_country bc ON bc.cca2 = p.country_cca2
-      LEFT JOIN game_round_user gru ON gru.game_id = gr.game_id AND gru.user_id = ? AND gru.round_number = gr.round_number
-      WHERE 
+    $rounds = null;
+    if ($user->is_player) {
+      $rounds = DB::select(query: <<<SQL
+        SELECT
+          bc.cca2 as country_cca2, bc.name as country_name,
+          gru.rank as user_rank,
+          p.country_cca2 = gru.country_cca2 as country_match_user_guess,
+          p.country_subdivision_iso_3166 = gru.country_subdivision_iso_3166 as country_subdivision_match_user_guess
+        FROM game_round gr
+        LEFT JOIN game g ON g.id = gr.game_id
+        LEFT JOIN panorama p ON p.id = gr.panorama_id
+        LEFT JOIN bear_country bc ON bc.cca2 = p.country_cca2
+        LEFT JOIN game_round_user gru ON gru.game_id = gr.game_id AND gru.user_id = ? AND gru.round_number = gr.round_number
+        WHERE 
           gr.game_id = ?
           AND (gr.round_number < g.current_round OR (gr.round_number = g.current_round AND g.game_state_enum = 'IN_PROGRESS_RESULT'))
-      ORDER BY gr.round_number
-    SQL, bindings: [BearAuthService::getUserId(), $gameId]);
+        ORDER BY gr.round_number
+      SQL, bindings: [BearAuthService::getUserId(), $gameId]);
+    } else {
+      $rounds = DB::select(query: <<<SQL
+        SELECT
+          bc.cca2 as country_cca2, bc.name as country_name
+        FROM game_round gr
+        LEFT JOIN game g ON g.id = gr.game_id
+        LEFT JOIN panorama p ON p.id = gr.panorama_id
+        LEFT JOIN bear_country bc ON bc.cca2 = p.country_cca2
+        WHERE 
+          gr.game_id = ?
+          AND (gr.round_number < g.current_round OR (gr.round_number = g.current_round AND g.game_state_enum = 'IN_PROGRESS_RESULT'))
+        ORDER BY gr.round_number
+      SQL, bindings: [$gameId]);
+    }
 
     if ($enum === GameStateEnum::IN_PROGRESS_RESULT) {
       $guesses = DB::select(query: <<<SQL
@@ -124,18 +142,21 @@ final class GamePlayController extends Controller {
       SQL, bindings: [$gameId, $game->current_round]);
 
       $user_guess = null;
-      foreach ($guesses as $guess) {
-        if ($guess->user_id === $user->id) {
-          $user_guess = $guess;
-          break;
+      if ($user->is_player) {
+        foreach ($guesses as $guess) {
+          if ($guess->user_id === $user->id) {
+            $user_guess = $guess;
+            break;
+          }
         }
       }
+
       return Resp::view(view: 'game::play.index', data: [
-        'rounds' => $rounds,
         'game' => $game,
         'guesses' => $guesses,
         'isDev' => false,
         'panorama_url' => App::isProduction() ? "https://panorama.wherebear.fun/$game->jpg_path" : "https://panorama.gman.bot/$game->jpg_path",
+        'rounds' => $rounds,
         'template' => 'game::play.round-result',
         'user' => $user,
         'user_guess' => $user_guess,
@@ -143,10 +164,10 @@ final class GamePlayController extends Controller {
     }
 
     return Resp::view(view: 'game::play.index', data: [
-      'rounds' => $rounds,
       'game' => $game,
       'isDev' => false,
       'panorama_url' => App::isProduction() ? "https://panorama.wherebear.fun/$game->jpg_path" : "https://panorama.gman.bot/$game->jpg_path",
+      'rounds' => $rounds,
       'template' => 'game::play.round',
       'user' => $user,
     ]);
@@ -154,6 +175,16 @@ final class GamePlayController extends Controller {
 
   public function roundDev(): View {
     return Resp::view(view: 'game::play.round', data: [
+      'game' => (object) [
+        'id' => 123,
+        'captured_month' => 'May',
+        'captured_year' => 2014,
+        'current_round' => 5,
+        'round_seconds_remaining' => 44,
+        'number_of_rounds' => 7
+      ],
+      'isDev' => true,
+      'panorama_url' => 'https://pannellum.org/images/alma.jpg',
       'rounds' => [
         (object) [
           'country_cca2' => 'FR',
@@ -174,7 +205,7 @@ final class GamePlayController extends Controller {
           'country_name' => 'Germany',
           'country_match_user_guess' => false,
           'country_subdivision_match_user_guess' => false,
-          'user_rank' => 3,
+          'user_rank' => null, // Simulate observer mode
         ],
         (object) [
           'country_cca2' => 'KR',
@@ -184,17 +215,9 @@ final class GamePlayController extends Controller {
           'user_rank' => 4,
         ],
       ],
-      'game' => (object) [
-        'id' => 123,
-        'captured_month' => 'May',
-        'captured_year' => 2014,
-        'current_round' => 5,
-        'round_seconds_remaining' => 44,
-        'number_of_rounds' => 7
-      ],
-      'isDev' => true,
-      'panorama_url' => 'https://pannellum.org/images/alma.jpg',
       'user' => (object) [
+        'is_observer' => false,
+        'is_player' => true,
         'map_marker_file_path' => '/static/img/map-marker/chibi/indian-tribe-knight.png',
         'map_style_tile_size' => 256,
         'map_style_zoom_offset' => 0,
@@ -312,7 +335,7 @@ final class GamePlayController extends Controller {
           'country_match' => false,
           'country_name' => 'Germany',
           'country_subdivision_name' => 'Sub',
-          'detailed_points' =>"42.00",
+          'detailed_points' => "42.00",
           'distance_meters' => "2000000",
           'flag_file_path' => '/static/flag/svg/DE.svg',
           'lat' => 45,
