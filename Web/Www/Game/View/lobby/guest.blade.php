@@ -1,7 +1,7 @@
 <?php declare(strict_types=1); ?>
 <div class="grid-cols-1 grid container mx-auto w-96 mt-2">
   <h1 class="text-center font-bold text-xl">{{$game->name}}</h1>
-  <div class="text-center text-sm text-gray-400 -mt-1">{{$game->number_of_rounds}} rounds, {{count($players)}} players.</div>
+  <div class="text-center text-sm text-gray-400 -mt-1">{{$game->number_of_rounds}} rounds, {{count($game_users)}} players.</div>
   <hr class="mx-5 mt-3 mb-3 pb-0.5 border-gray-700 border-dashed border-b-2">
   <div class="mx-auto text-orange-600 font-medium text-xl">
     Please log in or join as a guest to play.
@@ -27,7 +27,7 @@
   <hr class="mx-5 mt-4 mb-2 pb-0.5 border-gray-700 border-dashed border-b-2">
   <div class="mx-auto text-gray-600 font-medium text-xl">Players</div>
   <ul id="player-list" class="mt-2">
-    @foreach($players as $player)
+    @foreach($game_users as $player)
       @if(!$loop->first)
         <hr class="mx-5 mt-1 mb-1 pb-0.5 border-gray-700 border-dashed">
       @endif

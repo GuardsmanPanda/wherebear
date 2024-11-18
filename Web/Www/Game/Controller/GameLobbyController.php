@@ -47,30 +47,6 @@ final class GameLobbyController extends Controller {
     return $game;
   }
 
-  private function getGameUser(string $gameId, string $userId): ?stdClass {
-    $gameUser = DB::selectOne(query: <<<SQL
-      SELECT 
-        bu.id, bu.display_name, bu.country_cca2, bu.user_level_enum as level,
-        gu.is_ready, gu.is_observer, gu.created_at,
-        mm.file_path as map_marker_file_path, mm.map_anchor as map_marker_map_anchor,
-        ms.enum as map_style_enum, ms.short_name as map_style_short_name,
-        COALESCE(uf.file_path, CONCAT('/static/flag/svg/', bu.country_cca2, '.svg')) as flag_file_path,
-        COALESCE(uf.description, bc.name) as flag_description,
-        CASE WHEN g.created_by_user_id = bu.id THEN true ELSE false END as is_host
-      FROM game_user gu
-      LEFT JOIN bear_user bu ON bu.id = gu.user_id
-      LEFT JOIN bear_country bc ON bc.cca2 = bu.country_cca2
-      LEFT JOIN map_marker mm ON mm.enum = bu.map_marker_enum
-      LEFT JOIN map_style ms ON ms.enum = bu.map_style_enum
-      LEFT JOIN user_flag uf ON uf.enum = bu.user_flag_enum
-      LEFT JOIN game g ON g.id = gu.game_id
-      WHERE gu.game_id = ? AND gu.user_id = ?
-    SQL, bindings: [$gameId, $userId]);
-
-    $gameUser->title = "Digital Guinea Pig";
-
-    return $gameUser;
-  }
 
   public function index(string $gameId): Response|View {
     $game = $this->getGame($gameId);
@@ -94,7 +70,7 @@ final class GameLobbyController extends Controller {
     if ($user_id === null) {
       return Resp::view(view: "game::lobby.guest", data: [
         'game' => $game,
-        'gameUsers' => DB::select(query: <<<SQL
+        'game_users' => DB::select(query: <<<SQL
           SELECT
             bu.display_name, bu.country_cca2, bu.user_level_enum as level,
             gu.is_ready, bc.name as country_name,
@@ -132,9 +108,13 @@ final class GameLobbyController extends Controller {
         gu.is_ready, gu.is_observer,
         mm.file_path as map_marker_file_path, mm.map_anchor as map_marker_map_anchor,
         COALESCE(uf.file_path, CONCAT('/static/flag/svg/', bu.country_cca2, '.svg')) as flag_file_path,
-        COALESCE(uf.description, bc.name) as flag_description
+        COALESCE(uf.description, bc.name) as flag_description,
+        bu.user_level_enum = 0 as is_guest,
+        g.created_by_user_id = bu.id as is_host,
+        'Digital Guinea Pig' as title
       FROM bear_user bu
       LEFT JOIN game_user gu ON gu.user_id = bu.id AND gu.game_id = ?
+      LEFT JOIN game g ON g.id = gu.game_id
       LEFT JOIN map_marker mm ON mm.enum = bu.map_marker_enum
       LEFT JOIN bear_country bc ON bc.cca2 = bu.country_cca2
       LEFT JOIN user_level ul ON ul.enum = bu.user_level_enum
@@ -142,14 +122,11 @@ final class GameLobbyController extends Controller {
       WHERE bu.id = ?
     SQL, bindings: [$game->id, $user_id]);
 
-    $user->can_observe = $game->created_by_user_id === BearAuthService::getUserId() || $game->type === 'templated';
-    $user->title = 'Digital Guinea Pig';
+    $user->can_observe = $game->created_by_user_id === BearAuthService::getUserId(); // TODO: add observer ability to db to db
     $user->level_percentage = $user->current_level_experience_points * 100 / $user->next_level_experience_points_requirement;
     $user->display_level_percentage = $user->level_percentage < 1 ? 1 : floor($user->level_percentage);
-    $user->isHost = $game->created_by_user_id === BearAuthService::getUserId();
-    $user->isGuest = $user->level === 0;
 
-    $gameUsers = DB::select(query: <<<SQL
+    $game_users = DB::select(query: <<<SQL
       SELECT 
         bu.id, bu.display_name, bu.country_cca2, bu.user_level_enum as level,
         gu.is_ready, gu.is_observer, gu.created_at,
@@ -169,13 +146,13 @@ final class GameLobbyController extends Controller {
       ORDER BY bu.id = ? DESC, bu.display_name, bu.country_cca2, bu.id
     SQL, bindings: [$gameId, BearAuthService::getUserId()]);
 
-    $gameUsers = array_map(function ($gameUser) {
+    $game_users = array_map(function ($gameUser) {
       $gameUser->title = "Digital Guinea Pig";
       return $gameUser;
-    }, $gameUsers);
+    }, $game_users);
 
     $gameUser = null;
-    foreach ($gameUsers as $n) {
+    foreach ($game_users as $n) {
       if ($n->id === BearAuthService::getUserId()) {
         $gameUser = $n;
         break;
@@ -186,7 +163,7 @@ final class GameLobbyController extends Controller {
 
     return Resp::view(view: 'game::lobby.index', data: [
       'game' => $game,
-      'gameUsers' => $gameUsers,
+      'game_users' => $game_users,
       'user' => $user,
     ]);
   }
@@ -211,7 +188,7 @@ final class GameLobbyController extends Controller {
     }
     $updater->update();
 
-    GameBroadcast::gameUserUpdate(gameId: $gameId, gameUser: $this->getGameUser($gameId, BearAuthService::getUserId()));
+    GameBroadcast::gameUserUpdate(gameId: $gameId, userId: BearAuthService::getUserId());
     return new Response();
   }
 
@@ -226,7 +203,7 @@ final class GameLobbyController extends Controller {
     }
     $updater->update();
 
-    GameBroadcast::gameUserUpdate(gameId: $gameId, gameUser: $this->getGameUser($gameId, BearAuthService::getUserId()));
+    GameBroadcast::gameUserUpdate(gameId: $gameId, userId: BearAuthService::getUserId());
     GameStartAction::placeInQueueIfAble(gameId: $gameId);
     return new Response();
   }

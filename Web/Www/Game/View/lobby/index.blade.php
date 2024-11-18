@@ -4,7 +4,7 @@
   <!-- Header -->
   <div x-ref="header" class="flex h-14 shrink-0 justify-between items-center px-2 border-b border-gray-700 bg-iris-500">
     <div class="flex w-16">
-      @if($user->isHost)
+      @if($user->is_host)
         <lit-button imgPath="/static/img/icon/cross.svg" size="md" bgColorClass="bg-red-500" hx-delete="/game/{{$game->id}}" hx-swap="none" hx-confirm="Are you Sure you wish to DELETE the game?"></lit-button>
       @else
         <lit-button imgPath="/static/img/icon/arrow-back.svg" size="md" bgColorClass="bg-gray-400" hx-delete="/game/{{$game->id}}/lobby/leave" hx-swap="none"></lit-button>
@@ -54,7 +54,7 @@
                 <span class="relative bottom-0.5 font-heading font-semibold text-sm text-gray-800">{{ $user->title }}</span>
               </div>
               <div class="flex">
-                @if(!$user->isGuest)
+                @if(!$user->is_guest)
                   <lit-button :label="user.map_style_short_name" size="xs" :bgColorClass="user.map_style_enum === 'SATELLITE' ? 'bg-red-500' : 'bg-iris-500'" contentAlignment="left" imgPath="/static/img/icon/map.svg" lowercased class="w-[100px]" hx-get="/game/{{$game->id}}/lobby/dialog/map-style"></lit-button>
                 @endif
               </div>
@@ -83,7 +83,7 @@
 
         <lit-panel-header label="GAME SETTINGS">
           <lit-label slot="left" :label="game.is_public ? 'PUBLIC' : 'PRIVATE'" size="xs" :bgColorClass="game.is_public ? 'bg-pistachio-400' : 'bg-red-500'" isPill widthClass="w-16"></lit-label>
-          @if($user->isHost)
+          @if($user->is_host)
           <div slot="right" class="flex items-center gap-2">
             <lit-button label="Edit" size="xs" bgColorClass="bg-gray-400" class="w-16" hx-get="/game/{{$game->id}}/lobby/dialog/settings"></lit-button>
             <lit-button label="Start" size="xs" bgColorClass="bg-iris-400" class="w-16" hx-post="/game/{{$game->id}}/start" hx-swap="none" hx-confirm="Confirm that you wish to START the game?"></lit-button>
@@ -282,7 +282,7 @@
       gameUserListMarginTopPx: 8,
       game: @json($game),
       gameStageText: 'Waiting for players...',
-      gameUsers: @json($gameUsers),
+      gameUsers: @json($game_users),
       get gameUserCount() {
         return this.gameUsers.length;
       },
