@@ -25,7 +25,6 @@ class Label extends LitElement {
       [this.bgColorClass]: this.bgColorClass,
       [this.widthClass]: this.widthClass,
       'justify-center': !this.iconPath,
-      'pl-7': this.iconPath,
       'pl-1': !this.iconPath,
       '-skew-x-6': !this.isPill && this.size !== 'xs',
       '-skew-x-12': !this.isPill && this.size === 'xs',
@@ -34,6 +33,7 @@ class Label extends LitElement {
       'bg-pistachio-500': this.type === 'success',
       'bg-poppy-500': this.type === 'error',
       'bg-gray-600': this.type === 'dark',
+      'bg-iris-500': this.type === 'primary',
     }
   }
 
@@ -71,7 +71,9 @@ class Label extends LitElement {
   render() {
     return html`
       <div class="flex items-center relative pr-1 border border-gray-700 ${classMap(this.classes)}">
-        ${this.iconPath ? html`<img src="${this.iconPath}" class="h-4 absolute -top-1 left-1 ${classMap(this.imgClasses)}" />` : nothing}
+        <div class="${this.iconPath ? 'flex' : 'hidden'} justify-center items-center w-5 h-4 relative bottom-[2px] left-[2px] mr-1">
+        ${this.iconPath ? html`<img src="${this.iconPath}" class="max-h-4 max-h-5 object-contain ${classMap(this.imgClasses)}" />` : nothing}
+        </div>
         <span class="font-heading font-semibold text-gray-0 text-stroke-2 text-stroke-gray-700 ${classMap(this.labelClasses)}">${this.label}</span>
       </div>
     `;

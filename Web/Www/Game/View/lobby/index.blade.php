@@ -13,7 +13,7 @@
     <div class="flex flex-col flex-1 items-center">
       <span x-text="gameStageText" class="font-heading text-lg text-gray-0 font-bold text-stroke-2 text-stroke-iris-800 leading-none"></span>
       <div class="font-heading text-base text-gray-0 font-medium text-stroke-1 text-stroke-iris-800">
-        <span x-text="readyPlayerCount"></span>/<span x-text="playerCount"></span> players ready
+        <span x-text="readyEntrantCount"></span>/<span x-text="gameUserCount"></span> players ready
       </div>
     </div>
     <div class="flex justify-end w-24">
@@ -30,7 +30,15 @@
     <div class="flex flex-col w-full h-full">
       <!-- Scrollable Content -->
       <div class="flex flex-col w-full lobby-sm:h-full overflow-y-auto">
-        <lit-panel-header label="PROFILE"></lit-panel-header>
+        <lit-panel-header label="PROFILE">
+          
+          @if($user->can_observe)
+            <div slot="right" class="flex lobby-sm:hidden items-center gap-1">
+              <span class="font-heading font-semibold text-sm text-gray-0 whitespace-nowrap">Observer Mode</span>
+              <lit-toggle size="xs" leftLabel="Off" rightLabel="On" :isSelected="user.is_observer" x-on:clicked="toggleIsObserver($event.detail.isSelected)" class="w-20"></lit-toggle>
+            </div>
+          @endif
+        </lit-panel-header>
         <div class="py-2">
           <div class="flex gap-2 mx-2">
             <div class="flex flex-none justify-center w-[72px] h-[72px]" :class="{ 'items-end': user.map_marker_map_anchor === 'bottom', 'items-center': user.map_marker_map_anchor === 'center' }">
@@ -77,7 +85,7 @@
           <lit-label slot="left" :label="game.is_public ? 'PUBLIC' : 'PRIVATE'" size="xs" :bgColorClass="game.is_public ? 'bg-pistachio-400' : 'bg-red-500'" isPill widthClass="w-16"></lit-label>
           @if($user->isHost)
           <div slot="right" class="flex items-center gap-2">
-            <lit-button label="Edit" size="xs" bgColorClass="bg-orange-400" class="w-16" hx-get="/game/{{$game->id}}/lobby/dialog/settings"></lit-button>
+            <lit-button label="Edit" size="xs" bgColorClass="bg-gray-400" class="w-16" hx-get="/game/{{$game->id}}/lobby/dialog/settings"></lit-button>
             <lit-button label="Start" size="xs" bgColorClass="bg-iris-400" class="w-16" hx-post="/game/{{$game->id}}/start" hx-swap="none" hx-confirm="Confirm that you wish to START the game?"></lit-button>
           </div>
           @endif
@@ -142,40 +150,42 @@
         </div>
       </div>
       <!-- Expandable Panel -->
-      <div x-ref="playersSubstitute" class="hidden flex-1 min-h-[150px]"></div>
-      <div x-ref="players" data-state="collapsed" class="flex flex-col lobby-sm:hidden flex-1 min-h-[150px] z-10 px-2 bg-iris-500 border border-t-2 border-b-0 border-gray-700 rounded-t-2xl transition-[height] duration-700 ease-in-out">
+      <div x-ref="gameUsersSubstitute" class="hidden flex-1 min-h-[150px]"></div>
+      <div x-ref="gameUsers" data-state="collapsed" class="flex flex-col lobby-sm:hidden flex-1 min-h-[150px] z-10 px-2 bg-iris-500 border border-t-2 border-b-0 border-gray-700 rounded-t-2xl transition-[height] duration-700 ease-in-out">
         <div class="flex justify-between items-center py-2 border-b border-gray-50 cursor-pointer" x-on:click="togglePlayerListSize">
           <div></div>
           <div class="font-heading font-bold text-base text-gray-0 text-stroke-2 text-stroke-iris-800">PLAYERS</div>
-          <div x-ref="playersToggleSizeIcon" class="w-4 mr-4 transition-transform duration-1000 ease-in-out">
+          <div x-ref="gameUsersToggleSizeIcon" class="w-4 mr-4 transition-transform duration-1000 ease-in-out">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#EFF1F4" class="size-6">
               <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
             </svg>
           </div>
         </div>
-        <div x-ref="playerList" class="py-2">
+        <div x-ref="gameUserList" class="py-2">
           <div class="grid grid-cols-3 min-[420px]:grid-cols-4 min-[520px]:grid-cols-5 min-[622px]:grid-cols-6 gap-4">
-            <template x-for="player in playerList">
+            <template x-for="gameUser in gameUserList">
               <div class="flex flex-col w-20 justify-center items-center">
-                <div class="flex w-full h-4 justify-center items-center px-0.5 rounded-t border border-b-0 border-gray-700 bg-gray-600" :tippy="player.display_name">
-                  <span x-text="player.display_name" class="font-heading font-medium text-xs text-gray-0 truncate"></span>
+                <div class="flex w-full h-4 justify-center items-center px-0.5 rounded-t border border-b-0 border-gray-700 bg-gray-600" :tippy="gameUser.display_name">
+                  <span x-text="gameUser.display_name" class="font-heading font-medium text-xs text-gray-0 truncate"></span>
                 </div>
                 <div class="flex flex-none justify-center w-20 h-16 relative border-x border-gray-700 bg-gradient-to-t"
                   :class="{ 
-                    'items-center': player.map_marker_map_anchor === 'center',
-                    'items-end': player.map_marker_map_anchor === 'bottom',
-                    'from-gray-200 to-gray-300': !player.is_ready,
-                    'from-pistachio-300 to-pistachio-500': player.is_ready
+                    'items-center': gameUser.map_marker_map_anchor === 'center',
+                    'items-end': gameUser.map_marker_map_anchor === 'bottom',
+                    'from-gray-200 to-gray-300': !gameUser.is_ready,
+                    'from-pistachio-300 to-pistachio-500': gameUser.is_ready
                   }">
-                  <img src="/static/img/icon/check-green.svg" draggable="false" class="h-6 absolute -top-2 -right-2 z-10 transform-[opacity] duration-100" :class="{ 'opacity-100': player.is_ready, 'opacity-0': !player.is_ready }" />
-                  <img :src="player.map_marker_file_path" draggable="false" class="max-w-[72px]" :class="{
-                    'max-h-14': player.map_marker_map_anchor === 'center',
-                    'max-h-16 relative top-[4px]': player.map_marker_map_anchor === 'bottom'
+                  
+                  <img x-show="gameUser.is_observer" src="/static/img/icon/eye.svg" class="h-4 absolute -left-1 -top-0.5" />
+                  <img src="/static/img/icon/check-green.svg" draggable="false" class="h-6 absolute -top-2 -right-2 z-10 transform-[opacity] duration-100" :class="{ 'opacity-100': gameUser.is_ready, 'opacity-0': !gameUser.is_ready }" />
+                  <img :src="gameUser.map_marker_file_path" draggable="false" class="max-w-[72px]" :class="{
+                    'max-h-14': gameUser.map_marker_map_anchor === 'center',
+                    'max-h-16 relative top-[4px]': gameUser.map_marker_map_anchor === 'bottom'
                   }" />
                 </div>
                 <div class="flex flex-none w-full h-[10px] relative rounded-b border border-gray-700 bg-gray-600">
-                  <lit-flag :cca2="player.country_cca2" :filePath="player.flag_file_path" :description="player.flag_description" roundedClass="rounded-sm" class="absolute bottom-[2px] right-[3px] h-4" draggable="false"></lit-flag>
-                  <lit-level-emblem :level="player.level" size="xs" class="absolute -left-[4px] -bottom-[3px]"><lit-level-emblem>
+                  <lit-flag :cca2="gameUser.country_cca2" :filePath="gameUser.flag_file_path" :description="gameUser.flag_description" roundedClass="rounded-sm" class="absolute bottom-[2px] right-[3px] h-4" draggable="false"></lit-flag>
+                  <lit-level-emblem :level="gameUser.level" size="xs" class="absolute -left-[4px] -bottom-[3px]"><lit-level-emblem>
                 </div>
               </div>
             </template>
@@ -191,47 +201,72 @@
       <lit-panel-header label="STATUS">
         <lit-label slot="right" :label="user.is_ready ? 'Ready' : 'Pending...'" size="sm" :bgColorClass="user.is_ready ? 'bg-pistachio-400' : 'bg-gray-500'" widthClass="w-24"></lit-label>
       </lit-panel-header>
-      <div class="flex justify-center p-2">
-        <lit-button label="Wait" size="md" bgColorClass="bg-gray-400" hx-patch="/game/{{$game->id}}/lobby/update-game-user" hx-vals='{"is_ready": false}' hx-swap="none" x-show="user.is_ready" class="w-48"></lit-button>
-        <lit-button label="Ready" size="md" bgColorClass="bg-pistachio-500" hx-patch="/game/{{$game->id}}/lobby/update-game-user" hx-vals='{"is_ready": true}' hx-swap="none" x-show="!user.is_ready" class="w-48"></lit-button>
+      <div class="flex justify-center">
+        @if($user->can_observe)
+          <div class="flex flex-col justify-between items-center w-[168px] h-full p-2 pt-1 border-r" :class="{ 'border-gray-300 bg-gray-100': !user.is_observer, 'border-iris-500 bg-iris-300': user.is_observer }">
+            <span class="font-heading font-semibold text-sm" :class="{ 'text-iris-800': !user.is_observer, 'text-gray-900': user.is_observer }">Observer Mode</span>
+            <lit-toggle size="sm" leftLabel="Off" rightLabel="On" :isSelected="user.is_observer" x-on:clicked="toggleIsObserver($event.detail.isSelected)" class="w-full"></lit-toggle>
+        </div>
+        @endif
+        <div class="w-full p-2">
+          <lit-button label="Wait" size="lg" bgColorClass="bg-gray-400" hx-patch="/game/{{$game->id}}/lobby/update-game-user" hx-vals='{"is_ready": false}' hx-swap="none" x-show="user.is_ready" class="w-48"></lit-button>
+          <lit-button label="Ready" size="lg" bgColorClass="bg-pistachio-500" hx-patch="/game/{{$game->id}}/lobby/update-game-user" hx-vals='{"is_ready": true}' hx-swap="none" x-show="!user.is_ready" class="w-48"></lit-button>
+        </div>
       </div>
 
-      <lit-panel-header label="PLAYERS"></lit-panel-header>
+      <lit-panel-header label="PLAYERS">
+        <div slot="right" class="flex items-center gap-2">
+          <lit-label :label="`${playerCount} player${playerCount > 1 ? 's' : ''}`" size="sm" type="primary" class="w-20"></lit-label>
+          <lit-label x-show="observerCount > 0" :label="`${observerCount} observer${observerCount > 1 ? 's' : ''}`" size="sm" bgColorClass="bg-iris-300" class="w-24"></lit-label>
+        </div>
+      </lit-panel-header>
       <div class="overflow-y-auto">
-        <template x-for="player in playerList">
+        <template x-for="gameUser in gameUserList">
           <div class="flex gap-2 relative overflow-hidden p-2 border-b border-gray-300 bg-gradient-to-t" :class="{ 
-            'from-pistachio-400 to-pistachio-500': player.is_ready, 
-            'from-gray-50 to-gray-100': !player.is_ready 
+            'from-pistachio-400 to-pistachio-500': gameUser.is_ready, 
+            'from-gray-50 to-gray-100': !gameUser.is_ready 
             }">
-            <div x-show="player.is_host" class="flex justify-center items-center w-16 h-4 absolute top-2 -left-4 border border-gray-700 -rotate-45 bg-gradient-to-t from-yellow-300 to-yellow-400">
+            <div x-show="gameUser.is_host" class="flex justify-center items-center w-16 h-4 absolute top-2 -left-4 border border-gray-700 -rotate-45 bg-gradient-to-t from-yellow-300 to-yellow-400">
               <span class="font-heading font-semibold text-xs text-gray-0 text-stroke-2 text-stroke-gray-700">HOST</span>
             </div>
 
-            <div class="flex flex-none justify-center w-16 h-16" :class="{ 'items-end': player.map_marker_map_anchor === 'bottom', 'items-center': player.map_marker_map_anchor === 'center' }">
-              <img :src="player.map_marker_file_path" 
+            <div class="flex flex-none justify-center w-16 h-16" :class="{ 'items-end': gameUser.map_marker_map_anchor === 'bottom', 'items-center': gameUser.map_marker_map_anchor === 'center' }">
+              <img :src="gameUser.map_marker_file_path" 
                 class="max-w-full max-h-full object-contain"
                 draggable="false" 
               />
             </div>
             <div class="flex flex-col gap-[10px] w-full overflow-hidden">
               <div class="flex flex-col w-full">
-                <span x-text="player.display_name" class="leading-none font-heading font-semibold text-lg truncate" 
-                  :class="{ 'text-iris-800': !player.is_ready, 'text-gray-0 text-stroke-2 text-stroke-pistachio-900': player.is_ready }">
+                <span x-text="gameUser.display_name" class="leading-none font-heading font-semibold text-lg truncate" 
+                  :class="{ 'text-iris-800': !gameUser.is_ready, 'text-gray-0 text-stroke-2 text-stroke-pistachio-900': gameUser.is_ready }">
                 </span>
-                <span x-text="player.title" class="leading-none font-heading font-medium text-sm text-gray-800 truncate"></span>
+                <span x-text="gameUser.title" class="leading-none font-heading font-medium text-sm text-gray-800 truncate"></span>
               </div>
-              <lit-label 
-                :label="player.map_style_short_name"
-                size="xs" :type="player.map_style_enum === 'SATELLITE' ? 'error' : 'dark'"
-                iconPath="/static/img/icon/map.svg"
-                class="w-[80px] ml-1">
-              </lit-label>
+              
+              <div class="flex gap-2">
+                <lit-label x-show="!gameUser.is_observer"
+                  :label="gameUser.map_style_short_name"
+                  size="xs"
+                  :type="gameUser.map_style_enum === 'SATELLITE' ? 'error' : 'dark'"
+                  iconPath="/static/img/icon/map.svg"
+                  class="w-[80px] ml-1">
+                </lit-label>
+
+                 <lit-label x-show="gameUser.is_observer"
+                  label="Observer"
+                  size="xs"
+                  bgColorClass="bg-iris-300"
+                  iconPath="/static/img/icon/eye.svg"
+                  class="ml-1">
+                </lit-label>
+              </div>
             </div>
             <div class="flex flex-col justify-between items-end">
               <div class="flex items-center w-8 h-6">
-                <lit-flag :cca2="player.country_cca2" :filePath="player.flag_file_path" :description="player.flag_description" roundedClass="rounded-sm" maxHeightClass="max-h-6" class="w-8" draggable="false"></lit-flag>
+                <lit-flag :cca2="gameUser.country_cca2" :filePath="gameUser.flag_file_path" :description="gameUser.flag_description" roundedClass="rounded-sm" maxHeightClass="max-h-6" class="w-8" draggable="false"></lit-flag>
               </div>
-              <lit-level-emblem :level="player.level" size="sm"></lit-level-emblem>
+              <lit-level-emblem :level="gameUser.level" size="sm"></lit-level-emblem>
             </div>
           </div>
         </template>
@@ -244,22 +279,31 @@
   function state(gameId, userId) {
     return {
       animationDurationMs: 700,
-      playerListMarginTopPx: 8,
+      gameUserListMarginTopPx: 8,
       game: @json($game),
       gameStageText: 'Waiting for players...',
-      players: @json($players),
-      get playerList() {
-        const hostPlayer = this.players.find(n => n.is_host);
-        const noHostPlayers = this.players
+      gameUsers: @json($gameUsers),
+      get gameUserCount() {
+        return this.gameUsers.length;
+      },
+      get observerCount() {
+        return this.gameUsers.filter(n => n.is_observer).length;
+      },
+      get playerCount() {
+        return this.gameUsers.filter(n => !n.is_observer).length;
+      },
+      get gameUserList() {
+        const hostPlayer = this.gameUsers.find(n => n.is_host);
+        const noHostPlayers = this.gameUsers
           .filter(n => n.is_host ? false : true)
           .sort((a,b) => a.created_at < b.created_at ? -1 : a.created_at > b.created_at ? 1 : 0);
         return [hostPlayer, ...noHostPlayers];
       },
-      /** Returns a list of players for dev purpose only. */
-      get playerListDev() {
-        const players = [];
+      /** Returns a list of game users for dev purpose only. */
+      get gameUserListDev() {
+        const gameUsers = [];
         for(i=0; i<10;i++) {
-          players.push( {
+          gameUsers.push( {
             id: 'id',
             display_name: 'GreenMonkeyBoy',
             is_ready: true,
@@ -271,80 +315,97 @@
             map_marker_map_anchor: 'bottom'
           });
         }
-        return players;
+        return gameUsers;
+      },
+      get readyEntrantCount() {
+        return this.gameUsers.filter(n => n.is_ready).length;
       },
       get user() {
-        return this.players.find(n => n.id === userId);
+        return this.gameUsers.find(n => n.id === userId);
       },
-      get readyPlayerCount() {
-        return this.players.filter(n => n.is_ready).length;
-      },
-      get playerCount() {
-        return this.players.length;
+      toggleIsObserver(isObserver) {
+        fetch(`/game/${gameId}/lobby/update-game-user`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              is_observer: isObserver
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+              console.error(`Failed to update observer status: ${response.statusText}`);
+              return;
+            }
+        })
+        .catch(error => {
+            console.error('Error updating observer status:', error);
+        });
       },
       togglePlayerListSize() {
-        const state = this.$refs.players.getAttribute('data-state');
-        const playersExpandedHeightpx = window.innerHeight - this.$refs.header.offsetHeight - this.playerListMarginTopPx;
+        const state = this.$refs.gameUsers.getAttribute('data-state');
+        const gameUsersExpandedHeightPx = window.innerHeight - this.$refs.header.offsetHeight - this.gameUserListMarginTopPx;
 
         if (state === 'collapsed') {
-          this.$refs.players.style.width = `${this.$refs.layout.offsetWidth}px`;
-          this.$refs.players.style.height = `${this.$refs.players.offsetHeight}px`;
-          this.$refs.playersToggleSizeIcon.classList.add('rotate-180');
+          this.$refs.gameUsers.style.width = `${this.$refs.layout.offsetWidth}px`;
+          this.$refs.gameUsers.style.height = `${this.$refs.gameUsers.offsetHeight}px`;
+          this.$refs.gameUsersToggleSizeIcon.classList.add('rotate-180');
 
           // If there is no timeout, the animation doesn't occur. It's as if the second value is applied immediately, bypassing the first value altogether.
           // One millisecond is enough in dev, put 5 for security.
           setTimeout(() => {
-            this.$refs.players.classList.add('fixed', 'bottom-0', 'transition-[height]', `duration-${this.animationDurationMs}`);
+            this.$refs.gameUsers.classList.add('fixed', 'bottom-0', 'transition-[height]', `duration-${this.animationDurationMs}`);
 
             setTimeout(() => {
-              this.$refs.playersSubstitute.classList.remove('hidden');
-              this.$refs.playersSubstitute.classList.add('block');
+              this.$refs.gameUsersSubstitute.classList.remove('hidden');
+              this.$refs.gameUsersSubstitute.classList.add('block');
 
-              this.$refs.players.style.height = `${playersExpandedHeightpx}px`;
+              this.$refs.gameUsers.style.height = `${gameUsersExpandedHeightPx}px`;
             }, 5);
           }, 5);
 
           setTimeout(() => {
-            this.$refs.players.classList.remove('transition-[height]', `duration-${this.animationDurationMs}`);
-            this.$refs.playerList.classList.add('overflow-y-auto');
-            this.$refs.players.setAttribute('data-state', 'expanded');
+            this.$refs.gameUsers.classList.remove('transition-[height]', `duration-${this.animationDurationMs}`);
+            this.$refs.gameUserList.classList.add('overflow-y-auto');
+            this.$refs.gameUsers.setAttribute('data-state', 'expanded');
           }, (this.animationDurationMs));
         } else {
-          this.$refs.players.classList.add('transition-[height]', `duration-${this.animationDurationMs}`);
-          this.$refs.players.style.height = `${this.$refs.playersSubstitute.offsetHeight}px`;
-          this.$refs.playersToggleSizeIcon.classList.remove('rotate-180');
-          this.$refs.playerList.classList.remove('overflow-y-auto');
+          this.$refs.gameUsers.classList.add('transition-[height]', `duration-${this.animationDurationMs}`);
+          this.$refs.gameUsers.style.height = `${this.$refs.gameUsersSubstitute.offsetHeight}px`;
+          this.$refs.gameUsersToggleSizeIcon.classList.remove('rotate-180');
+          this.$refs.gameUserList.classList.remove('overflow-y-auto');
 
           setTimeout(() => {
-            this.$refs.players.style.removeProperty('width');
-            this.$refs.players.classList.remove('fixed', 'bottom-0');
-            this.$refs.players.classList.add('flex', 'flex-1', 'min-h-[150px]');
-            this.$refs.players.classList.remove('transition-[height]', `duration-${this.animationDurationMs}`);
+            this.$refs.gameUsers.style.removeProperty('width');
+            this.$refs.gameUsers.classList.remove('fixed', 'bottom-0');
+            this.$refs.gameUsers.classList.add('flex', 'flex-1', 'min-h-[150px]');
+            this.$refs.gameUsers.classList.remove('transition-[height]', `duration-${this.animationDurationMs}`);
 
-            this.$refs.playersSubstitute.classList.remove('block');
-            this.$refs.playersSubstitute.classList.add('hidden'); 
+            this.$refs.gameUsersSubstitute.classList.remove('block');
+            this.$refs.gameUsersSubstitute.classList.add('hidden'); 
 
-            this.$refs.players.setAttribute('data-state', 'collapsed');
+            this.$refs.gameUsers.setAttribute('data-state', 'collapsed');
           }, this.animationDurationMs);
         }
       },
-      updatePlayer(player) {
-        for (let i = 0; i < this.players.length; i++) {
-          if (this.players[i].id === player.id) {
-            this.players[i] = player;
+      updatePlayer(gameUser) {
+        for (let i = 0; i < this.gameUsers.length; i++) {
+          if (this.gameUsers[i].id === gameUser.id) {
+            this.gameUsers[i] = gameUser;
             break;
           }
         }   
       },
       init() {
         window.addEventListener('resize', () => {
-          const playersState = this.$refs.players.getAttribute('data-state');
+          const gameUsersState = this.$refs.gameUsers.getAttribute('data-state');
 
-          if (playersState === 'expanded') {
-            const playersExpandedHeightpx = window.innerHeight - this.$refs.header.offsetHeight - this.playerListMarginTopPx;
+          if (gameUsersState === 'expanded') {
+            const gameUsersExpandedHeightPx = window.innerHeight - this.$refs.header.offsetHeight - this.gameUserListMarginTopPx;
 
-            this.$refs.players.style.width = `${this.$refs.layout.offsetWidth}px`;
-            this.$refs.players.style.height = `${playersExpandedHeightpx}px`;
+            this.$refs.gameUsers.style.width = `${this.$refs.layout.offsetWidth}px`;
+            this.$refs.gameUsers.style.height = `${gameUsersExpandedHeightPx}px`;
           }
         });    
 
@@ -371,19 +432,19 @@
         channel.bind('game.round.update', ({ roundNumber, gameStateEnum }) => {
           window.location.href = `/game/${gameId}/play`;
         });
-        channel.bind('player.join', ({ player }) => {
-          if (!this.players.find(n => n.id === player.id)) {
-            this.players.push(player);
+        channel.bind('game-user.join', ({ gameUser }) => {
+          if (!this.gameUsers.find(n => n.id === gameUser.id)) {
+            this.gameUsers.push(gameUser);
           }
         });
-        channel.bind('player.update', ({ player }) => {
-          this.updatePlayer(player);    
+        channel.bind('game-user.update', ({ gameUser }) => {
+          this.updatePlayer(gameUser);    
         });
-        channel.bind('player.leave', ({ playerId }) => {
+        channel.bind('game-user.leave', ({ gameUserId }) => {
           // Because leaving the game is a request, it takes time. If I remove the user in the player list,
           // it creates bugs on the page because the user not exist anymore.
-          if (this.user.id !== playerId) {
-            this.players = this.players.filter(n => n.id !== playerId);
+          if (this.user.id !== gameUserId) {
+            this.gameUsers = this.gameUsers.filter(n => n.id !== gameUserId);
           }
         }); 
       }
