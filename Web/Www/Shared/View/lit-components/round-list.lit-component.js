@@ -74,11 +74,11 @@ class RoundList extends LitElement {
   getUserRankIcon(userRank) {
     switch (userRank) {
       case 1:
-        return 'ribbon-gold copy';
+        return 'ribbon-gold';
       case 2:
-        return 'ribbon-silver copy';
+        return 'ribbon-silver';
       case 3:
-        return 'ribbon-bronze copy';
+        return 'ribbon-bronze';
       default:
         return null;
     }
@@ -115,7 +115,7 @@ class RoundList extends LitElement {
         style="${styleMap(this.getRoundIconStyles(args.isPlaceHolder, args.countryCca2))}"
         @click="${() => this.selectRound(args.countryCca2)}">
 
-        ${args.userRank <= 3 ? html`<img class="w-[22px] absolute -top-[3px] -right-[3px]" src="/static/img/icon/${this.getUserRankIcon(args.userRank)}.svg">` : nothing}
+        ${args.userRank != null && args.userRank <= 3 ? html`<img class="w-[22px] absolute -top-[3px] -right-[3px]" src="/static/img/icon/${this.getUserRankIcon(args.userRank)}.svg">` : nothing}
             
         ${args.isPlaceHolder
         ? html`
@@ -166,7 +166,7 @@ class RoundList extends LitElement {
     }
 
     return html`
-      <div class="flex flex-wrap w-full gap-1 justify-center p-2">
+      <div class="flex flex-wrap w-full gap-1 justify-center p-2 select-none">
         ${roundTemplates}
       </div>
     `;
