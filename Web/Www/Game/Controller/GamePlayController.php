@@ -59,13 +59,14 @@ final class GamePlayController extends Controller {
 
     $user = DB::selectOne(query: <<<SQL
       SELECT
-          u.id, u.map_marker_enum,
+          u.id, u.map_marker_enum, u.map_style_enum,
           mm.file_path as map_marker_file_path,
           ms.tile_size as map_style_tile_size,
           ms.zoom_offset as map_style_zoom_offset,
           ms.full_uri as map_style_full_uri,
           gu.is_observer,
-          CASE WHEN gu.is_observer IS NOT TRUE THEN true ELSE false END as is_player
+          CASE WHEN gu.is_observer IS NOT TRUE THEN true ELSE false END as is_player,
+          CASE WHEN u.map_style_enum = 'SATELLITE' THEN false ELSE true END as is_guess_indicator_allowed
       FROM bear_user u
       LEFT JOIN game_user gu ON gu.user_id = u.id
       LEFT JOIN map_marker mm ON mm.enum = u.map_marker_enum
@@ -216,6 +217,7 @@ final class GamePlayController extends Controller {
         ],
       ],
       'user' => (object) [
+        'is_guess_indicator_allowed' => true,
         'is_observer' => false,
         'is_player' => true,
         'map_marker_file_path' => '/static/img/map-marker/chibi/indian-tribe-knight.png',
