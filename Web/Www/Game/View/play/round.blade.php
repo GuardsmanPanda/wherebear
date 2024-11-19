@@ -18,7 +18,7 @@
     @if($user->is_player)
     <div>
       <div id="smallScreenMap" tabIndex="-1"
-        class="block sm:hidden absolute top-0 w-full h-full z-10 border-r-2 border-gray-800 transition-all duration-300"
+        class="block md:hidden absolute top-0 w-full h-full z-10 border-r-2 border-gray-800 transition-all duration-300"
         :class="{ '-right-[2px]': screens.small.isVisible, 'right-full': !screens.small.isVisible }"
         x-transition:enter="transition ease-out duration-300"
         x-transition:enter-start="translate-x-full"
@@ -30,20 +30,15 @@
       </div>
 
       <div id="largeScreenMap"
-        class="hidden sm:block aspect-square absolute top-0 right-0 z-10 rounded-bl opacity-75 hover:opacity-100 drop-shadow-xl transition-all duration-300 ease-in-out"
-        x-data="{
-          size: 0,
-          calculateSize() {
-            this.size = screens.large.fullMapWidthPx;
-          }
-        }"
-        x-init="calculateSize()"
-        :style="`width: ${size}px; height: ${size}px; clip-path: ${screens.large.clipStyle};`"
-        x-on:resize.window="calculateSize()"
-        x-on:mouseenter="screens.large.onMouseEnter();"
-        x-on:mouseleave="screens.large.onMouseLeave();"
-      >
+        class="hidden w-full h-full md:block absolute top-0 right-0 z-10 transition-all duration-300 ease-in-out rounded-bl drop-shadow-xl"
+        :class="{ 'opacity-100': screens.large.isHovered, 'opacity-75': !screens.large.isHovered }"
+        x-init="screens.large.calculateMapSize()"
+        :style="screens.large.mapStyle" 
+        x-on:resize.window="screens.large.calculateMapSize()"
+        x-on:mouseenter="screens.large.onMouseEnter(); hovered = true;"
+        x-on:mouseleave="screens.large.onMouseLeave(); hovered = false">
       </div>
+
     </div>
     @endif
 
@@ -51,7 +46,7 @@
     <lit-button-square label="GUESS" 
       imgPath="/static/img/icon/map-with-marker.svg"
       bgColorClass="bg-iris-400"
-      class="block sm:hidden absolute top-1/2 right-0 mr-2"
+      class="block md:hidden absolute top-1/2 right-0 mr-2"
       x-on:clicked="openSmallMap()"
     ></lit-button-square>
     @endif
@@ -123,85 +118,79 @@
           map: null,
           mapIcon: null,
           marker: null,
-          hasClicked: false,
-          hasZoomedAfterLastLeft: false,
-          minimifiedMapMinSidePercentage: 0.25,
-          mapMinSidePercentage: 0.75,
-          get width() {
-            return `${this.fullMapWidthPx}px`;
-          },
-          get height() {
-            return `${this.fullMapHeightPx}px`;
-          },
-          get panoramaMinSidePx() {
-             const panoramaEl = document.getElementById('panorama'); 
-             return Math.min(panoramaEl.clientWidth, panoramaEl.clientHeight);
-          },
-          get minimifiedMapWidthPx() {
-            return this.panoramaMinSidePx * this.minimifiedMapMinSidePercentage;
-          },
-          get minimifiedMapHeightPx() {
-            return this.panoramaMinSidePx * this.minimifiedMapMinSidePercentage;
-          },
-          get fullMapWidthPx() {
-            return this.panoramaMinSidePx * this.mapMinSidePercentage;
-          },
-          get fullMapHeightPx() {
-            return this.panoramaMinSidePx * this.mapMinSidePercentage;
-          },
-          get clipStyle() {
+          canMinifiedMap: false,
+          /** The percentage of the mini-map's width relative to the panorama's width. */
+          miniMapWidthPct: 50,
+          /** The percentage of the mini-map's height relative to the panorama's width. */
+          miniMapHeightPct: 50,
+          /** The percentage of the map's width relative to the panoramas's width. */
+          mapWidthPct: 0,
+          /** The percentage of the map's height relative to the panoramas's height. */
+          mapHeightPct: 100,
+          panoramaWidthPx: 0,
+          panoramaHeightPx: 0,
+          calculateMapSize() {
             const panoramaEl = document.getElementById('panorama');
-            const minSidePx = Math.min(panoramaEl.clientWidth, panoramaEl.clientHeight);
+            this.panoramaWidthPx = panoramaEl.clientWidth;
+            this.panoramaHeightPx = panoramaEl.clientHeight;
 
-            if (this.isHovered) {
-              return `ellipse(${minSidePx * this.mapMinSidePercentage}px ${minSidePx * this.mapMinSidePercentage}px at 100% 0)`;
+            if (this.panoramaWidthPx < 1280) {
+              this.mapWidthPct = 50;
+              this.miniMapWidthPct = 25;
+              this.miniMapHeightPct = 35;
             } else {
-              return `ellipse(${this.minimifiedMapWidthPx}px ${this.minimifiedMapHeightPx}px at 100% 0)`;
+              this.mapWidthPct = 40;
+              this.miniMapWidthPct = 25;
+              this.miniMapHeightPct = 30;
+            }
+          },
+          get mapStyle() {            
+            const clippedWidth = 100 - (100/(this.mapWidthPct/this.miniMapWidthPct));
+            return {
+              'width': `${this.mapWidthPct}%`,
+              'height': `${this.mapHeightPct}%`,
+              'clip-path': this.isHovered 
+                ? `polygon(0 0, 100% 0, 100% 100%, 0 100%)` // Original size instead of 'none' to make the transition animation works
+                : `polygon(
+                  ${clippedWidth}% 0, 
+                  100% 0, 
+                  100% ${this.miniMapHeightPct}%, 
+                  ${clippedWidth}% ${this.miniMapHeightPct}%
+                )`
             }
           },
           onMouseEnter() {
-            this.isHovered = true;
-            this.hasClicked = false;
-            this.hasDragged = false;
+            this.canMinifiedMap = false;
     
-            if (this.marker && this.hasZoomedAfterLastLeft) {
-              this.map.flyTo({ 
-                center: this.marker.getLngLat(),
-                zoom: this.map.getZoom() + 1
-              });
+            if (!this.isHovered) {
+              if (this.marker) {
+                this.map.flyTo({ 
+                  center: this.marker.getLngLat(),
+                  zoom: this.map.getZoom() + 1
+                });
+              }
             }
+            this.isHovered = true;
           },
           onMouseLeave() {
-            this.isHovered = false;
+            // Schedule to switch isHovered to false if the mouse has not entered meanwhile
+            this.canMinifiedMap = true;
+            setTimeout(() => {
+              if (this.canMinifiedMap) {
+                this.isHovered = false;
 
-            // If the map must be centered on the maker
-            if (this.marker && (this.hasClicked || this.hasZoomedAfterLastLeft) && !(this.hasDragged && !this.hasClicked)) {
-              const mapEl = document.getElementById('largeScreenMap');
-              const mapWidthPx = mapEl.clientWidth;
-              const mapHeightPx = mapEl.clientHeight;
-              const minMapSidePx = Math.min(mapWidthPx, mapHeightPx);
-
-              const getLatOffset = (markerLat, zoom) => {
-                if (markerLat > 75) {
-                  if (zoom > 1) {
-                    // TODO: implement the logic when the map is zoomed
-                    return mapHeightPx * 0.1;
-                  }
+                if (this.marker) {              
+                  this.map.flyTo({
+                    center: this.marker.getLngLat(),
+                    zoom: this.map.getZoom() - 1,
+                    offset: [
+                      this.panoramaWidthPx * ((this.mapWidthPct - this.miniMapWidthPct) * 0.5 / 100),
+                      -this.panoramaHeightPx * ((this.mapHeightPct - this.miniMapHeightPct) * 0.5 / 100)
+                    ]
+                  });
                 }
-                return -mapHeightPx * this.minimifiedMapMinSidePercentage;
               }
- 
-              this.map.flyTo({
-                center: this.marker.getLngLat(),
-                zoom: this.map.getZoom() - 1,
-                offset: [this.fullMapWidthPx * 0.345, getLatOffset(this.marker.getLngLat().lat, this.map.getZoom())]
-              });
-
-              this.hasZoomedAfterLastLeft = true;
-            } else {
-              this.map.zoomOut();
-              this.hasZoomedAfterLastLeft = false;
-            }
+            }, 300);
           }
         }
       },
@@ -223,7 +212,7 @@
                 'type': 'raster', 
                 'tiles': ['{{$user->map_style_full_uri}}'], 
                 'tileSize': {{$user->map_style_tile_size}},
-              }
+              },
             }, 
             'layers': [{'id': 'simple-tiles', 'type': 'raster', 'source': 'raster-tiles'}]
           }, 
@@ -321,16 +310,9 @@
             // data: {country_cca2: 'FR', country_name: 'France'}
             this.saveMarkerLocation(e.lngLat, (data) => {
               this.placeMarkerOnMaps(e.lngLat);
-              this.screens.large.hasClicked = true;
               this.guessedCountry = data.country_name;
             });
           });  
-
-          this.screens.large.map.on('drag', e => {
-            // In case the user click then drag
-            this.screens.large.hasDragged = true;
-            this.screens.large.hasClicked = false;
-          });
         }
       },
     }
