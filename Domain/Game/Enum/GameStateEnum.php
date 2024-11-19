@@ -38,7 +38,7 @@ enum GameStateEnum: string {
   }
 
 
-  public function isStarting(): bool {
+  public function isInLobby(): bool {
     return $this === self::WAITING_FOR_PLAYERS || $this === self::QUEUED || $this === self::CONFIRMING || $this === self::SELECTING;
   }
 

@@ -17,6 +17,8 @@ Route::get(uri: "create-from-template", action: [GameController::class, 'createF
 Route::post(uri: "create-from-template/{templateId}", action: [GameController::class, 'createFromTemplate'])->middleware([BearPermissionMiddleware::using(permission: BearPermissionEnum::GAME_CREATE_TEMPLATED_GAME)]);
 
 Route::prefix("{gameId}")->middleware(BearHtmxMiddleware::using(layout_location: 'layout.layout'))->group(callback: function () {
+  Route::get(uri: 'status', action: [GameController::class, 'getStatus']);
+
   Route::prefix("lobby")->group(callback: function () {
     Route::get(uri: "", action: [GameLobbyController::class, 'index']);
     Route::get(uri: "player-list", action: [GameLobbyController::class, 'playerList']);

@@ -44,7 +44,7 @@ final class GamePlayController extends Controller {
     SQL, bindings: [$gameId]);
 
     $enum = GameStateEnum::from(value: $game->game_state_enum);
-    if ($enum->isStarting()) {
+    if ($enum->isInLobby()) {
       return Resp::redirect(url: "/game/$gameId/lobby", message: 'Game is not in progress');
     }
     if ($enum->isFinished()) {
@@ -77,38 +77,22 @@ final class GamePlayController extends Controller {
       return Resp::redirect(url: "/game/$gameId/lobby", message: 'You have not joined the game yet');
     }
 
-    $rounds = null;
-    if ($user->is_player) {
-      $rounds = DB::select(query: <<<SQL
-        SELECT
-          bc.cca2 as country_cca2, bc.name as country_name,
-          gru.rank as user_rank,
-          p.country_cca2 = gru.country_cca2 as country_match_user_guess,
-          p.country_subdivision_iso_3166 = gru.country_subdivision_iso_3166 as country_subdivision_match_user_guess
-        FROM game_round gr
-        LEFT JOIN game g ON g.id = gr.game_id
-        LEFT JOIN panorama p ON p.id = gr.panorama_id
-        LEFT JOIN bear_country bc ON bc.cca2 = p.country_cca2
-        LEFT JOIN game_round_user gru ON gru.game_id = gr.game_id AND gru.user_id = ? AND gru.round_number = gr.round_number
-        WHERE 
-          gr.game_id = ?
-          AND (gr.round_number < g.current_round OR (gr.round_number = g.current_round AND g.game_state_enum = 'IN_PROGRESS_RESULT'))
-        ORDER BY gr.round_number
-      SQL, bindings: [BearAuthService::getUserId(), $gameId]);
-    } else {
-      $rounds = DB::select(query: <<<SQL
-        SELECT
-          bc.cca2 as country_cca2, bc.name as country_name
-        FROM game_round gr
-        LEFT JOIN game g ON g.id = gr.game_id
-        LEFT JOIN panorama p ON p.id = gr.panorama_id
-        LEFT JOIN bear_country bc ON bc.cca2 = p.country_cca2
-        WHERE 
-          gr.game_id = ?
-          AND (gr.round_number < g.current_round OR (gr.round_number = g.current_round AND g.game_state_enum = 'IN_PROGRESS_RESULT'))
-        ORDER BY gr.round_number
-      SQL, bindings: [$gameId]);
-    }
+    $rounds = DB::select(query: <<<SQL
+      SELECT
+        bc.cca2 as country_cca2, bc.name as country_name,
+        gru.rank as user_rank,
+        p.country_cca2 = gru.country_cca2 as country_match_user_guess,
+        p.country_subdivision_iso_3166 = gru.country_subdivision_iso_3166 as country_subdivision_match_user_guess
+      FROM game_round gr
+      LEFT JOIN game g ON g.id = gr.game_id
+      LEFT JOIN panorama p ON p.id = gr.panorama_id
+      LEFT JOIN bear_country bc ON bc.cca2 = p.country_cca2
+      LEFT JOIN game_round_user gru ON gru.game_id = gr.game_id AND gru.user_id = ? AND gru.round_number = gr.round_number
+      WHERE 
+        gr.game_id = ?
+        AND (gr.round_number < g.current_round OR (gr.round_number = g.current_round AND g.game_state_enum = 'IN_PROGRESS_RESULT'))
+      ORDER BY gr.round_number
+    SQL, bindings: [BearAuthService::getUserId(), $gameId]);
 
     if ($enum === GameStateEnum::IN_PROGRESS_RESULT) {
       $guesses = DB::select(query: <<<SQL

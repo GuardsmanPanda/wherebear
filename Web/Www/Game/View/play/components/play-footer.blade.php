@@ -20,7 +20,7 @@ declare(strict_types=1); ?>
     </div>
 
     <lit-progress-bar 
-      x-data="progressBarState({{ $secondsRemaining - 2 }})" 
+      x-data="progressBarState({{ $secondsRemaining - 2 }})"
       sideFlated sideUnbordered 
       :percentage="percentage"
       @if($page === 'play')
@@ -45,28 +45,21 @@ declare(strict_types=1); ?>
 <script>
   function countdownState(durationSec) {
     return {
-      intervalDurationMs: 1000,
+      targetTime: new Date(new Date().getTime() + durationSec * 1000),
       timeRemainingSec: durationSec,
       timerInterval: null,
-      start() {
+      init() {
         const tick = () => {
-          if (this.timeRemainingSec <= 0) {
-            clearInterval(this.timerInterval);
-            this.timeRemainingSec = 0;
-          } else {
-            this.timeRemainingSec--;
+          const now = new Date();
+          let timeDiff = this.targetTime - now;
+          if (timeDiff < -4000) {
+            window.location.reload();
           }
+          this.timeRemainingSec = Math.max(0, Math.ceil(timeDiff / 1000));
         };
-
-        tick();
         this.timerInterval = setInterval(() => {
           tick();
-        }, this.intervalDurationMs);
-      },
-      init() {
-        setTimeout(() => {
-          this.start();
-        }, 1100);
+        }, 100);
       },
       destroy() {
         clearInterval(this.timerInterval);
@@ -78,33 +71,20 @@ declare(strict_types=1); ?>
     return {
       percentage: 100,
       durationSec: durationSec,
+      targetTime: new Date(new Date().getTime() + durationSec * 1000),
       timerInterval: null,
-      intervalDurationMs: 1000,
       innerBgColor() {
         return `hsl(${123 * this.percentage / 100}, 69%, 58%)`;
       },
-      start() {
-        const totalStepCount = (durationSec * 1000) / this.intervalDurationMs;
-        const percentageStep = (100 / (totalStepCount));
-
+      init() {
         const tick = () => {
-          if (this.percentage <= 0) {
-            clearInterval(this.timerInterval);
-            this.percentage = 0;
-          } else {
-            this.percentage = Math.max(this.percentage - percentageStep, 0);
-          }
+          const now = new Date();
+          let timeDiff = this.targetTime - now - 1000;
+          this.percentage = Math.max(0, Math.min(100, (timeDiff / (this.durationSec * 1000)) * 100));
         };
-
-        tick();
         this.timerInterval = setInterval(() => {
           tick();
-        }, this.intervalDurationMs);
-      },
-      init() {
-        setTimeout(() => {
-          this.start();
-        }, 100);
+        }, 1000);
       },
       destroy() {
         clearInterval(this.timerInterval);

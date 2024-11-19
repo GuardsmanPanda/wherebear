@@ -185,7 +185,7 @@
                 </div>
                 <div class="flex flex-none w-full h-[10px] relative rounded-b border border-gray-700 bg-gray-600">
                   <lit-flag :cca2="gameUser.country_cca2" :filePath="gameUser.flag_file_path" :description="gameUser.flag_description" roundedClass="rounded-sm" class="absolute bottom-[2px] right-[3px] h-4" draggable="false"></lit-flag>
-                  <lit-level-emblem :level="gameUser.level" size="xs" class="absolute -left-[4px] -bottom-[3px]"><lit-level-emblem>
+                  <lit-level-emblem :level="gameUser.level" size="xs" class="absolute -left-[4px] -bottom-[3px]"></lit-level-emblem>
                 </div>
               </div>
             </template>
@@ -276,6 +276,32 @@
 </div>
 
 <script>
+  setInterval(function() {
+    fetch(`/game/{{$game->id}}/status`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then(response => {
+      if (!response.ok) {
+        throw new Error(`Response not ok: ${response.statusText}`);
+      }
+      return response.json();
+    }).then(data => {
+      if (data.status !== 'OK') {
+        window.location.href = '/';
+      }
+      if (data.in_progress === true) {
+        window.location.href = `/game/{{$game->id}}/play`;
+      }
+      if (data.finished === true) {
+        window.location.href = `/game/{{$game->id}}/result`;
+      }
+    }).catch(error => {
+      console.error('Error fetching game data:', error);
+    });
+  }, 20000);
+
   function state(gameId, userId) {
     return {
       animationDurationMs: 700,

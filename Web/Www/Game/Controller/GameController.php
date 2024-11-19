@@ -18,7 +18,9 @@ use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Resp;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -80,6 +82,20 @@ final class GameController extends Controller {
   }
 
 
+  public function getStatus(string $gameId): JsonResponse {
+    $game = Game::find(id: $gameId);
+    if ($game === null) {
+      Session::flash(key: 'message', value: 'Game not found');
+      return Resp::json(data: ['status' => 'NOT_FOUND']);
+    }
+    return Resp::json(data: [
+      'status' => 'OK',
+      'in_progress' => $game->game_state_enum->isInProgress(),
+      'finished' => $game->game_state_enum->isFinished(),
+    ]);
+  }
+
+
   public function delete(string $gameId): Response {
     $game = Game::findOrFail(id: $gameId);
     if ($game->created_by_user_id !== BearAuthService::getUserId() && !BearAuthService::hasPermission(permission: BearPermissionEnum::IS_BOB)) {
@@ -89,6 +105,7 @@ final class GameController extends Controller {
     GameBroadcast::gameDelete(gameId: $gameId);
     return new Response();
   }
+
 
   public function redirectFromShortCode(string $shortCode): RedirectResponse {
     $game = DB::selectOne(query: "SELECT id, game_state_enum FROM game WHERE short_code = ?", bindings: [$shortCode]);

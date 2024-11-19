@@ -579,7 +579,7 @@
     keyboard: false, 
     minZoom: 1, 
     maxZoom: 18, 
-    zoom: 7,
+    zoom: 6,
     attributionControl: false
   })
 

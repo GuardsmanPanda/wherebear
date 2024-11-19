@@ -12,7 +12,7 @@ final class PageDownloadController extends Controller {
     return Resp::view(view: 'page::download.index', data: [
       'panoramas' => DB::select(query: "
         SELECT 
-            p.id
+          p.id
         FROM panorama p
         WHERE p.jpg_path IS NULL
         ORDER BY p.added_by_user_id DESC
