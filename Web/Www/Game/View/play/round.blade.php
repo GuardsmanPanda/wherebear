@@ -17,28 +17,45 @@
 
     @if($user->is_player)
     <div>
-      <div id="smallScreenMap" tabIndex="-1"
-        class="block md:hidden absolute top-0 w-full h-full z-10 border-r-2 border-gray-800 transition-all duration-300"
-        :class="{ '-right-[2px]': screens.small.isVisible, 'right-full': !screens.small.isVisible }"
-        x-transition:enter="transition ease-out duration-300"
-        x-transition:enter-start="translate-x-full"
-        x-transition:enter-end="translate-x-0"
-        x-transition:leave="transition ease-in duration-300"
-        x-transition:leave-start="translate-x-0"
-        x-transition:leave-end="translate-x-full"
-        @keyup.esc="closeSmallMap()">
+      <div x-data="slidePanelState" x-ref="slidePanel" id="slidePanel" tabIndex="-1"
+        class="block lg:hidden absolute top-0 w-full h-full z-10 transition-all duration-300"
+        :class="{ 'right-0': isOpened, 'right-full': !isOpened }"
+        x-on:slide-panel-opened.window="open"
+        @keyup.esc="close">
       </div>
 
-      <div id="largeScreenMap"
-        class="hidden w-full h-full md:block absolute top-0 right-0 z-10 transition-all duration-300 ease-in-out rounded-bl drop-shadow-xl"
-        :class="{ 'opacity-100': screens.large.isHovered, 'opacity-75': !screens.large.isHovered }"
-        x-init="screens.large.calculateMapSize()"
-        :style="screens.large.mapStyle" 
-        x-on:resize.window="screens.large.calculateMapSize()"
-        x-on:mouseenter="screens.large.onMouseEnter(); hovered = true;"
-        x-on:mouseleave="screens.large.onMouseLeave(); hovered = false">
-      </div>
+      <div x-data="mapState" x-ref="map" class="hidden lg:block">
+        <div x-ref="mapBg" 
+          class="absolute top-0 right-0 z-30 rounded-bl-md border-b-4 border-l-4 transition-all duration-300 ease-in-out"
+          :class="{ 'border-gray-100': !isExpanded, 'border-gray-50': isExpanded }"
+          :style="mapBackgroundStyle"
+          style="pointer-events: none;">
 
+          @if($user->is_guess_indicator_allowed)
+          <div class="absolute -bottom-px left-0 max-w-full h-8">
+            <div class="flex justify-center items-center h-4 absolute -top-[8px] left-3 z-10 rounded pl-3 pr-1 border border-gray-800 bg-gray-700"
+              :class="{ }">
+              <img src="/static/img/icon/marker-red.svg" width="28" height="28" class="absolute -top-[10px] left-0 transform -translate-x-1/2" />
+              <span class="text-xs text-gray-50 font-medium">Your Guess</span>
+            </div>
+            <div
+              class="min-w-32 max-w-full h-full flex justify-center pt-1.5 pr-4"
+              :class="{ 'bg-gray-100': !isExpanded, 'bg-gray-50': isExpanded, 'pl-0': !isExpanded, 'pl-1': isExpanded && isMapFullWidth }"
+              style="clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 100%, 0 100%);">
+              <span x-text="guessedCountry" class="text-lg text-gray-700 font-medium truncate"></span>
+              <span x-show="!guessedCountry" class="text-lg text-gray-700 font-medium">...</span>
+            </div>
+          </div>
+          @endif
+        </div>
+
+        <div id="map"
+          class="hidden lg:block absolute top-0 right-0 z-20 transition-all duration-300 ease-in-out"
+          :style="mapStyle" 
+          x-on:mouseenter="expandMap"
+          x-on:mouseleave="minifyMap">
+        </div>
+      </div>
     </div>
     @endif
 
@@ -46,13 +63,13 @@
     <lit-button-square label="GUESS" 
       imgPath="/static/img/icon/map-with-marker.svg"
       bgColorClass="bg-iris-400"
-      class="block md:hidden absolute top-1/2 right-0 mr-2"
-      x-on:clicked="openSmallMap()"
+      class="block lg:hidden absolute top-1/2 right-0 mr-2"
+      x-on:clicked="openSlidePanel()"
     ></lit-button-square>
     @endif
 
     @if($user->is_player && $user->is_guess_indicator_allowed)
-    <div class="flex justify-center items-center min-w-40 absolute bottom-2 right-0 z-10 -skew-x-12 mr-[10px] ml-24 px-3 py-1 rounded border border-gray-700 bg-gray-50">
+    <div class="lg:hidden flex justify-center items-center min-w-40 absolute bottom-2 right-0 z-10 -skew-x-12 mr-[10px] ml-24 px-3 py-1 rounded border border-gray-700 bg-gray-50">
        <div class="flex justify-center items-center h-4 absolute -top-[8px] right-2 skew-x-12 rounded pl-3 pr-1 border border-gray-800 bg-gray-700">
         <img src="/static/img/icon/marker-red.svg" width="28" height="28" class="absolute -top-[10px] left-0 transform -translate-x-1/2" />
         <span class="text-xs text-gray-50 font-medium">Your Guess</span>
@@ -74,14 +91,14 @@
 </div>
 
 <script>
-  class CloseMapButtonControl {
+  class MapLibreCloseButtonControl {
     onAdd(map) {
       this._map = map;
       this._container = document.createElement('lit-button');
       this._container.setAttribute('imgPath', '/static/img/icon/cross.svg');
       this._container.setAttribute('size', 'sm');
       this._container.setAttribute('bgColorClass', 'bg-gray-400');
-      this._container.setAttribute('x-on:click', 'closeSmallMap()');
+      this._container.setAttribute('x-on:click', 'close()');
       
       this._container.className = 'maplibregl-ctrl';
 
@@ -94,115 +111,19 @@
     }
   }
 
-  function state(isDev) {
-    return {
-      closeSmallScreenVisibilityTimeout: null,
-      firstGuessMade: false,
+  pannellum.viewer('panorama', {
+    type: "equirectangular",
+    panorama: "{{ $panorama_url }}",
+    autoLoad: true,
+    showControls: false
+  });
+
+  document.addEventListener('alpine:init', () => {
+    // The global state of the page
+    Alpine.data('state', (isDev) => ({
       guessedCountry: null,
-      mapIcon: null,
-      marker: null,
-      markerLngLat: null,
-      requestThrottleTimeout: null,
-      screens: {
-        small: {
-          divId: 'smallScreenMap',
-          map: null,
-          mapElement: null,
-          mapIcon: null,
-          marker: null,
-          isVisible: false,
-        },
-        large: {
-          divId: 'largeScreenMap',
-          isHovered: false,
-          map: null,
-          mapIcon: null,
-          marker: null,
-          canMinifiedMap: false,
-          /** The percentage of the mini-map's width relative to the panorama's width. */
-          miniMapWidthPct: 50,
-          /** The percentage of the mini-map's height relative to the panorama's width. */
-          miniMapHeightPct: 50,
-          /** The percentage of the map's width relative to the panoramas's width. */
-          mapWidthPct: 0,
-          /** The percentage of the map's height relative to the panoramas's height. */
-          mapHeightPct: 100,
-          panoramaWidthPx: 0,
-          panoramaHeightPx: 0,
-          calculateMapSize() {
-            const panoramaEl = document.getElementById('panorama');
-            this.panoramaWidthPx = panoramaEl.clientWidth;
-            this.panoramaHeightPx = panoramaEl.clientHeight;
-
-            if (this.panoramaWidthPx < 1280) {
-              this.mapWidthPct = 50;
-              this.miniMapWidthPct = 25;
-              this.miniMapHeightPct = 35;
-            } else {
-              this.mapWidthPct = 40;
-              this.miniMapWidthPct = 25;
-              this.miniMapHeightPct = 30;
-            }
-          },
-          get mapStyle() {            
-            const clippedWidth = 100 - (100/(this.mapWidthPct/this.miniMapWidthPct));
-            return {
-              'width': `${this.mapWidthPct}%`,
-              'height': `${this.mapHeightPct}%`,
-              'clip-path': this.isHovered 
-                ? `polygon(0 0, 100% 0, 100% 100%, 0 100%)` // Original size instead of 'none' to make the transition animation works
-                : `polygon(
-                  ${clippedWidth}% 0, 
-                  100% 0, 
-                  100% ${this.miniMapHeightPct}%, 
-                  ${clippedWidth}% ${this.miniMapHeightPct}%
-                )`
-            }
-          },
-          onMouseEnter() {
-            this.canMinifiedMap = false;
-    
-            if (!this.isHovered) {
-              if (this.marker) {
-                this.map.flyTo({ 
-                  center: this.marker.getLngLat(),
-                  zoom: this.map.getZoom() + 1
-                });
-              }
-            }
-            this.isHovered = true;
-          },
-          onMouseLeave() {
-            // Schedule to switch isHovered to false if the mouse has not entered meanwhile
-            this.canMinifiedMap = true;
-            setTimeout(() => {
-              if (this.canMinifiedMap) {
-                this.isHovered = false;
-
-                if (this.marker) {              
-                  this.map.flyTo({
-                    center: this.marker.getLngLat(),
-                    zoom: this.map.getZoom() - 1,
-                    offset: [
-                      this.panoramaWidthPx * ((this.mapWidthPct - this.miniMapWidthPct) * 0.5 / 100),
-                      -this.panoramaHeightPx * ((this.mapHeightPct - this.miniMapHeightPct) * 0.5 / 100)
-                    ]
-                  });
-                }
-              }
-            }, 300);
-          }
-        }
-      },
       user: @json($user),
-      closeSmallMap() {
-        this.screens.small.isVisible = false;
-      },
-      openSmallMap() {
-        this.screens.small.isVisible = true;
-        this.screens.small.mapElement.focus();
-      },
-      createMap(divId) {
+      createMapLibreMap(divId) {
         const map = new maplibregl.Map({
           container: divId, 
           style: {
@@ -231,30 +152,30 @@
         
         return map;
       },
-      placeMarkerOnMaps(latlng) {
-        for (const screen in this.screens) {
-          const currentScreen = this.screens[screen];
-          
-          if (!this.firstGuessMade) {
-            currentScreen.marker = new maplibregl.Marker({element: currentScreen.mapIcon, anchor: 'bottom'})
-              .setLngLat([latlng.lng, latlng.lat])
-              .addTo(currentScreen.map);
-          } else {
-            currentScreen.marker.setLngLat([latlng.lng, latlng.lat]);
-          }
-        }
-        this.firstGuessMade = true;
+      createMapMarkerElement(mapMarkerFilePath) {
+        const mapMarker = `<lit-map-marker iconFilePath="${mapMarkerFilePath}"></lit-map-marker>`;
+        let mapMarkerElement = document.createElement('div');
+        mapMarkerElement.innerHTML = mapMarker;
+        return mapMarkerElement;
       },
-      saveMarkerLocation(latlng, callback) {
+      dispatchMapMarkerPlacedEvent(lngLat) {
+        document.dispatchEvent(new CustomEvent('map-marker-placed', {
+          detail: { lngLat: lngLat }
+        }));
+      },
+      openSlidePanel() {
+         window.dispatchEvent(new CustomEvent('slide-panel-opened'));
+      },
+      saveMapMarkerLocation(lngLat, callback) {
         if (isDev) {
-          callback({ country_cca2: 'FR', country_name: 'France' });
+          callback({ country_cca2: 'FR', country_name: 'Saint Vincent and the Grenadines' });
         } else {
           fetch('/game/{{ $game->id }}/play/guess', {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify(latlng),
+            body: JSON.stringify(lngLat),
           })
             .then((resp) => {
               if (!resp.ok) {
@@ -267,61 +188,213 @@
             })
             .catch((error) => console.error(error.statusText || error));
         }
-      },
-      scheduleSmallScreenClose() {
-        if (this.closeSmallScreenVisibilityTimeout) {
-          clearTimeout(this.closeSmallScreenVisibilityTimeout);
-        }
+      }
+    }));
 
-        this.closeSmallScreenVisibilityTimeout = setTimeout(() => {
-          this.screens.small.isVisible = false;
+    /** The state of the slide panel containing the map for small screens. */
+    Alpine.data('slidePanelState', (isDev) => ({
+      closeTimeout: null,
+      isDraging: false,
+      isFirstGuessMade: false,
+      isOpened: false,
+      mapLibreMap: null,
+      mapLibreMarker: null,
+      mapMarkerElement: null,
+      close() {
+        this.isOpened = false;
+      },
+      open() {
+        this.isOpened = true;
+        this.$refs.slidePanel.focus();
+      },
+      placeMapMarker(lngLat) {
+        if (!this.isFirstGuessMade) {
+          this.mapLibreMarker = new maplibregl.Marker({element: this.mapMarkerElement, anchor: 'bottom'})
+            .setLngLat([lngLat.lng, lngLat.lat])
+            .addTo(this.mapLibreMap);
+        } else {
+          this.mapLibreMarker.setLngLat([lngLat.lng, lngLat.lat]);
+        }
+        this.isFirstGuessMade = true;
+      },
+      interruptScheduledClose() {
+        if (this.closeTimeout){
+          clearTimeout(this.closeTimeout);
+        }
+      },
+      scheduleClose() {
+        this.interruptScheduledClose();
+        this.closeTimeout = setTimeout(() => {
+          this.isOpened = false;
         }, 1600);
       },
       init() {
-        const mapMarker = `<lit-map-marker iconFilePath="{{ $user->map_marker_file_path }}"></lit-map-marker>`;
-
-        if (this.user.is_player) {
-          // Initialize the small screen map
-          let smallMapIcon = document.createElement('div');
-          smallMapIcon.innerHTML = mapMarker;
-          this.screens.small.mapIcon = smallMapIcon;
-          this.screens.small.map = this.createMap(this.screens.small.divId);
-
-          this.screens.small.map.addControl(new CloseMapButtonControl());
-
-          this.screens.small.map.on('click', e => {
-            // data: {country_cca2: 'FR', country_name: 'France'}
-            this.saveMarkerLocation(e.lngLat, (data) => {
-              this.placeMarkerOnMaps(e.lngLat);
-              this.scheduleSmallScreenClose();
-              this.guessedCountry = data.country_name;
-            });
+        this.mapMarkerElement = this.createMapMarkerElement(this.user.map_marker_file_path);
+        this.mapLibreMap = this.createMapLibreMap('slidePanel');
+        this.mapLibreMap.addControl(new MapLibreCloseButtonControl());
+        this.mapLibreMap.on('click', e => {
+          // data: {country_cca2: 'FR', country_name: 'France'}
+          this.saveMapMarkerLocation(e.lngLat, (data) => {
+            this.scheduleClose();
+            this.guessedCountry = data.country_name;
+            this.dispatchMapMarkerPlacedEvent(e.lngLat);
           });
+        });
+        this.mapLibreMap.on('drag', e => {
+          this.interruptScheduledClose();
+        });
 
-          this.screens.small.mapElement = document.getElementById(this.screens.small.divId);
+        document.addEventListener('map-marker-placed', (e) => {
+          this.placeMapMarker(e.detail.lngLat)
+        });
+      }
+    }));
 
-          // Initialize the large screen map
-          let largeMapIcon = document.createElement('div');
-          largeMapIcon.innerHTML = mapMarker;
-          this.screens.large.mapIcon = largeMapIcon;
-          this.screens.large.map = this.createMap(this.screens.large.divId);
-
-          this.screens.large.map.on('click', e => {
-            // data: {country_cca2: 'FR', country_name: 'France'}
-            this.saveMarkerLocation(e.lngLat, (data) => {
-              this.placeMarkerOnMaps(e.lngLat);
-              this.guessedCountry = data.country_name;
-            });
-          });  
+    /** The state of the map and its minified version for large screens. */
+    Alpine.data('mapState', (isDev) => ({
+      isFirstGuessMade: false,
+      isExpanded: false,
+      isMapMinifyScheduled: false,
+      mapLibreMap: null,
+      mapLibreMarker: null,
+      mapMarkerElement: null,
+      mapWidthPx: 0,
+      mapHeightPx: 0,
+      miniMapWidthPx: 0,
+      miniMapHeightPx: 0,
+      resizeObserver: null,
+      get isMapFullWidth() {
+        return this.mapWidthPx >= this.panoramaElement.clientWidth;
+      },
+      get panoramaElement() {
+        return document.getElementById('panorama');
+      },
+      get mapStyle() {
+        const miniMapClippedWidthPx = this.mapWidthPx - this.miniMapWidthPx;
+        return {
+          'width': `${this.mapWidthPx}px`,
+          'height': `${this.mapHeightPx}px`,
+          'opacity': `${this.isExpanded ? 100 : 75}%`,
+          'clip-path': this.isExpanded 
+            // Original size instead of 'none' to make the transition animation works
+            ? `polygon(0 0, 100% 0, 100% 100%, 0 100%)`
+            // The minimified map
+            : `polygon(
+              ${miniMapClippedWidthPx}px 0, 
+              100% 0, 
+              100% ${this.miniMapHeightPx}px, 
+              ${miniMapClippedWidthPx}px ${this.miniMapHeightPx}px
+            )`
         }
       },
-    }
-  }
+      get mapBackgroundStyle() {
+        const borderPx = 4;              
+        return {
+          width: this.isExpanded 
+            ? `${this.mapWidthPx + borderPx}px`
+            : `${this.miniMapWidthPx + borderPx}px`,
+          height: this.isExpanded 
+            ? `${this.mapHeightPx + borderPx}px`
+            : `${this.miniMapHeightPx + borderPx}px`,
+        };
+      },
+      expandMap() {
+        this.isMapMinifyScheduled = false;
+        if (!this.isExpanded) {
+          if (this.mapLibreMarker) {
+            this.mapLibreMap.flyTo({ 
+              center: this.mapLibreMarker.getLngLat(),
+              zoom: this.mapLibreMap.getZoom() + 1
+            });
+          }
+          this.isExpanded = true;
+        }
+      },
+      minifyMap() {
+        this.isMapMinifyScheduled = true;
+        setTimeout(() => {
+          if (this.isMapMinifyScheduled) {
+            if (this.mapLibreMarker) {
+              this.mapLibreMap.flyTo({
+                center: this.mapLibreMarker.getLngLat(),
+                duration: 300,
+                offset: [
+                  (this.mapWidthPx - this.miniMapWidthPx) / 2,
+                  -(this.mapHeightPx - this.miniMapHeightPx) / 2
+                ],
+                zoom: this.mapLibreMap.getZoom() - 1,
+              });
+            }
+            this.isExpanded = false;
+          }
+        }, 300);
+      },
+      placeMapMarker(lngLat) {
+        if (!this.isFirstGuessMade) {
+          this.mapLibreMarker = new maplibregl.Marker({element: this.mapMarkerElement, anchor: 'bottom'})
+            .setLngLat([lngLat.lng, lngLat.lat])
+            .addTo(this.mapLibreMap);
+        } else {
+          this.mapLibreMarker.setLngLat([lngLat.lng, lngLat.lat]);
+        }
+        this.isFirstGuessMade = true;
+      },
+      setMapSizes(panoramaWidthPx, panoramaHeightPx) {
+        // console.log('panorama size px', panoramaWidthPx, panoramaHeightPx);
 
-  pannellum.viewer('panorama', {
-    type: "equirectangular",
-    panorama: "{{ $panorama_url }}",
-    autoLoad: true,
-    showControls: false
+        /** Calculates the pixel width corresponding to a given percentage of the panorama's total width. */
+        const widthPercentage = (percentage) => {
+          return panoramaWidthPx * percentage / 100;
+        };
+        /** Calculates the pixel height corresponding to a given percentage of the panorama's total height. */
+        const heightPercentage = (percentage) => {
+          return panoramaHeightPx * percentage / 100;
+        }
+
+        // Set mini map sizes: 30% of the smaller dimension while maintaining a 16:9 aspect ratio
+        if (panoramaWidthPx < panoramaHeightPx) {
+          this.miniMapWidthPx = widthPercentage(30);
+          this.miniMapHeightPx = this.miniMapWidthPx * 9 / 16;
+
+          this.mapWidthPx = widthPercentage(100);
+          this.mapHeightPx = heightPercentage(50);
+        } else {
+          this.miniMapHeightPx = heightPercentage(30);
+          this.miniMapWidthPx = Math.min(this.miniMapHeightPx * 16 / 9, widthPercentage(50));
+
+          this.mapWidthPx = widthPercentage(50);
+          this.mapHeightPx = heightPercentage(100);
+        }
+      },
+      init() {
+        this.mapMarkerElement = this.createMapMarkerElement(this.user.map_marker_file_path);
+        this.mapLibreMap = this.createMapLibreMap('map');
+        this.mapLibreMap.on('click', e => {
+          // data: {country_cca2: 'FR', country_name: 'France'}
+          this.saveMapMarkerLocation(e.lngLat, (data) => {
+            this.guessedCountry = data.country_name;
+            this.dispatchMapMarkerPlacedEvent(e.lngLat);
+          });
+        });
+
+        document.addEventListener('map-marker-placed', (e) => {
+          this.placeMapMarker(e.detail.lngLat)
+        });
+        
+        this.resizeObserver = new ResizeObserver(entries => {
+          for (let entry of entries) {
+            this.isPortrait = entry.contentRect.width < entry.contentRect.height;
+            this.setMapSizes(
+              entry.contentRect.width,
+              entry.contentRect.height
+            );
+          }
+        });
+        this.resizeObserver.observe(this.panoramaElement);
+      },
+      destroy() {
+        this.resizeObserver.disconnect();
+      }
+    }));
   });
 </script>

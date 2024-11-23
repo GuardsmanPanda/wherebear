@@ -165,7 +165,7 @@ final class GamePlayController extends Controller {
         'captured_month' => 'May',
         'captured_year' => 2014,
         'current_round' => 5,
-        'round_seconds_remaining' => 44,
+        'round_seconds_remaining' => 440,
         'number_of_rounds' => 7
       ],
       'isDev' => true,
