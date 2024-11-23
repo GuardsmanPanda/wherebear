@@ -99,8 +99,8 @@ final class WhereBearUser extends Model {
         'user_level_enum' => UserLevelEnum::class,
     ];
 
-    /** @return BelongsTo<BearCountry, $this>|null */
-    public function countryCca2(): BelongsTo|null {
+    /** @return BelongsTo<BearCountry, $this> */
+    public function countryCca2(): BelongsTo {
         return $this->belongsTo(related: BearCountry::class, foreignKey: 'country_cca2', ownerKey: 'cca2');
     }
 
@@ -109,8 +109,8 @@ final class WhereBearUser extends Model {
         return $this->belongsTo(related: MapStyle::class, foreignKey: 'map_style_enum', ownerKey: 'enum');
     }
 
-    /** @return BelongsTo<UserFlag, $this>|null */
-    public function userFlag(): BelongsTo|null {
+    /** @return BelongsTo<UserFlag, $this> */
+    public function userFlag(): BelongsTo {
         return $this->belongsTo(related: UserFlag::class, foreignKey: 'user_flag_enum', ownerKey: 'enum');
     }
 

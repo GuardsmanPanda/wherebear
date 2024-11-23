@@ -86,8 +86,8 @@ final class MapMarker extends Model {
         return $this->belongsTo(related: UserLevel::class, foreignKey: 'user_level_enum', ownerKey: 'enum');
     }
 
-    /** @return BelongsTo<BearPermission, $this>|null */
-    public function permission(): BelongsTo|null {
+    /** @return BelongsTo<BearPermission, $this> */
+    public function permission(): BelongsTo {
         return $this->belongsTo(related: BearPermission::class, foreignKey: 'permission_enum', ownerKey: 'enum');
     }
 

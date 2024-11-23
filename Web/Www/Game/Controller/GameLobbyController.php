@@ -206,7 +206,7 @@ final class GameLobbyController extends Controller {
     return new Response();
   }
 
-  public function updateSettings(string $gameId): Response|View {
+  public function updateSettings(string $gameId): Response {
     GameUpdater::fromId(id: $gameId)
       ->setNumberOfRounds(number_of_rounds: Req::getInt(key: 'number_of_rounds', min: 1, max: 40))
       ->setRoundDurationSeconds(round_duration_seconds: Req::getInt(key: 'round_duration_seconds'))
@@ -221,7 +221,7 @@ final class GameLobbyController extends Controller {
     return new Response();
   }
 
-  public function forceStartGame(string $gameId): Response|View {
+  public function forceStartGame(string $gameId): Response {
     $creator = DB::selectOne(query: "SELECT created_by_user_id FROM game WHERE id = ?", bindings: [$gameId])->created_by_user_id;
     if ($creator !== BearAuthService::getUserId() && !BearAuthService::hasRole(BearRoleEnum::ADMIN)) {
       return throw new UnauthorizedHttpException("You are not allowed to start this game.");

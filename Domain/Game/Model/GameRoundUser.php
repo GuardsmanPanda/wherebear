@@ -99,8 +99,8 @@ final class GameRoundUser extends Model {
         return $this->belongsTo(related: BearCountry::class, foreignKey: 'country_cca2', ownerKey: 'cca2');
     }
 
-    /** @return BelongsTo<BearCountrySubdivision, $this>|null */
-    public function countrySubdivisionIso3166(): BelongsTo|null {
+    /** @return BelongsTo<BearCountrySubdivision, $this> */
+    public function countrySubdivisionIso3166(): BelongsTo {
         return $this->belongsTo(related: BearCountrySubdivision::class, foreignKey: 'country_subdivision_iso_3166', ownerKey: 'iso_3166');
     }
 

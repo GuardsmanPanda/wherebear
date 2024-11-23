@@ -7,14 +7,14 @@
     <fieldset class="flex gap-3 px-3 border border-gray-400 pb-3 mt-2">
       <legend class="px-1.5">Panorama - Seconds</legend>
       <label class="font-bold">35<input type="radio" name="round_duration_seconds" value="35" class="ml-1"></label>
-      <label class="font-bold">45<input type="radio" name="round_duration_seconds" value="45" class="ml-1" checked></label>
-      <label class="font-bold">55<input type="radio" name="round_duration_seconds" value="55" class="ml-1"></label>
+      <label class="font-bold">40<input type="radio" name="round_duration_seconds" value="40" class="ml-1" checked></label>
+      <label class="font-bold">50<input type="radio" name="round_duration_seconds" value="50" class="ml-1"></label>
     </fieldset>
     <fieldset class="flex gap-3 px-3 border border-gray-400 pb-3 mt-2">
       <legend class="px-1.5">Result - Seconds</legend>
       <label class="font-bold">18<input type="radio" name="round_result_duration_seconds" value="18" class="ml-1"></label>
-      <label class="font-bold">22<input type="radio" name="round_result_duration_seconds" value="22" class="ml-1" checked></label>
-      <label class="font-bold">26<input type="radio" name="round_result_duration_seconds" value="26" class="ml-1"></label>
+      <label class="font-bold">20<input type="radio" name="round_result_duration_seconds" value="20" class="ml-1" checked></label>
+      <label class="font-bold">24<input type="radio" name="round_result_duration_seconds" value="24" class="ml-1"></label>
     </fieldset>
   </div>
   <div class="flex gap-4">

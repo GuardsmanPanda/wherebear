@@ -74,8 +74,8 @@ final class GameRound extends Model {
     public $incrementing = false;
     protected $dateFormat = 'Y-m-d\TH:i:sP';
 
-    /** @return BelongsTo<Panorama, $this>|null */
-    public function panorama(): BelongsTo|null {
+    /** @return BelongsTo<Panorama, $this> */
+    public function panorama(): BelongsTo {
         return $this->belongsTo(related: Panorama::class, foreignKey: 'panorama_id', ownerKey: 'id');
     }
 

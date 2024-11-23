@@ -24,7 +24,7 @@ enum BearConfigEnum: string implements BearConfigEnumInterface {
         return null;
     }
 
-    public function getDefaultConfigInteger(): int|null {
+    public function getDefaultConfigInteger(): int {
         return match ($this) {
             self::MAP_BOX_API_REQUESTS => 0,
         };

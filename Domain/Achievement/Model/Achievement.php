@@ -67,8 +67,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $updated_at
  * @property string|null $geographic_area
  * @property BearPointM|null $location
- * @property ArrayObject<int,string> $country_cca2_array
- * @property ArrayObject<int,string> $country_subdivision_iso_3166_array
+ * @property ArrayObject<int, string> $country_cca2_array
+ * @property ArrayObject<int, string> $country_subdivision_iso_3166_array
  * @property BearCountryEnum|null $country_cca2
  * @property AchievementTypeEnum $achievement_type_enum
  * @property BearCountrySubdivisionEnum|null $country_subdivision_iso_3166
@@ -98,13 +98,13 @@ final class Achievement extends Model {
         'location' => BearDatabasePointMCast::class,
     ];
 
-    /** @return BelongsTo<BearCountry, $this>|null */
-    public function countryCca2(): BelongsTo|null {
+    /** @return BelongsTo<BearCountry, $this> */
+    public function countryCca2(): BelongsTo {
         return $this->belongsTo(related: BearCountry::class, foreignKey: 'country_cca2', ownerKey: 'cca2');
     }
 
-    /** @return BelongsTo<BearCountrySubdivision, $this>|null */
-    public function countrySubdivisionIso3166(): BelongsTo|null {
+    /** @return BelongsTo<BearCountrySubdivision, $this> */
+    public function countrySubdivisionIso3166(): BelongsTo {
         return $this->belongsTo(related: BearCountrySubdivision::class, foreignKey: 'country_subdivision_iso_3166', ownerKey: 'iso_3166');
     }
 

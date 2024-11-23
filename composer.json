@@ -11,12 +11,10 @@
     "laravel/reverb": "^v1.4"
   },
   "require-dev": {
-    "ergebnis/phpstan-rules": "^2.2",
-    "phpstan/phpstan": "^1.12",
-    "phpstan/phpstan-deprecation-rules": "^1.2",
-    "phpstan/phpstan-strict-rules": "^1.6",
-    "roave/security-advisories": "dev-latest",
-    "thecodingmachine/phpstan-strict-rules": "^1.0"
+    "phpstan/phpstan": "^2",
+    "phpstan/phpstan-deprecation-rules": "^2",
+    "phpstan/phpstan-strict-rules": "^2",
+    "roave/security-advisories": "dev-latest"
   },
   "autoload": {
     "psr-4": {

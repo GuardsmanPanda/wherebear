@@ -101,8 +101,8 @@ final class Game extends Model {
         'round_ends_at' => 'immutable_datetime',
     ];
 
-    /** @return BelongsTo<Game, $this>|null */
-    public function templatedByGame(): BelongsTo|null {
+    /** @return BelongsTo<Game, $this> */
+    public function templatedByGame(): BelongsTo {
         return $this->belongsTo(related: Game::class, foreignKey: 'templated_by_game_id', ownerKey: 'id');
     }
 
@@ -116,8 +116,8 @@ final class Game extends Model {
         return $this->belongsTo(related: GameState::class, foreignKey: 'game_state_enum', ownerKey: 'enum');
     }
 
-    /** @return BelongsTo<PanoramaTag, $this>|null */
-    public function panoramaTag(): BelongsTo|null {
+    /** @return BelongsTo<PanoramaTag, $this> */
+    public function panoramaTag(): BelongsTo {
         return $this->belongsTo(related: PanoramaTag::class, foreignKey: 'panorama_tag_enum', ownerKey: 'enum');
     }
 
