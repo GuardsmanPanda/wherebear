@@ -543,7 +543,7 @@
         this.isRankingButtonSelected = false;
       },
       switchRankingDialog() {
-        (this.isRankingButtonSelected) ? this.closeRankingDialog() : this.openRankingDialog();
+        this.isRankingButtonSelected ? this.closeRankingDialog() : this.openRankingDialog();
       },
       onRankingDialogClosed() {
         this.isRankingButtonSelected = false;
@@ -588,7 +588,19 @@
   map.touchZoomRotate.disableRotation();
 
   const playerGuesses = @json($guesses);
-  playerGuesses.forEach(guess => {
+  playerGuesses
+  .sort((a, b) => {
+    // MapLibre follows a "first-in, first-displayed" rendering order, meaning
+    // the first player in the array will appear below the second player on the map.
+
+    // First, push the user at the end of the array.
+    if (a.is_from_user && !b.is_from_user) return 1;
+    if (!a.is_from_user && b.is_from_user) return -1;
+
+    // Then, sort by rank in descending order.
+    return b.rank - a.rank;
+  })
+  .forEach(guess => {
     const mapPlayerMarkerElement = document.createElement('div');
     mapPlayerMarkerElement.innerHTML = `
       <lit-map-marker distanceMeters="${guess.distance_meters}" iconFilePath="${guess.map_marker_file_path}" playerName="${guess.user_display_name}" rank="${guess.rank}"></lit-map-marker>
