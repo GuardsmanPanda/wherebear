@@ -33,14 +33,13 @@
 
           @if($user->is_guess_indicator_allowed)
           <div class="absolute -bottom-px left-0 max-w-full h-8">
-            <div class="flex justify-center items-center h-4 absolute -top-[8px] left-3 z-10 rounded pl-3 pr-1 border border-gray-800 bg-gray-700"
-              :class="{ }">
+            <div class="flex justify-center items-center h-4 absolute -top-[8px] left-[10px] z-10 rounded pl-3 pr-1 border border-gray-800 bg-gray-700">
               <img src="/static/img/icon/marker-red.svg" width="28" height="28" class="absolute -top-[10px] left-0 transform -translate-x-1/2" />
               <span class="text-xs text-gray-50 font-medium">Your Guess</span>
             </div>
             <div
-              class="min-w-32 max-w-full h-full flex justify-center pt-1.5 pr-4"
-              :class="{ 'bg-gray-100': !isExpanded, 'bg-gray-50': isExpanded, 'pl-0': !isExpanded, 'pl-1': isExpanded && isMapFullWidth }"
+              class="min-w-32 max-w-full h-full flex justify-center pt-1.5 pr-4 pl-1 relative right-px"
+              :class="{ 'bg-gray-100': !isExpanded, 'bg-gray-50': isExpanded }"
               style="clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 100%, 0 100%);">
               <span x-text="guessedCountry" class="text-lg text-gray-700 font-medium truncate"></span>
               <span x-show="!guessedCountry" class="text-lg text-gray-700 font-medium">...</span>
@@ -265,9 +264,6 @@
       miniMapWidthPx: 0,
       miniMapHeightPx: 0,
       resizeObserver: null,
-      get isMapFullWidth() {
-        return this.mapWidthPx >= this.panoramaElement.clientWidth;
-      },
       get panoramaElement() {
         return document.getElementById('panorama');
       },
@@ -343,6 +339,7 @@
       },
       setMapSizes(panoramaWidthPx, panoramaHeightPx) {
         // console.log('panorama size px', panoramaWidthPx, panoramaHeightPx);
+        const mapBorderPx = 4;
 
         /** Calculates the pixel width corresponding to a given percentage of the panorama's total width. */
         const widthPercentage = (percentage) => {
@@ -358,14 +355,14 @@
           this.miniMapWidthPx = widthPercentage(30);
           this.miniMapHeightPx = this.miniMapWidthPx * 9 / 16;
 
-          this.mapWidthPx = widthPercentage(100);
+          this.mapWidthPx = widthPercentage(100) - mapBorderPx;
           this.mapHeightPx = heightPercentage(50);
         } else {
           this.miniMapHeightPx = heightPercentage(30);
           this.miniMapWidthPx = Math.min(this.miniMapHeightPx * 16 / 9, widthPercentage(50));
 
           this.mapWidthPx = widthPercentage(50);
-          this.mapHeightPx = heightPercentage(100);
+          this.mapHeightPx = heightPercentage(100) - mapBorderPx;
         }
       },
       init() {
