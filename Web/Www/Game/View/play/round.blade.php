@@ -69,13 +69,15 @@
     @endif
 
     @if($user->is_player && $user->is_guess_indicator_allowed)
-    <div class="lg:hidden flex justify-center items-center min-w-40 absolute bottom-2 right-0 z-10 -skew-x-12 mr-[10px] ml-24 px-3 py-1 rounded border border-gray-700 bg-gray-50">
-       <div class="flex justify-center items-center h-4 absolute -top-[8px] right-2 skew-x-12 rounded pl-3 pr-1 border border-gray-800 bg-gray-700">
-        <img src="/static/img/icon/marker-red.svg" width="28" height="28" class="absolute -top-[10px] left-0 transform -translate-x-1/2" />
-        <span class="text-xs text-gray-50 font-medium">Your Guess</span>
-      </div>
-      <span x-text="guessedCountry" class="skew-x-12 text-lg text-gray-700 font-medium"></span>
-      <span x-show="!guessedCountry" class="skew-x-12 text-lg text-gray-700 font-medium">...</span>
+    
+    <div class="lg:hidden absolute bottom-2 right-0 z-10 mr-[10px] min-w-40 px-3 py-1 flex justify-center items-center
+      before:absolute before:-z-10 before:-skew-x-12 before:w-full before:h-full before:rounded before:border before:border-gray-700 before:bg-gray-50">
+        <div class="flex justify-center items-center h-4 absolute -top-[8px] right-2 rounded pl-3 pr-1 border border-gray-800 bg-gray-700">
+          <img src="/static/img/icon/marker-red.svg" width="28" height="28" class="absolute -top-[10px] left-0 transform -translate-x-1/2" />
+          <span class="text-xs text-gray-50 font-medium">Your Guess</span>
+        </div>
+        <span x-text="guessedCountry" class="text-lg text-gray-700 font-medium"></span>
+        <span x-show="!guessedCountry" class="text-lg text-gray-700 font-medium">...</span>
     </div>
     @endif
   </div>
