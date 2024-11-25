@@ -579,7 +579,7 @@
     keyboard: false, 
     minZoom: 1, 
     maxZoom: 18, 
-    zoom: 6,
+    zoom: 18,
     attributionControl: false
   })
 
@@ -587,7 +587,85 @@
   map.scrollZoom.setZoomRate(1 / 75);
   map.touchZoomRotate.disableRotation();
 
+
+  /**
+   * Returns whether all specified coordinates are within a map bounds.
+   *
+   * @param {Object} map - The MapLibre map instance.
+   * @param {Array} coordinates - Array of coordinate objects with `lng` and `lat` properties.
+   * @param {Object} padding - Padding in pixels { top, right, bottom, left }.
+  */
+  function areCoordinatesInBounds(map, coordinates, padding = { top: 0, right: 0, bottom: 0, left: 0 }) {
+    const bounds = map.getBounds(); 
+    const mapCanvas = map.getCanvas();
+    const width = mapCanvas.width;
+    const height = mapCanvas.height;
+    const lngDiff = bounds.getEast() - bounds.getWest();
+    const latDiff = bounds.getNorth() - bounds.getSouth();
+
+    const paddingLng = {
+      left: (padding.left / width) * lngDiff,
+      right: (padding.right / width) * lngDiff
+    };
+
+    const paddingLat = {
+      top: (padding.top / height) * latDiff,
+      bottom: (padding.bottom / height) * latDiff
+    };
+
+    const paddedBounds = new maplibregl.LngLatBounds(
+      [
+        bounds.getWest() - paddingLng.left,
+        bounds.getSouth() - paddingLat.bottom
+      ],
+      [
+        bounds.getEast() + paddingLng.right,
+        bounds.getNorth() + paddingLat.top
+      ]
+    );
+
+    return coordinates.every(coord => paddedBounds.contains(new maplibregl.LngLat(coord.lng, coord.lat)));
+  }
+
   const playerGuesses = @json($guesses);
+
+  /** The geographic coordinates to display on the map. */
+  const coordinatesToDisplay = playerGuesses
+    .slice(0, 3)
+    .filter(player => player)
+    .map(playerGuess => {
+      return new maplibregl.LngLat(playerGuess.lng, playerGuess.lat)
+    });
+
+  /** 
+   * The minimum zoom level allowed when adjusting the map to display the top three markers.
+   * Ensures that the zoom level isn't too low, as overly zoomed-out views may obscure the panorama's location.
+   */
+  const minZoom = 3;
+
+  /** 
+   * Padding applied around the map's bounds to ensure markers are displayed properly.
+   * Negative values are used to adjust for marker sizes and their anchor points.
+   * - Top: Adjusts for the marker's height (100px) and its anchor point at the bottom.
+   * - Right: Adjusts for the marker's width (128px minimum) and its anchor point at the bottom center.
+   * - Bottom: Adjusts for the marker's height (100px) and its anchor point at the bottom.
+   * - Left: Adjusts for the marker's width (128px minium) and its anchor point at the bottom center.
+   */
+  const padding = { 
+    top: -100, 
+    right: -70, 
+    bottom: -100, 
+    left: -70
+  };
+
+  /** 
+   * Iteratively reduces the zoom level until the specified coordinates are visible 
+   * or the minimum zoom level is reached.
+   */
+  while (!areCoordinatesInBounds(map, coordinatesToDisplay, padding) && map.getZoom() >= minZoom) {
+    map.setZoom(map.getZoom() - 0.1);
+  }
+
   playerGuesses
   .sort((a, b) => {
     // MapLibre follows a "first-in, first-displayed" rendering order, meaning
@@ -612,13 +690,14 @@
       .addTo(map);
   });
 
-    const mapPanoramaMarkerElement = document.createElement('div');
-    mapPanoramaMarkerElement.innerHTML = `
-      <img src="/static/img/map-extra/marker-win3.png" class="w-16" />
-    `;
+  const mapPanoramaMarkerElement = document.createElement('div');
+  mapPanoramaMarkerElement.innerHTML = `
+    <img src="/static/img/map-extra/marker-win3.png" class="w-16" />
+  `;
 
-    new window.maplibregl
-      .Marker({element: mapPanoramaMarkerElement, anchor: 'center'})
-      .setLngLat([{{ $game->panorama_lng }}, {{ $game->panorama_lat }}])
-      .addTo(map);
+  new window.maplibregl
+    .Marker({element: mapPanoramaMarkerElement, anchor: 'center'})
+    .setLngLat([{{ $game->panorama_lng }}, {{ $game->panorama_lat }}])
+    .addTo(map);
+
 </script>
