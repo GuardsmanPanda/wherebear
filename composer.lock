@@ -826,12 +826,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/GuardsmanPanda/larabear.git",
-                "reference": "5f3c6c26696fd41bd53e54dd3cc05668f84be4ec"
+                "reference": "736a02e1591b5051ed888f6b2a48601583de24a8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/GuardsmanPanda/larabear/zipball/5f3c6c26696fd41bd53e54dd3cc05668f84be4ec",
-                "reference": "5f3c6c26696fd41bd53e54dd3cc05668f84be4ec",
+                "url": "https://api.github.com/repos/GuardsmanPanda/larabear/zipball/736a02e1591b5051ed888f6b2a48601583de24a8",
+                "reference": "736a02e1591b5051ed888f6b2a48601583de24a8",
                 "shasum": ""
             },
             "require": {
@@ -876,7 +876,7 @@
                 "issues": "https://github.com/GuardsmanPanda/larabear/issues",
                 "source": "https://github.com/GuardsmanPanda/larabear/tree/main"
             },
-            "time": "2024-11-23T00:33:06+00:00"
+            "time": "2024-11-24T22:06:00+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -7475,6 +7475,6 @@
     "platform": {
         "php": "^8.3"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }

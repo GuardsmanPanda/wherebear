@@ -18,11 +18,11 @@ use Illuminate\Support\Str;
 
 final class WhereBearUserCreator {
   public static function create(
-    string          $display_name,
-    int             $experience,
-    UserLevelEnum   $user_level_enum,
-    string          $email = null,
-    BearCountryEnum $country_cca2 = null,
+    string            $display_name,
+    int               $experience,
+    UserLevelEnum     $user_level_enum,
+    ?string           $email = null,
+    ?BearCountryEnum  $country_cca2 = null,
     UserFlagEnum|null $user_flag_enum = null
   ): WhereBearUser {
     BearDatabaseService::mustBeInTransaction();

@@ -15,6 +15,7 @@ final class AppServiceProvider extends ServiceProvider {
     $this->loadViewsFrom(base_path(path: 'Web/Www/Game/View'), namespace: 'game');
     $this->loadViewsFrom(base_path(path: 'Web/Www/LandingPage/View'), namespace: 'landing-page');
     $this->loadViewsFrom(base_path(path: 'Web/Www/Page/View'), namespace: 'page');
+    $this->loadViewsFrom(base_path(path: 'Web/Www/Panorama/View'), namespace: 'panorama');
 
     if (App::runningInConsole()) {
       $this->loadMigrationsFrom(base_path(path: 'Infrastructure/Database/Migration'));

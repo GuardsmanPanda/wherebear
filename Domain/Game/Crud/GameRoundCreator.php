@@ -16,7 +16,7 @@ final class GameRoundCreator {
     string $game_id,
     int    $round_number,
     string $panorama_pick_strategy,
-    string $panorama_id = null
+    ?string $panorama_id = null
   ): GameRound {
     BearDatabaseService::mustBeInTransaction();
     BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST']);
@@ -37,7 +37,7 @@ final class GameRoundCreator {
     string $game_id,
     int    $round_number,
     string $panorama_pick_strategy,
-    string $panorama_id = null
+    ?string $panorama_id = null
   ): GameRound {
     try {
       DB::beginTransaction();

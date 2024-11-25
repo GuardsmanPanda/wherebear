@@ -55,7 +55,7 @@ final class ImportFromPreviousGameCommand extends BearTransactionCommand {
         PanoramaCreator::createFromStreetViewData(
           data: $data,
           added_by_user_id: $userId,
-          created_at: CarbonImmutable::createFromDate(year: 2021, month: 1, day: 1),
+          //created_at: CarbonImmutable::createFromDate(year: 2021, month: 1, day: 1),
         );
         $total++;
         if ($total > 1500) {

@@ -31,7 +31,7 @@ final class GameService {
   }
 
 
-  public static function setGameState(string $gameId, GameStateEnum $state, CarbonImmutable $nextRoundAt = null): Game {
+  public static function setGameState(string $gameId, GameStateEnum $state, ?CarbonImmutable $nextRoundAt = null): Game {
     try {
       DB::beginTransaction();
       $game = GameUpdater::fromId(id: $gameId, lockForUpdate: true)
@@ -55,7 +55,7 @@ final class GameService {
     }
     try {
       DB::beginTransaction();
-      $extraTime = max(0, 13 - $game->current_round * 4);
+      $extraTime = max(0, 18 - $game->current_round * 4);
       $roundEndTime = CarbonImmutable::now()->addSeconds(value: $game->round_duration_seconds + $extraTime);
       $game = GameUpdater::fromId(id: $game->id, lockForUpdate: true)
         ->setGameStateEnum(enum: GameStateEnum::IN_PROGRESS)

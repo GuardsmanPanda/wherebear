@@ -22,6 +22,7 @@ final class RouteServiceProvider extends ServiceProvider {
         Route::prefix('auth')->group(callback: base_path(path: 'Web/Www/Auth/routes.php'));
         Route::prefix('game')->group(callback: base_path(path: 'Web/Www/Game/routes.php'));
         Route::prefix('flag-game')->group(callback: base_path(path: 'Web/Www/FlagGame/routes.php'));
+        Route::prefix('panorama')->group(callback: base_path(path: 'Web/Www/Panorama/routes.php'));
       });
 
       Route::prefix('page')
