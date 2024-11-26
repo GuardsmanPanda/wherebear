@@ -22,7 +22,7 @@
       const heading = viewer.getYaw();
       const field_of_view = viewer.getHfov();
       console.log({ pitch, heading, field_of_view });
-      fetch('/panorama/{{$panorama_id}}/viewport', {
+      fetch('/web-api/panorama/{{$panorama_id}}', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
