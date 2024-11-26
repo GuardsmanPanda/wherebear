@@ -55,7 +55,7 @@ final class GameRoundCalculateResultAction {
       DB::beginTransaction();
       foreach ($players as $player) {
         $playerGuess = $guesses[array_rand($guesses)];
-        $newPos = MapService::offsetLatLng(lat: (float)$playerGuess->lat, lng: (float)$playerGuess->lng, meters: 350_000);
+        $newPos = MapService::offsetLatLng(lat: $playerGuess->lat, lng: $playerGuess->lng, meters: 350_000);
         GameRoundUserCrud::createOrUpdate(
           game_id: $gameId,
           round_number: $roundNumber,
@@ -93,7 +93,7 @@ final class GameRoundCalculateResultAction {
       for ($i = 0; $i < $playerCount; $i++) {
         $location = $locations[$i];
         $user_id = $players[$i]->user_id;
-        $newPos = MapService::offsetLatLng(lat: (float)$location->lat, lng: (float)$location->lng, meters: 1000);
+        $newPos = MapService::offsetLatLng(lat: $location->lat, lng: $location->lng, meters: 1000);
         GameRoundUserCrud::createOrUpdate(
           game_id: $gameId,
           round_number: $roundNumber,

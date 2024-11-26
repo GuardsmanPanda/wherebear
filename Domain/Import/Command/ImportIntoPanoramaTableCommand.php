@@ -23,7 +23,7 @@ final class ImportIntoPanoramaTableCommand extends BearTransactionCommand {
       LIMIT 100
     ");
     foreach ($data as $row) {
-      $status = $this->importPanorama(panoramaId: $row->panoid, longitude: (float)$row->longitude, latitude: (float)$row->latitude);
+      $status = $this->importPanorama(panoramaId: $row->panoid, longitude: $row->longitude, latitude: $row->latitude);
       ImportMapcrunchComCrud::updateImportStatus(id: $row->id, statusEnum: $status);
     }
 
@@ -34,7 +34,7 @@ final class ImportIntoPanoramaTableCommand extends BearTransactionCommand {
       LIMIT 100
     ");
     foreach ($data as $row) {
-      $status = $this->importPanorama(panoramaId: $row->panoid, longitude: (float)$row->longitude, latitude: (float)$row->latitude);
+      $status = $this->importPanorama(panoramaId: $row->panoid, longitude: $row->longitude, latitude: $row->latitude);
       ImportStreetviewsOrgCrud::updateImportStatus(id: $row->id, statusEnum: $status);
     }
   }

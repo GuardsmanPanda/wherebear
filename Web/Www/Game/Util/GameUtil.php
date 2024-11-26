@@ -11,17 +11,15 @@ final class GameUtil {
    *
    * @return array{value: int|float, unit: string} Associative array with 'value' and 'unit'.
    */
-  public static function getDistanceAndUnit(string $distanceMeters): array {
-    $value = (float)$distanceMeters;
-
-    if ($value < 1000) {
+  public static function getDistanceAndUnit(float $distanceMeters): array {
+    if ($distanceMeters < 1000) {
       return [
-        'value' => round($value),
+        'value' => round($distanceMeters),
         'unit' => 'm'
       ];
     } else {
       return [
-        'value' => round($value / 1000),
+        'value' => round($distanceMeters / 1000),
         'unit' => 'km'
       ];
     }
@@ -29,7 +27,7 @@ final class GameUtil {
 
   /**
    * Get the ordinal suffix for a given number.
-   * 
+   *
    * - 1 gets "st"
    * - 2 gets "nd"
    * - 3 gets "rd"
@@ -54,29 +52,5 @@ final class GameUtil {
       3 => '#F3A965',
       default => '#EDCE83'
     };
-  }
-
-  /**
-   * Rounds the provided points to the nearest whole number.
-   * This function is useful for displaying integer point values.
-   *
-   * @param float|int|string $points The point value to round.
-   * @return int The rounded point value as an integer.
-   */
-  public static function getRoundedPoints($points) {
-    $points = (float)$points;
-    return (int)round($points);
-  }
-
-  /**
-   * Rounds the provided points to two decimal places and formats as a string.
-   * This function ensures two decimal precision, useful for detailed display.
-   *
-   * @param float|int|string $points The point value to round and format.
-   * @return string The rounded point value as a string with two decimal places.
-   */
-  public static function getDetailedPoints($points) {
-    $points = (float)$points;
-    return number_format(round($points, 2), 2, '.', '');
   }
 }
