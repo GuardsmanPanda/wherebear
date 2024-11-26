@@ -116,7 +116,8 @@
     type: "equirectangular",
     panorama: "{{ $panorama_url }}",
     autoLoad: true,
-    showControls: false
+    showControls: false,
+    minHfov: window.innerWidth < 1000 ? 30 : 50,
   });
 
   document.addEventListener('alpine:init', () => {

@@ -17,6 +17,10 @@ body {
   font-family: system-ui, sans-serif;
 }
 
+.button {
+  @apply bg-blue-500 text-white font-bold py-2 px-4 rounded;
+}
+
 @-webkit-keyframes notyf-fadeinup {
   0% {
     opacity: 0;

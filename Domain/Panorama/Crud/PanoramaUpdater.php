@@ -44,10 +44,8 @@ final readonly class PanoramaUpdater {
   }
 
   public function addPanoramaTag(PanoramaTagEnum $tag): bool {
-    foreach ($this->model->panorama_tag_array as $key => $value) {
-      if ($value === $tag->value) {
-        return false;
-      }
+    if (array_any($this->model->panorama_tag_array->getArrayCopy(), fn($value) => $value === $tag->value)) {
+      return false;
     }
     $this->model->panorama_tag_array[] = $tag->value;
     return true;
@@ -61,6 +59,13 @@ final readonly class PanoramaUpdater {
       }
     }
     return false;
+  }
+
+  public function setViewport(float $heading, float $pitch, float $field_of_view): self {
+    $this->model->heading = $heading;
+    $this->model->pitch = $pitch;
+    $this->model->field_of_view = $field_of_view;
+    return $this;
   }
 
   public function update(): Panorama {
