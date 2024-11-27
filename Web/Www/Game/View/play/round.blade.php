@@ -412,7 +412,7 @@
           }
           panoramaSizeChangesTimeout = setTimeout(() => {
             this.centerMarker();
-          }, 100);
+          }, 200);
         });
       }
     }));
