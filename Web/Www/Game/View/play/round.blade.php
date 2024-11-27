@@ -18,13 +18,13 @@
     @if($user->is_player)
     <div>
       <div x-data="slidePanelState" x-ref="slidePanel" id="slidePanel" tabIndex="-1"
-        class="block lg:hidden absolute top-0 w-full h-full z-10 transition-all duration-300"
+        class="absolute top-0 w-full h-full z-10 transition-all duration-300"
         :class="{ 'right-0': isOpened, 'right-full': !isOpened }"
         x-on:slide-panel-opened.window="open"
         @keyup.esc="close">
       </div>
 
-      <div x-data="mapState" x-ref="map" class="hidden lg:block">
+      <div x-data="mapState" x-ref="map" class="block" :class="{ hidden: !isMiniMapShowed }">
         <div x-ref="mapBg" 
           class="absolute top-0 right-0 z-30 rounded-bl-md border-b-4 border-l-4 transition-all duration-300 ease-in-out"
           :class="{ 'border-gray-100': !isExpanded, 'border-gray-50': isExpanded }"
@@ -49,7 +49,7 @@
         </div>
 
         <div id="map"
-          class="hidden lg:block absolute top-0 right-0 z-20 transition-all duration-300 ease-in-out"
+          class="absolute top-0 right-0 z-20 transition-all duration-300 ease-in-out"
           :style="mapStyle" 
           x-on:mouseenter="expandMap"
           x-on:mouseleave="minifyMap">
@@ -62,15 +62,16 @@
     <lit-button-square label="GUESS" 
       imgPath="/static/img/icon/map-with-marker.svg"
       bgColorClass="bg-iris-400"
-      class="block lg:hidden absolute top-1/2 right-0 mr-2"
+      class="block absolute top-1/2 right-0 mr-2"
+      :class="{ hidden: isMiniMapShowed }"
       x-on:clicked="openSlidePanel()"
     ></lit-button-square>
     @endif
 
     @if($user->is_player && $user->is_guess_indicator_allowed)
-    
-    <div class="lg:hidden absolute bottom-2 right-0 z-10 mr-[10px] min-w-40 px-3 py-1 flex justify-center items-center
-      before:absolute before:-z-10 before:-skew-x-12 before:w-full before:h-full before:rounded before:border before:border-gray-700 before:bg-gray-50">
+    <div class="absolute bottom-2 right-0 z-10 mr-[10px] min-w-40 px-3 py-1 flex justify-center items-center
+      before:absolute before:-z-10 before:-skew-x-12 before:w-full before:h-full before:rounded before:border before:border-gray-700 before:bg-gray-50"
+      :class="{ hidden: isMiniMapShowed }">
         <div class="flex justify-center items-center h-4 absolute -top-[8px] right-2 rounded pl-3 pr-1 border border-gray-800 bg-gray-700">
           <img src="/static/img/icon/marker-red.svg" width="28" height="28" class="absolute -top-[10px] left-0 transform -translate-x-1/2" />
           <span class="text-xs text-gray-50 font-medium">Your Guess</span>
@@ -124,7 +125,17 @@
     // The global state of the page
     Alpine.data('state', (isDev) => ({
       guessedCountry: null,
+      isMiniMapShowed: false,
+      panoramaWidthPx: null,
+      panoramaHeightPx: null,
+      resizeObserver: null,
       user: @json($user),
+      get panoramaElement() {
+        return document.getElementById('panorama');
+      },
+      get panoramaSizes() {
+        return { widthPx: this.panoramaWidthPx, heightPx: this.panoramaHeightPx };
+      },
       createMapLibreMap(divId) {
         const map = new maplibregl.Map({
           container: divId, 
@@ -190,6 +201,18 @@
             })
             .catch((error) => console.error(error.statusText || error));
         }
+      },
+      init() {
+        this.resizeObserver = new ResizeObserver(entries => {
+          for (let entry of entries) {
+            this.panoramaWidthPx = entry.contentRect.width;
+            this.panoramaHeightPx = entry.contentRect.height;            
+          }
+        });
+        this.resizeObserver.observe(this.panoramaElement);
+      },
+      destroy() {
+        this.resizeObserver.disconnect();
       }
     }));
 
@@ -265,9 +288,6 @@
       miniMapWidthPx: 0,
       miniMapHeightPx: 0,
       resizeObserver: null,
-      get panoramaElement() {
-        return document.getElementById('panorama');
-      },
       get mapStyle() {
         const miniMapClippedWidthPx = this.mapWidthPx - this.miniMapWidthPx;
         return {
@@ -297,34 +317,32 @@
             : `${this.miniMapHeightPx + borderPx}px`,
         };
       },
+      centerMarker(zoom) {
+        if (this.mapLibreMarker) {
+          this.mapLibreMap.easeTo({
+            center: this.mapLibreMarker.getLngLat(),
+            duration: 300,
+            offset: this.isExpanded ? [0, 0] : [
+              (this.mapWidthPx - this.miniMapWidthPx) / 2,
+              -(this.mapHeightPx - this.miniMapHeightPx) / 2
+            ],
+            zoom: zoom || this.mapLibreMap.getZoom()
+          });
+        }
+      },
       expandMap() {
         this.isMapMinifyScheduled = false;
         if (!this.isExpanded) {
-          if (this.mapLibreMarker) {
-            this.mapLibreMap.flyTo({ 
-              center: this.mapLibreMarker.getLngLat(),
-              zoom: this.mapLibreMap.getZoom() + 1
-            });
-          }
           this.isExpanded = true;
+          this.centerMarker(this.mapLibreMap.getZoom() + 1);
         }
       },
       minifyMap() {
         this.isMapMinifyScheduled = true;
         setTimeout(() => {
           if (this.isMapMinifyScheduled) {
-            if (this.mapLibreMarker) {
-              this.mapLibreMap.flyTo({
-                center: this.mapLibreMarker.getLngLat(),
-                duration: 300,
-                offset: [
-                  (this.mapWidthPx - this.miniMapWidthPx) / 2,
-                  -(this.mapHeightPx - this.miniMapHeightPx) / 2
-                ],
-                zoom: this.mapLibreMap.getZoom() - 1,
-              });
-            }
             this.isExpanded = false;
+            this.centerMarker(this.mapLibreMap.getZoom() - 1);
           }
         }, 300);
       },
@@ -339,31 +357,35 @@
         this.isFirstGuessMade = true;
       },
       setMapSizes(panoramaWidthPx, panoramaHeightPx) {
-        // console.log('panorama size px', panoramaWidthPx, panoramaHeightPx);
-        const mapBorderPx = 4;
-
-        /** Calculates the pixel width corresponding to a given percentage of the panorama's total width. */
-        const widthPercentage = (percentage) => {
+        /** Returns the pixel width for a given percentage of the panorama's total width. */
+        const getPanoramaWidthPx = (percentage) => {
           return panoramaWidthPx * percentage / 100;
         };
-        /** Calculates the pixel height corresponding to a given percentage of the panorama's total height. */
-        const heightPercentage = (percentage) => {
+        /** Returns the pixel height for a given percentage of the panorama's total height. */
+        const getPanoramaHeightPx = (percentage) => {
           return panoramaHeightPx * percentage / 100;
         }
 
-        // Set mini map sizes: 30% of the smaller dimension while maintaining a 16:9 aspect ratio
-        if (panoramaWidthPx < panoramaHeightPx) {
-          this.miniMapWidthPx = widthPercentage(30);
-          this.miniMapHeightPx = this.miniMapWidthPx * 9 / 16;
+        const mapBorderPx = 4;
+        const isPanoramaPortrait = panoramaWidthPx < panoramaHeightPx;
 
-          this.mapWidthPx = widthPercentage(100) - mapBorderPx;
-          this.mapHeightPx = heightPercentage(50);
+        if (panoramaWidthPx >= 800) {
+          if (isPanoramaPortrait || (panoramaWidthPx < 900 && panoramaHeightPx >= 700)) {
+            this.miniMapWidthPx = getPanoramaWidthPx(40);
+            this.miniMapHeightPx = this.miniMapWidthPx * 9 / 16;
+
+            this.mapWidthPx = getPanoramaWidthPx(100) - mapBorderPx;
+            this.mapHeightPx = getPanoramaHeightPx(50);
+          } else {
+            this.miniMapHeightPx = getPanoramaHeightPx(25);
+            this.miniMapWidthPx = Math.min(this.miniMapHeightPx * 16 / 9, getPanoramaWidthPx(50));
+
+            this.mapWidthPx = getPanoramaWidthPx(50);
+            this.mapHeightPx = getPanoramaHeightPx(100) - mapBorderPx;
+          }
+          this.isMiniMapShowed = true;
         } else {
-          this.miniMapHeightPx = heightPercentage(30);
-          this.miniMapWidthPx = Math.min(this.miniMapHeightPx * 16 / 9, widthPercentage(50));
-
-          this.mapWidthPx = widthPercentage(50);
-          this.mapHeightPx = heightPercentage(100) - mapBorderPx;
+          this.isMiniMapShowed = false;
         }
       },
       init() {
@@ -381,19 +403,17 @@
           this.placeMapMarker(e.detail.lngLat)
         });
         
-        this.resizeObserver = new ResizeObserver(entries => {
-          for (let entry of entries) {
-            this.isPortrait = entry.contentRect.width < entry.contentRect.height;
-            this.setMapSizes(
-              entry.contentRect.width,
-              entry.contentRect.height
-            );
+        let panoramaSizeChangesTimeout = null;
+        this.$watch('panoramaSizes', ({ widthPx, heightPx }) => {
+          this.setMapSizes(widthPx, heightPx);
+
+          if (panoramaSizeChangesTimeout) {
+            clearTimeout(panoramaSizeChangesTimeout);
           }
+          panoramaSizeChangesTimeout = setTimeout(() => {
+            this.centerMarker();
+          }, 200);
         });
-        this.resizeObserver.observe(this.panoramaElement);
-      },
-      destroy() {
-        this.resizeObserver.disconnect();
       }
     }));
   });
