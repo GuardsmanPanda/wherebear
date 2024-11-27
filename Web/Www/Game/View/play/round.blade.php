@@ -317,34 +317,32 @@
             : `${this.miniMapHeightPx + borderPx}px`,
         };
       },
+      centerMarker(zoom) {
+        if (this.mapLibreMarker) {
+          this.mapLibreMap.easeTo({
+            center: this.mapLibreMarker.getLngLat(),
+            duration: 300,
+            offset: this.isExpanded ? [0, 0] : [
+              (this.mapWidthPx - this.miniMapWidthPx) / 2,
+              -(this.mapHeightPx - this.miniMapHeightPx) / 2
+            ],
+            zoom: zoom || this.mapLibreMap.getZoom()
+          });
+        }
+      },
       expandMap() {
         this.isMapMinifyScheduled = false;
         if (!this.isExpanded) {
-          if (this.mapLibreMarker) {
-            this.mapLibreMap.flyTo({ 
-              center: this.mapLibreMarker.getLngLat(),
-              zoom: this.mapLibreMap.getZoom() + 1
-            });
-          }
           this.isExpanded = true;
+          this.centerMarker(this.mapLibreMap.getZoom() + 1);
         }
       },
       minifyMap() {
         this.isMapMinifyScheduled = true;
         setTimeout(() => {
           if (this.isMapMinifyScheduled) {
-            if (this.mapLibreMarker) {
-              this.mapLibreMap.flyTo({
-                center: this.mapLibreMarker.getLngLat(),
-                duration: 300,
-                offset: [
-                  (this.mapWidthPx - this.miniMapWidthPx) / 2,
-                  -(this.mapHeightPx - this.miniMapHeightPx) / 2
-                ],
-                zoom: this.mapLibreMap.getZoom() - 1,
-              });
-            }
             this.isExpanded = false;
+            this.centerMarker(this.mapLibreMap.getZoom() - 1);
           }
         }, 300);
       },
@@ -405,8 +403,16 @@
           this.placeMapMarker(e.detail.lngLat)
         });
         
+        let panoramaSizeChangesTimeout = null;
         this.$watch('panoramaSizes', ({ widthPx, heightPx }) => {
           this.setMapSizes(widthPx, heightPx);
+
+          if (panoramaSizeChangesTimeout) {
+            clearTimeout(panoramaSizeChangesTimeout);
+          }
+          panoramaSizeChangesTimeout = setTimeout(() => {
+            this.centerMarker();
+          }, 100);
         });
       }
     }));
