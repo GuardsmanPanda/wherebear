@@ -17,32 +17,20 @@ Route::get(uri: "create-from-template", action: [GameController::class, 'createF
 Route::post(uri: "create-from-template/{templateId}", action: [GameController::class, 'createFromTemplate'])->middleware([BearPermissionMiddleware::using(permission: BearPermissionEnum::GAME_CREATE_TEMPLATED_GAME)]);
 
 Route::prefix("{gameId}")->middleware(BearHtmxMiddleware::using(layout_location: 'layout.layout'))->group(callback: function () {
-  Route::get(uri: 'status', action: [GameController::class, 'getStatus']);
-
   Route::prefix("lobby")->group(callback: function () {
     Route::get(uri: "", action: [GameLobbyController::class, 'index']);
     Route::get(uri: "player-list", action: [GameLobbyController::class, 'playerList']);
-    Route::get(uri: "dialog/map-marker", action: [GameLobbyController::class, 'dialogMapMarker']);
-    Route::get(uri: "dialog/map-style", action: [GameLobbyController::class, 'dialogMapStyle']);
-    Route::get(uri: "dialog/name-flag", action: [GameLobbyController::class, 'dialogNameFlag']);
-    Route::get(uri: "dialog/settings", action: [GameLobbyController::class, 'dialogSettings']);
-
-    Route::patch(uri: "update-user", action: [GameLobbyController::class, 'updateUser']);
-    Route::patch(uri: "update-game-user", action: [GameLobbyController::class, 'updateGameUser']);
-    Route::patch(uri: "settings", action: [GameLobbyController::class, 'updateSettings']);
-
-    Route::delete(uri: "leave", action: [GameLobbyController::class, 'leaveGame']);
   });
+
   Route::prefix("play")->group(callback: function () {
     Route::get(uri: "", action: [GamePlayController::class, 'index']);
     Route::put(uri: "guess", action: [GamePlayController::class, 'guess']);
   });
   Route::get(uri: "play-dev", action: [GamePlayController::class, 'roundDev']);
   Route::get(uri: "round-result-dev", action: [GamePlayController::class, 'roundResultDev']);
+
   Route::prefix("result")->group(callback: function () {
     Route::get(uri: "", action: [GameResultController::class, 'index']);
   });
   Route::get(uri: "result-dev", action: [GameResultController::class, 'indexDev']);
-  Route::post(uri: "start", action: [GameLobbyController::class, 'forceStartGame']);
-  Route::delete(uri: "", action: [GameController::class, 'delete']);
 });

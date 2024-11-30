@@ -73,6 +73,29 @@ function buildAppCss() {
   }
 }
 
+function buildAppCssForLitComponents() {
+  logStartingBuild('Starting building App CSS for Lit components...');
+  const inputCssFilePath = 'public/static/dist/app.css';
+  const outputJsFilePath = 'public/static/dist/lit-app-css.js';
+
+  try {
+    const cssContent = fs.readFileSync(inputCssFilePath, 'utf8');
+    let cleanCssContent = cssContent.replaceAll("`", "").replaceAll("\\", "\\\\");
+
+    const content = `
+    import { css } from "lit";
+    export const AppStyles = css\`${cleanCssContent}\`;
+    `;
+
+    fs.writeFileSync(outputJsFilePath, content, 'utf8');
+    logCompletedBuild('App CSS for Lit components build completed');
+  } catch (error) {
+    console.error('Error building App CSS for Lit components:', error);
+    process.exit(1);
+  }
+}
+
+
 function buildTailwindCss() {
   logStartingBuild('Starting building Tailwind CSS...');
   const storagePath = 'storage/app';
@@ -108,7 +131,7 @@ function buildTailwindCssForLitComponents() {
     fs.writeFileSync(outputJsFilePath, content, 'utf8');
     logCompletedBuild('Tailwind CSS for Lit components build completed');
   } catch (error) {
-    console.error('Error building Lit Tailwind:', error);
+    console.error('Error building Tailwind CSS for Lit components:', error);
     process.exit(1);
   }
 }
@@ -189,6 +212,7 @@ function build() {
   console.log(`${GREEN_COLOR}STARTING BUILD PROCESS...${DEFAULT_COLOR}`);
   buildJavascript();
   buildAppCss();
+  buildAppCssForLitComponents();
   buildTailwindCss();
   buildTailwindCssForLitComponents();
   buildLitComponents();

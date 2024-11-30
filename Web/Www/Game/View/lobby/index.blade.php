@@ -1,13 +1,13 @@
 <?php declare(strict_types=1); ?>
 
-<div x-data="state('{{ $game->id }}', '{{ $user->id }}')" class="flex flex-col max-w-5xl h-screen mx-auto lg:border-x border-gray-700 select-none">
+<div x-data="state('{{ $user->id }}')" class="flex flex-col max-w-5xl h-screen mx-auto lg:border-x border-gray-700 select-none">
   <!-- Header -->
   <div x-ref="header" class="flex h-14 shrink-0 justify-between items-center px-2 border-b border-gray-700 bg-iris-500">
     <div class="flex w-16">
       @if($user->is_host)
-        <lit-button imgPath="/static/img/icon/cross.svg" size="md" bgColorClass="bg-red-500" hx-delete="/game/{{$game->id}}" hx-swap="none" hx-confirm="Are you Sure you wish to DELETE the game?"></lit-button>
+        <lit-button imgPath="/static/img/icon/cross.svg" size="md" bgColorClass="bg-red-500" hx-delete="/web-api/game/{{$game->id}}" hx-swap="none" hx-confirm="Are you Sure you wish to DELETE the game?"></lit-button>
       @else
-        <lit-button imgPath="/static/img/icon/arrow-back.svg" size="md" bgColorClass="bg-gray-400" hx-delete="/game/{{$game->id}}/lobby/leave" hx-swap="none"></lit-button>
+        <lit-button imgPath="/static/img/icon/arrow-back.svg" size="md" bgColorClass="bg-gray-400" x-on:click="leave"></lit-button>
       @endif
     </div>
     <div class="flex flex-col flex-1 items-center">
@@ -18,8 +18,8 @@
     </div>
     <div class="flex justify-end w-24">
       <div class="block lobby-sm:hidden w-full">
-        <lit-button label="Wait" size="md" bgColorClass="bg-gray-500" hx-patch="/game/{{$game->id}}/lobby/update-game-user" hx-vals='{"is_ready": false}' hx-swap="none" x-show="user.is_ready"></lit-button>
-        <lit-button label="Ready" size="md" bgColorClass="bg-pistachio-400" hx-patch="/game/{{$game->id}}/lobby/update-game-user" hx-vals='{"is_ready": true}' hx-swap="none" x-show="!user.is_ready"></lit-button>
+        <lit-button label="Wait" size="md" bgColorClass="bg-gray-500" x-on:click="toggleIsReady(false)" x-show="user.is_ready"></lit-button>
+        <lit-button label="Ready" size="md" bgColorClass="bg-pistachio-400" x-on:click="toggleIsReady(true)" x-show="!user.is_ready"></lit-button>
       </div>
     </div>
   </div>
@@ -42,20 +42,32 @@
         <div class="py-2">
           <div class="flex gap-2 mx-2">
             <div class="flex flex-none justify-center w-[72px] h-[72px]" :class="{ 'items-end': user.map_marker_map_anchor === 'bottom', 'items-center': user.map_marker_map_anchor === 'center' }">
-              <img :src="user.map_marker_file_path" class="max-w-full max-h-full object-contain cursor-pointer" draggable="false" hx-get="/game/{{$game->id}}/lobby/dialog/map-marker" />
+              <img :src="user.map_marker_file_path" class="max-w-full max-h-full object-contain cursor-pointer" draggable="false" x-on:click="openSelectMapMarkerDialog" />
             </div>
+
+            <lit-select-map-marker-dialog x-ref="selectMapMarkerDialog"></lit-select-map-marker-dialog>
 
             <div class="flex flex-col justify-between w-full overflow-hidden">
               <div class="flex flex-col">
                 <div class="flex items-center gap-2">
                   <span x-text="user.display_name" class="leading-none font-heading font-semibold text-lg text-iris-800 truncate"></span>
-                  <img src="/static/img/icon/edit-pen.svg" class="h-6 hover:brightness-90 cursor-pointer" draggable="false" hx-get="/game/{{$game->id}}/lobby/dialog/name-flag" />
+                  <img src="/static/img/icon/edit-pen.svg" class="h-6 hover:brightness-90 cursor-pointer" draggable="false" x-on:click="openSelectUserProfileDialog" />
+                  <lit-select-user-profile-dialog x-ref="selectUserProfileDialog" :displayName="user.display_name" :selectedCountryFlag="user.country_cca2"></lit-select-user-profile-dialog>
                 </div>
                 <span class="relative bottom-0.5 font-heading font-semibold text-sm text-gray-800">{{ $user->title }}</span>
               </div>
               <div class="flex">
                 @if(!$user->is_guest)
-                  <lit-button :label="user.map_style_short_name" size="xs" :bgColorClass="user.map_style_enum === 'SATELLITE' ? 'bg-red-500' : 'bg-iris-500'" contentAlignment="left" imgPath="/static/img/icon/map.svg" lowercased class="w-[100px]" hx-get="/game/{{$game->id}}/lobby/dialog/map-style"></lit-button>
+                  <lit-button 
+                    :label="user.map_style_short_name"
+                    size="xs"
+                    :bgColorClass="user.map_style_enum === 'SATELLITE' ? 'bg-red-500' : 'bg-iris-500'"
+                    contentAlignment="left"
+                    imgPath="/static/img/icon/map.svg"
+                    lowercased class="w-[100px]"
+                    x-on:clicked="openSelectMapStyleDialog">
+                  </lit-button>
+                  <lit-select-map-style-dialog x-ref="selectMapStyleDialog"></lit-select-map-style-dialog>
                 @endif
               </div>
             </div>
@@ -85,8 +97,19 @@
           <lit-label slot="left" :label="game.is_public ? 'PUBLIC' : 'PRIVATE'" size="xs" :bgColorClass="game.is_public ? 'bg-pistachio-400' : 'bg-red-500'" isPill widthClass="w-16"></lit-label>
           @if($user->is_host)
           <div slot="right" class="flex items-center gap-2">
-            <lit-button label="Edit" size="xs" bgColorClass="bg-gray-400" class="w-16" hx-get="/game/{{$game->id}}/lobby/dialog/settings"></lit-button>
-            <lit-button label="Start" size="xs" bgColorClass="bg-iris-400" class="w-16" hx-post="/game/{{$game->id}}/start" hx-swap="none" hx-confirm="Confirm that you wish to START the game?"></lit-button>
+            <lit-button label="Edit" size="xs" bgColorClass="bg-gray-400" class="w-16" x-on:click="openEditGameSettingsDialog"></lit-button>
+            <lit-edit-game-settings-dialog 
+              x-ref="editGameSettingsDialog" 
+              :gameId="game.id" 
+              :gamePublicStatusEnum="game.game_public_status_enum" 
+              :gameType="game.type"
+              :roundCount="game.number_of_rounds" 
+              :roundDurationSec="game.round_duration_seconds" 
+              :roundResultDurationSec="game.round_result_duration_seconds" 
+              :isBob="isBob">
+            </lit-edit-game-settings-dialog>
+
+            <lit-button label="Start" size="xs" bgColorClass="bg-iris-400" class="w-16" hx-post="/web-api/game/{{$game->id}}/force-start" hx-swap="none" hx-confirm="Confirm that you wish to START the game?"></lit-button>
           </div>
           @endif
         </lit-panel-header>
@@ -209,8 +232,8 @@
         </div>
         @endif
         <div class="w-full p-2">
-          <lit-button label="Wait" size="lg" bgColorClass="bg-gray-400" hx-patch="/game/{{$game->id}}/lobby/update-game-user" hx-vals='{"is_ready": false}' hx-swap="none" x-show="user.is_ready" class="w-48"></lit-button>
-          <lit-button label="Ready" size="lg" bgColorClass="bg-pistachio-500" hx-patch="/game/{{$game->id}}/lobby/update-game-user" hx-vals='{"is_ready": true}' hx-swap="none" x-show="!user.is_ready" class="w-48"></lit-button>
+          <lit-button label="Wait" size="lg" bgColorClass="bg-gray-400" x-on:click="toggleIsReady(false)" x-show="user.is_ready" class="w-48"></lit-button>
+          <lit-button label="Ready" size="lg" bgColorClass="bg-pistachio-500" x-on:click="toggleIsReady(true)" x-show="!user.is_ready" class="w-48"></lit-button>
         </div>
       </div>
 
@@ -276,39 +299,15 @@
 </div>
 
 <script>
-  setInterval(function() {
-    fetch(`/game/{{$game->id}}/status`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }).then(response => {
-      if (!response.ok) {
-        throw new Error(`Response not ok: ${response.statusText}`);
-      }
-      return response.json();
-    }).then(data => {
-      if (data.status !== 'OK') {
-        window.location.href = '/';
-      }
-      if (data.in_progress === true) {
-        window.location.href = `/game/{{$game->id}}/play`;
-      }
-      if (data.finished === true) {
-        window.location.href = `/game/{{$game->id}}/result`;
-      }
-    }).catch(error => {
-      console.error('Error fetching game data:', error);
-    });
-  }, 20000);
-
-  function state(gameId, userId) {
+  function state(userId) {
     return {
       animationDurationMs: 700,
       gameUserListMarginTopPx: 8,
       game: @json($game),
       gameStageText: 'Waiting for players...',
       gameUsers: @json($game_users),
+      handleGameStatusInterval: null,
+      isBob: @json($user).is_bob,
       get gameUserCount() {
         return this.gameUsers.length;
       },
@@ -349,8 +348,30 @@
       get user() {
         return this.gameUsers.find(n => n.id === userId);
       },
+      leave() {
+        fetch(`/web-api/game/${this.game.id}/leave`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }).then(() => {
+          window.location.href = '/';
+        })
+      },
+      openEditGameSettingsDialog() {
+        this.$refs.editGameSettingsDialog.open();
+      },
+      openSelectMapMarkerDialog() {
+        this.$refs.selectMapMarkerDialog.open();
+      },
+      openSelectMapStyleDialog() {
+        this.$refs.selectMapStyleDialog.open();
+      },
+      openSelectUserProfileDialog() {
+        this.$refs.selectUserProfileDialog.open();
+      },
       toggleIsObserver(isObserver) {
-        fetch(`/game/${gameId}/lobby/update-game-user`, {
+        fetch(`/web-api/game-user/${this.game.id}`, {
             method: 'PATCH',
             headers: {
               'Content-Type': 'application/json',
@@ -367,6 +388,26 @@
         })
         .catch(error => {
             console.error('Error updating observer status:', error);
+        });
+      },
+      toggleIsReady(isReady) {
+        fetch(`/web-api/game-user/${this.game.id}`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              is_ready: isReady
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+              console.error(`Failed to update ready status: ${response.statusText}`);
+              return;
+            }
+        })
+        .catch(error => {
+            console.error('Error updating ready status:', error);
         });
       },
       togglePlayerListSize() {
@@ -444,7 +485,7 @@
           console.error('Pusher error:', error);
         });
 
-        const channel = pusher.subscribe(`game.${gameId}`);
+        const channel = pusher.subscribe(`game.${this.game.id}`);
         
         channel.bind('game.delete', () => {
           window.location.href = '/';
@@ -456,7 +497,7 @@
           this.gameStageText = message;
         });
         channel.bind('game.round.update', ({ roundNumber, gameStateEnum }) => {
-          window.location.href = `/game/${gameId}/play`;
+          window.location.href = `/game/${this.game.id}/play`;
         });
         channel.bind('game-user.join', ({ gameUser }) => {
           if (!this.gameUsers.find(n => n.id === gameUser.id)) {
@@ -466,13 +507,42 @@
         channel.bind('game-user.update', ({ gameUser }) => {
           this.updatePlayer(gameUser);    
         });
-        channel.bind('game-user.leave', ({ gameUserId }) => {
+        channel.bind('game-user.leave', ({ userId }) => {
           // Because leaving the game is a request, it takes time. If I remove the user in the player list,
           // it creates bugs on the page because the user not exist anymore.
-          if (this.user.id !== gameUserId) {
-            this.gameUsers = this.gameUsers.filter(n => n.id !== gameUserId);
+          if (this.user.id !== userId) {
+            this.gameUsers = this.gameUsers.filter(n => n.id !== userId);
           }
         }); 
+
+        this.handleGameStatusInterval = setInterval(() => {
+          fetch(`/web-api/game/${this.game.id}/status`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }).then(response => {
+            if (!response.ok) {
+              throw new Error(`Response not ok: ${response.statusText}`);
+            }
+            return response.json();
+          }).then(data => {
+            if (data.status !== 'OK') {
+              window.location.href = '/';
+            }
+            if (data.in_progress === true) {
+              window.location.href = `/game/${this.game.id}/play`;
+            }
+            if (data.finished === true) {
+              window.location.href = `/game/${this.game.id}/result`;
+            }
+          }).catch(error => {
+            console.error('Error fetching game data:', error);
+          });
+        }, 20000);
+      },
+      destroy() {
+        clearInterval(this.handleGameStatusInterval);
       }
     }
   }

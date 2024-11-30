@@ -1,7 +1,8 @@
-import { LitElement, css, html } from 'lit';
+import { LitElement, css, html, nothing } from 'lit';
 import { classMap } from 'lit/directives/class-map.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
+import { AppStyles } from '../../../../../public/static/dist/lit-app-css';
 import { TailwindStyles } from '../../../../../public/static/dist/lit-tailwind-css';
 
 class Dialog extends LitElement {
@@ -29,7 +30,7 @@ class Dialog extends LitElement {
     screenHeightPx: { type: Number, state: true }
   }
 
-  static styles = css`${TailwindStyles}
+  static styles = css`${TailwindStyles} ${AppStyles}
     dialog {
       background: transparent;
       border: none;
@@ -152,25 +153,22 @@ class Dialog extends LitElement {
     return html`
       <dialog class="z-10">
         <div class="flex flex-col w-full rounded-lg border border-b-2 border-gray-700">
-
           <div id="header" class="flex items-center h-12 rounded-t-lg bg-iris-400 border-b border-iris-600" style="box-shadow: inset 0 3px 1px rgba(255, 255, 255, 0.25), inset 0 -3px 1px rgba(0, 0, 0, 0.25);">
-            <div class="flex w-full">
-              <div class="flex-grow basis-1/3 relative shrink-0">
-                <div class="absolute bottom-0 left-1">${this.iconPath ? html`<img src="${this.iconPath}" class="h-12" />` : nothing}</div>
+            <div class="flex justify-center w-full relative">
+              <div class="absolute bottom-0 left-1">${this.iconPath ? html`<img src="${this.iconPath}" class="h-12" draggable="false" />` : nothing}</div>
+             
+              <div class="flex justify-center items-center">
+                <span class="font-heading text-xl font-bold text-gray-0 uppercase text-stroke-2 text-stroke-gray-700 select-none">${this.label}</span>
               </div>
-              <div class="flex justify-center items-center flex-grow basis-1/3">
-                <span class="font-heading text-2xl font-bold text-gray-0 uppercase text-stroke-2 text-stroke-gray-700">${this.label}</span>
-              </div>
-              <div class="flex justify-end flex-grow basis-1/3 pr-1">
-                ${this.hideCloseButton ? nothing : html`
-                  <button
-                    class="flex justify-center items-center relative w-8 h-8 rounded-lg rounded-tr-xl bg-red-500 hover:bg-red-600 border border-b-2 active:border-b border-gray-700"
-                    style="box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3), inset 0 -1px 1px rgba(0, 0, 0, 0.3);"
-                    @click="${this.close}">
-                    <img src="/static/img/icon/cross.svg" width="20" height="20" draggable=false />
-                  </button>
-                `}
-              </div>
+
+              ${this.hideCloseButton ? nothing : html`
+                <button
+                  class="flex justify-center items-center absolute top-0 right-1 w-8 h-8 rounded-lg rounded-tr-xl bg-red-500 hover:bg-red-600 border border-b-2 active:border-b border-gray-700"
+                  style="box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3), inset 0 -1px 1px rgba(0, 0, 0, 0.3);"
+                  @click="${this.close}">
+                  <img src="/static/img/icon/cross.svg" width="20" height="20" draggable=false />
+                </button>
+              `}
             </div>
           </div>
 

@@ -1,13 +1,17 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Domain\User\Crud;
 
 use Carbon\CarbonInterface;
+use Domain\Game\Broadcast\GameBroadcast;
 use Domain\Map\Enum\MapMarkerEnum;
 use Domain\Map\Enum\MapStyleEnum;
 use Domain\User\Enum\UserFlagEnum;
 use Domain\User\Model\WhereBearUser;
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearShortCodeService;
+use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
 use Illuminate\Support\Facades\DB;
@@ -82,6 +86,22 @@ final readonly class WhereBearUserUpdater {
 
   public function update(): WhereBearUser {
     $this->model->save();
+
+    if ($this->model->wasChanged(['country_cca2', 'display_name', 'map_marker_enum', 'map_style_enum', 'user_flag_enum'])) {
+      /** The active games where the user is a participant. */
+      $activeGamesForUser = DB::select(query: <<<SQL
+      SELECT DISTINCT g.id
+      FROM game g
+      INNER JOIN game_user gu ON gu.game_id = g.id
+      WHERE gu.user_id = ?
+      AND g.game_state_enum = 'WAITING_FOR_PLAYERS'
+      SQL, bindings: [BearAuthService::getUserId()]);
+
+      foreach ($activeGamesForUser as $game) {
+        GameBroadcast::gameUserUpdate(gameId: $game->id, userId: BearAuthService::getUserId());
+      }
+    }
+
     return $this->model;
   }
 }

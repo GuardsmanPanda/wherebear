@@ -4,50 +4,32 @@ declare(strict_types=1);
 
 namespace Web\Www\Game\Controller;
 
-use Domain\Game\Action\GameStartAction;
 use Domain\Game\Broadcast\GameBroadcast;
-use Domain\Game\Crud\GameUpdater;
 use Domain\Game\Crud\GameUserCreator;
-use Domain\Game\Crud\GameUserDeleter;
-use Domain\Game\Crud\GameUserUpdater;
-use Domain\Game\Enum\GamePublicStatusEnum;
 use Domain\Game\Enum\GameStateEnum;
-use Domain\Map\Enum\MapMarkerEnum;
-use Domain\Map\Enum\MapStyleEnum;
-use Domain\User\Crud\WhereBearUserUpdater;
-use Domain\User\Enum\BearRoleEnum;
-use Domain\User\Enum\UserFlagEnum;
-use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearArrayService;
+use Domain\User\Enum\BearPermissionEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Htmx;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Resp;
-use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
-use stdClass;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 final class GameLobbyController extends Controller {
-  private function getGame(string $gameId): ?stdClass {
+  public function index(string $gameId): Response|View {
     $game = DB::selectOne(query: <<<SQL
       SELECT
         g.id, g.number_of_rounds, g.round_duration_seconds, g.created_by_user_id, g.name,
-        g.game_state_enum, g.game_public_status_enum = 'PUBLIC' as is_public,
+        g.game_state_enum, g.game_public_status_enum, g.game_public_status_enum = 'PUBLIC' as is_public,
         g.current_round, g.round_result_duration_seconds, g.short_code,
         CASE WHEN g.templated_by_game_id IS NOT NULL THEN 'templated' ELSE 'normal' END as type,
         round((g.number_of_rounds * (g.round_duration_seconds + g.round_result_duration_seconds + 1) + 90) / 60)::integer as total_game_time_mn
       FROM game g
       WHERE g.id = ?
     SQL, bindings: [$gameId]);
-    return $game;
-  }
 
-
-  public function index(string $gameId): Response|View {
-    $game = $this->getGame($gameId);
     if ($game === null) {
       return Resp::redirect(url: '/', message: 'Game not found');
     }
@@ -109,7 +91,8 @@ final class GameLobbyController extends Controller {
         COALESCE(uf.description, bc.name) as flag_description,
         bu.user_level_enum = 0 as is_guest,
         g.created_by_user_id = bu.id as is_host,
-        'Digital Guinea Pig' as title
+        'Digital Guinea Pig' as title,
+        CASE WHEN ? IS TRUE THEN true ELSE false END::boolean as is_bob
       FROM bear_user bu
       LEFT JOIN game_user gu ON gu.user_id = bu.id AND gu.game_id = ?
       LEFT JOIN game g ON g.id = gu.game_id
@@ -118,7 +101,7 @@ final class GameLobbyController extends Controller {
       LEFT JOIN user_level ul ON ul.enum = bu.user_level_enum
       LEFT JOIN user_flag uf ON uf.enum = bu.user_flag_enum
       WHERE bu.id = ?
-    SQL, bindings: [$game->id, $user_id]);
+    SQL, bindings: [BearAuthService::hasPermission(permission: BearPermissionEnum::IS_BOB), $game->id, $user_id]);
 
     $user->can_observe = $game->created_by_user_id === BearAuthService::getUserId(); // TODO: add observer ability to db to db
     $user->level_percentage = $user->current_level_experience_points * 100 / $user->next_level_experience_points_requirement;
@@ -164,150 +147,5 @@ final class GameLobbyController extends Controller {
       'game_users' => $game_users,
       'user' => $user,
     ]);
-  }
-
-  public function updateUser(string $gameId): Response {
-    $updater = WhereBearUserUpdater::fromId(id: BearAuthService::getUserId());
-
-    if (Req::has(key: 'map_marker_enum')) {
-      $updater->setMapMarkerEnum(map_marker_enum: MapMarkerEnum::fromRequest());
-    }
-    if (Req::has(key: 'map_style_enum')) {
-      $updater->setMapStyleEnum(map_style_enum: MapStyleEnum::fromRequest());
-    }
-    if (Req::has(key: 'display_name')) {
-      $updater->setDisplayName(display_name: Req::getString(key: 'display_name'));
-    }
-    if (Req::has(key: 'country_cca2')) {
-      $updater->setCountryCca2(country_cca2: BearCountryEnum::from(value: Req::getString(key: 'country_cca2')));
-    }
-    if (Req::has(key: 'user_flag_enum')) {
-      $updater->setUserFlag(enum: UserFlagEnum::fromRequest());
-    }
-    $updater->update();
-
-    GameBroadcast::gameUserUpdate(gameId: $gameId, userId: BearAuthService::getUserId());
-    return new Response();
-  }
-
-  public function updateGameUser(string $gameId): Response {
-    $updater = GameUserUpdater::fromGameIdAndUserId(game_id: $gameId, user_id: BearAuthService::getUserId());
-
-    if (Req::has(key: 'is_ready')) {
-      $updater->setIsReady(is_ready: Req::getBool(key: 'is_ready'));
-    }
-    if (Req::has(key: 'is_observer')) {
-      $updater->setIsObserver(is_observer: Req::getBool(key: 'is_observer'));
-    }
-    $updater->update();
-
-    GameBroadcast::gameUserUpdate(gameId: $gameId, userId: BearAuthService::getUserId());
-    GameStartAction::placeInQueueIfAble(gameId: $gameId);
-    return new Response();
-  }
-
-  public function updateSettings(string $gameId): Response {
-    GameUpdater::fromId(id: $gameId)
-      ->setNumberOfRounds(number_of_rounds: Req::getInt(key: 'number_of_rounds', min: 1, max: 40))
-      ->setRoundDurationSeconds(round_duration_seconds: Req::getInt(key: 'round_duration_seconds'))
-      ->setRoundResultDurationSeconds(round_result_duration_seconds: Req::getInt(key: 'round_result_duration_seconds'))
-      ->setGamePublicStatusEnum(enum: GamePublicStatusEnum::fromRequest())
-      ->update();
-
-    $game = $this->getGame($gameId);
-    if ($game !== null) {
-      GameBroadcast::gameUpdate(gameId: $gameId, game: $game);
-    }
-    return new Response();
-  }
-
-  public function forceStartGame(string $gameId): Response {
-    $creator = DB::selectOne(query: "SELECT created_by_user_id FROM game WHERE id = ?", bindings: [$gameId])->created_by_user_id;
-    if ($creator !== BearAuthService::getUserId() && !BearAuthService::hasRole(BearRoleEnum::ADMIN)) {
-      return throw new UnauthorizedHttpException("You are not allowed to start this game.");
-    }
-    GameUpdater::fromId(id: $gameId)->setIsForcedStart(is_forced_start: true)->update();
-    GameStartAction::placeInQueueIfAble(gameId: $gameId);
-    return new Response();
-  }
-
-  public function leaveGame(string $gameId): Response {
-    GameUserDeleter::deleteFromGameAndUserId(gameId: $gameId, userId: BearAuthService::getUserId());
-    GameBroadcast::gameUserLeave(gameId: $gameId, gameUserId: BearAuthService::getUserId());
-    return Htmx::redirect(url: '/', message: 'Left Game.');
-  }
-
-  public function dialogNameFlag(string $gameId): View {
-    return Htmx::dialogView(
-      view: 'game::lobby.dialog.name-flag',
-      title: 'Edit Name and Flag',
-      data: [
-        'countries' => DB::select(query: "
-          SELECT name, cca2
-          FROM bear_country
-          ORDER BY name
-        "),
-        'display_name' => BearAuthService::getUser()->display_name,
-        'flag_selected' => BearAuthService::getUser()->country_cca2,
-        'game_id' => $gameId,
-        'novelty_flags' => DB::select(query: "SELECT enum, description, file_path FROM user_flag ORDER BY enum"),
-      ]
-    );
-  }
-
-  public function dialogMapMarker(string $gameId): View {
-    $markers = DB::select(query: <<<SQL
-      SELECT mm.enum, mm.file_path, mm.grouping
-      FROM map_marker mm
-      WHERE user_level_enum <= (SELECT user_level_enum FROM bear_user WHERE id = ?)
-      ORDER BY mm.grouping = 'Miscellaneous',  mm.grouping, mm.file_path
-    SQL, bindings: [BearAuthService::getUserId()]);
-    return Htmx::dialogView(
-      view: 'game::lobby.dialog.map-marker',
-      title: 'Select Map Marker',
-      data: [
-        'game_id' => $gameId,
-        'grouped_map_markers' => BearArrayService::groupArrayBy(array: $markers, key: 'grouping'),
-      ]
-    );
-  }
-
-  public function dialogMapStyle(string $gameId): View {
-    return Htmx::dialogView(
-      view: 'game::lobby.dialog.map-style',
-      title: 'Select Map Style',
-      data: [
-        'game_id' => $gameId,
-        'map_styles' => DB::select(query: <<<SQL
-          SELECT ms.enum, ms.name, ms.full_uri
-          FROM map_style ms
-          WHERE 
-            ms.enum != 'DEFAULT'
-            AND ms.user_level_enum <= (SELECT user_level_enum FROM bear_user WHERE id = ?)
-          ORDER BY ms.user_level_enum, ms.name
-        SQL, bindings: [BearAuthService::getUserId()]),
-      ]
-    );
-  }
-
-  public function dialogSettings(string $gameId): View {
-    $is_allowed = DB::selectOne(query: "SELECT 1 FROM game WHERE id = ? AND created_by_user_id = ?", bindings: [$gameId, BearAuthService::getUserId()]) !== null;
-    if ($is_allowed === false) {
-      return throw new UnauthorizedHttpException("You are not allowed to edit this game.");
-    }
-    return Htmx::dialogView(
-      view: 'game::lobby.dialog.game-settings',
-      title: 'Game Settings',
-      data: [
-        'game' => DB::selectOne(query: <<<SQL
-          SELECT
-            g.id, g.number_of_rounds, g.round_duration_seconds,
-            g.round_result_duration_seconds, g.game_public_status_enum,
-            g.templated_by_game_id
-          FROM game g
-          WHERE g.id = ?
-        SQL, bindings: [$gameId]),
-      ]
-    );
   }
 }
