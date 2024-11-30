@@ -2,29 +2,40 @@
 @php use Domain\User\Enum\BearPermissionEnum;use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService; @endphp
 <div class="h-full w-full flex flex-col">
   <x-bear::form.text id="map-url" required="" class="text-gray-700" autocomplete="off"></x-bear::form.text>
-  <div id="tags" class="mt-1">
-    <h3 class="font-bold text-teal-500">Tags</h3>
-    <div class="flex gap-4 ml-2 items-center">
-      @if(BearAuthService::hasPermission(permission: BearPermissionEnum::PANORAMA_TAG_DAILY))
+  <div class="flex">
+    <div class="mt-1">
+      <h3 class="font-bold text-amber-600">Viewport</h3>
+      <div class="flex gap-4 ml-2 items-center">
         <div class="flex items-center">
-          <label class="mr-2 font-medium text-gray-400" for="DAILY">DAILY</label>
-          <input id="DAILY" type="checkbox" name="tag" value="DAILY">
+          <label class="mr-2 font-medium text-amber-400" for="street_view_viewport">StreetView Viewport</label>
+          <input id="street_view_viewport" type="checkbox" name="tag" value="true" checked>
         </div>
-      @endif
-      <div class="flex items-center">
-        <label class="mr-2 font-medium text-gray-400" for="ANIMAL">ANIMAL</label>
-        <input id="ANIMAL" type="checkbox" name="tag" value="ANIMAL">
       </div>
-      @if(BearAuthService::hasPermission(permission: BearPermissionEnum::IS_BOB))
+    </div>
+    <div id="tags" class="mt-1 ml-12">
+      <h3 class="font-bold text-teal-500">Tags</h3>
+      <div class="flex gap-4 ml-2 items-center">
+        @if(BearAuthService::hasPermission(permission: BearPermissionEnum::PANORAMA_TAG_DAILY))
+          <div class="flex items-center">
+            <label class="mr-2 font-medium text-gray-400" for="DAILY">DAILY</label>
+            <input id="DAILY" type="checkbox" name="tag" value="DAILY">
+          </div>
+        @endif
         <div class="flex items-center">
-          <label class="mr-2 font-medium text-blue-400" for="GOOGLE">GOOGLE</label>
-          <input id="GOOGLE" type="checkbox" name="tag" value="GOOGLE">
+          <label class="mr-2 font-medium text-gray-400" for="ANIMAL">ANIMAL</label>
+          <input id="ANIMAL" type="checkbox" name="tag" value="ANIMAL">
         </div>
-        <div class="flex items-center">
-          <label class="mr-2 font-medium text-blue-400" for="HIDDEN">HIDDEN</label>
-          <input id="HIDDEN" type="checkbox" name="tag" value="HIDDEN">
-        </div>
-      @endif
+        @if(BearAuthService::hasPermission(permission: BearPermissionEnum::IS_BOB))
+          <div class="flex items-center">
+            <label class="mr-2 font-medium text-blue-400" for="GOOGLE">GOOGLE</label>
+            <input id="GOOGLE" type="checkbox" name="tag" value="GOOGLE">
+          </div>
+          <div class="flex items-center">
+            <label class="mr-2 font-medium text-blue-400" for="HIDDEN">HIDDEN</label>
+            <input id="HIDDEN" type="checkbox" name="tag" value="HIDDEN">
+          </div>
+        @endif
+      </div>
     </div>
   </div>
   <hr class="mt-2 mb-1  border-gray-600 border-2">
@@ -68,7 +79,10 @@
       method: 'POST', headers: {
         'Content-Type': 'application/json'
       }, body: JSON.stringify({
-        street_view_url: document.getElementById('map-url').value, tags_checked: tags_checked, tags_unchecked: tags_unchecked,
+        street_view_url: document.getElementById('map-url').value,
+        tags_checked: tags_checked,
+        tags_unchecked: tags_unchecked,
+        street_view_viewport: document.getElementById('street_view_viewport').checked,
       }),
     }).then(resp => resp.json()).then(json => {
       console.log(json);
@@ -93,6 +107,7 @@
             type: "error", message: "Tags removed<br>" + json['tags_removed'], duration: 14000,
           });
         }
+        document.getElementById('map-url').value = '';
       } else {
         let message = "Location added to the game!";
         if (!json['from_id']) {
@@ -117,7 +132,7 @@
         map.panTo([json['lng'], json['lat']]);
       }
     }).catch(err => {
-      window.notify.error("Failed to add location to the game, see console for error.");
+      window.notify.error("Failed to add location to the game, please report this url on discord.");
       console.error(err);
     });
   }

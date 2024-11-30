@@ -39,11 +39,6 @@ final class PageDiscoveryController extends Controller {
 
   public function addFromStreetViewData(): JsonResponse {
     $data = StreetViewClient::fromUrl(url: Req::getString(key: 'street_view_url'));
-    //$heading = BearRegexService::extractFirstFloat(regex: '/,([^,h]+)h,/', subject: Req::getString(key: 'street_view_url'));
-    //$pitch = BearRegexService::extractFirstFloat(regex: '~,([^,t]+)t/~', subject: Req::getString(key: 'street_view_url')) - 90;
-    //if ($heading > 180) {
-    //  $heading -= 360;
-    //}
     if ($data === null) {
       return new JsonResponse(data: ['status' => 'failed']);
     }
@@ -51,6 +46,7 @@ final class PageDiscoveryController extends Controller {
     $exists = $panorama !== null;
     $tags_added = [];
     $tags_removed = [];
+
     if ($panorama === null) {
       $panorama = PanoramaCreator::createFromStreetViewData(
         data: $data,
@@ -58,20 +54,26 @@ final class PageDiscoveryController extends Controller {
         added_by_user_id: BearAuthService::getUserId()
       );
       $tags_added = $panorama->panorama_tag_array->getArrayCopy();
-    } else {
-      $updater = new PanoramaUpdater(model: $panorama);
-      foreach (Req::getArray(key: 'tags_checked') as $tag) {
-        if ($updater->addPanoramaTag(tag: PanoramaTagEnum::from(value: $tag))) {
-          $tags_added[] = $tag;
-        }
-      }
-      foreach (Req::getArray(key: 'tags_unchecked') as $tag) {
-        if ($updater->removePanoramaTag(tag: PanoramaTagEnum::from(value: $tag))) {
-          $tags_removed[] = $tag;
-        }
-      }
-      $updater->update();
     }
+
+    $updater = new PanoramaUpdater(model: $panorama);
+    if (Req::getBool(key: 'street_view_viewport') && $updater->hasDefaultFieldOfView()) {
+      $heading = BearRegexService::extractFirstFloatOrNull(regex: '/,([^,h]+)h,/', subject: Req::getString(key: 'street_view_url'));
+      $pitch = BearRegexService::extractFirstFloat(regex: '~,([^,t]+)t/~', subject: Req::getString(key: 'street_view_url')) - 90;
+      $updater->setStreetViewViewport(heading: $heading ?? 0, pitch: $pitch);
+    }
+    foreach (Req::getArray(key: 'tags_checked') as $tag) {
+      if ($updater->addPanoramaTag(tag: PanoramaTagEnum::from(value: $tag))) {
+        $tags_added[] = $tag;
+      }
+    }
+    foreach (Req::getArray(key: 'tags_unchecked') as $tag) {
+      if ($updater->removePanoramaTag(tag: PanoramaTagEnum::from(value: $tag))) {
+        $tags_removed[] = $tag;
+      }
+    }
+    $updater->update();
+
     return new JsonResponse(data: [
       'country_cca2' => $panorama->country_cca2,
       'lat' => $data->lat,

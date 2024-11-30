@@ -20,6 +20,11 @@ final readonly class PanoramaUpdater {
   }
 
 
+  public function hasDefaultFieldOfView(): bool {
+    return $this->model->field_of_view === 100.0;
+  }
+
+
   public function setCountryCca2(string $country_cca2): self {
     $this->model->country_cca2 = BearCountryEnum::from(value: $country_cca2);
     return $this;
@@ -66,6 +71,26 @@ final readonly class PanoramaUpdater {
     return $this;
   }
 
+
+  public function setViewport(float $heading, float $pitch, float $field_of_view): self {
+    $this->model->heading = $heading;
+    $this->model->pitch = $pitch;
+    $this->model->field_of_view = $field_of_view;
+    return $this;
+  }
+
+
+  public function setStreetViewViewport(float $heading, float $pitch): self {
+    if ($this->model->north_rotation_degrees === null) {
+      $this->model->heading = $heading;
+    } else {
+      $this->model->heading = $this->calculatedNewHeading(heading: $heading, north_rotation_degrees: $this->model->north_rotation_degrees);
+    }
+    $this->model->pitch = $pitch;
+    return $this;
+  }
+
+
   private function calculatedNewHeading(float $heading, int $north_rotation_degrees): float {
     $heading += $north_rotation_degrees - 180;
     while ($heading < -180) {
@@ -75,13 +100,6 @@ final readonly class PanoramaUpdater {
       $heading -= 360;
     }
     return $heading;
-  }
-
-  public function setViewport(float $heading, float $pitch, float $field_of_view): self {
-    $this->model->heading = $heading;
-    $this->model->pitch = $pitch;
-    $this->model->field_of_view = $field_of_view;
-    return $this;
   }
 
   public function update(): Panorama {
