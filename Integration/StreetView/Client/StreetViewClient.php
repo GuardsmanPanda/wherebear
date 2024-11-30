@@ -22,11 +22,7 @@ final class StreetViewClient {
 
   public static function fromUrl(string $url): StreetViewPanoramaData|null {
     if (str_contains(haystack: $url, needle: '!1s')) {
-      $id = BearRegexService::extractFirst(regex: '/!1s([^!]+)!/', subject: $url);
-      $result = self::fromPanoramaId(panoramaId: $id);
-      if ($result !== null) {
-        return $result;
-      }
+      $id = BearRegexService::extractFirstString(regex: '/!1s([^!]+)!/', subject: $url);
       if (str_starts_with(haystack: $id, needle: 'AF')) {
         $trueId = 'CAoSLE' . substr(string: base64_encode(string: 'CAoS' . $id), offset: 6);
         $locationResult = self::fromPanoramaId(panoramaId: $trueId);
@@ -34,8 +30,12 @@ final class StreetViewClient {
           return $locationResult;
         }
       }
+      $result = self::fromPanoramaId(panoramaId: $id);
+      if ($result !== null) {
+        return $result;
+      }
     }
-    $locationString = BearRegexService::extractFirst(regex: '/@([^,]+,[^,]+),/', subject: $url);
+    $locationString = BearRegexService::extractFirstString(regex: '/@([^,]+,[^,]+),/', subject: $url);
     $location = explode(separator: ',', string: $locationString);
     $latitude = (float) $location[0];
     $longitude = (float) $location[1];

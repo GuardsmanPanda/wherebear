@@ -60,6 +60,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static bool exists()
  *
  * @property int|null $location_box_hash
+ * @property int|null $north_rotation_degrees
  * @property float $pitch
  * @property float $heading
  * @property float $field_of_view

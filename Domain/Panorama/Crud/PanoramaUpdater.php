@@ -7,6 +7,7 @@ use Domain\Panorama\Model\Panorama;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountrySubdivisionEnum;
+use RuntimeException;
 
 final readonly class PanoramaUpdater {
   public function __construct(private Panorama $model) {
@@ -33,12 +34,7 @@ final readonly class PanoramaUpdater {
     return $this;
   }
 
-  public function setAddedByUserId(string|null $added_by_user_id): self {
-    $this->model->added_by_user_id = $added_by_user_id;
-    return $this;
-  }
-
-  public function setJpgPath(string|null $jpg_path): self {
+  public function setJpgPath(string $jpg_path): self {
     $this->model->jpg_path = $jpg_path;
     return $this;
   }
@@ -59,6 +55,26 @@ final readonly class PanoramaUpdater {
       }
     }
     return false;
+  }
+
+  public function setNorthRotationDegrees(int $north_rotation_degrees): self {
+    if ($this->model->north_rotation_degrees !== null) {
+      throw new RuntimeException(message: 'North rotation degrees should not be set more than once.');
+    }
+    $this->model->heading = $this->calculatedNewHeading(heading: $this->model->heading, north_rotation_degrees: $north_rotation_degrees);
+    $this->model->north_rotation_degrees = $north_rotation_degrees;
+    return $this;
+  }
+
+  private function calculatedNewHeading(float $heading, int $north_rotation_degrees): float {
+    $heading += $north_rotation_degrees - 180;
+    while ($heading < -180) {
+      $heading += 360;
+    }
+    while ($heading > 180) {
+      $heading -= 360;
+    }
+    return $heading;
   }
 
   public function setViewport(float $heading, float $pitch, float $field_of_view): self {

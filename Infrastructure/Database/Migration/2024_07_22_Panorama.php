@@ -8,23 +8,24 @@ return new class extends Migration {
   public function up(): void {
     DB::statement(query: "
       create table panorama(
-        id                  text not null primary key,
-        captured_date       date not null,
-        country_cca2        text references bear_country not null,
+        id                           text not null primary key,
+        captured_date                date not null,
+        country_cca2                 text references bear_country not null,
         country_subdivision_iso_3166 text references bear_country_subdivision,
-        added_by_user_id    uuid references bear_user,
-        panorama_tag_array  text[] NOT NULL,
-        location            geography(Point, 4326) not null,
-        pitch               double precision not null,
-        heading             double precision not null,
-        field_of_view       double precision not null,
-        location_box_hash   integer,
-        jpg_path            text unique,
-        avif_path           text unique,
-        retired_at          timestamp with time zone,
-        retired_reason      text,
-        created_at          timestamp with time zone default CURRENT_TIMESTAMP not null,
-        updated_at          timestamp with time zone default CURRENT_TIMESTAMP not null
+        added_by_user_id             uuid references bear_user,
+        panorama_tag_array           text[] NOT NULL,
+        location                     geography(Point, 4326) not null,
+        north_rotation_degrees       integer,
+        pitch                        double precision not null,
+        heading                      double precision not null,
+        field_of_view                double precision not null,
+        location_box_hash            integer,
+        jpg_path                     text unique,
+        avif_path                    text unique,
+        retired_at                   timestamp with time zone,
+        retired_reason               text,
+        created_at                   timestamp with time zone default CURRENT_TIMESTAMP not null,
+        updated_at                   timestamp with time zone default CURRENT_TIMESTAMP not null
       );
     ");
     DB::statement(query: "create index location_gist_idx on panorama using gist(location);");

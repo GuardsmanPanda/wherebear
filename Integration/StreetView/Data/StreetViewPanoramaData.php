@@ -22,7 +22,7 @@ final readonly class StreetViewPanoramaData {
       return null;
     }
     $data = $response->json();
-    if ($data['status'] !== 'OK') {
+    if (!is_array($data) || $data['status'] !== 'OK') {
       return null;
     }
     return new StreetViewPanoramaData(
@@ -30,7 +30,7 @@ final readonly class StreetViewPanoramaData {
       lng: $data['location']['lng'],
       panoId: $data['pano_id'],
       copyright: $data['copyright'],
-      date: CarbonImmutable::parse($data['date'] . '-01'),
+      date: CarbonImmutable::parse(time: $data['date'] . '-01'),
       status: $data['status'],
       from_id: $from_id,
     );

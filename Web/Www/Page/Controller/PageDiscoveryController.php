@@ -8,6 +8,7 @@ use Domain\Panorama\Crud\PanoramaUpdater;
 use Domain\Panorama\Enum\PanoramaTagEnum;
 use Domain\Panorama\Model\Panorama;
 use Domain\Panorama\Service\PanoramaService;
+use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearRegexService;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Resp;
@@ -38,6 +39,11 @@ final class PageDiscoveryController extends Controller {
 
   public function addFromStreetViewData(): JsonResponse {
     $data = StreetViewClient::fromUrl(url: Req::getString(key: 'street_view_url'));
+    //$heading = BearRegexService::extractFirstFloat(regex: '/,([^,h]+)h,/', subject: Req::getString(key: 'street_view_url'));
+    //$pitch = BearRegexService::extractFirstFloat(regex: '~,([^,t]+)t/~', subject: Req::getString(key: 'street_view_url')) - 90;
+    //if ($heading > 180) {
+    //  $heading -= 360;
+    //}
     if ($data === null) {
       return new JsonResponse(data: ['status' => 'failed']);
     }
