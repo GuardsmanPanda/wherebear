@@ -27,6 +27,7 @@ final class ImportPanoramaJpgCommand extends Command {
       } else {
         $this->importPanorama(fileName: $file, panorama: $panorama, north_rotation_degrees: $north_rotation_degrees);
       }
+      Storage::delete(paths: $file);
     }
   }
 
@@ -46,7 +47,6 @@ final class ImportPanoramaJpgCommand extends Command {
         ->setJpgPath(jpg_path: $newFileName)
         ->update();
       Storage::put(path: 'panorama/' . $newFileName, contents: $content);
-      Storage::delete(paths: $fileName);
       DB::commit();
     } catch (Throwable $e) {
       DB::rollBack();
