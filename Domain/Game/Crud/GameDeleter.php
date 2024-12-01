@@ -1,7 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Domain\Game\Crud;
 
+use Domain\Game\Broadcast\GameBroadcast;
 use Domain\Game\Model\Game;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
@@ -20,6 +23,8 @@ final class GameDeleter {
     GameUserDeleter::deleteFromGameId(gameId: $model->id);
 
     $model->delete();
+
+    GameBroadcast::gameDelete(gameId: $model->id);
   }
 
   public static function deleteFromId(string $id): void {

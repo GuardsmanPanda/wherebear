@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Domain\Game\Crud;
 
+use Domain\Game\Broadcast\GameBroadcast;
 use Domain\Game\Model\GameUser;
+use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 
 final readonly class GameUserUpdater {
@@ -35,6 +37,11 @@ final readonly class GameUserUpdater {
 
   public function update(): GameUser {
     $this->model->save();
+
+    if ($this->model->wasChanged(['is_observer', 'is_ready'])) {
+      GameBroadcast::gameUserUpdate(gameId: $this->model->game_id, userId: BearAuthService::getUserId());
+    }
+
     return $this->model;
   }
 }
