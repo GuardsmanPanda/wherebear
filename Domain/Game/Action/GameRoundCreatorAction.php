@@ -15,7 +15,7 @@ use Ramsey\Collection\Set;
 use stdClass;
 
 final class GameRoundCreatorAction {
-  const string SAFETY_PANORAMA_ID = 'CAoSLEFGMVFpcE02ZEZUck9MZ0x5OS1XaElySWpTN1U5QlVabUJ5Z3J6RFV4S0R1';
+  const string SAFETY_PANORAMA_ID = 'CAoSLEFGMVFpcE5CcTUxR0JReW1pa0ZfQ1lvNVJBT2tDMTlpTnJjZmZrLUZ5RkNo';
   const int DELAY_PER_ROUND_MS = 1000;
 
   const int TIER1_COUNTRY_CHANCE = 10;

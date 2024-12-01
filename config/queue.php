@@ -12,7 +12,7 @@ return [
             'driver' => 'database',
             'table' => 'job_queue',
             'queue' => BearEnvService::getStringOrDefault(key: 'QUEUE_NAME', default: 'default'),
-            'retry_after' => 90,
+            'retry_after' => 3600,
             'after_commit' => false,
         ],
     ],
