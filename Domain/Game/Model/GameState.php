@@ -49,6 +49,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static int count(array $columns = ['*'])
  * @method static bool exists()
  *
+ * @property bool|null $is_lobby
+ * @property bool|null $is_playing
+ * @property bool|null $is_finished
+ * @property bool|null $is_multiplayer
  * @property string $enum
  * @property string $created_at
  * @property string $description

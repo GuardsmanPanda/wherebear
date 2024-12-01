@@ -10,6 +10,10 @@ return new class extends Migration {
     Schema::create(table: 'game_state', callback: static function (Blueprint $table): void {
       $table->text(column: 'enum')->primary();
       $table->text(column: 'description');
+      $table->boolean(column: 'is_multiplayer');
+      $table->boolean(column: 'is_lobby');
+      $table->boolean(column: 'is_playing');
+      $table->boolean(column: 'is_finished');
       $table->timestampTz(column: 'created_at')->default(value: DB::raw(value: 'CURRENT_TIMESTAMP'));
     });
   }

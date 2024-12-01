@@ -73,7 +73,7 @@ final class GameLobbyController extends Controller {
     }
 
     // If the game is in progress, then redirect to the game play page
-    if ($enum->isInProgress()) {
+    if ($enum->isPlaying()) {
       if (Req::hxRequest()) {
         return Htmx::redirect(url: "/game/$gameId/play");
       }

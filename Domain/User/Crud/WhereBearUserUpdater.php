@@ -90,11 +90,15 @@ final readonly class WhereBearUserUpdater {
     if ($this->model->wasChanged(['country_cca2', 'display_name', 'map_marker_enum', 'map_style_enum', 'user_flag_enum'])) {
       /** The active games where the user is a participant. */
       $activeGamesForUser = DB::select(query: <<<SQL
-      SELECT DISTINCT g.id
-      FROM game g
-      INNER JOIN game_user gu ON gu.game_id = g.id
-      WHERE gu.user_id = ?
-      AND g.game_state_enum = 'WAITING_FOR_PLAYERS'
+        SELECT
+          g.id
+        FROM game_user gu 
+        LEFT JOIN game g ON gu.game_id = g.id
+        LEFT JOIN game_state gs ON g.game_state_enum = gs.enum
+        WHERE 
+          gu.user_id = ?
+          AND gs.is_multiplayer
+          AND gs.is_lobby
       SQL, bindings: [BearAuthService::getUserId()]);
 
       foreach ($activeGamesForUser as $game) {

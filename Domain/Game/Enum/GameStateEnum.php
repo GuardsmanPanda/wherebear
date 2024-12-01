@@ -2,7 +2,7 @@
 
 namespace Domain\Game\Enum;
 
-use Domain\Game\Crud\GameStateCreator;
+use Domain\Game\Crud\GameStateCrud;
 use Illuminate\Support\Facades\DB;
 
 enum GameStateEnum: string {
@@ -38,11 +38,15 @@ enum GameStateEnum: string {
   }
 
 
-  public function isInLobby(): bool {
+  public function isMultiplayer(): bool {
+    return $this === self::WAITING_FOR_PLAYERS || $this === self::QUEUED || $this === self::CONFIRMING || $this === self::SELECTING || $this === self::IN_PROGRESS || $this === self::IN_PROGRESS_CALCULATING || $this === self::IN_PROGRESS_RESULT || $this === self::FINISHED;
+  }
+
+  public function isLobby(): bool {
     return $this === self::WAITING_FOR_PLAYERS || $this === self::QUEUED || $this === self::CONFIRMING || $this === self::SELECTING;
   }
 
-  public function isInProgress(): bool {
+  public function isPlaying(): bool {
     return $this === self::IN_PROGRESS || $this === self::IN_PROGRESS_CALCULATING || $this === self::IN_PROGRESS_RESULT || $this === self::DAILY_RUNNING;
   }
 
@@ -63,7 +67,7 @@ enum GameStateEnum: string {
 
   public static function syncToDatabase(): void {
     foreach (GameStateEnum::cases() as $enum) {
-      GameStateCreator::syncToDatabase(enum: $enum);
+      GameStateCrud::syncToDatabase(enum: $enum);
     }
   }
 }

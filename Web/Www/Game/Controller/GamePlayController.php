@@ -44,7 +44,7 @@ final class GamePlayController extends Controller {
     SQL, bindings: [$gameId]);
 
     $enum = GameStateEnum::from(value: $game->game_state_enum);
-    if ($enum->isInLobby()) {
+    if ($enum->isLobby()) {
       return Resp::redirect(url: "/game/$gameId/lobby", message: 'Game is not in progress');
     }
     if ($enum->isFinished()) {

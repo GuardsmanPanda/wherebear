@@ -6,7 +6,7 @@ use Domain\Game\Enum\GameStateEnum;
 use Domain\Game\Model\GameState;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 
-final class GameStateCreator {
+final class GameStateCrud {
     public static function syncToDatabase(GameStateEnum $enum): GameState {
         BearDatabaseService::mustBeInTransaction();
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST']);
@@ -14,6 +14,10 @@ final class GameStateCreator {
         $model = GameState::find(id: $enum->value) ?? new GameState();
         $model->enum = $enum->value;
         $model->description = $enum->getDescription();
+        $model->is_multiplayer = $enum->isMultiplayer();
+        $model->is_lobby = $enum->isLobby();
+        $model->is_playing = $enum->isPlaying();
+        $model->is_finished = $enum->isFinished();
 
         $model->save();
         return $model;

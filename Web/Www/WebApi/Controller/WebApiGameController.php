@@ -55,7 +55,7 @@ final class WebApiGameController extends Controller {
     }
     return Resp::json(data: [
       'status' => 'OK',
-      'in_progress' => $game->game_state_enum->isInProgress(),
+      'in_progress' => $game->game_state_enum->isPlaying(),
       'finished' => $game->game_state_enum->isFinished(),
     ]);
   }
