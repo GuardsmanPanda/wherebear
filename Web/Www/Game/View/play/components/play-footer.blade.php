@@ -48,11 +48,13 @@ declare(strict_types=1); ?>
       targetTime: new Date(new Date().getTime() + durationSec * 1000),
       timeRemainingSec: durationSec,
       timerInterval: null,
+      reloading: false,
       init() {
         const tick = () => {
           const now = new Date();
           let timeDiff = this.targetTime - now;
-          if (timeDiff < -4000) {
+          if (timeDiff < -4000 && !this.reloading) {
+            this.reloading = true;
             window.location.reload();
           }
           this.timeRemainingSec = Math.max(0, Math.ceil(timeDiff / 1000));
