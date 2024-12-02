@@ -12,9 +12,6 @@ module.exports = {
       heading: 'Baloo'
     },
     extend: {
-      screens: {
-        'lobby-sm': '680px'
-      },
       colors: {
         gray: {
           0: '#FFFFFF',
