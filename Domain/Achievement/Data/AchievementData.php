@@ -16,7 +16,7 @@ final readonly class AchievementData {
     public string                          $title,
     public AchievementTypeEnum             $achievement_type_enum,
     public string                          $name = "",
-    public int                             $required_points = 999,
+    public int                             $required_points = -1,
     public BearCountryEnum|null            $country = null,
     public array|null                      $country_array = null,
     public BearCountrySubdivisionEnum|null $country_subdivision = null,
@@ -105,6 +105,15 @@ final readonly class AchievementData {
       name: $name,
       required_points: 1,
       point_radius: $point_radius,
+    );
+  }
+
+
+  public static function custom(string $title, string $name): self {
+    return new self(
+      title: $title,
+      achievement_type_enum: AchievementTypeEnum::CUSTOM,
+      name: $name,
     );
   }
 }

@@ -22,6 +22,10 @@ enum AchievementEnum: string implements BearDatabaseBackedEnumInterface {
   case LEVEL_35 = 'LEVEL_35';
 
 
+  // CUSTOM ACHIEVEMENTS
+  case CUSTOM_666 = 'CUSTOM_666';
+
+
   // COUNTRY GROUP ACHIEVEMENTS
   case EUROPEAN_UNION = 'EUROPEAN_UNION';
 
@@ -46,7 +50,7 @@ enum AchievementEnum: string implements BearDatabaseBackedEnumInterface {
 
 
   // LOCATION ACHIEVEMENTS
-  case TEST_LOCATION = 'TEST_LOCATION';
+  case LOCATION_TEST = 'LOCATION_TEST';
 
   // TEST ACHIEVEMENTS
   case TEST_1 = 'TEST_1';
@@ -66,6 +70,10 @@ enum AchievementEnum: string implements BearDatabaseBackedEnumInterface {
       self::LEVEL_25 => AchievementData::level(title: "Grandmaster Navigator", required_points: 25),
       self::LEVEL_30 => AchievementData::level(title: "Legendary Navigator", required_points: 30),
       self::LEVEL_35 => AchievementData::level(title: "Mythical Navigator", required_points: 35),
+
+
+      // CUSTOM ACHIEVEMENTS
+      self::CUSTOM_666 => AchievementData::custom(title: "The Number of the Beast", name: "666"),
 
 
       // COUNTRY GROUP ACHIEVEMENTS
@@ -92,7 +100,7 @@ enum AchievementEnum: string implements BearDatabaseBackedEnumInterface {
 
 
       // LOCATION ACHIEVEMENTS
-      self::TEST_LOCATION => AchievementData::location(
+      self::LOCATION_TEST => AchievementData::location(
         title: "Test Location",
         name: "Test Location",
         point_radius: new BearPointM(longitude: 0.0, latitude: 0.0, measurement: 23)

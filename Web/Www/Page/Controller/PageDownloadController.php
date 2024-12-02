@@ -14,7 +14,7 @@ final class PageDownloadController extends Controller {
         SELECT 
           p.id
         FROM panorama p
-        WHERE p.jpg_path IS NULL OR north_rotation_degrees IS NULL
+        WHERE p.jpg_path IS NULL
         ORDER BY p.added_by_user_id DESC
         LIMIT 2000
       "),

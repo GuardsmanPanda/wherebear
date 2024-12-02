@@ -8,7 +8,6 @@ use Domain\User\Model\WhereBearUser;
 use Illuminate\Support\Facades\DB;
 
 final class AchievementUserAssignmentAction {
-
   public static function assignForUser(WhereBearUser $user): void {
     self::assignLevelAchievements($user->id);
     self::assignCountryAchievements($user->id);
