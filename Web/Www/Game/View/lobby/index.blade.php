@@ -17,7 +17,7 @@
       </div>
     </div>
     <div class="flex justify-end w-24">
-      <div class="block lobby-sm:hidden w-full">
+      <div class="block md:hidden w-full">
         <lit-button label="Wait" size="md" bgColorClass="bg-gray-500" x-on:click="toggleIsReady(false)" x-show="user.is_ready"></lit-button>
         <lit-button label="Ready" size="md" bgColorClass="bg-pistachio-400" x-on:click="toggleIsReady(true)" x-show="!user.is_ready"></lit-button>
       </div>
@@ -27,154 +27,150 @@
   <!-- Main Content Area -->
   <div x-ref="layout" class="flex w-full h-full overflow-hidden">
     <!-- Left Column -->
-    <div class="flex flex-col w-full h-full">
+    <div class="flex flex-col w-full h-full bg-iris-100">
       <!-- Scrollable Content -->
-      <div class="flex flex-col w-full lobby-sm:h-full overflow-y-auto">
-        <lit-panel-header label="PROFILE">
-          
-          @if($user->can_observe)
-            <div slot="right" class="flex lobby-sm:hidden items-center gap-1">
-              <span class="font-heading font-semibold text-sm text-gray-0 whitespace-nowrap">Observer Mode</span>
-              <lit-toggle size="xs" leftLabel="Off" rightLabel="On" :isSelected="user.is_observer" x-on:clicked="toggleIsObserver($event.detail.isSelected)" class="w-20"></lit-toggle>
-            </div>
-          @endif
-        </lit-panel-header>
-        <div class="py-2">
-          <div class="flex gap-2 mx-2">
-            <div class="flex flex-none justify-center w-[72px] h-[72px]" :class="{ 'items-end': user.map_marker_map_anchor === 'bottom', 'items-center': user.map_marker_map_anchor === 'center' }">
-              <img :src="user.map_marker_file_path" class="max-w-full max-h-full object-contain cursor-pointer" draggable="false" x-on:click="openSelectMapMarkerDialog" />
-            </div>
+      <div class="flex flex-col w-full md:h-full overflow-y-auto">
+        <lit-panel2 label="PROFILE" class="mt-2 sm:mt-4 mx-2 sm:mx-4">
+          <div class="py-2">
+            <div class="flex gap-2 mx-2">
+              <div class="flex flex-none justify-center w-[72px] h-[72px]" :class="{ 'items-end': user.map_marker_map_anchor === 'bottom', 'items-center': user.map_marker_map_anchor === 'center' }">
+                <img :src="user.map_marker_file_path" class="max-w-full max-h-full object-contain cursor-pointer" draggable="false" x-on:click="openSelectMapMarkerDialog" />
+              </div>
 
-            <lit-select-map-marker-dialog x-ref="selectMapMarkerDialog"></lit-select-map-marker-dialog>
+              <lit-select-map-marker-dialog x-ref="selectMapMarkerDialog"></lit-select-map-marker-dialog>
 
-            <div class="flex flex-col justify-between w-full overflow-hidden">
-              <div class="flex flex-col">
-                <div class="flex items-center gap-2">
-                  <span x-text="user.display_name" class="leading-none font-heading font-semibold text-lg text-iris-800 truncate"></span>
-                  <img src="/static/img/icon/edit-pen.svg" class="h-6 hover:brightness-90 cursor-pointer" draggable="false" x-on:click="openSelectUserProfileDialog" />
-                  <lit-select-user-profile-dialog x-ref="selectUserProfileDialog" :displayName="user.display_name" :selectedCountryFlag="user.country_cca2"></lit-select-user-profile-dialog>
+              <div class="flex flex-col justify-between w-full overflow-hidden">
+                <div class="flex flex-col">
+                  <div class="flex items-center gap-2">
+                    <span x-text="user.display_name" class="leading-none font-heading font-semibold text-lg text-iris-800 truncate"></span>
+                    <img src="/static/img/icon/edit-pen.svg" class="h-6 hover:brightness-90 cursor-pointer" draggable="false" x-on:click="openSelectUserProfileDialog" />
+                    <lit-select-user-profile-dialog x-ref="selectUserProfileDialog" :displayName="user.display_name" :selectedCountryFlag="user.country_cca2"></lit-select-user-profile-dialog>
+                  </div>
+                  <span class="relative bottom-0.5 font-heading font-semibold text-sm text-gray-800">{{ $user->title }}</span>
                 </div>
-                <span class="relative bottom-0.5 font-heading font-semibold text-sm text-gray-800">{{ $user->title }}</span>
+                <div class="flex">
+                  @if(!$user->is_guest)
+                    <lit-button 
+                      :label="user.map_style_short_name"
+                      size="xs"
+                      :bgColorClass="user.map_style_enum === 'SATELLITE' ? 'bg-red-500' : 'bg-iris-500'"
+                      contentAlignment="left"
+                      imgPath="/static/img/icon/map.svg"
+                      lowercased class="w-[100px]"
+                      x-on:clicked="openSelectMapStyleDialog">
+                    </lit-button>
+                    <lit-select-map-style-dialog x-ref="selectMapStyleDialog"></lit-select-map-style-dialog>
+                  @endif
+                </div>
               </div>
-              <div class="flex">
-                @if(!$user->is_guest)
-                  <lit-button 
-                    :label="user.map_style_short_name"
-                    size="xs"
-                    :bgColorClass="user.map_style_enum === 'SATELLITE' ? 'bg-red-500' : 'bg-iris-500'"
-                    contentAlignment="left"
-                    imgPath="/static/img/icon/map.svg"
-                    lowercased class="w-[100px]"
-                    x-on:clicked="openSelectMapStyleDialog">
-                  </lit-button>
-                  <lit-select-map-style-dialog x-ref="selectMapStyleDialog"></lit-select-map-style-dialog>
-                @endif
-              </div>
+
+              <lit-level-emblem level="{{ $user->level }}" size="lg" class="ml-4" /></lit-level-emblem>
             </div>
 
-            <lit-level-emblem level="{{ $user->level }}" size="lg" class="ml-4" /></lit-level-emblem>
-          </div>
+            <div class="flex items-center gap-1 mt-2 mx-2">
+              <div class="w-full h-[1px] border-t border-iris-800"></div>
+              <span class="font-heading font-bold text-sm text-iris-800">Experience</span>
+              <div class="w-full h-[1px] border-t border-iris-800"></div>
+            </div>
 
-          <div class="flex items-center gap-1 mt-2 mx-2">
-            <div class="w-full h-[1px] border-t border-iris-800"></div>
-            <span class="font-heading font-bold text-sm text-iris-800">Experience</span>
-            <div class="w-full h-[1px] border-t border-iris-800"></div>
-          </div>
-
-          <div class="flex mt-1 mx-2">
-            <div class="flex flex-col gap-0.5 w-full">
-              <div class="flex justify-between w-full">
-                <span class="font-heading font-bold text-sm text-iris-800">Next Level</span>
-                <span class="font-heading font-bold text-sm text-iris-800">{{ $user->display_level_percentage }}%</span>
-                <span class="font-heading font-bold text-sm text-iris-800">{{ $user->current_level_experience_points }}/{{ $user->next_level_experience_points_requirement }} XP</span>
+            <div class="flex mt-1 mx-2">
+              <div class="flex flex-col gap-0.5 w-full">
+                <div class="flex justify-between w-full">
+                  <span class="font-heading font-bold text-sm text-iris-800">Next Level</span>
+                  <span class="font-heading font-bold text-sm text-iris-800">{{ $user->display_level_percentage }}%</span>
+                  <span class="font-heading font-bold text-sm text-iris-800">{{ $user->current_level_experience_points }}/{{ $user->next_level_experience_points_requirement }} XP</span>
+                </div>
+                <lit-progress-bar percentage="{{ $user->display_level_percentage }}" innerBgColorClass="bg-yellow-400" />
               </div>
-              <lit-progress-bar percentage="{{ $user->display_level_percentage }}" innerBgColorClass="bg-yellow-400" />
             </div>
           </div>
-        </div>
+        </lit-panel2>
 
-        <lit-panel-header label="GAME SETTINGS">
-          <lit-label slot="left" :label="game.is_public ? 'PUBLIC' : 'PRIVATE'" size="xs" :bgColorClass="game.is_public ? 'bg-pistachio-400' : 'bg-red-500'" isPill widthClass="w-16"></lit-label>
+        <lit-panel2 label="GAME SETTINGS" class="my-2 sm:my-4 mx-2 sm:mx-4">
           @if($user->is_host)
-          <div slot="right" class="flex items-center gap-2">
-            <lit-button label="Edit" size="xs" bgColorClass="bg-gray-400" class="w-16" x-on:click="openEditGameSettingsDialog"></lit-button>
-            <lit-edit-game-settings-dialog 
-              x-ref="editGameSettingsDialog" 
-              :gameId="game.id" 
-              :gamePublicStatusEnum="game.game_public_status_enum" 
-              :gameType="game.type"
-              :roundCount="game.number_of_rounds" 
-              :roundDurationSec="game.round_duration_seconds" 
-              :roundResultDurationSec="game.round_result_duration_seconds" 
-              :isBob="isBob">
-            </lit-edit-game-settings-dialog>
+            <lit-label slot="header-left" :label="game.is_public ? 'PUBLIC' : 'PRIVATE'" size="xs" :bgColorClass="game.is_public ? 'bg-pistachio-400' : 'bg-red-500'" widthClass="w-16"></lit-label>
+            <div slot="header-right" class="flex items-center gap-1">
+              <lit-button label="Edit" size="xs" bgColorClass="bg-gray-400" class="w-16" x-on:click="openEditGameSettingsDialog"></lit-button>
+              <lit-edit-game-settings-dialog 
+                x-ref="editGameSettingsDialog" 
+                :gameId="game.id" 
+                :gamePublicStatusEnum="game.game_public_status_enum" 
+                :gameType="game.type"
+                :roundCount="game.number_of_rounds" 
+                :roundDurationSec="game.round_duration_seconds" 
+                :roundResultDurationSec="game.round_result_duration_seconds" 
+                :isBob="isBob">
+              </lit-edit-game-settings-dialog>
 
-            <lit-button label="Start" size="xs" bgColorClass="bg-iris-400" class="w-16" hx-post="/web-api/game/{{$game->id}}/force-start" hx-swap="none" hx-confirm="Confirm that you wish to START the game?"></lit-button>
-          </div>
+              <lit-button label="Start" size="xs" bgColorClass="bg-iris-400" class="w-16" hx-post="/web-api/game/{{$game->id}}/force-start" hx-swap="none" hx-confirm="Confirm that you wish to START the game?"></lit-button>
+            </div>
+          @else
+           <lit-label slot="header-right" :label="game.is_public ? 'PUBLIC' : 'PRIVATE'" size="xs" :bgColorClass="game.is_public ? 'bg-pistachio-400' : 'bg-red-500'" widthClass="w-16"></lit-label>
           @endif
-        </lit-panel-header>
-        <div class="flex flex-col py-2">
-          <div class="flex justify-between gap-2 w-full">
-            <div class="flex flex-col w-full max-w-64 ml-2 overflow-hidden">
-              <span class="font-heading font-bold text-sm text-iris-800">Name</span>
-              <div class="flex items-center w-full h-8 px-2 rounded border border-iris-300 bg-iris-200">
-                <span class="text-xs text-gray-800 truncate select-all">{{ $game->name }}</span>
-              </div>
-            </div>
-            <div class="flex flex-col w-full max-w-64 mr-2 overflow-hidden">
-              <span class="font-heading font-bold text-sm text-iris-800">Invite Link</span>
-              <div x-data="gameTinyUrlState" class="flex h-8">
-                <div class="flex items-center w-full h-full px-2 rounded-l border border-r-0 border-iris-300 bg-iris-200 truncate">
-                  <span x-ref="url" class="text-xs text-gray-800 lobby-sm:max-w-[132px] min-[720px]:max-w-none truncate select-all">{{ config(key: 'app.url') }}/g/{{ $game->short_code }}</span>
-                </div>
-                <div x-ref="clipboardIcon" class="w-8 shrink-0 rounded-r border border-iris-300 py-0.5 bg-iris-400 hover:bg-iris-500 cursor-pointer" x-on:click="copyUrlToClipboard()">
-                  <img src="/static/img/icon/copy.svg" class="w-full h-full hover:brightness-90" />
+
+          <div class="flex flex-col py-2">
+            <div class="flex justify-between gap-2 w-full">
+              <div class="flex flex-col w-full max-w-64 ml-2 overflow-hidden">
+                <span class="font-heading font-bold text-sm text-iris-800">Name</span>
+                <div class="flex items-center w-full h-8 px-2 rounded border border-iris-300 bg-iris-200">
+                  <span class="text-xs text-gray-800 truncate select-all">{{ $game->name }}</span>
                 </div>
               </div>
+              <div class="flex flex-col w-full max-w-64 mr-2 overflow-hidden">
+                <span class="font-heading font-bold text-sm text-iris-800">Invite Link</span>
+                <div x-data="gameTinyUrlState" class="flex h-8">
+                  <div class="flex items-center w-full h-full px-2 rounded-l border border-r-0 border-iris-300 bg-iris-200 truncate">
+                    <span x-ref="url" class="text-xs text-gray-800 truncate select-all">{{ config(key: 'app.url') }}/g/{{ $game->short_code }}</span>
+                  </div>
+                  <div x-ref="clipboardIcon" class="w-8 shrink-0 rounded-r border border-iris-300 py-0.5 bg-iris-400 hover:bg-iris-500 cursor-pointer" x-on:click="copyUrlToClipboard()">
+                    <img src="/static/img/icon/copy.svg" class="w-full h-full hover:brightness-90" />
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
 
-          <div class="flex items-center gap-1 mt-2 mx-2">
-            <div class="w-full h-[1px] border-t border-iris-800"></div>
-            <span class="font-heading font-bold text-sm text-iris-800">Duration</span>
-            <div class="w-full h-[1px] border-t border-iris-800"></div>
-          </div>
+            <div class="flex items-center gap-1 mt-2 mx-2">
+              <div class="w-full h-[1px] border-t border-iris-800"></div>
+              <span class="font-heading font-bold text-sm text-iris-800">Duration</span>
+              <div class="w-full h-[1px] border-t border-iris-800"></div>
+            </div>
 
-          <div class="flex justify-between gap-2 mx-2">
-            <div class="flex flex-col w-full">
-              <div class="flex justify-center items-center w-full h-6 rounded-t border border-gray-700 bg-gray-600">
-                <span class="font-heading font-medium text-sm text-gray-0">Rounds</span>
+            <div class="flex justify-between gap-2 mx-2">
+              <div class="flex flex-col w-full">
+                <div class="flex justify-center items-center w-full h-6 rounded-t border border-gray-700 bg-gray-600">
+                  <span class="font-heading font-medium text-sm text-gray-0">Rounds</span>
+                </div>
+                <div class="flex justify-center items-center w-full h-6 rounded-b border border-t-0 border-gray-700 bg-gray-50">
+                  <span x-text="game.number_of_rounds" class="font-heading font-semibold text-base text-iris-950"></span>
+                </div>
               </div>
-              <div class="flex justify-center items-center w-full h-6 rounded-b border border-t-0 border-gray-700 bg-gray-50">
-                <span x-text="game.number_of_rounds" class="font-heading font-semibold text-base text-iris-950"></span>
+              <div class="flex flex-col w-full">
+                <div class="flex justify-center items-center w-full h-6 rounded-t border border-gray-700 bg-gray-600">
+                  <span class="font-heading font-medium text-sm text-gray-0">Guessing Time</span>
+                </div>
+                <div class="flex justify-center items-center w-full h-6 rounded-b border border-t-0 border-gray-700 bg-gray-50">
+                  <span x-text="`${game.round_duration_seconds}s`" class="font-heading font-semibold text-base text-iris-950"></span>
+                </div>
+              </div>
+              <div class="flex flex-col w-full">
+                <div class="flex justify-center items-center w-full h-6 rounded-t border border-gray-700 bg-gray-600">
+                  <span class="font-heading font-medium text-sm text-gray-0">Result Time</span>
+                </div>
+                <div class="flex justify-center items-center w-full h-6 rounded-b border border-t-0 border-gray-700 bg-gray-50">
+                  <span x-text="`${game.round_result_duration_seconds}s`" class="font-heading font-semibold text-base text-iris-950"></span>
+                </div>
               </div>
             </div>
-            <div class="flex flex-col w-full">
-              <div class="flex justify-center items-center w-full h-6 rounded-t border border-gray-700 bg-gray-600">
-                <span class="font-heading font-medium text-sm text-gray-0">Guessing Time</span>
-              </div>
-              <div class="flex justify-center items-center w-full h-6 rounded-b border border-t-0 border-gray-700 bg-gray-50">
-                <span x-text="`${game.round_duration_seconds}s`" class="font-heading font-semibold text-base text-iris-950"></span>
-              </div>
-            </div>
-            <div class="flex flex-col w-full">
-              <div class="flex justify-center items-center w-full h-6 rounded-t border border-gray-700 bg-gray-600">
-                <span class="font-heading font-medium text-sm text-gray-0">Result Time</span>
-              </div>
-              <div class="flex justify-center items-center w-full h-6 rounded-b border border-t-0 border-gray-700 bg-gray-50">
-                <span x-text="`${game.round_result_duration_seconds}s`" class="font-heading font-semibold text-base text-iris-950"></span>
-              </div>
-            </div>
-          </div>
 
-          <div class="block lobby-sm:hidden mt-2 mx-2">
-            @include('game::lobby.total-game-time')
+            <div class="block md:hidden mt-2 mx-2">
+              @include('game::lobby.total-game-time')
+            </div>
           </div>
-        </div>
+        </lit-panel2>
       </div>
       <!-- Expandable Panel -->
       <div x-ref="gameUsersSubstitute" class="hidden flex-1 min-h-[150px]"></div>
-      <div x-ref="gameUsers" data-state="collapsed" class="flex flex-col lobby-sm:hidden flex-1 min-h-[150px] z-10 px-2 bg-iris-500 border border-t-2 border-b-0 border-gray-700 rounded-t-2xl transition-[height] duration-700 ease-in-out">
+      <div x-ref="gameUsers" data-state="collapsed" class="flex flex-col md:hidden flex-1 min-h-[150px] z-10 px-2 bg-iris-500 border border-t-2 border-b-0 border-gray-700 rounded-t-2xl transition-[height] duration-700 ease-in-out">
         <div class="flex justify-between items-center py-2 border-b border-gray-50 cursor-pointer" x-on:click="togglePlayerListSize">
           <div></div>
           <div class="font-heading font-bold text-base text-gray-0 text-stroke-2 text-stroke-iris-800">PLAYERS</div>
@@ -215,15 +211,16 @@
           </div>
         </div>
       </div> 
-      <div class="hidden lobby-sm:block">
+      <div class="hidden md:block">
         @include('game::lobby.total-game-time')
       </div>
     </div>
     <!-- Right Column -->
-    <div class="hidden lobby-sm:flex flex-col shrink-0 w-[320px] h-full overflow-hidden border-l border-gray-700">
-      <lit-panel-header label="STATUS">
+    <div class="hidden md:flex flex-col shrink-0 w-[320px] h-full overflow-hidden z-10 border-l border-gray-700"
+      style="box-shadow: -2px 0 2px rgba(0, 0, 0, 0.25)">
+      <lit-panel-header2 label="STATUS" noBorder noRounded class="border-b border-gray-700">
         <lit-label slot="right" :label="user.is_ready ? 'Ready' : 'Pending...'" size="sm" :bgColorClass="user.is_ready ? 'bg-pistachio-400' : 'bg-gray-500'" widthClass="w-24"></lit-label>
-      </lit-panel-header>
+      </lit-panel-header2>
       <div class="flex justify-center">
         @if($user->can_observe)
           <div class="flex flex-col justify-between items-center w-[168px] h-full p-2 pt-1 border-r" :class="{ 'border-gray-300 bg-gray-100': !user.is_observer, 'border-iris-500 bg-iris-300': user.is_observer }">
@@ -231,19 +228,19 @@
             <lit-toggle size="sm" leftLabel="Off" rightLabel="On" :isSelected="user.is_observer" x-on:clicked="toggleIsObserver($event.detail.isSelected)" class="w-full"></lit-toggle>
         </div>
         @endif
-        <div class="w-full p-2">
+        <div class="w-full bg-iris-300 p-2">
           <lit-button label="Wait" size="lg" bgColorClass="bg-gray-400" x-on:click="toggleIsReady(false)" x-show="user.is_ready" class="w-48"></lit-button>
           <lit-button label="Ready" size="lg" bgColorClass="bg-pistachio-500" x-on:click="toggleIsReady(true)" x-show="!user.is_ready" class="w-48"></lit-button>
         </div>
       </div>
 
-      <lit-panel-header label="PLAYERS">
+      <lit-panel-header2 label="PLAYERS" noBorder noRounded class="border-y border-gray-700">
         <div slot="right" class="flex items-center gap-2">
           <lit-label :label="`${playerCount} player${playerCount > 1 ? 's' : ''}`" size="sm" type="primary" class="w-20"></lit-label>
           <lit-label x-show="observerCount > 0" :label="`${observerCount} observer${observerCount > 1 ? 's' : ''}`" size="sm" bgColorClass="bg-iris-300" class="w-24"></lit-label>
         </div>
-      </lit-panel-header>
-      <div class="overflow-y-auto">
+      </lit-panel-header2>
+      <div class="h-full overflow-y-auto bg-iris-300">
         <template x-for="gameUser in gameUserList">
           <div class="flex gap-2 relative overflow-hidden p-2 border-b border-gray-300 bg-gradient-to-t" :class="{ 
             'from-pistachio-400 to-pistachio-500': gameUser.is_ready, 
