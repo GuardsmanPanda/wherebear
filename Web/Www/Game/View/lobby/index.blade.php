@@ -5,7 +5,15 @@
   <div x-ref="header" class="flex h-14 shrink-0 justify-between items-center px-2 border-b border-gray-700 bg-iris-500">
     <div class="flex w-16">
       @if($user->is_host)
-        <lit-button imgPath="/static/img/icon/cross.svg" size="md" bgColorClass="bg-red-500" hx-delete="/web-api/game/{{$game->id}}" hx-swap="none" hx-confirm="Are you Sure you wish to DELETE the game?"></lit-button>
+        <lit-button imgPath="/static/img/icon/cross.svg" size="md" bgColorClass="bg-red-500" x-on:clicked="openConfirmDeleteGameDialog"></lit-button>
+        <lit-confirm-dialog x-ref="confirmDeleteGameDialog" 
+          label="Delete the game"
+          message="Are you sure you want to delete the game?"
+          cancelBtnText="No, Cancel"
+          confirmBtnText="Yes, Delete"
+          confirmBtnBgColorClass="bg-poppy-400"
+          x-on:confirmed="deleteGame">
+        </lit-confirm-dialog>
       @else
         <lit-button imgPath="/static/img/icon/arrow-back.svg" size="md" bgColorClass="bg-gray-400" x-on:click="leave"></lit-button>
       @endif
@@ -349,6 +357,16 @@
       get user() {
         return this.gameUsers.find(n => n.id === userId);
       },
+      deleteGame() {
+        fetch(`/web-api/game/${this.game.id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }).then(() => {
+          window.location.href = '/';
+        })
+      },
       leave() {
         fetch(`/web-api/game/${this.game.id}/leave`, {
           method: 'DELETE',
@@ -358,6 +376,9 @@
         }).then(() => {
           window.location.href = '/';
         })
+      },
+      openConfirmDeleteGameDialog() {
+        this.$refs.confirmDeleteGameDialog.open();
       },
       openEditGameSettingsDialog() {
         this.$refs.editGameSettingsDialog.open();
