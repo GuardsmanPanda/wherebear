@@ -92,11 +92,9 @@ class EditGameSettingsDialog extends LitElement {
           </form>
           `}
         </div>
-        <div slot="footer" class="flex justify-end">
-          <div class="flex gap-4">
-            <lit-button label="Cancel" bgColorClass="bg-gray-400"  @click="${this.close}"></lit-button>
-            <lit-button label="Edit" bgColorClass="bg-iris-400"  @click="${this.submit}"></lit-button>
-          </div>
+        <div slot="footer" class="flex justify-between">
+          <lit-button label="CANCEL" bgColorClass="bg-gray-400" class="w-20" @click="${this.close}"></lit-button>
+          <lit-button label="EDIT" bgColorClass="bg-iris-400" class="w-20" @click="${this.submit}"></lit-button>
         </div>
       </lit-dialog>`;
   }
