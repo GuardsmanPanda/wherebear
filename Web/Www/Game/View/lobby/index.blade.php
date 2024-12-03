@@ -51,12 +51,12 @@
                 <div class="flex">
                   @if(!$user->is_guest)
                     <lit-button 
-                      :label="user.map_style_short_name"
+                      :label="lowercaseMapStyleShortName"
                       size="xs"
                       :bgColorClass="user.map_style_enum === 'SATELLITE' ? 'bg-red-500' : 'bg-iris-500'"
                       contentAlignment="left"
                       imgPath="/static/img/icon/map.svg"
-                      lowercased class="w-[100px]"
+                      class="w-[100px]"
                       x-on:clicked="openSelectMapStyleDialog">
                     </lit-button>
                     <lit-select-map-style-dialog x-ref="selectMapStyleDialog"></lit-select-map-style-dialog>
@@ -338,6 +338,10 @@
           });
         }
         return gameUsers;
+      },
+      get lowercaseMapStyleShortName() {
+        const name = this.user.map_style_short_name.toLowerCase();
+        return name.charAt(0).toUpperCase() + name.slice(1);
       },
       get readyEntrantCount() {
         return this.gameUsers.filter(n => n.is_ready).length;

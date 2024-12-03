@@ -29,10 +29,7 @@ class Button extends ButtonBase {
      * Text color class for the label. 
      * @example 'text-gray-800'
      */
-    labelColorClass: { type: String },
-
-    /** Whether the label should be converted to lowercase. */
-    lowercased: { type: Boolean }
+    labelColorClass: { type: String }
   };
 
   static styles = [...ButtonBase.styles];
@@ -108,7 +105,6 @@ class Button extends ButtonBase {
       'text-base': this.size === 'md',
       'text-lg': this.size === 'lg',
       'text-xl': this.size === 'xl',
-      'uppercase': !this.lowercased
     }
   }
 
@@ -130,7 +126,7 @@ class Button extends ButtonBase {
       <button
         class="
           flex relative items-center w-full
-          transition-all duration-100 border border-gray-700
+          transition-all duration-100 border border-gray-700 select-none
           group ${classMap(this.buttonClasses)}"
         @click="${this.onClick}"
         @mouseenter="${this.onMouseEnter}"
