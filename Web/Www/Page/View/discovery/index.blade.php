@@ -91,9 +91,6 @@
         console.error(json['error']);
       } else if (json['exists']) {
         let message = "This location has already been discovered!";
-        if (!json['from_id']) {
-          message += "<br> *** From: Location ***";
-        }
         window.notify.open({
           type: "warning", message: message, duration: 14000,
         });
@@ -107,18 +104,25 @@
             type: "error", message: "Tags removed<br>" + json['tags_removed'], duration: 14000,
           });
         }
+        if (!json['from_id']) {
+          window.notify.open({
+            type: "info", message: "*** From: Location ***", duration: 14000,
+          });
+        }
         document.getElementById('map-url').value = '';
       } else {
         let message = "Location added to the game!";
-        if (!json['from_id']) {
-          message += "<br> *** From: Location ***";
-        }
         window.notify.open({
           type: "success", message: message, duration: 10000,
         });
         if (json['tags_added'].length > 0) {
           window.notify.open({
             type: "success", message: "Tags added<br>" + json['tags_added'], duration: 10000,
+          });
+        }
+        if (!json['from_id']) {
+          window.notify.open({
+            type: "info", message: "*** From: Location ***", duration: 14000,
           });
         }
         document.getElementById('map-url').value = '';

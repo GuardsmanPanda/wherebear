@@ -59,7 +59,7 @@ final class PageDiscoveryController extends Controller {
     $updater = new PanoramaUpdater(model: $panorama);
     if (Req::getBool(key: 'street_view_viewport') && $updater->hasDefaultFieldOfView()) {
       $heading = BearRegexService::extractFirstFloatOrNull(regex: '/,([^,h]+)h,/', subject: Req::getString(key: 'street_view_url'));
-      $pitch = BearRegexService::extractFirstFloat(regex: '~,([^,t]+)t/~', subject: Req::getString(key: 'street_view_url')) - 90;
+      $pitch = BearRegexService::extractFirstFloat(regex: '~,([^,t]+)t[,/]~', subject: Req::getString(key: 'street_view_url')) - 90;
       $updater->setStreetViewViewport(heading: $heading ?? 0, pitch: $pitch);
     }
     foreach (Req::getArray(key: 'tags_checked') as $tag) {
