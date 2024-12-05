@@ -1,0 +1,33 @@
+name: "Static Analysis"
+
+on:
+  pull_request:
+    branches:
+      - 'master'
+    paths:
+      - '**.php'
+    types: [opened, reopened, synchronize]
+
+jobs:
+  self-test-and-phpstan:
+    strategy:
+      matrix:
+        php: ["8.4"]
+    name: PHP ${{ matrix.php }} Static Analysis
+
+    runs-on: ubuntu-latest
+    env:
+      app_env: testing
+
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, intl, zip, bcmath
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: composer install

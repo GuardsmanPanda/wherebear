@@ -52,6 +52,7 @@ use RuntimeException;
  * @method static bool exists()
  *
  * @property bool $is_ready
+ * @property bool $can_observe
  * @property bool $is_observer
  * @property float $points
  * @property string $game_id

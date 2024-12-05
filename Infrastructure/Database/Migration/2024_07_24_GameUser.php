@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->uuid(column: 'user_id');
             $table->double(column: 'points')->default(value: 0);
             $table->boolean(column: 'is_ready')->default(value: false);
+            $table->boolean(column: 'can_observe')->default(value: false);
             $table->boolean(column: 'is_observer')->default(value: false);
             $table->timestampTz(column: 'achievements_calculated_at')->nullable();
             $table->timestampTz(column: 'created_at')->default(value: DB::raw(value: 'CURRENT_TIMESTAMP'));

@@ -8,11 +8,17 @@ use Illuminate\Support\Facades\Session;
 use RuntimeException;
 
 final class GameUserCreator {
-  public static function create(string $game_id, string $user_id, bool $is_observer = false): GameUser {
+  public static function create(
+    string $game_id,
+    string $user_id,
+    bool $can_observe = false,
+    bool $is_observer = false,
+  ): GameUser {
     $model = new GameUser();
 
     $model->game_id = $game_id;
     $model->user_id = $user_id;
+    $model->can_observe = $can_observe;
     $model->is_observer = $is_observer;
     $model->points = 0.0;
     $model->is_ready = false;

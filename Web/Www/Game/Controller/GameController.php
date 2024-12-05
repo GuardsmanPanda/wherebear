@@ -59,7 +59,7 @@ final class GameController extends Controller {
       game_public_status: GamePublicStatusEnum::fromRequest(),
       number_of_rounds: Req::getInt(key: 'number_of_rounds'),
     );
-    GameUserCreator::create(game_id: $game->id, user_id: BearAuthService::getUserId(), is_observer: Req::getBool(key: 'is_observer'));
+    GameUserCreator::create(game_id: $game->id, user_id: BearAuthService::getUserId(), can_observe: true, is_observer: Req::getBool(key: 'is_observer'));
     return Htmx::redirect(url: "/game/$game->id/lobby");
   }
 
@@ -72,7 +72,7 @@ final class GameController extends Controller {
       game_public_status: GamePublicStatusEnum::fromRequest(),
       templated_by_game: Game::findOrFail(id: $templateId),
     );
-    GameUserCreator::create(game_id: $game->id, user_id: BearAuthService::getUserId(), is_observer: Req::getBool(key: 'is_observer'));
+    GameUserCreator::create(game_id: $game->id, user_id: BearAuthService::getUserId(), can_observe: true, is_observer: Req::getBool(key: 'is_observer'));
     return Htmx::redirect(url: "/game/$game->id/lobby");
   }
 
