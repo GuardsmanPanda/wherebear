@@ -39,6 +39,14 @@
       <!-- Scrollable Content -->
       <div class="flex flex-col w-full md:h-full overflow-y-auto">
         <lit-panel2 label="PROFILE" class="mt-2 sm:mt-4 mx-2 sm:mx-4">
+          <div slot="header-right">
+            @if($user->can_observe)
+            <div slot="right" class="flex md:hidden items-center gap-1">
+              <span class="font-heading font-semibold text-sm text-gray-0 whitespace-nowrap">Observer Mode</span>
+              <lit-toggle size="xs" leftLabel="Off" rightLabel="On" :isSelected="user.is_observer" x-on:clicked="toggleIsObserver($event.detail.isSelected)" class="w-20"></lit-toggle>
+            </div>
+            @endif
+          </div>
           <div class="py-2">
             <div class="flex gap-2 mx-2">
               <div class="flex flex-none justify-center w-[72px] h-[72px]" :class="{ 'items-end': user.map_marker_map_anchor === 'bottom', 'items-center': user.map_marker_map_anchor === 'center' }">
