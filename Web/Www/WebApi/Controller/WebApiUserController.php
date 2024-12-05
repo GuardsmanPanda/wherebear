@@ -30,7 +30,7 @@ final class WebApiUserController extends Controller {
 
   public function getMapStyles(): JsonResponse {
     $mapStyles = DB::select(query: <<<SQL
-      SELECT ms.enum, ms.name, ms.full_uri
+      SELECT ms.enum, ms.name, ms.full_uri, ms.user_level_enum
       FROM map_style ms
       WHERE 
         ms.enum != 'DEFAULT'

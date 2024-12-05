@@ -67,7 +67,7 @@
                       class="w-[100px]"
                       x-on:clicked="openSelectMapStyleDialog">
                     </lit-button>
-                    <lit-select-map-style-dialog x-ref="selectMapStyleDialog"></lit-select-map-style-dialog>
+                    <lit-select-map-style-dialog x-ref="selectMapStyleDialog" :selectedMapStyleEnum="user.map_style_enum" :userLevel="user.level"></lit-select-map-style-dialog>
                   @endif
                 </div>
               </div>
