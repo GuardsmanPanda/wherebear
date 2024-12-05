@@ -3,7 +3,7 @@ name: "Static Analysis"
 on:
   pull_request:
     branches:
-      - 'master'
+      - 'main'
     paths:
       - '**.php'
     types: [opened, reopened, synchronize]
