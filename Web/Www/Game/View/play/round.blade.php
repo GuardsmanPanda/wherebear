@@ -118,6 +118,9 @@
     panorama: "{{ $panorama_url }}",
     autoLoad: true,
     showControls: false,
+    yaw: {{ $game->heading }},
+    pitch: {{ $game->pitch }},
+    hfov: {{ $game->field_of_view }},
     minHfov: window.innerWidth < 1000 ? 30 : 50,
   });
 

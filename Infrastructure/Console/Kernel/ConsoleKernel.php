@@ -2,11 +2,10 @@
 
 namespace Infrastructure\Console\Kernel;
 
-use Domain\Game\Action\GameRoundCreatorAction;
+use Domain\Game\Command\GameShortCodeCleanupCommand;
 use Domain\Game\Crud\GameRoundDeleter;
 use Domain\Game\Crud\GameUpdater;
 use Domain\Game\Enum\GameStateEnum;
-use Domain\Game\Model\Game;
 use Domain\Import\Command\ImportFromPreviousGameCommand;
 use Domain\Import\Command\ImportIntoPanoramaTableCommand;
 use Domain\Import\Command\ImportMapcrunchComCommand;
@@ -18,7 +17,6 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 use Infrastructure\App\Command\WhereBearInitCommand;
 use Throwable;
 
@@ -35,9 +33,11 @@ final class ConsoleKernel extends Kernel {
     WhereBearInitCommand::class,
   ];
 
+
   protected function schedule(Schedule $schedule): void {
-    // $schedule->command('inspire')->hourly();
+    $schedule->command(command: GameShortCodeCleanupCommand::class)->dailyAt(time: '07:12');
   }
+
 
   protected function commands(): void {
     Artisan::command('reset:game', function () {
