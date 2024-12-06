@@ -15,7 +15,7 @@ jobs:
         php: ["8.4"]
     name: PHP ${{ matrix.php }} Static Analysis
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       app_env: testing
 
@@ -26,8 +26,23 @@ jobs:
           php-version: ${{ matrix.php }}
           extensions: mbstring, intl, zip, bcmath
 
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: composer install
+
+      - name: Laravel About
+        run: php artisan about
+
+      - name: Config Cache
+        run: php artisan config:cache
+
+      - name: View Cache
+        run: php artisan view:cache
+
+      - name: Route Cache
+        run: php artisan route:cache
+
+      - name: PHPStan
+        run: php artisan stan

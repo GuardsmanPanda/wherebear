@@ -1,0 +1,38 @@
+name: "Static Analysis"
+
+on:
+  pull_request:
+    branches:
+      - 'main'
+    paths:
+      - '**.js'
+      - '**.ts'
+      - '**.css'
+      - '**.json'
+    types: [opened, reopened, synchronize]
+
+jobs:
+  Build-Frontend:
+    strategy:
+      matrix:
+        node-version: ["22", "24"]
+    name: Node ${{ matrix.node-version }} Frontend Build
+
+    runs-on: ubuntu-24.04
+    env:
+      app_env: testing
+
+    steps:
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+            node-version: ${{ matrix.node-version }}
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: npm install --omit=dev
+
+      - name: Build Frontend
+        run: npm run b
