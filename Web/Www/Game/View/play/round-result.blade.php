@@ -681,7 +681,7 @@
   .forEach(guess => {
     const mapPlayerMarkerElement = document.createElement('div');
     mapPlayerMarkerElement.innerHTML = `
-      <lit-map-marker distanceMeters="${guess.distance_meters}" iconFilePath="${guess.map_marker_file_path}" playerName="${guess.user_display_name}" rank="${guess.rank}"></lit-map-marker>
+      <lit-map-marker distanceMeters="${guess.distance_meters}" flagCca2="${guess.country_cca2}" flagDescription="${guess.country_name}" flagFilePath="${guess.flag_file_path}" iconFilePath="${guess.map_marker_file_path}" playerName="${guess.user_display_name}" rank="${guess.rank}"></lit-map-marker>
     `;
 
     new window.maplibregl

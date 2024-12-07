@@ -223,16 +223,22 @@ module.exports = {
         },
         rank: {
           first: {
-            default: '#F5D83A',
-            dark: '#EECB0C',
+            lighter: '#FBF1BD',
+            light: '#F9E99A',
+            default: '#F7E172',
+            dark: '#F5D83A',
           },
           second: {
-            default: '#B1D2EB',
-            dark: '#89BBE1'
+            lighter: '#E0EDF7',
+            light: '#D0E4F3',
+            default: '#C1DBEF',
+            dark: '#B1D2EB'
           },
           third: {
-            default: '#F3A965',
-            dark: '#EF8D34'
+            lighter: '#FCDDC3',
+            light: '#FACCA5',
+            default: '#F7BB86',
+            dark: '#F3A965'
           }
         }
 
