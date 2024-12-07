@@ -17,7 +17,7 @@ jobs:
 
     runs-on: ubuntu-24.04
     env:
-      app_env: testing
+      APP_ENV: local
 
     steps:
       - name: Setup PHP
