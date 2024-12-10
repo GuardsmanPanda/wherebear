@@ -38,6 +38,7 @@ jobs:
           echo "REVERB_APP_ID=123456" >> .env
           echo "REVERB_APP_KEY=123456" >> .env
           echo "REVERB_APP_SECRET=123456" >> .env
+          mkdir -p storage/app
           echo "12345" >> storage/app/app-css-path.txt
           echo "12345" >> storage/app/app-js-path.txt
           echo "12345" >> storage/app/tailwind-css-path.txt
