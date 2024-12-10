@@ -1,5 +1,6 @@
 <?php declare(strict_types=1);
 
+use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearEnvService;
 use Illuminate\Support\Str;
 
 return [
@@ -21,5 +22,5 @@ return [
         ],
     ],
 
-    'prefix' => Str::slug(title: env(key: 'APP_NAME'), separator: '_') . '_cache_',
+    'prefix' => Str::slug(title: BearEnvService::getString(key: 'APP_NAME'), separator: '_') . '_cache_',
 ];

@@ -31,7 +31,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Basic .env
-        run: echo "APP_URL=https://local.test" >> .env
+        run: | 
+          echo "APP_URL=https://local.test" >> .env
+          echo "DB_PASSWORD=123456" >> .env
+          echo "REVERB_APP_ID=123456" >> .env
+          echo "REVERB_APP_KEY=123456" >> .env
+          echo "REVERB_APP_SECRET=123456" >> .env
 
       - name: Install Dependencies
         run: composer install
