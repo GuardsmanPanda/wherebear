@@ -7,6 +7,8 @@ use GuardsmanPanda\Larabear\Infrastructure\Console\Service\BearTransactionComman
 use Illuminate\Support\Facades\DB;
 
 final class GameShortCodeCleanupCommand extends BearTransactionCommand {
+  protected $signature = 'game:short-code-cleanup';
+  protected $description = 'Remove short codes from games that are older than 10 days';
 
   protected function handleInTransaction(): void {
     $games = DB::select(query: "

@@ -23,6 +23,7 @@ use Throwable;
 final class ConsoleKernel extends Kernel {
   /** @var array<int, string> $commands @phpstan-ignore-next-line */
   protected $commands = [
+    GameShortCodeCleanupCommand::class,
     ImportFromPreviousGameCommand::class,
     ImportIntoPanoramaTableCommand::class,
     ImportMapcrunchComCommand::class,

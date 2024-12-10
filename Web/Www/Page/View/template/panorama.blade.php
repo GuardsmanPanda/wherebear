@@ -21,7 +21,7 @@
   </thead>
   <tbody>
   @foreach($rounds as $round)
-    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+    <tr class="border-b bg-gray-800 border-gray-700">
       <td class="px-4 py-3 font-medium text-right w-8">{{$round->r_number}}</td>
       <td class="px-4 py-3">{{substr($round->panorama_id ?? '', 0, 10)}}</td>
       <td class="px-4 py-3">{{$round->country_name}}</td>

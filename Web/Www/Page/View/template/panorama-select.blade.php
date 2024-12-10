@@ -13,7 +13,7 @@
   </thead>
   <tbody>
   @foreach($panoramas as $panorama)
-    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+    <tr class="border-b bg-gray-800 border-gray-700">
       <td class="px-4 py-3 font-medium text-right w-8">{{substr($panorama->id, 0, 10)}}</td>
       <td class="px-4 py-3">{{$panorama->country_name}}</td>
       <td class="px-4 py-3">{{$panorama->country_subdivision_name}}</td>
