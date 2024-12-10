@@ -9,7 +9,7 @@ use Infrastructure\Http\Provider\RouteServiceProvider;
 return [
   'env' => BearEnvService::getStringFromArray(key: 'APP_ENV', array: ['local', 'production']),
   'debug' => BearEnvService::getBool(key: 'APP_DEBUG'),
-  'key' => BearEnvService::getString(key: 'APP_KEY'),
+  'key' => BearEnvService::getStringOrDefault(key: 'APP_KEY', default: 'regen-me'),
   'url' => BearEnvService::getString(key: 'APP_URL'),
   'name' => 'WhereBear',
   'timezone' => 'UTC',
