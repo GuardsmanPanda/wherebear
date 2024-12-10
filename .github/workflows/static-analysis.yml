@@ -32,11 +32,15 @@ jobs:
 
       - name: Setup Basic .env
         run: | 
+          echo "APP_NAME=WhereBear" >> .env
           echo "APP_URL=https://local.test" >> .env
           echo "DB_PASSWORD=123456" >> .env
           echo "REVERB_APP_ID=123456" >> .env
           echo "REVERB_APP_KEY=123456" >> .env
           echo "REVERB_APP_SECRET=123456" >> .env
+          echo "12345" >> storage/app/app-css-path.txt
+          echo "12345" >> storage/app/app-js-path.txt
+          echo "12345" >> storage/app/tailwind-css-path.txt
 
       - name: Install Dependencies
         run: composer install
