@@ -1,5 +1,6 @@
 <?php declare(strict_types=1);
 
+use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearEnvService;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 
@@ -22,7 +23,7 @@ return [
             'driver' => 'monolog',
             'level' => 'debug',
             'handler' => StreamHandler::class,
-            'formatter' => env(key: 'LOG_STDERR_FORMATTER'),
+            'formatter' => BearEnvService::getStringOrNull(key: 'LOG_STDERR_FORMATTER'),
             'with' => [
                 'stream' => 'php://stderr',
             ],

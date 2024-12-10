@@ -1,8 +1,11 @@
 <?php declare(strict_types=1);
 
 use Domain\User\Enum\BearPermissionEnum;
+use Domain\User\Enum\BearRoleEnum;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Middleware\BearPermissionMiddleware;
+use GuardsmanPanda\Larabear\Infrastructure\Http\Middleware\BearRoleMiddleware;
 use Illuminate\Support\Facades\Route;
+use Web\Www\Page\Controller\PageCurateGamesPlayedController;
 use Web\Www\Page\Controller\PageDiscoveryController;
 use Web\Www\Page\Controller\PageDownloadController;
 use Web\Www\Page\Controller\PageAchievementLocationController;
@@ -33,4 +36,9 @@ Route::prefix('template')->middleware([BearPermissionMiddleware::using(permissio
     Route::post(uri: '/panorama/{round}', action: [PageTemplateController::class, 'panoramaSelectForRound']);
     Route::delete(uri: '/panorama/{round}', action: [PageTemplateController::class, 'deletePanoramaRound'])->middleware([BearPermissionMiddleware::using(permission: BearPermissionEnum::TEMPLATE_ROUND_DELETE)]);
   });
+});
+
+Route::prefix('curate')->middleware([BearRoleMiddleware::using(BearRoleEnum::ADMIN)])->group(callback: function () {
+  Route::get(uri: 'games-played', action: [PageCurateGamesPlayedController::class, 'index']);
+  Route::get(uri: 'games-played/game/{gameId}', action: [PageCurateGamesPlayedController::class, 'table']);
 });

@@ -41,6 +41,10 @@
             <x-bear::sidebar.divider color="gray-800">Template</x-bear::sidebar.divider>
             <x-bear::sidebar.link path="/page/template" icon="key">Edit Templates</x-bear::sidebar.link>
           @endif
+          @if(BearAuthService::hasRole(role: BearRoleEnum::ADMIN))
+            <x-bear::sidebar.divider color="gray-800">Curate</x-bear::sidebar.divider>
+            <x-bear::sidebar.link path="/page/curate/games-played" icon="key">Games Played</x-bear::sidebar.link>
+          @endif
         </nav>
       </div>
     </div>

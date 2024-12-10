@@ -24,7 +24,7 @@
     </thead>
     <tbody>
     @foreach($templates as $template)
-      <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+      <tr class="border-b bg-gray-800 border-gray-700">
         <td class="px-4 py-3 font-medium whitespace-nowrap">{{$template->name}}</td>
         <td class="px-4 py-3 w-8 text-right">{{$template->number_of_rounds}}</td>
         <td class="px-4 py-3">{{$template->created_by_user_display_name}}</td>
