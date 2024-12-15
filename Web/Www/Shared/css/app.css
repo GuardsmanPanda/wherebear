@@ -423,3 +423,10 @@ body {
 *::-webkit-scrollbar-thumb:active {
   background-color: #333847;
 }
+
+/* For using x-cloak from Alpine.js.
+ * https://alpinejs.dev/directives/cloak 
+ */
+[x-cloak] {
+  display: none !important;
+}

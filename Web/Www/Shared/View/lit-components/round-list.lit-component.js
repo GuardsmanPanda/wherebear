@@ -11,20 +11,17 @@ import { tooltip } from './tippy.lit-directive';
  */
 class RoundList extends LitElement {
   static properties = {
-    /** The number of the current round being played in the game. */
-    currentRound: { type: Number },
-
     /** An array of round objects representing the list of all rounds in the game. */
     rounds: { type: Array },
 
     /** Whether the rounds are clickable. */
     roundClickable: { type: Boolean },
 
+    /** The number of the round that is currently selected. */
+    selectedRoundNumber: { type: Number },
+
     /** The total number of rounds available in the game. */
     totalRoundCount: { type: Number },
-
-    /** The number of the round that is currently selected (arrow visible). */
-    selectedRound: { type: Number },
   };
 
   static styles = css`${TailwindStyles}`;
@@ -235,16 +232,77 @@ class RoundList extends LitElement {
     super();
     this.rounds = [];
     this.roundClickable = false;
-    this.currentRound = null;
+    this.selectedRoundNumber = null;
     this.totalRoundCount = null;
-    this.selectedRound = null;
   }
 
-  get roundIconTemplateClasses() {
+  /**
+   * Dynamically generates the styles for the round icon based on whether it's an already played country.
+   * @param {Boolean} isPlaceHolder - Whether the icon is a placeholder.
+   * @param {String} cca2 - The country's code (if it's not a placeholder).
+   */
+  getRoundIconStyles(isPlaceHolder, cca2) {
+    let styles = {
+      'box-shadow': 'inset 0 -4px 1px rgb(0 0 0 / 0.3)'
+    };
+
+    if (!isPlaceHolder) {
+      styles = {
+        ...styles,
+        'background-image': `url('/static/flag/svg/${cca2}.svg')`,
+        'background-size': cca2 === 'NP' ? 'contain' : 'cover',
+        'background-position': 'left',
+        'background-repeat': 'no-repeat',
+      }
+    }
+
+    return styles;
+  }
+
+  /**
+   * Generates the HTML template for displaying a round icon.
+   * @param {Object} args - Parameters including `isPlaceHolder`, `cca2`, `userRank` and `isSelected`.
+   */
+  getRoundIconTemplate(args) {
+    return html`
+      <div
+        class="flex flex-col w-[40px] h-[28px] rounded bg-gray-50 border border-gray-700 relative z-30"
+        style="${styleMap(this.getRoundIconStyles(args.isPlaceHolder, args.countryCca2))}">
+
+        ${args.userRank != null && args.userRank <= 3 ? html`<img class="w-[22px] absolute -top-[3px] -right-[3px]" src="/static/img/icon/${this.getUserRankIcon(args.userRank)}.svg">` : nothing}
+            
+        ${args.isPlaceHolder
+        ? html`
+          <div class="flex justify-center items-center h-[24px] relative bottom-[2px] ${classMap({ 'rounded': args.isSelected })}}">
+            <span class="text-xl font-medium text-gray-600">?</span>
+          </div>`
+        : ''}
+      </div>
+    `;
+  }
+
+  /** Randomly selects one of the tooltips for an unplayed round. */
+  getRandomTooltipForUnplayedRound() {
+    return this.unplayedRoundTooltips[Math.floor(Math.random() * this.unplayedRoundTooltips.length)];
+  }
+
+  getSelectedRoundBackgroundClasses(isSelected) {
     return {
-      'cursor-pointer': this.roundClickable,
-      'w-[40px]': true,
-      'h-[28px]': true,
+      'hidden': !isSelected,
+      'group-hover:block': !isSelected,
+      'group-hover:bg-iris-400': !isSelected,
+      'group-hover:h-[calc(100%+1px)]': !isSelected,
+      'group-hover:z-10': !isSelected,
+      'bg-iris-500': isSelected,
+      'h-[calc(100%+4px)]': isSelected,
+      'rounded-t-md': isSelected,
+      'z-20': isSelected,
+    }
+  }
+
+  getSelectedRoundBackgroundStyles(isSelected) {
+    return {
+      'box-shadow': isSelected ? 'inset 0 2px 1px rgba(255, 255, 255, 0.6)' : 'none'
     }
   }
 
@@ -265,59 +323,12 @@ class RoundList extends LitElement {
     }
   }
 
-  /**
-   * Dynamically generates the styles for the round icon based on whether it's an already played country.
-   * @param {Boolean} isPlaceHolder - Whether the icon is a placeholder.
-   * @param {String} cca2 - The country's code (if it's not a placeholder).
-   */
-  getRoundIconStyles(isPlaceHolder, cca2) {
-    if (isPlaceHolder) {
-      return {
-        'box-shadow': 'inset 0 -4px 1px rgb(0 0 0 / 0.3)'
-      };
-    }
-    return {
-      'background-image': `url('/static/flag/svg/${cca2}.svg')`,
-      'background-size': cca2 === 'NP' ? 'contain' : 'cover',
-      'background-position': 'left',
-      'background-repeat': 'no-repeat',
-      'box-shadow': 'inset 0 -4px 1px rgb(0 0 0 / 0.3)'
-    };
-  }
-
-  /**
-   * Generates the HTML template for displaying a round icon.
-   * @param {Object} args - Parameters including `isPlaceHolder`, `cca2`, `userRank` and `isSelected`.
-   */
-  getRoundIconTemplate(args) {
-    return html`
-      <div
-        class="flex flex-col rounded bg-gray-50 border border-gray-700 relative ${classMap(this.roundIconTemplateClasses)}"
-        style="${styleMap(this.getRoundIconStyles(args.isPlaceHolder, args.countryCca2))}"
-        @click="${() => this.selectRound(args.countryCca2)}">
-
-        ${args.userRank != null && args.userRank <= 3 ? html`<img class="w-[22px] absolute -top-[3px] -right-[3px]" src="/static/img/icon/${this.getUserRankIcon(args.userRank)}.svg">` : nothing}
-            
-        ${args.isPlaceHolder
-        ? html`
-          <div class="flex justify-center items-center h-[24px] relative bottom-[2px] ${classMap({ 'rounded': args.isSelected })}}">
-            <span class="text-xl font-medium text-gray-600">?</span>
-          </div>`
-        : ''}
-      </div>
-    `;
-  }
-
-  /** Randomly selects one of the tooltips for an unplayed round. */
-  getRandomTooltipForUnplayedRound() {
-    return this.unplayedRoundTooltips[Math.floor(Math.random() * this.unplayedRoundTooltips.length)];
-  }
-
-  selectRound(cca2) {
+  selectRound(cca2, roundNumber) {
     if (!this.roundClickable) return;
+    if (this.selectedRoundNumber === roundNumber) return;
 
     this.dispatchEvent(new CustomEvent('clicked', {
-      detail: { countryCca2: cca2 },
+      detail: { countryCca2: cca2, roundNumber: roundNumber },
       bubbles: true,
       composed: true
     }));
@@ -327,27 +338,54 @@ class RoundList extends LitElement {
     const roundTemplates = [];
     for (let i = 0; i < this.totalRoundCount; i++) {
       const round = this.rounds[i];
-      const isSelected = this.selectedRound - 1 === i;
+      const roundNumber = i + 1;
+      const isSelected = this.selectedRoundNumber - 1 === i;
       roundTemplates.push(html`
-        <div class="relative">
-          ${isSelected
-          ? html`<img src="/static/img/icon/arrow-down.svg" class="absolute -top-[20px] left-[5px] z-10 w-[30px]" style="filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.6));">`
+        <div class="group relative h-full px-[5px] py-2 ${this.roundClickable ? 'cursor-pointer' : ''}" @click="${() => {
+          // Round is undefined if it's a not played yet round (placeholder)
+          if (round) {
+            this.selectRound(round.country_cca2, roundNumber)
+          }
+        }}">
+          ${!this.roundClickable && isSelected
+          ? html`<img src="/static/img/icon/arrow-down.svg" class="absolute -top-[14px] left-[10px] z-40 w-[30px]">`
           : nothing}
+
+          ${this.roundClickable
+          ? html`
+            <div 
+              class="absolute bottom-0 -left-[2px] w-[calc(100%+4px)] border border-b-0 border-gray-700 ${classMap(this.getSelectedRoundBackgroundClasses(isSelected))}"
+              style="${styleMap(this.getSelectedRoundBackgroundStyles(isSelected))}"
+            ></div>`
+          : nothing}
+          
           ${i < this.rounds.length
           ? html`
             <div ${tooltip(round.country_name)}>
-              ${this.getRoundIconTemplate({ isPlaceHolder: false, countryCca2: round.country_cca2, userRank: round.user_rank, isCountryMatch: round.country_match_user_guess, isCountrySubdivisionMatch: round.country_subdivision_match_user_guess })}
+              ${this.getRoundIconTemplate({
+            countryCca2: round.country_cca2,
+            isCountryMatch: round.country_match_user_guess,
+            isCountrySubdivisionMatch: round.country_subdivision_match_user_guess,
+            isPlaceHolder: false,
+            isSelected: isSelected,
+            roundNumber: roundNumber,
+            userRank: round.user_rank,
+          })}
             </div>`
           : html`
             <div ${tooltip(this.getRandomTooltipForUnplayedRound())}>
-              ${this.getRoundIconTemplate({ isPlaceHolder: true, isSelected })}
+              ${this.getRoundIconTemplate({
+            isPlaceHolder: true,
+            isSelected: isSelected,
+            roundNumber: roundNumber
+          })}
             </div>`}
         </div>
       `);
     }
 
     return html`
-      <div class="flex flex-wrap w-full gap-1 justify-center p-2 select-none">
+      <div class="flex flex-wrap w-full justify-center items-center px-0 select-none">
         ${roundTemplates}
       </div>
     `;

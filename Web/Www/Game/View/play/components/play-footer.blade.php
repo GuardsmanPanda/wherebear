@@ -2,7 +2,7 @@
 
 declare(strict_types=1); ?>
 
-@props(['secondsRemaining', 'rounds', 'currentRound', 'selectedRound', 'totalRoundCount', 'page' ])
+@props(['page', 'rounds', 'secondsRemaining', 'selectedRoundNumber', 'totalRoundCount' ])
 
 <div class="flex flex-col">
   <div class="relative">
@@ -32,19 +32,18 @@ declare(strict_types=1); ?>
   </div>
 
   <lit-round-list 
+    class="bg-iris-500"
     rounds="{{ json_encode($rounds) }}"
-    currentRound="{{ $currentRound }}"
     totalRoundCount="{{ $totalRoundCount }}"
     @if($page === 'play')
-    selectedRound="{{ $currentRound }}"
+    selectedRoundNumber="{{ $selectedRoundNumber }}"
     @endif
-    class="bg-iris-400"
   ></lit-round-list>
 </div>
 
 <script>
-  function countdownState(durationSec) {
-    return {
+ document.addEventListener('alpine:init', () => {
+    Alpine.data('countdownState', (durationSec) => ({
       targetTime: new Date(new Date().getTime() + durationSec * 1000),
       timeRemainingSec: durationSec,
       timerInterval: null,
@@ -65,12 +64,10 @@ declare(strict_types=1); ?>
       },
       destroy() {
         clearInterval(this.timerInterval);
-      },
-    }
-  }
+      }
+    }));
 
-  function progressBarState(durationSec) {
-    return {
+    Alpine.data('progressBarState', (durationSec) => ({
       percentage: 100,
       durationSec: durationSec,
       targetTime: new Date(new Date().getTime() + durationSec * 1000),
@@ -91,6 +88,6 @@ declare(strict_types=1); ?>
       destroy() {
         clearInterval(this.timerInterval);
       },
-    }
-  }
+    }));
+  });
 </script>
