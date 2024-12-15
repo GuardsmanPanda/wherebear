@@ -11,6 +11,7 @@ use Domain\Import\Command\ImportIntoPanoramaTableCommand;
 use Domain\Import\Command\ImportMapcrunchComCommand;
 use Domain\Import\Command\ImportStreetviewsOrgCommand;
 use Domain\Import\Command\ImportPanoramaJpgCommand;
+use Domain\Import\Command\ImportStreetViewUserUpdateCommand;
 use Domain\Map\Command\MapSubdivisionBoundaryCheckCommand;
 use Domain\Panorama\Command\PanoramaUpdateCountryAndSubdivisionCommand;
 use Illuminate\Console\Scheduling\Schedule;
@@ -29,6 +30,7 @@ final class ConsoleKernel extends Kernel {
     ImportMapcrunchComCommand::class,
     ImportPanoramaJpgCommand::class,
     ImportStreetviewsOrgCommand::class,
+    ImportStreetViewUserUpdateCommand::class,
     MapSubdivisionBoundaryCheckCommand::class,
     PanoramaUpdateCountryAndSubdivisionCommand::class,
     WhereBearInitCommand::class,

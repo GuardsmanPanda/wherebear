@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Domain\Achievement\Enum\AchievementTypeEnum;
 use Domain\Game\Enum\GamePublicStatusEnum;
 use Domain\Game\Enum\GameStateEnum;
+use Domain\Import\Enum\ImportStatusEnum;
 use Domain\Map\Enum\MapMarkerEnum;
 use Domain\Map\Enum\MapStyleEnum;
 use Domain\Panorama\Enum\PanoramaTagEnum;
@@ -59,7 +60,12 @@ return [
         'location' => 'Domain/Game/Model',
       ],
       'game_user' => ['location' => 'Domain/Game/Model', 'log_exclude_columns' => ['is_ready']],
-      'import_status' => ['location' => 'Domain/Import/Model'],
+      'import_status' => [
+        'enum' => ImportStatusEnum::class,
+        'location' => 'Domain/Import/Model'
+      ],
+      'import_street_view_user' => ['location' => 'Domain/Import/Model'],
+      'import_street_view_user_panorama' => ['location' => 'Domain/Import/Model'],
       'map_marker' => [
         'enum' => MapMarkerEnum::class,
         'location' => 'Domain/Map/Model'
