@@ -31,6 +31,24 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Setup Basic Infrastructure
+        run: |
+          mkdir -p storage/app/public
+          mkdir -p storage/app/private
+          mkdir -p storage/framework/cache
+          mkdir -p storage/framework/sessions
+          mkdir -p storage/framework/views
+          mkdir -p storage/logs
+          echo "APP_NAME=WhereBear" >> .env
+          echo "APP_URL=https://local.test" >> .env
+          echo "DB_PASSWORD=123456" >> .env
+          echo "REVERB_APP_ID=123456" >> .env
+          echo "REVERB_APP_KEY=123456" >> .env
+          echo "REVERB_APP_SECRET=123456" >> .env
+          echo "12345" >> storage/app/app-css-path.txt
+          echo "12345" >> storage/app/app-js-path.txt
+          echo "12345" >> storage/app/tailwind-css-path.txt
+
       - name: Install Dependencies
         run: npm install --omit=dev
 

@@ -10,6 +10,7 @@ enum ImportStatusEnum: string implements BearDatabaseBackedEnumInterface {
   case IMPORTED_PANORAMA = 'IMPORTED_PANORAMA';
   case IMPORTED_LOCATION = 'IMPORTED_LOCATION';
   case ERROR = 'ERROR';
+  case REJECTED_PANORAMA = 'REJECTED_PANORAMA';
 
 
   public function getDescription(): string {
@@ -18,6 +19,7 @@ enum ImportStatusEnum: string implements BearDatabaseBackedEnumInterface {
       self::IMPORTED_PANORAMA => 'Imported Panorama',
       self::IMPORTED_LOCATION => 'Imported Location, usually means that the panorama did not exist.',
       self::ERROR => 'There was an error during the import process',
+      self::REJECTED_PANORAMA => 'Rejected Panorama, usually means that the panorama was not very good, or a near duplicate.',
     };
   }
 
