@@ -5,6 +5,7 @@ namespace Domain\Game\Model;
 use Carbon\CarbonInterface;
 use Closure;
 use GuardsmanPanda\Larabear\Infrastructure\App\DataType\BearPoint;
+use GuardsmanPanda\Larabear\Infrastructure\Auth\Model\BearUser;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Cast\BearDatabasePointCast;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Traits\BearDatabaseChangeTrait;
 use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountryEnum;
@@ -71,7 +72,7 @@ use RuntimeException;
  * @property BearCountry $countryCca2
  * @property BearCountrySubdivision|null $countrySubdivisionIso3166
  * @property GameRound $game
- * @property GameUser $user
+ * @property BearUser $user
  * @property GameRound $roundNumber
  *
  * AUTO GENERATED FILE DO NOT MODIFY
@@ -109,9 +110,9 @@ final class GameRoundUser extends Model {
         return $this->belongsTo(related: GameRound::class, foreignKey: 'game_id', ownerKey: 'game_id');
     }
 
-    /** @return BelongsTo<GameUser, $this> */
+    /** @return BelongsTo<BearUser, $this> */
     public function user(): BelongsTo {
-        return $this->belongsTo(related: GameUser::class, foreignKey: 'user_id', ownerKey: 'user_id');
+        return $this->belongsTo(related: BearUser::class, foreignKey: 'user_id', ownerKey: 'id');
     }
 
     /** @return BelongsTo<GameRound, $this> */

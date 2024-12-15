@@ -37,6 +37,7 @@ final class ImportStreetViewUserUpdateCommand extends BearTransactionCommand{
         lat: $data->lat,
         lng: $data->lng,
         captured_date: $data->date,
+        import_status_enum: ImportStatusEnum::LOCATION_ADDED,
       );
     }
   }

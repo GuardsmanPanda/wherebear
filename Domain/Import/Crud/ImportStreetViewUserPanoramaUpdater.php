@@ -25,6 +25,7 @@ final readonly class ImportStreetViewUserPanoramaUpdater {
       float $lat,
       float $lng,
       CarbonImmutable $captured_date,
+      ImportStatusEnum $import_status_enum,
     ): void {
       DB::update(query: "
         UPDATE import_street_view_user_panorama
@@ -32,6 +33,7 @@ final readonly class ImportStreetViewUserPanoramaUpdater {
             country_cca2 = wherebear_country(:lng, :lat),
             country_subdivision_iso_3166 = wherebear_subdivision(:lng, :lat, wherebear_country(:lng, :lat)),
             location = ST_Point(:lng, :lat, 4326)::geography,
+            import_status_enum = :import_status_enum,
             updated_at = CURRENT_TIMESTAMP
         WHERE id = :id
       ", bindings: [
@@ -39,6 +41,7 @@ final readonly class ImportStreetViewUserPanoramaUpdater {
         'lat' => $lat,
         'lng' => $lng,
         'captured_date' => $captured_date,
+        'import_status_enum' => $import_status_enum->value,
       ]);
     }
 

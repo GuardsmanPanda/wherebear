@@ -18,4 +18,12 @@ final class ImportStatusCrud {
     $model->save();
     return $model;
   }
+
+
+  public static function delete(ImportStatus $tag): void {
+    BearDatabaseService::mustBeInTransaction();
+    BearDatabaseService::mustBeProperHttpMethod(verbs: ['CLI']);
+
+    $tag->delete();
+  }
 }

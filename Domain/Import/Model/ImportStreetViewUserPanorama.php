@@ -61,6 +61,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $created_at
  * @property string $updated_at
  * @property string $panorama_id
+ * @property string $import_street_view_user_id
  * @property BearPoint|null $location
  * @property CarbonInterface|null $captured_date
  * @property BearCountryEnum|null $country_cca2
@@ -69,6 +70,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @property BearCountry|null $countryCca2
  * @property BearCountrySubdivision|null $countrySubdivisionIso3166
+ * @property ImportStreetViewUser $importStreetViewUser
  * @property ImportStatus $importStatus
  *
  * AUTO GENERATED FILE DO NOT MODIFY
@@ -98,6 +100,11 @@ final class ImportStreetViewUserPanorama extends Model {
     /** @return BelongsTo<BearCountrySubdivision, $this> */
     public function countrySubdivisionIso3166(): BelongsTo {
         return $this->belongsTo(related: BearCountrySubdivision::class, foreignKey: 'country_subdivision_iso_3166', ownerKey: 'iso_3166');
+    }
+
+    /** @return BelongsTo<ImportStreetViewUser, $this> */
+    public function importStreetViewUser(): BelongsTo {
+        return $this->belongsTo(related: ImportStreetViewUser::class, foreignKey: 'import_street_view_user_id', ownerKey: 'id');
     }
 
     /** @return BelongsTo<ImportStatus, $this> */
