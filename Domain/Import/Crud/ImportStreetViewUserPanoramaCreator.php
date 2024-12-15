@@ -12,12 +12,12 @@ use GuardsmanPanda\Larabear\Infrastructure\Locale\Enum\BearCountrySubdivisionEnu
 
 final class ImportStreetViewUserPanoramaCreator {
     public static function create(
-        string $panorama_id,
-        ImportStatusEnum $import_status_enum,
-        CarbonInterface $captured_date = null,
-        BearCountryEnum $country_cca2 = null,
-        BearCountrySubdivisionEnum $country_subdivision_iso_3166 = null,
-        BearPoint $location = null
+      string                      $panorama_id,
+      ImportStatusEnum            $import_status_enum,
+      ?CarbonInterface            $captured_date = null,
+      ?BearCountryEnum            $country_cca2 = null,
+      ?BearCountrySubdivisionEnum $country_subdivision_iso_3166 = null,
+      ?BearPoint $location = null
     ): ImportStreetViewUserPanorama {
         BearDatabaseService::mustBeInTransaction();
         BearDatabaseService::mustBeProperHttpMethod(verbs: ['POST']);
