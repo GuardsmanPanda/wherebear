@@ -40,6 +40,7 @@ final class GameResultController extends Controller {
       FROM game_round gr
       LEFT JOIN panorama p ON p.id = gr.panorama_id
       LEFT JOIN bear_country bc ON bc.cca2 = p.country_cca2
+      LEFT JOIN bear_country_subdivision bcs ON bcs.iso_3166 = p.country_subdivision_iso_3166
       LEFT JOIN game_round_user gru ON gru.game_id = gr.game_id AND gru.user_id = ? AND gru.round_number = gr.round_number
       WHERE gr.game_id = ?
       ORDER BY gr.round_number
@@ -50,6 +51,7 @@ final class GameResultController extends Controller {
         u.id as user_id, u.display_name, 
         COALESCE(u.user_flag_enum, u.country_cca2) as country_cca2,
         u.user_level_enum as level,
+        'Digital Guinea Pig' as title,
         mm.file_path as map_marker_file_path,
         COALESCE(uf.description, bc.name) as country_name,
         round(gu.points)::integer as rounded_points,
@@ -81,13 +83,17 @@ final class GameResultController extends Controller {
         ((u.experience - ul.experience_requirement) * 100 / (ul2.experience_requirement - ul.experience_requirement))::integer as level_percentage,
         u.map_style_enum,
         mm.file_path as map_marker_file_path,
+        mm.map_anchor as map_marker_map_anchor,
+        ms.tile_size as map_style_tile_size,
+        ms.full_uri as map_style_full_uri,
         round(gu.points)::integer as rounded_points,
         round(gu.points::numeric, 2) as detailed_points,
         (SELECT COUNT(*) FROM game_user WHERE game_id = :game_id AND points > gu.points) + 1 as rank,
         CASE WHEN gu.is_observer IS NOT TRUE THEN true ELSE false END as is_player
       FROM bear_user u
-      LEFT JOIN map_marker mm ON mm.enum = u.map_marker_enum
       LEFT JOIN game_user gu ON gu.user_id = u.id
+      LEFT JOIN map_marker mm ON mm.enum = u.map_marker_enum
+      LEFT JOIN map_style ms ON ms.enum = u.map_style_enum
       LEFT JOIN user_level ul ON ul.enum = u.user_level_enum
       LEFT JOIN user_level ul2 ON ul2.enum = u.user_level_enum + 1
       WHERE u.id = :user_id AND gu.game_id = :game_id
@@ -108,17 +114,22 @@ final class GameResultController extends Controller {
   public function indexDev(): View {
     return Resp::view(view: 'game::result.index', data: [
       'game' => (object) [
-        'id' => 123,
+        'id' => '66d27e3a-4d72-4d6b-88bf-ac172fe2aba5',
         'country_cca2' => 'FR',
         'country_name' => 'Democratic Republic of the Congo',
         'country_subdivision_name' => 'Centre-Val de Loire',
         'current_round' => 2,
         'experience_points' => 41,
+        'field_of_view' => 10,
+        'heading' => 10,
         'number_of_rounds' => 7,
         'panorama_lat' => 48,
         'panorama_lng' => 2,
+        'panorama_url' => 'https://pannellum.org/images/alma.jpg',
+        'pitch' => 10,
         'round_result_seconds_remaining' => 14
       ],
+      'is_dev' => true,
       'rounds' => [
         (object) [
           'country_cca2' => 'FR',
@@ -161,7 +172,8 @@ final class GameResultController extends Controller {
           'map_marker_file_path' => '/static/img/map-marker/monster/1.png',
           'points' => "127.510",
           'rank' => 1,
-          'rounded_points' => 127
+          'rounded_points' => 127,
+          'title' => 'Digital Guinea Pig'
         ],
         (object) [
           'country_cca2' => 'RAINBOW',
@@ -174,7 +186,8 @@ final class GameResultController extends Controller {
           'map_marker_file_path' => '/static/img/map-marker/monster/2.png',
           'points' => 97.500,
           'rank' => 2,
-          'rounded_points' => 98
+          'rounded_points' => 98,
+          'title' => 'Digital Guinea Pig'
         ],
         (object) [
           'country_cca2' => 'UA',
@@ -187,7 +200,8 @@ final class GameResultController extends Controller {
           'map_marker_file_path' => '/static/img/map-marker/planet/2.png',
           'points' => 12.019,
           'rank' => 3,
-          'rounded_points' => 12
+          'rounded_points' => 12,
+          'title' => 'Digital Guinea Pig'
         ],
         (object) [
           'country_cca2' => 'KR',
@@ -200,7 +214,8 @@ final class GameResultController extends Controller {
           'map_marker_file_path' => '/static/img/map-marker/chibi/anubis.png',
           'points' => 9.0,
           'rank' => 4,
-          'rounded_points' => 9
+          'rounded_points' => 9,
+          'title' => 'Digital Guinea Pig'
         ],
         (object) [
           'country_cca2' => 'RU',
@@ -213,16 +228,21 @@ final class GameResultController extends Controller {
           'map_marker_file_path' => '/static/img/map-marker/monster/land-2.png',
           'points' => 0.1,
           'rank' => 5,
-          'rounded_points' => 0
+          'rounded_points' => 0,
+          'title' => 'Digital Guinea Pig'
         ]
       ],
       'user' => (object) [
         'current_level_experience_points' => 45,
         'detailed_points' => '124.47',
         'display_name' => 'GreenMonkeyBoy',
+        'is_player' => true,
         'level' => 2,
         'level_percentage' => 25,
         'map_marker_file_path' => '/static/img/map-marker/monster/1.png',
+        'map_marker_map_anchor' => 'bottom',
+        'map_style_tile_size' => 256,
+        'map_style_full_uri' => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
         'next_level_experience_points_requirement' => 78,
         'points' => 124.465789,
         'rank' => 2,

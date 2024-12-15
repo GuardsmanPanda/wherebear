@@ -11,6 +11,7 @@ use Web\Www\WebApi\Controller\WebApiUserController;
 Route::prefix('game')->group(callback: function () {
   Route::post(uri: "{gameId}/force-start", action: [WebApiGameController::class, 'forceStart']);
   Route::get(uri: "{gameId}/status", action: [WebApiGameController::class, 'getStatus']);
+  Route::get(uri: "{gameId}/round/{roundNumber}", action: [WebApiGameController::class, 'getRound']);
   Route::patch(uri: '{gameId}', action: [WebApiGameController::class, 'patch']);
   Route::delete(uri: '{gameId}', action: [WebApiGameController::class, 'delete']);
   Route::delete(uri: "{gameId}/leave", action: [WebApiGameController::class, 'leave']);

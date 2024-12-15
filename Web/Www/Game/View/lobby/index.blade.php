@@ -38,7 +38,7 @@
     <div class="flex flex-col w-full h-full bg-iris-100">
       <!-- Scrollable Content -->
       <div class="flex flex-col w-full md:h-full overflow-y-auto">
-        <lit-panel2 label="PROFILE" class="mt-2 sm:mt-4 mx-2 sm:mx-4">
+        <lit-panel label="PROFILE" class="mt-2 sm:mt-4 mx-2 sm:mx-4">
           <div slot="header-right">
             @if($user->can_observe)
             <div slot="right" class="flex md:hidden items-center gap-1">
@@ -100,9 +100,9 @@
               </div>
             </div>
           </div>
-        </lit-panel2>
+        </lit-panel>
 
-        <lit-panel2 label="GAME SETTINGS" class="my-2 sm:my-4 mx-2 sm:mx-4">
+        <lit-panel label="GAME SETTINGS" class="my-2 sm:my-4 mx-2 sm:mx-4">
           @if($user->is_host)
             <lit-label slot="header-left" :label="game.is_public ? 'PUBLIC' : 'PRIVATE'" size="xs" :bgColorClass="game.is_public ? 'bg-pistachio-400' : 'bg-red-500'" widthClass="w-16"></lit-label>
             <div slot="header-right" class="flex items-center gap-1">
@@ -182,7 +182,7 @@
               @include('game::lobby.total-game-time')
             </div>
           </div>
-        </lit-panel2>
+        </lit-panel>
       </div>
       <!-- Expandable Panel -->
       <div x-ref="gameUsersSubstitute" class="hidden flex-1 min-h-[150px]"></div>

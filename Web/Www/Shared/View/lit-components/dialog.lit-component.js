@@ -113,7 +113,7 @@ class Dialog extends LitElement {
     dialog.addEventListener('click', (event) => {
       this.onBackdropClick(event)
     });
-    dialog.addEventListener('close', () => this.onDialogClose());
+    dialog.addEventListener('close', () => this.dispatchCloseEvent());
 
     const footerSlotEl = this.shadowRoot.querySelector('slot[name="footer"]');
     footerSlotEl.addEventListener('slotchange', () => {
@@ -128,11 +128,7 @@ class Dialog extends LitElement {
     }
   }
 
-  onDialogClose() {
-    this.emitCloseEvent();
-  }
-
-  emitCloseEvent() {
+  dispatchCloseEvent() {
     this.dispatchEvent(new CustomEvent('closed', {
       detail: {},
       bubbles: true,
@@ -146,7 +142,6 @@ class Dialog extends LitElement {
 
   close() {
     this.shadowRoot.querySelector('dialog').close();
-    this.emitCloseEvent();
   }
 
   render() {

@@ -16,6 +16,7 @@ use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Resp;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -93,5 +94,82 @@ final class WebApiGameController extends Controller {
 
     $updater->update();
     return Resp::json([]);
+  }
+
+  public function getRound(string $gameId, string $roundNumber): JsonResponse {
+    $guesses = DB::select(query: <<<SQL
+      SELECT
+        bu.id as user_id,
+        bu.display_name as user_display_name, 
+        COALESCE(bu.user_flag_enum, bu.country_cca2) as user_country_cca2, 
+        bu.user_level_enum as user_level,
+        COALESCE(uf.file_path, CONCAT('/static/flag/svg/', bu.country_cca2, '.svg')) as user_flag_file_path,
+        COALESCE(uf.description, bc.name) as user_flag_description,
+        mm.file_path as map_marker_file_path,
+        gru.distance_meters, 
+        round(gru.points)::integer as rounded_points,
+        round(gru.points::numeric, 2) as detailed_points,
+        gru.rank,
+        gru.country_cca2,
+        bc.name as country_name,
+        p.country_cca2 = gru.country_cca2 as country_match,
+        p.country_subdivision_iso_3166 = gru.country_subdivision_iso_3166 as country_subdivision_match,
+        CONCAT('/static/flag/svg/', gru.country_cca2, '.svg') as flag_file_path,
+        ST_Y(gru.location::geometry) as lat,
+        ST_X(gru.location::geometry) as lng,
+        CASE WHEN bu.id = ? THEN true ELSE false END as is_from_user,
+        'Digital Guinea Pig' as title
+      FROM game_round_user gru
+      LEFT JOIN bear_user bu ON bu.id = gru.user_id
+      LEFT JOIN user_flag uf ON uf.enum = bu.user_flag_enum
+      LEFT JOIN map_marker mm ON mm.enum = bu.map_marker_enum
+      LEFT JOIN bear_country bc ON bc.cca2 = gru.country_cca2
+      LEFT JOIN game_round gr ON gr.game_id = gru.game_id AND gr.round_number = gru.round_number
+      LEFT JOIN panorama p ON p.id = gr.panorama_id
+      WHERE gru.game_id = ? AND gru.round_number = ?
+      ORDER BY gru.rank, gru.user_id
+    SQL, bindings: [BearAuthService::getUserId(), $gameId, $roundNumber]);
+
+    $panorama = DB::selectOne(
+      query: <<<SQL
+        SELECT 
+          p.heading, p.pitch, p.field_of_view,
+          ST_Y(p.location::geometry) as lat,
+          ST_X(p.location::geometry) as lng,
+          CONCAT(CAST(:base_url AS VARCHAR), p.jpg_path) AS url
+        FROM panorama p
+        JOIN game_round gr ON gr.panorama_id = p.id
+        WHERE gr.game_id = :game_id AND gr.round_number = :round_number
+        SQL,
+      bindings: [
+        'base_url' => App::isProduction() ? "https://panorama.wherebear.fun/" : "https://panorama.gman.bot/",
+        'game_id' => $gameId,
+        'round_number' => $roundNumber,
+      ]
+    );
+
+    $round = DB::selectOne(query: <<<SQL
+      SELECT
+        gr.round_number,
+        bc.cca2 as country_cca2, bc.name as country_name,
+        bcs.name as country_subdivision_name
+      FROM game_round gr
+      LEFT JOIN panorama p ON p.id = gr.panorama_id
+      LEFT JOIN bear_country bc ON bc.cca2 = p.country_cca2
+      LEFT JOIN bear_country_subdivision bcs ON bcs.iso_3166 = p.country_subdivision_iso_3166
+      LEFT JOIN game_round_user gru ON gru.game_id = gr.game_id AND gru.user_id = :user_id AND gru.round_number = gr.round_number
+      WHERE gr.game_id = :game_id AND gr.round_number = :round_number
+      ORDER BY gr.round_number
+    SQL, bindings: [
+      'game_id' => $gameId,
+      'round_number' => $roundNumber,
+      'user_id' => BearAuthService::getUserId()
+    ]);
+
+    return Resp::json([
+      'guesses' => $guesses,
+      'panorama' => $panorama,
+      'round' => $round,
+    ]);
   }
 }

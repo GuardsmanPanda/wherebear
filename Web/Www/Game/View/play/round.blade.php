@@ -83,12 +83,11 @@
   </div>
 
   <x-play-footer
-    secondsRemaining="{{ $game->round_seconds_remaining }}"
-    :rounds="$rounds"
-    :totalRoundCount="$game->number_of_rounds"
-    :currentRound="$game->current_round"
-    :selectedRound="$game->current_round"
     page="play"
+    :rounds="$rounds"
+    secondsRemaining="{{ $game->round_seconds_remaining }}"
+    :selectedRoundNumber="$game->current_round"
+    :totalRoundCount="$game->number_of_rounds"
   />
 </div>
 
