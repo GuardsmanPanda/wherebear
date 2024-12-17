@@ -3,6 +3,7 @@
 namespace Domain\Panorama\Crud;
 
 use Carbon\CarbonInterface;
+use Domain\Import\Listener\PanoramaCreatedListener;
 use Domain\Panorama\Model\Panorama;
 use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 use Illuminate\Support\Facades\DB;
@@ -45,6 +46,10 @@ final class PanoramaCreator {
       'heading' => $heading,
       'field_of_view' => $field_of_view,
     ]);
+
+    // Listeners
+    PanoramaCreatedListener::handle(panoramaId: $id);
+
     return Panorama::findOrFail(id: $id);
   }
 

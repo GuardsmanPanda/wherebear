@@ -6,6 +6,7 @@ use GuardsmanPanda\Larabear\Infrastructure\Http\Middleware\BearPermissionMiddlew
 use GuardsmanPanda\Larabear\Infrastructure\Http\Middleware\BearRoleMiddleware;
 use Illuminate\Support\Facades\Route;
 use Web\Www\Page\Controller\PageCurateGamesPlayedController;
+use Web\Www\Page\Controller\PageCurateStreetViewUserController;
 use Web\Www\Page\Controller\PageDiscoveryController;
 use Web\Www\Page\Controller\PageDownloadController;
 use Web\Www\Page\Controller\PageAchievementLocationController;
@@ -13,7 +14,6 @@ use Web\Www\Page\Controller\PageTemplateController;
 
 Route::prefix('discovery')->middleware([BearPermissionMiddleware::using(permission: BearPermissionEnum::PANORAMA_CONTRIBUTE)])->group(callback: function () {
   Route::get(uri: '', action: [PageDiscoveryController::class, 'index']);
-  Route::post(uri: 'street-view', action: [PageDiscoveryController::class, 'addFromStreetViewData']);
 });
 
 Route::prefix('achievement-location')->middleware([])->group(callback: function () {
@@ -41,4 +41,9 @@ Route::prefix('template')->middleware([BearPermissionMiddleware::using(permissio
 Route::prefix('curate')->middleware([BearRoleMiddleware::using(BearRoleEnum::ADMIN)])->group(callback: function () {
   Route::get(uri: 'games-played', action: [PageCurateGamesPlayedController::class, 'index']);
   Route::get(uri: 'games-played/game/{gameId}', action: [PageCurateGamesPlayedController::class, 'table']);
+  Route::get(uri: 'street-view-user', action: [PageCurateStreetViewUserController::class, 'index']);
+  Route::post(uri: 'street-view-user', action: [PageCurateStreetViewUserController::class, 'create']);
+  Route::get(uri: 'street-view-user/{userId}', action: [PageCurateStreetViewUserController::class, 'table']);
+  Route::post(uri: 'street-view-user/{userId}/panorama/{id}/accept', action: [PageCurateStreetViewUserController::class, 'table']);
+  Route::post(uri: 'street-view-user/{userId}/panorama/{id}/reject', action: [PageCurateStreetViewUserController::class, 'reject']);
 });

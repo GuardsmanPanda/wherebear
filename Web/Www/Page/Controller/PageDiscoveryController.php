@@ -2,22 +2,11 @@
 
 namespace Web\Www\Page\Controller;
 
-use Domain\Map\Service\MapService;
-use Domain\Panorama\Crud\PanoramaCreator;
-use Domain\Panorama\Crud\PanoramaUpdater;
-use Domain\Panorama\Enum\PanoramaTagEnum;
-use Domain\Panorama\Model\Panorama;
-use Domain\Panorama\Service\PanoramaService;
-use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearRegexService;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
-use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Resp;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
-use Integration\StreetView\Client\StreetViewClient;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 final class PageDiscoveryController extends Controller {
   public function index(): View {
@@ -33,57 +22,6 @@ final class PageDiscoveryController extends Controller {
         LEFT JOIN map_style s ON u.map_style_enum = s.enum
         WHERE u.id = ?
       ", bindings: [BearAuthService::getUserId()]),
-    ]);
-  }
-
-
-  public function addFromStreetViewData(): JsonResponse {
-    $data = StreetViewClient::fromUrl(url: Req::getString(key: 'street_view_url'));
-    if ($data === null) {
-      return new JsonResponse(data: ['status' => 'failed']);
-    }
-    $panorama = Panorama::find(id: $data->panoId);
-    $exists = $panorama !== null;
-    $tags_added = [];
-    $tags_removed = [];
-
-    if ($panorama === null) {
-      $panorama = PanoramaCreator::createFromStreetViewData(
-        data: $data,
-        panorama_tag_array: Req::getArray(key: 'tags_checked'),
-        added_by_user_id: BearAuthService::getUserId()
-      );
-      $tags_added = $panorama->panorama_tag_array->getArrayCopy();
-    }
-
-    $updater = new PanoramaUpdater(model: $panorama);
-    if (Req::getBool(key: 'street_view_viewport') && $updater->hasDefaultFieldOfView()) {
-      $heading = BearRegexService::extractFirstFloatOrNull(regex: '/,([^,h]+)h,/', subject: Req::getString(key: 'street_view_url'));
-      $pitch = BearRegexService::extractFirstFloat(regex: '~,([^,t]+)t[,/]~', subject: Req::getString(key: 'street_view_url')) - 90;
-      $updater->setStreetViewViewport(heading: $heading ?? 0, pitch: $pitch);
-    }
-    foreach (Req::getArray(key: 'tags_checked') as $tag) {
-      if ($updater->addPanoramaTag(tag: PanoramaTagEnum::from(value: $tag))) {
-        $tags_added[] = $tag;
-      }
-    }
-    foreach (Req::getArray(key: 'tags_unchecked') as $tag) {
-      if ($updater->removePanoramaTag(tag: PanoramaTagEnum::from(value: $tag))) {
-        $tags_removed[] = $tag;
-      }
-    }
-    $updater->update();
-
-    return new JsonResponse(data: [
-      'country_cca2' => $panorama->country_cca2,
-      'lat' => $data->lat,
-      'lng' => $data->lng,
-      'date' => $data->date,
-      'exists' => $exists,
-      'from_id' => $data->from_id,
-      'panorama_id' => $panorama->id,
-      'tags_added' => $tags_added,
-      'tags_removed' => $tags_removed,
     ]);
   }
 }

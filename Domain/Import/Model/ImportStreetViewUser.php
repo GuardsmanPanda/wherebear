@@ -50,6 +50,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static bool exists()
  *
  * @property string $id
+ * @property string $name
  * @property string $created_at
  * @property string $updated_at
  * @property string|null $continue_token

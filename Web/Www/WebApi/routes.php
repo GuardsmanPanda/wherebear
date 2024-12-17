@@ -22,6 +22,7 @@ Route::prefix('game-user')->group(callback: function () {
 });
 
 Route::prefix('panorama')->group(callback: function () {
+  Route::post(uri: 'street-view-url', action: [WebApiPanoramaController::class, 'streetViewUrl']);
   Route::patch(uri: '{panoramaId}', action: [WebApiPanoramaController::class, 'patchPanorama']);
 });
 

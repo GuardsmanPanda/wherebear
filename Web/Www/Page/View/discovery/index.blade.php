@@ -75,7 +75,7 @@
       if (val.checked) tags_checked.push(val.value); else tags_unchecked.push(val.value);
     });
 
-    fetch('/page/discovery/street-view', {
+    fetch('/web-api/panorama/street-view-url', {
       method: 'POST', headers: {
         'Content-Type': 'application/json'
       }, body: JSON.stringify({
@@ -88,7 +88,6 @@
       console.log(json);
       if (json['status'] === 'failed') {
         window.notify.error("Failed to add location to the game, Panorama API error.");
-        console.error(json['error']);
       } else if (json['exists']) {
         let message = "This location has already been discovered!";
         window.notify.open({
@@ -131,9 +130,9 @@
         icon.classList.add('drop-shadow');
         icon.style.height = '32px';
         new window.maplibregl.Marker({element: icon})
-          .setLngLat([json['lng'], json['lat']])
+          .setLngLat([json['panorama']['location']['longitude'], json['panorama']['location']['latitude']])
           .addTo(map);
-        map.panTo([json['lng'], json['lat']]);
+        map.panTo([json['panorama']['location']['longitude'], json['panorama']['location']['latitude']]);
       }
     }).catch(err => {
       window.notify.error("Failed to add location to the game, please report this url on discord.");

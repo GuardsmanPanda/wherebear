@@ -44,6 +44,7 @@
           @if(BearAuthService::hasRole(role: BearRoleEnum::ADMIN))
             <x-bear::sidebar.divider color="gray-800">Curate</x-bear::sidebar.divider>
             <x-bear::sidebar.link path="/page/curate/games-played" icon="key">Games Played</x-bear::sidebar.link>
+            <x-bear::sidebar.link path="/page/curate/street-view-user" icon="key">StreetView Users</x-bear::sidebar.link>
           @endif
         </nav>
       </div>

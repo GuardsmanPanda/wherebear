@@ -20,6 +20,11 @@ final readonly class ImportStreetViewUserPanoramaUpdater {
         return new self(model: ImportStreetViewUserPanorama::findOrFail(id: $id));
     }
 
+    public static function fromPanoramaIdIfExists(string $panorama_id): self|null {
+      $model = ImportStreetViewUserPanorama::where('panorama_id', $panorama_id)->first();
+      return $model === null ? null : new self(model: $model);
+    }
+
     public static function specialUpdate(
       string $id,
       float $lat,
