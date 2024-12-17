@@ -53,7 +53,7 @@ final class PageCurateStreetViewUserController extends Controller {
         LEFT JOIN bear_country_subdivision cs ON cs.iso_3166 = up.country_subdivision_iso_3166
         LEFT JOIN panorama p_closest ON p_closest.id = (SELECT p2.id FROM panorama p2 ORDER BY p2.location <-> up.location LIMIT 1)
         WHERE up.import_street_view_user_id = ? AND up.import_status_enum = 'LOCATION_ADDED'
-        ORDER BY up.captured_date DESC, up.id
+        ORDER BY up.captured_date DESC, distance_to_closest, up.id
         LIMIT 10
       SQL, bindings: [$userId]),
       'userId' => $userId,

@@ -70,7 +70,7 @@
   @endforeach
 </table>
 <script>
-  const add_panorama = function () {
+  var add_panorama = function () {
     let tag_elements = document.getElementById('tags').querySelectorAll('input[type="checkbox"]');
     let tags_unchecked = [];
     let tags_checked = [];
