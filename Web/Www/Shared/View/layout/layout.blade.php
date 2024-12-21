@@ -11,6 +11,10 @@ declare(strict_types=1); ?>
   <meta name="description" content="WhereBear">
   <title>{{$title ?? 'WhereBear'}}</title>
   <script src="{!! config('bear.ui.app_js') !!}"></script>
+  <script src="{!! config('bear.ui.achievement_toast_js') !!}"></script>
+  <script src="{!! config('bear.ui.achievement_toast_service_js') !!}"></script>
+  <script src="{!! config('bear.ui.toast_container_js') !!}"></script>
+  <script src="{!! config('bear.ui.websocket_service_js') !!}"></script>
   @foreach (config('bear.ui.lit_components') as $litComponentFile)
     <script src="{{ $litComponentFile }}"></script>
   @endforeach
@@ -52,9 +56,10 @@ declare(strict_types=1); ?>
   </div>
   @if(App::isLocal())
   <script>
-    const pHeader = new Pusher('6csm0edgczin2onq92lm', window.pusher_data);
-    const pChannel = pHeader.subscribe('dev');
-    pChannel.bind('reload', function(data) {
+    const webSocketClient = WebSocketClient.init();
+    const devChannel = webSocketClient.subscribeToChannel('dev');
+
+    devChannel.bind('reload', function(data) {
       if (data.hostname === window.location.hostname) {
         location.reload();
       }

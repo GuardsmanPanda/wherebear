@@ -507,15 +507,8 @@
         });    
 
         // Websockets
-        const pusher = new Pusher('6csm0edgczin2onq92lm', window.pusher_data);
-        pusher.bind('error', function(error) {
-          console.error('Pusher error:', error);
-        });
-        pusher.bind('disconnected', function(error) {
-          console.error('Pusher error:', error);
-        });
-
-        const channel = pusher.subscribe(`game.${this.game.id}`);
+        const webSocketClient = WebSocketClient.init();
+        const channel = webSocketClient.subscribeToChannel(`game.${this.game.id}`);
         
         channel.bind('game.delete', () => {
           window.location.href = '/';

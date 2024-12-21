@@ -26,17 +26,19 @@ function createUniqId() {
   return `${Math.random().toString(36).substring(2)}${Math.random().toString(36).substring(2)}`;
 }
 
-function buildJavascript() {
-  logStartingBuild('Starting building javascript...');
+function buildJs({ name, entryPoint, outputFileName }) {
+  logStartingBuild(`Starting building ${name} JS...`);
   const storagePath = 'storage/app';
 
   try {
+    // Ensure the storage directory exists
     if (!fs.existsSync(storagePath)) {
       fs.mkdirSync(storagePath, { recursive: true });
     }
 
+    // Build the JavaScript file using esbuild
     esbuild.buildSync({
-      entryPoints: ['Web/Www/Shared/js/app.js'],
+      entryPoints: [entryPoint],
       entryNames: '[name]',
       sourcemap: true,
       bundle: true,
@@ -46,92 +48,55 @@ function buildJavascript() {
       outdir: 'public/static/dist',
     });
 
-    fs.writeFileSync(`${storagePath}/app-js-path.txt`, `/static/dist/app.js?id=${createUniqId()}`);
-    logCompletedBuild('Javascript build completed');
+    // Write the generated file path with a unique ID to storage
+    fs.writeFileSync(
+      `${storagePath}/${outputFileName}-js-path.txt`,
+      `/static/dist/${outputFileName}.js?id=${createUniqId()}`
+    );
+
+    logCompletedBuild(`${name} JS build completed`);
   } catch (error) {
-    console.error('Error building javascript:', error);
+    console.error(`Error building ${name} JS:`, error);
     process.exit(1);
   }
 }
 
-function buildAppCss() {
-  logStartingBuild('Starting building App CSS...');
+function buildCss({ name, entryPoint, outputFileName, configFilePath }) {
+  logStartingBuild(`Starting building ${name} CSS...`);
   const storagePath = 'storage/app';
 
   try {
+    // Ensure the storage directory exists
     if (!fs.existsSync(storagePath)) {
       fs.mkdirSync(storagePath, { recursive: true });
     }
 
-    execSync('npx tailwindcss -i Web/Www/Shared/css/app.css -o public/static/dist/app.css --minify');
-
-    fs.writeFileSync(`${storagePath}/app-css-path.txt`, `/static/dist/app.css?id=${createUniqId()}`);
-    logCompletedBuild('App CSS build completed');
+    execSync(`npx tailwindcss ${configFilePath ? `-c ${configFilePath}` : ''} -i ${entryPoint} -o public/static/dist/${outputFileName}.css --minify`);
+    fs.writeFileSync(`${storagePath}/${outputFileName}-css-path.txt`, `/static/dist/${outputFileName}.css?id=${createUniqId()}`);
+    logCompletedBuild(`${name} CSS build completed`);
   } catch (error) {
-    console.error('Error building App CSS:', error);
+    console.error(`Error building ${name} JS:`, error);
     process.exit(1);
   }
 }
 
-function buildAppCssForLitComponents() {
-  logStartingBuild('Starting building App CSS for Lit components...');
-  const inputCssFilePath = 'public/static/dist/app.css';
-  const outputJsFilePath = 'public/static/dist/lit-app-css.js';
+function buildCssForLitComponent({ name, inputFilePath, outputFileName, exportName }) {
+  logStartingBuild(`Starting building ${name} CSS for Lit components...`);
+  const outputFilePath = `public/static/dist/lit-${outputFileName}-css.js`;
 
   try {
-    const cssContent = fs.readFileSync(inputCssFilePath, 'utf8');
+    const cssContent = fs.readFileSync(inputFilePath, 'utf8');
     let cleanCssContent = cssContent.replaceAll("`", "").replaceAll("\\", "\\\\");
 
     const content = `
     import { css } from "lit";
-    export const AppStyles = css\`${cleanCssContent}\`;
+    export const ${exportName} = css\`${cleanCssContent}\`;
     `;
 
-    fs.writeFileSync(outputJsFilePath, content, 'utf8');
-    logCompletedBuild('App CSS for Lit components build completed');
+    fs.writeFileSync(outputFilePath, content, 'utf8');
+    logCompletedBuild(`${name} CSS for Lit components build completed`);
   } catch (error) {
-    console.error('Error building App CSS for Lit components:', error);
-    process.exit(1);
-  }
-}
-
-
-function buildTailwindCss() {
-  logStartingBuild('Starting building Tailwind CSS...');
-  const storagePath = 'storage/app';
-
-  try {
-    if (!fs.existsSync(storagePath)) {
-      fs.mkdirSync(storagePath, { recursive: true });
-    }
-
-    execSync('npx tailwindcss -c Web/Www/tailwind.config.js -i Web/Www/Shared/css/tailwind.css -o public/static/dist/tailwind.css --minify');
-    fs.writeFileSync(`${storagePath}/tailwind-css-path.txt`, `/static/dist/tailwind.css?id=${createUniqId()}`);
-    logCompletedBuild('Tailwind CSS build completed');
-  } catch (error) {
-    console.error('Error building Tailwind CSS:', error);
-    process.exit(1);
-  }
-}
-
-function buildTailwindCssForLitComponents() {
-  logStartingBuild('Starting building Tailwind CSS for Lit components...');
-  const inputCssFilePath = 'public/static/dist/tailwind.css';
-  const outputJsFilePath = 'public/static/dist/lit-tailwind-css.js';
-
-  try {
-    const cssContent = fs.readFileSync(inputCssFilePath, 'utf8');
-    let cleanCssContent = cssContent.replaceAll("`", "").replaceAll("\\", "\\\\");
-
-    const content = `
-    import { css } from "lit";
-    export const TailwindStyles = css\`${cleanCssContent}\`;
-    `;
-
-    fs.writeFileSync(outputJsFilePath, content, 'utf8');
-    logCompletedBuild('Tailwind CSS for Lit components build completed');
-  } catch (error) {
-    console.error('Error building Tailwind CSS for Lit components:', error);
+    console.error(`Error building ${name} CSS for Lit components:`, error);
     process.exit(1);
   }
 }
@@ -210,11 +175,54 @@ function buildLitDirectives() {
 
 function build() {
   console.log(`${GREEN_COLOR}STARTING BUILD PROCESS...${DEFAULT_COLOR}`);
-  buildJavascript();
-  buildAppCss();
-  buildAppCssForLitComponents();
-  buildTailwindCss();
-  buildTailwindCssForLitComponents();
+  buildJs({
+    name: 'App',
+    entryPoint: 'Web/Www/Shared/js/app.js',
+    outputFileName: 'app',
+  });
+  buildJs({
+    name: 'WebSocketService',
+    entryPoint: 'Web/Www/Shared/js/websocket.service.js',
+    outputFileName: 'websocket.service',
+  });
+  buildJs({
+    name: 'AchievementToastService',
+    entryPoint: 'Web/Www/Shared/js/achievement-toast.service.js',
+    outputFileName: 'achievement-toast.service',
+  });
+  buildJs({
+    name: 'ToastContainer',
+    entryPoint: 'Web/Www/Shared/js/toast/toast-container.js',
+    outputFileName: 'toast-container',
+  });
+  buildJs({
+    name: 'AchievementToast',
+    entryPoint: 'Web/Www/Shared/js/toast/achievement-toast.js',
+    outputFileName: 'achievement-toast',
+  });
+  buildCss({
+    name: 'App',
+    entryPoint: 'Web/Www/Shared/css/app.css',
+    outputFileName: 'app'
+  });
+  buildCss({
+    name: 'Tailwind',
+    entryPoint: 'Web/Www/Shared/css/tailwind.css',
+    outputFileName: 'tailwind',
+    configFilePath: 'Web/Www/tailwind.config.js'
+  });
+  buildCssForLitComponent({
+    name: 'App',
+    inputFilePath: 'public/static/dist/app.css',
+    outputFileName: 'app',
+    exportName: 'AppStyles'
+  });
+  buildCssForLitComponent({
+    name: 'Tailwind',
+    inputFilePath: 'public/static/dist/tailwind.css',
+    outputFileName: 'tailwind',
+    exportName: 'TailwindStyles'
+  })
   buildLitComponents();
   buildLitDirectives();
   console.log(`${GREEN_COLOR}BUILD PROCESS COMPLETED.${DEFAULT_COLOR} ${ROCKET_ICON}\n`);

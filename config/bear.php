@@ -30,9 +30,13 @@ return [
   ],
   'ui' => [
     'app_css' => file_get_contents(filename: storage_path(path: 'app/app-css-path.txt')),
-    'app_js' => file_get_contents(filename: storage_path(path: 'app/app-js-path.txt')),
-    'lit_components' => array_map(callback: 'file_get_contents', array: glob(storage_path(path: 'app/lit-components/*.txt'))),
     'tailwind_css' => file_get_contents(filename: storage_path(path: 'app/tailwind-css-path.txt')),
+    'app_js' => file_get_contents(filename: storage_path(path: 'app/app-js-path.txt')),
+    'achievement_toast_js' => file_get_contents(filename: storage_path(path: 'app/achievement-toast-js-path.txt')),
+    'achievement_toast_service_js' => file_get_contents(filename: storage_path(path: 'app/achievement-toast.service-js-path.txt')),
+    'toast_container_js' => file_get_contents(filename: storage_path(path: 'app/toast-container-js-path.txt')),
+    'websocket_service_js' => file_get_contents(filename: storage_path(path: 'app/websocket.service-js-path.txt')),
+    'lit_components' => array_map(callback: 'file_get_contents', array: glob(storage_path(path: 'app/lit-components/*.txt'))),
   ],
   //------------------------------------------------------------------------------------------------------------------
   // Config for generating eloquent models, the "eloquent-models" array has en entry for each connection that wants models generated,as defined in config/database.php

@@ -11,7 +11,6 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Web\Www\Game\Util\GameUtil;
 
 final class GameResultController extends Controller {
   public function index(string $gameId): View|RedirectResponse {
