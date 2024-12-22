@@ -2,6 +2,8 @@
 
 namespace Infrastructure\Console\Kernel;
 
+use Domain\Achievement\Broadcast\AchievementBroadcast;
+use Domain\Achievement\Enum\AchievementEnum;
 use Domain\Game\Command\GameShortCodeCleanupCommand;
 use Domain\Game\Crud\GameRoundDeleter;
 use Domain\Game\Crud\GameUpdater;
@@ -68,7 +70,9 @@ final class ConsoleKernel extends Kernel {
     });
 
     Artisan::command('zz', function () {
-
+      DB::beginTransaction();
+      AchievementBroadcast::achievementCompleted(achievementEnum: AchievementEnum::CA_2, userId: 'aa0a131e-c549-47d6-8066-7245272ad2e1');
+      DB::commit();
     });
   }
 }
