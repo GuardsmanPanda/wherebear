@@ -48,14 +48,14 @@ final class GameBroadcast {
   public static function gameDelete(string $gameId): void {
     BearBroadcastService::broadcastNow(
       channel: 'game.' . $gameId,
-      event: 'game.delete'
+      event: 'game.deleted'
     );
   }
 
   public static function gameUpdate(string $gameId): void {
     BearBroadcastService::broadcastNow(
       channel: 'game.' . $gameId,
-      event: 'game.update',
+      event: 'game.updated',
       data: ['game' => self::getGame($gameId)]
     );
   }
@@ -63,7 +63,7 @@ final class GameBroadcast {
   public static function gameRoundUpdate(string $gameId, int $roundNumber, GameStateEnum $gameStateEnum): void {
     BearBroadcastService::broadcastNow(
       channel: 'game.' . $gameId,
-      event: 'game.round.update',
+      event: 'game.round.updated',
       data: ['roundNumber' => $roundNumber, 'gameStateEnum' => $gameStateEnum->value]
     );
   }
@@ -71,7 +71,7 @@ final class GameBroadcast {
   public static function gameStageUpdate(string $gameId, string $message, int $stage): void {
     BearBroadcastService::broadcastNow(
       channel: 'game.' . $gameId,
-      event: 'game.stage.update',
+      event: 'game.stage.updated',
       data: [
         'message' => $message,
         'stage' => $stage,
@@ -82,7 +82,7 @@ final class GameBroadcast {
   public static function gameUserJoin(string $gameId, stdClass $gameUser): void {
     BearBroadcastService::broadcastNow(
       channel: 'game.' . $gameId,
-      event: 'game-user.join',
+      event: 'game-user.joined',
       data: ['gameUser' => $gameUser]
     );
   }
@@ -90,7 +90,7 @@ final class GameBroadcast {
   public static function gameUserUpdate(string $gameId, string $userId): void {
     BearBroadcastService::broadcastNow(
       channel: 'game.' . $gameId,
-      event: 'game-user.update',
+      event: 'game-user.updated',
       data: ['gameUser' => self::getGameUser(gameId: $gameId, userId: $userId)]
     );
   }
@@ -98,7 +98,7 @@ final class GameBroadcast {
   public static function gameUserLeave(string $gameId, string $userId): void {
     BearBroadcastService::broadcastNow(
       channel: 'game.' . $gameId,
-      event: 'game-user.leave',
+      event: 'game-user.left',
       data: ['userId' => $userId]
     );
   }
