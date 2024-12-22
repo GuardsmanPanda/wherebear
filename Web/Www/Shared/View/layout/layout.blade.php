@@ -37,8 +37,8 @@ use Illuminate\Support\Facades\App;
     document.addEventListener('alpine:init', () => {
       Alpine.data('layoutState', () => ({
         isDev: {{ App::isLocal() }},
-        user: @json(BearAuthService::getUser()),
-        initAchievementToastNotifications() {
+        userId: @json(BearAuthService::getUserIdOrNull()),
+        initAchievementToastNotifications(userId) {
           const webSocketClient = WebSocketClient.init();
           const achievementToastContainer = new ToastContainer(
             document.querySelector('.toast-container') || document.querySelector('#primary'),
@@ -47,7 +47,7 @@ use Illuminate\Support\Facades\App;
               toastClasses: ['w-full', 'sm:w-[500px]']
             }
           );
-          AchievementToastService.init(webSocketClient, this.user.id, achievementToastContainer);
+          AchievementToastService.init(webSocketClient, userId, achievementToastContainer);
         },
         initPageReloadOnSave() {
           const webSocketClient = WebSocketClient.init();
@@ -59,7 +59,9 @@ use Illuminate\Support\Facades\App;
           });
         },
         init() {
-          this.initAchievementToastNotifications();
+          if (this.userId) {
+            this.initAchievementToastNotifications(this.userId);
+          }
 
           if (this.isDev) {
             this.initPageReloadOnSave();
