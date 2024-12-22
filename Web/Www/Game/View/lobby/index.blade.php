@@ -510,27 +510,27 @@
         const webSocketClient = WebSocketClient.init();
         const channel = webSocketClient.subscribeToChannel(`game.${this.game.id}`);
         
-        channel.bind('game.delete', () => {
+        channel.bind('game.deleted', () => {
           window.location.href = '/';
         });
-        channel.bind('game.update', ({ game }) => {
+        channel.bind('game.updated', ({ game }) => {
           this.game = game;
         });
-        channel.bind('game.stage.update', ({ message, stage }) => {
+        channel.bind('game.stage.updated', ({ message, stage }) => {
           this.gameStageText = message;
         });
-        channel.bind('game.round.update', ({ roundNumber, gameStateEnum }) => {
+        channel.bind('game.round.updated', ({ roundNumber, gameStateEnum }) => {
           window.location.href = `/game/${this.game.id}/play`;
         });
-        channel.bind('game-user.join', ({ gameUser }) => {
+        channel.bind('game-user.joined', ({ gameUser }) => {
           if (!this.gameUsers.find(n => n.id === gameUser.id)) {
             this.gameUsers.push(gameUser);
           }
         });
-        channel.bind('game-user.update', ({ gameUser }) => {
+        channel.bind('game-user.updated', ({ gameUser }) => {
           this.updatePlayer(gameUser);    
         });
-        channel.bind('game-user.leave', ({ userId }) => {
+        channel.bind('game-user.left', ({ userId }) => {
           // Because leaving the game is a request, it takes time. If I remove the user in the player list,
           // it creates bugs on the page because the user not exist anymore.
           if (this.user.id !== userId) {
