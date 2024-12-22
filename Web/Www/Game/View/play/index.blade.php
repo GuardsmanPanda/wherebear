@@ -5,8 +5,10 @@
 </div>
 <script>
   const currentRound = {{ $game->current_round }};
-  pusher = new Pusher('6csm0edgczin2onq92lm', window.pusher_data);
-  channel = pusher.subscribe('game.{{$game->id}}');
+  // The suffix 2 is to avoid a conflict name with the 'webSocketClient' in Web/Www/Shared/View/layout/layout.blade.php
+  const webSocketClient2 = WebSocketClient.init();
+  const channel = webSocketClient2.subscribeToChannel('game.{{$game->id}}');
+
   channel.bind('game.round.update', function (data) {
     if (data.GameStateEnum === '{{GameStateEnum::IN_PROGRESS_CALCULATING->value}}') {
       // Todo: Hide the map to guesses can't be made.
