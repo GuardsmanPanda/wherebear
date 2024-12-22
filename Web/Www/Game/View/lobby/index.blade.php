@@ -8,7 +8,7 @@
         <lit-button imgPath="/static/img/icon/cross.svg" size="md" bgColorClass="bg-red-500" x-on:clicked="openConfirmDeleteGameDialog"></lit-button>
         <lit-confirm-dialog x-ref="confirmDeleteGameDialog" 
           label="Delete the game"
-          message="Are you sure you want to delete the game?"
+          message="Are you sure to delete the game?"
           cancelBtnText="No, Cancel"
           confirmBtnText="Yes, Delete"
           confirmBtnBgColorClass="bg-poppy-400"
@@ -118,7 +118,15 @@
                 :isBob="isBob">
               </lit-edit-game-settings-dialog>
 
-              <lit-button label="Start" size="xs" bgColorClass="bg-iris-400" class="w-16" hx-post="/web-api/game/{{$game->id}}/force-start" hx-swap="none" hx-confirm="Confirm that you wish to START the game?"></lit-button>
+              <lit-button label="Start" size="xs" bgColorClass="bg-iris-400" class="w-16" x-on:clicked="openConfirmStartGameDialog"></lit-button>
+              <lit-confirm-dialog x-ref="confirmStartGameDialog" 
+                label="Start the game"
+                message="Are you sure to start the game?"
+                cancelBtnText="No, Cancel"
+                confirmBtnText="Yes, Start"
+                confirmBtnBgColorClass="bg-pistachio-400"
+                x-on:confirmed="startGame">
+              </lit-confirm-dialog>
             </div>
           @else
            <lit-label slot="header-right" :label="game.is_public ? 'PUBLIC' : 'PRIVATE'" size="xs" :bgColorClass="game.is_public ? 'bg-pistachio-400' : 'bg-red-500'" widthClass="w-16"></lit-label>
@@ -375,6 +383,14 @@
           window.location.href = '/';
         })
       },
+      startGame() {
+        fetch(`/web-api/game/${this.game.id}/force-start`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+      },
       leave() {
         fetch(`/web-api/game/${this.game.id}/leave`, {
           method: 'DELETE',
@@ -387,6 +403,9 @@
       },
       openConfirmDeleteGameDialog() {
         this.$refs.confirmDeleteGameDialog.open();
+      },
+      openConfirmStartGameDialog() {
+        this.$refs.confirmStartGameDialog.open();
       },
       openEditGameSettingsDialog() {
         this.$refs.editGameSettingsDialog.open();
