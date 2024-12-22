@@ -75,7 +75,7 @@ class AchievementToastService {
    * @private
    */
   #listenToAchievementCompleted() {
-    this.#webSocketChannel.bind('achievement.complete', (data) => {
+    this.#webSocketChannel.bind('achievement.completed', (data) => {
       this.#handleAchievementComplete(data);
     });
   }
@@ -88,7 +88,7 @@ class AchievementToastService {
    * @private
    */
   #handleAchievementComplete(data) {
-    const toast = new AchievementToast(data.title, data.description);
+    const toast = new AchievementToast(data.achievement_title, `Who knows what amazing thing you have done... ¯\\_(ツ)_/¯`);
     toast.on('cancel', () => {
       this.#toastContainer.removeToast(toast);
     });

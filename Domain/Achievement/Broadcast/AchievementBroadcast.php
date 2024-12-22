@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Domain\Achievement\Broadcast;
 
@@ -9,7 +11,7 @@ final class AchievementBroadcast {
   public static function achievementCompleted(AchievementEnum $achievementEnum, string $userId): void {
     $data = $achievementEnum->getAchievementData();
     BearBroadcastService::broadcastAfterCommit(
-      channel: $userId,
+      channel: 'user.' . $userId,
       event: 'achievement.completed',
       data: [
         'achievement_enum' => $achievementEnum->value,
