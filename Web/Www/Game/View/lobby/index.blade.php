@@ -1,6 +1,6 @@
 <?php declare(strict_types=1); ?>
 
-<div x-data="state('{{ $user->id }}')" class="flex flex-col max-w-5xl h-screen mx-auto lg:border-x border-gray-700 select-none">
+<div x-data="state('{{ $user->id }}')" class="flex flex-col w-full max-w-5xl h-screen mx-auto lg:border-x border-gray-700 select-none toast-container top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
   <!-- Header -->
   <div x-ref="header" class="flex h-14 shrink-0 justify-between items-center px-2 border-b border-gray-700 bg-iris-500">
     <div class="flex w-16">
