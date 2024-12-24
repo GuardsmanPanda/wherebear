@@ -1,7 +1,6 @@
 <?php declare(strict_types=1); ?>
 
 <div x-data="state('{{ $user->id }}')" class="flex flex-col w-full max-w-5xl h-screen mx-auto lg:border-x border-gray-700 select-none toast-container top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
- <lit-select-user-profile-dialog x-ref="selectUserProfileDialog" :displayName="user.display_name" :selectedCountryFlag="user.country_cca2"></lit-select-user-profile-dialog>
   <!-- Header -->
   <div x-ref="header" class="flex h-14 shrink-0 justify-between items-center px-2 border-b border-gray-700 bg-iris-500">
     <div class="flex w-16">
@@ -61,7 +60,7 @@
                   <div class="flex items-center gap-2">
                     <span x-text="user.display_name" class="leading-none font-heading font-semibold text-lg text-iris-800 truncate"></span>
                     <img src="/static/img/icon/edit-pen.svg" class="h-6 hover:brightness-90 cursor-pointer" draggable="false" x-on:click="openSelectUserProfileDialog" />
-                    {{-- <lit-select-user-profile-dialog x-ref="selectUserProfileDialog" :displayName="user.display_name" :selectedCountryFlag="user.country_cca2"></lit-select-user-profile-dialog> --}}
+                    <lit-select-user-profile-dialog x-ref="selectUserProfileDialog" :displayName="user.display_name" :selectedCountryFlag="user.country_cca2"></lit-select-user-profile-dialog>
                   </div>
                   <span class="relative bottom-0.5 font-heading font-semibold text-sm text-gray-800">{{ $user->title }}</span>
                 </div>
