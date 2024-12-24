@@ -70,6 +70,8 @@ class SelectMapMarkerDialog extends LitElement {
     return html`
      <lit-dialog
         label="Select Map Marker"
+        modal
+        closeOnBgClick
         x-on:closed="closeSelectMapMarkerDialog()">
         <div slot="content" class="mx-2">
         ${this.errorMsg

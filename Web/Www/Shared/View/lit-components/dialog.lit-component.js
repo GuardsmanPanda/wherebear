@@ -17,6 +17,12 @@ class Dialog extends LitElement {
     /** Path to the icon image to be displayed in the dialog header. */
     iconPath: { type: String },
 
+    /** Whether the dialog is closed if the background is clicked. Works only in modal mode. */
+    closeOnBgClick: { type: Boolean },
+
+    /** Whether the dialog is a modal. */
+    modal: { type: Boolean },
+
     /** Label to be displayed as the dialog title. */
     label: { type: String },
 
@@ -25,6 +31,9 @@ class Dialog extends LitElement {
 
     /** Tracks whether the dialog has a footer. */
     hasFooter: { type: Boolean, state: true },
+
+    /** Whether the dialog is opened. */
+    isOpened: { type: Boolean, state: true },
 
     /** The height of the screen in pixels. */
     screenHeightPx: { type: Number, state: true }
@@ -50,6 +59,8 @@ class Dialog extends LitElement {
     super();
     this.hideCloseButton = false;
     this.iconPath = null;
+    this.closeOnBgClick = false;
+    this.modal = false;
     this.label = '';
     this.maxHeightPx = null;
     this.offsetTopPx = null;
@@ -76,6 +87,24 @@ class Dialog extends LitElement {
     };
   }
 
+  get dialogClasses() {
+    let classes = {};
+    if (this.isOpened && !this.modal) {
+      classes = {
+        ...classes,
+        'fixed': true,
+        'top-4': true,
+        'bottom-4': true,
+        'left-4': true,
+        'right-4': true,
+        'flex': true,
+        'justify-center': true,
+        'items-center': true,
+      };
+    }
+    return classes;
+  }
+
   connectedCallback() {
     super.connectedCallback();
     window.addEventListener('resize', () => {
@@ -88,6 +117,10 @@ class Dialog extends LitElement {
     window.removeEventListener('resize', () => {
       this.throttledResize()
     });
+  }
+
+  getDialogElement() {
+    return this.shadowRoot.querySelector('dialog');
   }
 
   throttledResize() {
@@ -109,7 +142,7 @@ class Dialog extends LitElement {
 
   /** Invoked when the element is first updated. */
   firstUpdated() {
-    const dialog = this.shadowRoot.querySelector('dialog');
+    const dialog = this.getDialogElement();
     dialog.addEventListener('click', (event) => {
       this.onBackdropClick(event)
     });
@@ -122,8 +155,9 @@ class Dialog extends LitElement {
   }
 
   onBackdropClick(event) {
-    const dialog = this.shadowRoot.querySelector('dialog');
-    if (event.target === dialog) {
+    if (!this.closeOnBgClick) return;
+
+    if (event.target === this.getDialogElement()) {
       this.close();
     }
   }
@@ -137,16 +171,22 @@ class Dialog extends LitElement {
   }
 
   open() {
-    this.shadowRoot.querySelector('dialog').showModal();
+    this.isOpened = true;
+    if (this.modal) {
+      this.getDialogElement().showModal();
+    } else {
+      this.getDialogElement().show();
+    }
   }
 
   close() {
-    this.shadowRoot.querySelector('dialog').close();
+    this.isOpened = false;
+    this.getDialogElement().close();
   }
 
   render() {
     return html`
-      <dialog class="z-10">
+      <dialog class="z-50 ${classMap(this.dialogClasses)}">
         <div class="flex flex-col w-full rounded-lg border border-b-2 border-gray-700">
           <div id="header" class="flex items-center h-12 rounded-t-lg bg-iris-500 border-b border-iris-600" style="box-shadow: inset 0 3px 1px rgba(255, 255, 255, 0.25), inset 0 -3px 1px rgba(0, 0, 0, 0.25);">
             <div class="flex justify-center items-center w-full h-full relative">

@@ -42,6 +42,8 @@ class RoundResultRankingDialogButton extends LitElement {
         id="dialog"
         label="Ranking"
         iconPath="/static/img/icon/podium.svg"
+        modal
+        closeOnBgClick
         @closed="${this.onDialogClosed}"
       >
         <div slot="content" class="flex flex-col gap-2 min-w-64">

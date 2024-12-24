@@ -104,11 +104,12 @@ class SelectUserProfileDialog extends LitElement {
     }
   }
 
-
   render() {
     return html`
      <lit-dialog
         label="Edit Name And Flag"
+        modal
+        closeOnBgClick
         x-on:closed="closeSelectUserProfileDialog()">
         <div slot="content" class="flex flex-col mx-2">
           ${this.errorMsg
