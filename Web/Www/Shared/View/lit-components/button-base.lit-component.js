@@ -11,6 +11,9 @@ export class ButtonBase extends LitElement {
     /** The icon position, 'left' or 'right'. */
     iconPosition: { type: String },
 
+    /** Whether the button is disabled and can't be clicked. */
+    isDisabled: { type: Boolean },
+
     /** Whether the button is full rounded.  */
     isPill: { type: Boolean },
 
