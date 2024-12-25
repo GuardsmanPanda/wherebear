@@ -44,7 +44,7 @@ class AchievementProgress extends LitElement {
         
         ${!this.isCompleted && this.hasSteps ? html`
           <span class="w-full self-end text-right text-sm text-gray-600">${this.currentStep}/${this.totalSteps}</span>
-          <lit-progress-bar innerBgColorClass="bg-pistachio-400" percentage="20"></lit-progress-bar>
+          <lit-progress-bar size="xs" innerBgColorClass="bg-pistachio-400" percentage="20"></lit-progress-bar>
         ` : nothing}
 
         ${this.isCompleted ? html`

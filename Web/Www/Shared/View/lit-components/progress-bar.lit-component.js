@@ -47,6 +47,9 @@ class ProgressBar extends LitElement {
      */
     sideUnbordered: { type: Boolean },
 
+    /** Sets the size of the progress bar, corresponding to the available size keys: 'xs', 'sm'. */
+    size: { type: String },
+
     /** 
      * The duration of the width transition in milliseconds. 
      * Controls how long it takes for the progress bar to adjust its width.
@@ -79,7 +82,6 @@ class ProgressBar extends LitElement {
     this.widthTransitionDurationMs = 1000;
   }
 
-
   firstUpdated() {
     setTimeout(() => {
       this.isTransitionEnabled = true;
@@ -104,6 +106,8 @@ class ProgressBar extends LitElement {
 
   get outterBarClasses() {
     return {
+      'h-3': this.size === 'xs',
+      'h-4': this.size !== 'xs',
       'rounded': !this.sideFlated,
       'border-x': !this.sideUnbordered
     }
@@ -135,7 +139,7 @@ class ProgressBar extends LitElement {
   render() {
     return html`
       <div 
-        class="flex w-full h-4 border-y bg-gray-500 border-gray-700 ${classMap(this.outterBarClasses)}"
+        class="flex w-full border-y bg-gray-500 border-gray-700 ${classMap(this.outterBarClasses)}"
         style="box-shadow: inset 0 4px 1px rgb(0 0 0 / 0.3);"
         ${this.showPercentageTooltip ? tooltip(`${this.roundedPercentage}%`) : ''}>
         <div
