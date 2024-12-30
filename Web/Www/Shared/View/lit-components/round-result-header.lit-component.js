@@ -494,6 +494,7 @@ class RoundResultHeader extends LitElement {
   }
 
   handleKeydown(event) {
+    return // Disable the texture switch, remove it for dev
     switch (event.code) {
       case 'ArrowRight':
         this.nextTexture();
