@@ -103,7 +103,6 @@ class SelectMapStyleDialog extends LitElement {
       <lit-dialog
         label="Select Map Style"
         modal
-        closeOnBgClick
         x-on:closed="closeSelectMapStyleDialog()">
         <div slot="content" class="select-none">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">

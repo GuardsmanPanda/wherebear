@@ -53,7 +53,6 @@ class ConfirmDialog extends LitElement {
      <lit-dialog
         label="${this.label}"
         modal
-        closeOnBgClick
         x-on:closed="${this.cancel}">
         <div slot="content" class="flex flex-col max-w-80 gap-8 mx-2 my-4">
           <div class="flex justify-center items-center">
