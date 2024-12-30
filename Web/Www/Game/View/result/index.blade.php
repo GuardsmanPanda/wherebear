@@ -226,17 +226,17 @@
           <div class="flex flex-col gap-2 p-2">
             @foreach ($players as $player)
               <lit-player-result-item
+                countryCCA2="{{ $player->country_cca2 }}"
                 detailedPoints="{{ $player->detailed_points }}"
-                flagFilePath="{{ $player->flag_file_path }}"
                 flagDescription="{{ $player->flag_description }}"
+                flagFilePath="{{ $player->flag_file_path }}"
+                iconPath="{{ $player->map_marker_file_path }}"
+                level="{{ $player->level }}"
+                name="{{ $player->display_name }}"
                 rank="{{ $player->rank }}"
                 rankSelected="{{ $player->rank === $user->rank ? $player->rank : '' }}"
-                title="{{ $player->title }}"
-                name="{{ $player->display_name }}"
-                iconPath="{{ $player->map_marker_file_path }}"
                 roundedPoints="{{ $player->rounded_points }}"
-                countryCCA2="{{ $player->country_cca2 }}"
-                level="{{ $player->level }}">
+                userTitle="{{ $player->title }}">
               </lit-player-result-item>
             @endforeach
           </div>

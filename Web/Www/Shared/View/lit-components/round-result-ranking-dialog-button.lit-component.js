@@ -59,12 +59,12 @@ class RoundResultRankingDialogButton extends LitElement {
               distanceMeters="${guess.distance_meters}"
               flagFilePath="${guess.user_flag_file_path}"
               flagDescription="${guess.user_flag_description}"
-              .title="${guess.title}"
               iconPath="${guess.map_marker_file_path}"
               level="${guess.user_level}"
               name="${guess.user_display_name}"
               rank="${guess.rank}"
-              roundedPoints="${guess.rounded_points}">
+              roundedPoints="${guess.rounded_points}"
+              userTitle="${guess.title}">
             </lit-player-result-item>
           `)}
         </div>

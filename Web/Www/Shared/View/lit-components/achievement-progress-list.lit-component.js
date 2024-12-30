@@ -128,7 +128,7 @@ class AchievementProgressList extends LitElement {
       <div class="flex flex-col gap-2">
         ${achievements.map(achievement => html`
           <lit-achievement-progress
-            .title="${achievement.title}"
+            name="${achievement.title}"
             description="${achievement.description}"
             .isCompleted="${achievement.isCompleted}"
             completedDate="${new Date().toISOString()}"
