@@ -323,12 +323,12 @@ class RoundList extends LitElement {
     }
   }
 
-  selectRound(cca2, roundNumber) {
+  selectRound(roundNumber) {
     if (!this.roundClickable) return;
     if (this.selectedRoundNumber === roundNumber) return;
 
     this.dispatchEvent(new CustomEvent('clicked', {
-      detail: { countryCca2: cca2, roundNumber: roundNumber },
+      detail: { roundNumber },
       bubbles: true,
       composed: true
     }));
@@ -344,7 +344,7 @@ class RoundList extends LitElement {
         <div class="group relative h-full px-[5px] py-2 ${this.roundClickable ? 'cursor-pointer' : ''}" @click="${() => {
           // Round is undefined if it's a not played yet round (placeholder)
           if (round) {
-            this.selectRound(round.country_cca2, roundNumber)
+            this.selectRound(roundNumber)
           }
         }}">
           ${!this.roundClickable && isSelected

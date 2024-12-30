@@ -16,7 +16,9 @@ final class GameResultController extends Controller {
   public function index(string $gameId): View|RedirectResponse {
     $game = DB::selectOne(query: <<<SQL
       SELECT
-        g.id, g.game_state_enum, g.experience_points
+        g.id, g.name, g.game_state_enum, g.experience_points, g.number_of_rounds,
+        CASE WHEN g.templated_by_game_id IS NOT NULL THEN 'template' ELSE 'classic' END as type,
+        round((g.number_of_rounds * (g.round_duration_seconds + g.round_result_duration_seconds + 1) + 90) / 60)::integer as total_game_time_mn
       FROM game g
       WHERE g.id = ?
     SQL, bindings: [$gameId]);
@@ -32,6 +34,7 @@ final class GameResultController extends Controller {
 
     $rounds = DB::select(query: <<<SQL
       SELECT
+        gr.round_number as number,
         bc.cca2 as country_cca2, bc.name as country_name,
         gru.rank as user_rank,
         p.country_cca2 = gru.country_cca2 as country_match_user_guess,
@@ -121,12 +124,15 @@ final class GameResultController extends Controller {
         'experience_points' => 41,
         'field_of_view' => 10,
         'heading' => 10,
+        'name' => 'GreenMonkeyBoy Game',
         'number_of_rounds' => 7,
         'panorama_lat' => 48,
         'panorama_lng' => 2,
         'panorama_url' => 'https://pannellum.org/images/alma.jpg',
         'pitch' => 10,
-        'round_result_seconds_remaining' => 14
+        'round_result_seconds_remaining' => 14,
+        'total_game_time_mn' => 8,
+        'type' => 'classic'
       ],
       'is_dev' => true,
       'rounds' => [
@@ -135,28 +141,32 @@ final class GameResultController extends Controller {
           'country_name' => 'France',
           'user_rank' => 1,
           'country_match_user_guess' => true,
-          'country_subdivision_match' => false
+          'country_subdivision_match' => false,
+          'number' => 1
         ],
         (object) [
           'country_cca2' => 'UA',
           'country_name' => 'Ukraine',
           'user_rank' => 2,
           'country_match_user_guess' => true,
-          'country_subdivision_match' => true
+          'country_subdivision_match' => true,
+          'number' => 2
         ],
         (object) [
           'country_cca2' => 'DE',
           'country_name' => 'Germany',
           'user_rank' => 3,
           'country_match_user_guess' => false,
-          'country_subdivision_match' => false
+          'country_subdivision_match' => false,
+          'number' => 3
         ],
         (object) [
           'country_cca2' => 'KR',
           'country_name' => 'South Korea',
           'user_rank' => 4,
           'country_match_user_guess' => true,
-          'country_subdivision_match' => true
+          'country_subdivision_match' => true,
+          'number' => 4
         ],
       ],
       'players' => [
