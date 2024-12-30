@@ -59,7 +59,6 @@ class EditGameSettingsDialog extends LitElement {
      <lit-dialog
         label="Game Settings"
         modal
-        closeOnBgClick
         x-on:closed="closeEditGameSettingsDialog()">
         <div slot="content" class="flex flex-col mx-2">
           ${this.errorMsg
