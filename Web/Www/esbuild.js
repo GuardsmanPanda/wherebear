@@ -115,13 +115,13 @@ function buildLitComponents() {
     }
 
     esbuild.buildSync({
-      entryPoints: glob.sync(['Web/Www/**/*.lit-component.js']),
+      entryPoints: glob.sync(['Web/Www/**/*.lit-component.js', 'Web/Www/**/*.lit-component.ts']),
       entryNames: '[name]',
       sourcemap: true,
       bundle: true,
       minify: true,
       logLevel: "info",
-      define: { global: "window" },
+      loader: { '.ts': 'ts', '.js': 'js' },
       outdir: distPath,
     });
 
