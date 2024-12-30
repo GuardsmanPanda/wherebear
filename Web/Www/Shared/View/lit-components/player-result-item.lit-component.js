@@ -21,7 +21,7 @@ class PlayerResultItem extends LitElement {
     rank: { type: Number },
     rankSelected: { type: Number },
     roundedPoints: { type: Number },
-    title: { type: String },
+    userTitle: { type: String },
   }
 
   static styles = css`${TailwindStyles}`;
@@ -141,7 +141,7 @@ class PlayerResultItem extends LitElement {
                 <img src="/static/img/icon/emblem.svg" class="h-5" />
                 <span class="absolute text-white font-heading text-base font-bold text-stroke-2 text-stroke-iris-900">${this.level}</span>
               </div>
-              <div class="text-xs sm:text-sm text-gray-700 truncate select-text">${this.title}</div>
+              <div class="text-xs sm:text-sm text-gray-700 truncate select-text">${this.userTitle}</div>
             </div>
           </div>
         </div>

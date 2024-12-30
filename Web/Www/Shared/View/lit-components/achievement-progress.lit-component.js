@@ -4,11 +4,11 @@ import { TailwindStyles } from '../../../../../public/static/dist/lit-tailwind-c
 
 /**
  * Represents a player's progress on an achievement.
- * This component displays the title, description, and completion status of an achievement.
+ * This component displays the name, description, and completion status of an achievement.
  */
 class AchievementProgress extends LitElement {
   static properties = {
-    title: { type: String },
+    name: { type: String },
     description: { type: String },
     isCompleted: { type: Boolean },
     completedDate: { type: String },
@@ -39,7 +39,7 @@ class AchievementProgress extends LitElement {
   render() {
     return html`
       <div class="flex flex-col min-h-24 relative border border-gray-200 rounded p-2 bg-gray-0">
-        <span class="mr-8 font-medium text-base text-iris-600">${this.title}</span>
+        <span class="mr-8 font-medium text-base text-iris-600">${this.name}</span>
         <span class="mr-8 text-sm text-gray-700">${this.description}</span>
         
         ${!this.isCompleted && this.hasSteps ? html`
