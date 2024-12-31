@@ -386,6 +386,7 @@ final class GamePlayController extends Controller {
       'isDev' => true,
       'user' => (object) [
         'id' => '0',
+        'map_style_enum' => 'OSM',
         'map_style_full_uri' => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
         'map_style_tile_size' => 256
       ],

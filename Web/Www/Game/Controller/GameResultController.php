@@ -250,6 +250,7 @@ final class GameResultController extends Controller {
         'level_percentage' => 25,
         'map_marker_file_path' => '/static/img/map-marker/monster/1.png',
         'map_marker_map_anchor' => 'bottom',
+        'map_style_enum' => 'OSM',
         'map_style_tile_size' => 256,
         'map_style_full_uri' => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
         'next_level_experience_points_requirement' => 78,

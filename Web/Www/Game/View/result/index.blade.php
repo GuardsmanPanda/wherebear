@@ -108,6 +108,7 @@
           
           <lit-game-round-map
             x-ref="map"
+            mapStyleEnum="{{ $user->map_style_enum }}"
             mapStyleTileSize="{{ $user->map_style_tile_size }}"
             mapStyleFullUri="{{ $user->map_style_full_uri }}"
             :guesses="JSON.stringify(selectedRound.guesses)"
@@ -254,6 +255,7 @@
           
           <lit-game-round-map
             x-ref="map"
+            mapStyleEnum="{{ $user->map_style_enum }}"
             mapStyleTileSize="{{ $user->map_style_tile_size }}"
             mapStyleFullUri="{{ $user->map_style_full_uri }}"
             :guesses="JSON.stringify(selectedRound.guesses)"
