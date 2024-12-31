@@ -13,6 +13,7 @@ class GameRoundMap extends LitElement {
     guesses: { type: Array },
     panoramaLat: { type: Number },
     panoramaLng: { type: Number },
+    mapStyleEnum: { type: String },
     mapStyleFullUri: { type: String },
     mapStyleTileSize: { type: Number },
     map: { type: Object, state: true },
@@ -183,9 +184,14 @@ class GameRoundMap extends LitElement {
   }
 
   setPanoramaMarker() {
+    let mapMarkerFilename = 'map-marker-red-black-border';
+    if (this.mapStyleEnum === 'SATELLITE' || this.mapStyleEnum === 'SATELLITE_STREETS' || this.mapStyleEnum === 'NIGHT' || this.mapStyleEnum === 'DARK') {
+      mapMarkerFilename = 'map-marker-red-white-border';
+    }
+
     const mapPanoramaMarkerElement = document.createElement('div');
     mapPanoramaMarkerElement.innerHTML = `
-      <img src="/static/img/map-extra/marker-win3.png" class="w-16" />
+       <img src="/static/img/icon/${mapMarkerFilename}.svg" class="h-12" />
     `;
 
     this.panoramaMarker = new window.maplibregl
