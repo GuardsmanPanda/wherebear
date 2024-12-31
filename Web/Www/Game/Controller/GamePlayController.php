@@ -235,7 +235,7 @@ final class GamePlayController extends Controller {
         'lat' => 38.5,
         'lng' => 4.5,
         'map_marker_file_path' => '/static/img/map-marker/chibi/templar-knight.png',
-        'rank' => 10,
+        'rank' => 1,
         'rounded_points' => 123,
         'title' => 'Digital Guinea Pig',
         'user_country_cca2' => 'UA',
