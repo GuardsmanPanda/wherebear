@@ -67,7 +67,7 @@
     </div>
 
     <!-- Middle Column -->
-    <div x-ref="middleColumn" class="hidden xl:flex w-full overflow-hidden rounded border border-gray-700 bg-iris-500">
+    <div x-ref="middleColumn" class="hidden xl:flex w-full overflow-hidden rounded border border-gray-700 bg-iris-200">
       <div x-show="isFullScreen" x-cloak class="flex flex-col w-[280px] shrink-0 z-50 border-r border-gray-700">
       
         <lit-button label="FULLSCREEN" imgPath="/static/img/icon/fullscreen.svg" type="primary" size="lg" :isSelected="isFullScreen" x-on:click="toggleFullScreen" class="m-2"></lit-button>
