@@ -1,18 +1,19 @@
 import { LitElement, css, html } from 'lit';
-
+import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
+
+// @ts-ignore
 import { TailwindStyles } from '../../../../../public/static/dist/lit-tailwind-css';
 
 /**
  * A header component for a panel.
  * This component includes two slot areas ("left" and "right") for flexible content injection.
  */
+@customElement('lit-panel-header2')
 class PanelHeader extends LitElement {
-  static properties = {
-    label: { type: String },
-    noBorder: { type: Boolean },
-    noRounded: { type: Boolean }
-  }
+    @property({ type: String }) label?: string;
+    @property({ type: Boolean }) noBorder = false;
+    @property({ type: Boolean }) noRounded = false;
 
   static styles = css`${TailwindStyles}`;
 
@@ -23,7 +24,7 @@ class PanelHeader extends LitElement {
     }
   }
 
-  render() {
+ protected render() {
     return html`
       <div 
         class="flex w-full h-8 justify-between items-center relative px-2 border-gray-700 bg-iris-400 ${classMap(this.classes)}">
@@ -39,5 +40,3 @@ class PanelHeader extends LitElement {
     `;
   }
 }
-
-customElements.define('lit-panel-header2', PanelHeader);

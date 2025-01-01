@@ -1,6 +1,8 @@
 import { LitElement, css, html } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 
+// @ts-ignore
 import { TailwindStyles } from '../../../../../public/static/dist/lit-tailwind-css';
 import { tooltip } from './tippy.lit-directive';
 
@@ -17,26 +19,32 @@ import { tooltip } from './tippy.lit-directive';
  * Example:
  * <lit-flag cca2="FR" filePath="/static/flag/svg/FR.svg" description="France" class="w-full"></lit-flag>
  */
+@customElement('lit-flag')
 class Flag extends LitElement {
-  static properties = {
-    cca2: { type: String },
-    description: { type: String },
-    filePath: { type: String },
-    maxHeightClass: { type: String },
-    roundedClass: { type: String },
-  }
+  @property({ type: String }) cca2!: string;
+  @property({ type: String }) description!: string;
+  @property({ type: String }) filePath!: string;
+  @property({ type: String }) maxHeightClass?: string;
+  @property({ type: String }) roundedClass?: string;
 
   static styles = css`${TailwindStyles}`;
 
   get imgClasses() {
-    return {
-      [this.roundedClass]: this.roundedClass,
-      [this.maxHeightClass]: this.maxHeightClass,
-      'border': this.cca2 !== 'NP'
-    }
+    let classes: { [key: string]: boolean } = {
+			'border': this.cca2 !== 'NP'
+		};
+			
+		if (this.maxHeightClass) {
+			classes[this.maxHeightClass] = true;
+		}
+		if (this.roundedClass) {
+			classes[this.roundedClass] = true;
+		}
+		
+		return classes;
   }
 
-  render() {
+  protected render() {
     return html`
       <div class="flex items-center justify-center w-full h-full">
         <img 
@@ -48,5 +56,3 @@ class Flag extends LitElement {
     `;
   }
 }
-
-customElements.define('lit-flag', Flag);

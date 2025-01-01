@@ -1,8 +1,22 @@
-import { css, html, LitElement, nothing } from 'lit';
+import { LitElement, PropertyValues, css, html, nothing } from 'lit';
+import { customElement, property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 
+// @ts-ignore
 import { TailwindStyles } from '../../../../../public/static/dist/lit-tailwind-css';
 import { tooltip } from './tippy.lit-directive';
+
+interface Guess {
+  rank: number, 
+	detailedPoints: string,
+	countryMatch: boolean,
+	countrySubdivisionMatch: boolean,
+	roundedPoints: number,
+	distanceMeters: number,
+	countryCca2: string,
+	flagFilePath: string,
+	countryName: string
+} 
 
 /**
  * The header for a round result, displays:
@@ -10,21 +24,19 @@ import { tooltip } from './tippy.lit-directive';
  * - The name of the country's subdivision.
  * - The user's rank and score based on their guess.
  */
+@customElement('lit-round-result-header')
 class RoundResultHeader extends LitElement {
-  static properties = {
-    countryCca2: { type: String },
-    countryName: { type: String },
-    countrySubdivisionName: { type: String },
-    userGuess: { type: Object },
-    texture: { type: String, state: true },
-    textureIndex: { type: Number, state: true }
-  };
+  @property({ type: String }) countryCca2!: string;
+  @property({ type: String }) countryName!: string;
+  @property({ type: String }) countrySubdivisionName!: string;
+  @property({ type: Object }) userGuess?: Guess;
 
-  static styles = [
-    css`${TailwindStyles}`
-  ];
+  @state() texture = '';
+  @state() textureIndex = 0;
 
-  textures = [
+  static styles = css`${TailwindStyles}`;
+
+  private textures = [
     "3px-tile",
     "45-degree-fabric-dark",
     "45-degree-fabric-light",
@@ -424,15 +436,7 @@ class RoundResultHeader extends LitElement {
     "zig-zag",
   ]
 
-  constructor() {
-    super();
-    this.texture = '';
-    this.textureIndex = 0;
-
-    this.handleKeydown = this.handleKeydown.bind(this);
-  }
-
-  get rankOrdinalSuffix() {
+  get rankOrdinalSuffix(): string {
     if (!this.userGuess) return '';
     return this.userGuess.rank === 1 ? 'st'
       : this.userGuess.rank === 2 ? 'nd'
@@ -440,30 +444,23 @@ class RoundResultHeader extends LitElement {
           : 'th';
   }
 
-  getCls() {
-    const rankGapMap = {
-      1: 'gap-0',
-      2: 'gap-1',
-      3: 'gap-0.5',
-    };
-
-    return classMap({
-      [rankGapMap[this.userGuess.rank] || 'gap-1']: true
-    });
+  firstUpdated(_changedProperties: PropertyValues): void {
+    this.handleKeydown = this.handleKeydown.bind(this);
   }
 
   get distanceAndUnit() {
-    if (this.userGuess.distanceMeters < 1000) {
+    if (this.userGuess && this.userGuess.distanceMeters < 1000) {
       return {
         value: Math.round(this.userGuess.distanceMeters),
         unit: 'm'
       };
-    } else {
+    } else if (this.userGuess) {
       return {
         value: Math.round(this.userGuess.distanceMeters / 1000),
         unit: 'km'
       };
     }
+    return { value: 0, unit: 'm' };
   }
 
   get distanceClasses() {
@@ -483,17 +480,19 @@ class RoundResultHeader extends LitElement {
     });
   }
 
-  connectedCallback() {
-    super.connectedCallback();
-    window.addEventListener('keydown', this.handleKeydown);
+  private getCls() {
+    const rankGapMap: Record<number, string> = {
+      1: 'gap-0',
+      2: 'gap-1',
+      3: 'gap-0.5',
+    };
+
+    return classMap({
+      [rankGapMap[this.userGuess?.rank || 0] || 'gap-1']: true
+    });
   }
 
-  disconnectedCallback() {
-    window.removeEventListener('keydown', this.handleKeydown);
-    super.disconnectedCallback();
-  }
-
-  handleKeydown(event) {
+  private handleKeydown(event: KeyboardEvent): void {
     return // Disable the texture switch, remove it for dev
     switch (event.code) {
       case 'ArrowRight':
@@ -507,7 +506,7 @@ class RoundResultHeader extends LitElement {
     }
   }
 
-  nextTexture() {
+  private nextTexture(): void {
     if (this.textureIndex === this.textures.length - 1) {
       this.textureIndex = 0;
     } else {
@@ -517,7 +516,7 @@ class RoundResultHeader extends LitElement {
     console.log(this.texture);
   }
 
-  previousTexture() {
+  private previousTexture(): void {
     if (this.textureIndex === 0) {
       this.textureIndex = this.textures.length - 1;
     } else {
@@ -527,7 +526,17 @@ class RoundResultHeader extends LitElement {
     console.log(this.texture);
   }
 
-  render() {
+  connectedCallback(): void {
+    super.connectedCallback();
+    window.addEventListener('keydown', this.handleKeydown);
+  }
+
+  disconnectedCallback(): void {
+    window.removeEventListener('keydown', this.handleKeydown);
+    super.disconnectedCallback();
+  }
+  
+  protected render() {
     return this.userGuess && Object.keys(this.userGuess).length > 0 ? html`
       <div class="flex justify-between items-start relative z-20 bg-iris-500 border-b-2 border-gray-700"
       style="background-image: url('https://www.transparenttextures.com/patterns/${this.texture}.png');">
@@ -582,5 +591,3 @@ class RoundResultHeader extends LitElement {
       ` : nothing;
   }
 }
-
-customElements.define('lit-round-result-header', RoundResultHeader);

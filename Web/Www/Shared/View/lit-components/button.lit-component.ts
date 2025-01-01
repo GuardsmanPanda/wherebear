@@ -1,57 +1,34 @@
 import { html } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 
 import { ButtonBase } from './button-base.lit-component';
 
+type ContentAlignment = 'left' | 'center';
+
 /**
  * Represents a button with customizable size, color, icon, and label.
  */
+@customElement('lit-button')
 class Button extends ButtonBase {
-  static properties = {
-    ...ButtonBase.properties,
-
-    /** 
-     * Background color class for the button. 
-     * @example 'bg-blue-400'
-     */
-    bgColorClass: { type: String },
-
-    /** Alignment of the content: accepts 'left' or 'center'. */
-    contentAlignment: { type: String },
-
-    /** The path to the image to display in the button. */
-    imgPath: { type: String },
-
-    /** The label text to display on the button. */
-    label: { type: String },
-
-    /** 
-     * Text color class for the label. 
-     * @example 'text-gray-800'
-     */
-    labelColorClass: { type: String }
-  };
+  @property({ type: String }) bgColorClass = 'bg-iris-400'; 
+  @property({ type: String }) contentAlignment: ContentAlignment = 'center';  
+  @property({ type: String }) imgPath?: string;
+  @property({ type: String }) label?: string;
+  @property({ type: String }) labelColorClass = 'text-gray-50'; 
 
   static styles = [...ButtonBase.styles];
 
-  constructor() {
-    super();
-    this.size = 'sm';
-    this.bgColorClass = 'bg-iris-400';
-    this.labelColorClass = 'text-gray-50';
-  }
-
-  /** The dynamic CSS classes for the button. */
   get buttonClasses() {
     let paddingClass = 'px-1';
 
     if (this.label) {
       if (this.size === 'xs') {
-        paddingClass = 'px-1'
+        paddingClass = 'px-1';
       } else if (this.size === 'sm') {
-        paddingClass = 'px-3'
+        paddingClass = 'px-3';
       } else {
-        paddingClass = 'px-4'
+        paddingClass = 'px-4';
       }
     }
 
@@ -67,10 +44,9 @@ class Button extends ButtonBase {
       'rounded-full': this.isPill,
       'inner-shadow': !this.isSelected,
       'inner-shadow-selected': this.isSelected,
-    }
+    };
   }
 
-  /** The dynamic CSS classes for the content inside the button. */
   get contentClasses() {
     return {
       'justify-start': this.contentAlignment === 'left',
@@ -78,23 +54,20 @@ class Button extends ButtonBase {
       'gap-1': this.size === 'xs' || this.size === 'sm' || this.size === 'md',
       'gap-2': this.size === 'lg' || this.size === 'xl',
       'group-active:top-[2px]': true,
-      'top-[1px]': this.isSelected
+      'top-[1px]': this.isSelected,
     };
   }
 
-
-  /** The dynamic CSS classes for the icon inside the button. */
   get imageClasses() {
     return {
       'hidden': !this.imgPath,
       'h-6': this.size === 'xs' || this.size === 'sm' || this.size === 'md',
       'h-7': this.size === 'lg',
       'h-8': this.size === 'xl',
-      'bottom-[2px]': true
-    }
+      'bottom-[2px]': true,
+    };
   }
 
-  /** The dynamic CSS classes for the label inside the button. */
   get labelClasses() {
     return {
       [this.labelColorClass]: this.labelColorClass,
@@ -105,10 +78,9 @@ class Button extends ButtonBase {
       'text-base': this.size === 'md',
       'text-lg': this.size === 'lg',
       'text-xl': this.size === 'xl',
-    }
+    };
   }
 
-  /** The dynamic CSS classes for the background overlay inside the button. */
   get backgroundOverlayClasses() {
     return {
       'opacity-0': !this.isSelected,
@@ -117,11 +89,11 @@ class Button extends ButtonBase {
       'opacity-45': this.isSelected,
       'group-active:opacity-0': this.isSelected,
       'rounded-md': !this.isPill,
-      'rounded-full': this.isPill
-    }
+      'rounded-full': this.isPill,
+    };
   }
 
-  render() {
+  protected render() {
     return html`
       <button
         class="
@@ -141,5 +113,3 @@ class Button extends ButtonBase {
     `;
   }
 }
-
-customElements.define('lit-button', Button);

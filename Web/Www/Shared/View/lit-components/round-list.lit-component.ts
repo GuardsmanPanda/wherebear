@@ -1,33 +1,48 @@
 import { LitElement, css, html, nothing } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
+// @ts-ignore
 import { TailwindStyles } from '../../../../../public/static/dist/lit-tailwind-css';
 import { tooltip } from './tippy.lit-directive';
+
+interface Round {
+  /** The country code (ISO 3166-1 alpha-2) for the round's country. */
+  country_cca2: string;
+
+  /** The name of the country associated with the round. */
+  country_name: string;
+
+  /** The user's rank for the round (1 for gold, 2 for silver, 3 for bronze, etc.). */
+  user_rank: number | null;
+
+  /** Whether the country match for the round matches the user's guess. */
+  country_match_user_guess: boolean;
+
+  /** Whether the country subdivision match for the round matches the user's guess. */
+  country_subdivision_match_user_guess: boolean;
+
+  /** Whether the round is a placeholder (e.g., a round that hasn't been revealed yet). */
+  isPlaceHolder: boolean;
+}
+
 
 /**
  * Represents a list of rounds in a game.
  * Displays each round as an icon and supports clickable rounds to trigger a selection event.
  */
+@customElement('lit-round-list')
 class RoundList extends LitElement {
-  static properties = {
-    /** An array of round objects representing the list of all rounds in the game. */
-    rounds: { type: Array },
-
-    /** Whether the rounds are clickable. */
-    roundClickable: { type: Boolean },
-
-    /** The number of the round that is currently selected. */
-    selectedRoundNumber: { type: Number },
-
-    /** The total number of rounds available in the game. */
-    totalRoundCount: { type: Number },
-  };
+  @property({ type: Array }) rounds: Round[] = [];
+  @property({ type: Boolean }) roundClickable = false;
+  @property({ type: Number }) selectedRoundNumber?: number;
+  @property({ type: Number }) totalRoundCount!: number;
 
   static styles = css`${TailwindStyles}`;
 
   /** Array of tooltips to be shown when the round hasn't been revealed yet. */
-  unplayedRoundTooltips = [
+  unplayedRoundTooltips: string[] = [
     "404: Country not found",
     "404: Skill Issue",
     "A wild location hasn't appeared yet",
@@ -228,21 +243,13 @@ class RoundList extends LitElement {
     "You must construct additional pylons",
   ];
 
-  constructor() {
-    super();
-    this.rounds = [];
-    this.roundClickable = false;
-    this.selectedRoundNumber = null;
-    this.totalRoundCount = null;
-  }
-
   /**
    * Dynamically generates the styles for the round icon based on whether it's an already played country.
-   * @param {Boolean} isPlaceHolder - Whether the icon is a placeholder.
-   * @param {String} cca2 - The country's code (if it's not a placeholder).
+   * @param isPlaceHolder - Whether the icon is a placeholder.
+   * @param cca2 - The country's code (if it's not a placeholder).
    */
-  getRoundIconStyles(isPlaceHolder, cca2) {
-    let styles = {
+  private getRoundIconStyles(isPlaceHolder: boolean, cca2: string) {
+    let styles: Record<string, string> = {
       'box-shadow': 'inset 0 -4px 1px rgb(0 0 0 / 0.3)'
     };
 
@@ -253,17 +260,14 @@ class RoundList extends LitElement {
         'background-size': cca2 === 'NP' ? 'contain' : 'cover',
         'background-position': 'left',
         'background-repeat': 'no-repeat',
-      }
+      };
     }
 
     return styles;
   }
 
-  /**
-   * Generates the HTML template for displaying a round icon.
-   * @param {Object} args - Parameters including `isPlaceHolder`, `cca2`, `userRank` and `isSelected`.
-   */
-  getRoundIconTemplate(args) {
+  /** Generates the HTML template for displaying a round icon. */
+  private getRoundIconTemplate(args: { isPlaceHolder: boolean, countryCca2: string, userRank: number | null, isSelected: boolean }) {
     return html`
       <div
         class="flex flex-col w-[40px] h-[28px] rounded bg-gray-50 border border-gray-700 relative z-30"
@@ -282,11 +286,11 @@ class RoundList extends LitElement {
   }
 
   /** Randomly selects one of the tooltips for an unplayed round. */
-  getRandomTooltipForUnplayedRound() {
+  private getRandomTooltipForUnplayedRound() {
     return this.unplayedRoundTooltips[Math.floor(Math.random() * this.unplayedRoundTooltips.length)];
   }
 
-  getSelectedRoundBackgroundClasses(isSelected) {
+  private getSelectedRoundBackgroundClasses(isSelected: boolean) {
     return {
       'hidden': !isSelected,
       'group-hover:block': !isSelected,
@@ -297,20 +301,17 @@ class RoundList extends LitElement {
       'h-[calc(100%+4px)]': isSelected,
       'rounded-t-md': isSelected,
       'z-20': isSelected,
-    }
+    };
   }
 
-  getSelectedRoundBackgroundStyles(isSelected) {
+  private getSelectedRoundBackgroundStyles(isSelected: boolean) {
     return {
       'box-shadow': isSelected ? 'inset 0 2px 1px rgba(255, 255, 255, 0.6)' : 'none'
-    }
+    };
   }
 
-  /**
-   * Returns the appropriate rank icon (gold, silver, bronze) based on the user's rank.
-   * @param {Number} userRank - The rank of the user.
-   */
-  getUserRankIcon(userRank) {
+  /** Returns the appropriate rank icon (gold, silver, bronze) based on the user's rank. */
+  private getUserRankIcon(userRank: number) {
     switch (userRank) {
       case 1:
         return 'ribbon-gold';
@@ -323,7 +324,7 @@ class RoundList extends LitElement {
     }
   }
 
-  selectRound(roundNumber) {
+  private selectRound(roundNumber: number) {
     if (!this.roundClickable) return;
     if (this.selectedRoundNumber === roundNumber) return;
 
@@ -334,12 +335,12 @@ class RoundList extends LitElement {
     }));
   }
 
-  render() {
+  protected render() {
     const roundTemplates = [];
-    for (let i = 0; i < this.totalRoundCount; i++) {
+    for (let i = 0; i < (this.totalRoundCount ?? 0); i++) {
       const round = this.rounds[i];
       const roundNumber = i + 1;
-      const isSelected = this.selectedRoundNumber - 1 === i;
+      const isSelected = this.selectedRoundNumber === roundNumber;
       roundTemplates.push(html`
         <div class="group relative h-full px-[5px] py-2 ${this.roundClickable ? 'cursor-pointer' : ''}" @click="${() => {
           // Round is undefined if it's a not played yet round (placeholder)
@@ -363,22 +364,20 @@ class RoundList extends LitElement {
           ? html`
             <div ${tooltip(round.country_name)}>
               ${this.getRoundIconTemplate({
-            countryCca2: round.country_cca2,
-            isCountryMatch: round.country_match_user_guess,
-            isCountrySubdivisionMatch: round.country_subdivision_match_user_guess,
-            isPlaceHolder: false,
-            isSelected: isSelected,
-            roundNumber: roundNumber,
-            userRank: round.user_rank,
-          })}
+                countryCca2: round.country_cca2,
+                isPlaceHolder: false,
+                isSelected,
+                userRank: round.user_rank,
+              })}
             </div>`
           : html`
             <div ${tooltip(this.getRandomTooltipForUnplayedRound())}>
               ${this.getRoundIconTemplate({
-            isPlaceHolder: true,
-            isSelected: isSelected,
-            roundNumber: roundNumber
-          })}
+                isPlaceHolder: true,
+                isSelected,
+                countryCca2: '',
+                userRank: null,
+              })}
             </div>`}
         </div>
       `);
@@ -391,5 +390,3 @@ class RoundList extends LitElement {
     `;
   }
 }
-
-customElements.define('lit-round-list', RoundList);
