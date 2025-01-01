@@ -235,6 +235,7 @@
                 level="{{ $player->level }}"
                 name="{{ $player->display_name }}"
                 rank="{{ $player->rank }}"
+                rankIconType="cup"
                 rankSelected="{{ $player->rank === $user->rank ? $player->rank : '' }}"
                 roundedPoints="{{ $player->rounded_points }}"
                 userTitle="{{ $player->title }}">

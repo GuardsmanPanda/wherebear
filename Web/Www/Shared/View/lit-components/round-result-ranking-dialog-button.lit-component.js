@@ -63,6 +63,7 @@ class RoundResultRankingDialogButton extends LitElement {
               level="${guess.user_level}"
               name="${guess.user_display_name}"
               rank="${guess.rank}"
+              rankIconType="medal"
               roundedPoints="${guess.rounded_points}"
               userTitle="${guess.title}">
             </lit-player-result-item>
