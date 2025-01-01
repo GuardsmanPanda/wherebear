@@ -1,16 +1,19 @@
 import { LitElement, css, html } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 
+// @ts-ignore
 import { TailwindStyles } from '../../../../../public/static/dist/lit-tailwind-css';
+
+type Size = 'xs' | 'sm' | 'md' | 'lg';
 
 /**
  * Displays an emblem icon with the user level in the center.
  */
+@customElement('lit-level-emblem')
 class LevelEmblem extends LitElement {
-  static properties = {
-    level: { type: Number },
-    size: { type: String },
-  }
+  @property({ type: Number }) level!: number;
+  @property({ type: String }) size: Size = 'sm';
 
   static styles = css`${TailwindStyles}`;
 
@@ -34,7 +37,7 @@ class LevelEmblem extends LitElement {
     }
   }
 
-  render() {
+  protected render() {
     return html`
       <div class="relative ${classMap(this.classes)}">
         <img src="/static/img/icon/emblem.svg" class="" draggable="false" />
@@ -44,7 +47,4 @@ class LevelEmblem extends LitElement {
       </div>
     `;
   }
-
 }
-
-customElements.define('lit-level-emblem', LevelEmblem);

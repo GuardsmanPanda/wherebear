@@ -1,43 +1,30 @@
 import { LitElement, css, html, nothing } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
+// @ts-ignore
 import { AppStyles } from '../../../../../public/static/dist/lit-app-css';
+// @ts-ignore
 import { TailwindStyles } from '../../../../../public/static/dist/lit-tailwind-css';
 
-class Dialog extends LitElement {
-  DEFAULT_OFFSET_TOP_PX = 10;
-  /** 48 for the header, 10 for the margin and 50 that comes from I don't know where. */
-  DEFAULT_OFFSET_BOTTOM_PX = 108;
+/**
+ * Dialog component with options for customization like modal, content, and footer.
+ */
+@customElement('lit-dialog')
+export class Dialog extends LitElement {
+  private readonly DEFAULT_OFFSET_TOP_PX = 10;
+  private readonly DEFAULT_OFFSET_BOTTOM_PX = 108;
 
-  static properties = {
-    /** Hides the close button if set to true. */
-    hideCloseButton: { type: Boolean },
-
-    /** Path to the icon image to be displayed in the dialog header. */
-    iconPath: { type: String },
-
-    /** Whether the dialog is closed if the background is clicked. Works only in modal mode. */
-    closeOnBgClick: { type: Boolean },
-
-    /** Whether the dialog is a modal. */
-    modal: { type: Boolean },
-
-    /** Label to be displayed as the dialog title. */
-    label: { type: String },
-
-    /** Maximum height of the content area in pixels. */
-    maxHeightPx: { type: Number },
-
-    /** Tracks whether the dialog has a footer. */
-    hasFooter: { type: Boolean, state: true },
-
-    /** Whether the dialog is opened. */
-    isOpened: { type: Boolean, state: true },
-
-    /** The height of the screen in pixels. */
-    screenHeightPx: { type: Number, state: true }
-  }
+  @property({ type: Boolean }) hideCloseButton = false;
+  @property({ type: String }) iconPath?: string;
+  @property({ type: Boolean }) closeOnBgClick = false;
+  @property({ type: Boolean }) modal = false;
+  @property({ type: String }) label?: string;
+  @property({ type: Number }) maxHeightPx?: number;
+  @property({ type: Boolean }) hasFooter = false;
+  @property({ type: Boolean }) isOpened = false;
+  @property({ type: Number }) screenHeightPx = window.innerHeight;
 
   static styles = css`${TailwindStyles} ${AppStyles}
     dialog {
@@ -53,26 +40,11 @@ class Dialog extends LitElement {
     }
   `;
 
-  resizeTimeout = null;
+  private resizeTimeout: number | null = null;
 
-  constructor() {
-    super();
-    this.hideCloseButton = false;
-    this.iconPath = null;
-    this.closeOnBgClick = false;
-    this.modal = false;
-    this.label = '';
-    this.maxHeightPx = null;
-    this.offsetTopPx = null;
-    this.offsetBottomPx = null;
-    this.hasFooter = false;
-    this.screenHeightPx = window.innerHeight;
-  }
-
-  /** The dynamic CSS classes for the content section. */
   get contentClasses() {
     return {
-      'pb-0': !this.hasFooter
+      'pb-0': !this.hasFooter,
     };
   }
 
@@ -83,12 +55,13 @@ class Dialog extends LitElement {
     return {
       'max-height': this.maxHeightPx && availableHeight > this.maxHeightPx
         ? `${this.maxHeightPx}px`
-        : `calc(100vh - ${this.DEFAULT_OFFSET_TOP_PX + this.DEFAULT_OFFSET_BOTTOM_PX + footerHeightPx}px)`
+        : `calc(100vh - ${this.DEFAULT_OFFSET_TOP_PX + this.DEFAULT_OFFSET_BOTTOM_PX + footerHeightPx}px)`,
     };
   }
 
   get dialogClasses() {
     let classes = {};
+
     if (this.isOpened && !this.modal) {
       classes = {
         ...classes,
@@ -105,34 +78,16 @@ class Dialog extends LitElement {
     return classes;
   }
 
-  connectedCallback() {
-    super.connectedCallback();
-    window.addEventListener('resize', () => {
-      this.throttledResize()
-    });
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    window.removeEventListener('resize', () => {
-      this.throttledResize()
-    });
-  }
-
-  getDialogElement() {
-    return this.shadowRoot.querySelector('dialog');
-  }
-
-  throttledResize() {
+  private throttledResize() {
     if (this.resizeTimeout) return;
 
-    this.resizeTimeout = setTimeout(() => {
+    this.resizeTimeout = window.setTimeout(() => {
       this.handleResize();
       this.resizeTimeout = null;
     }, 200);
   }
 
-  handleResize() {
+  private handleResize() {
     const newHeight = window.innerHeight;
 
     if (this.screenHeightPx !== newHeight) {
@@ -140,21 +95,7 @@ class Dialog extends LitElement {
     }
   }
 
-  /** Invoked when the element is first updated. */
-  firstUpdated() {
-    const dialog = this.getDialogElement();
-    dialog.addEventListener('click', (event) => {
-      this.onBackdropClick(event)
-    });
-    dialog.addEventListener('close', () => this.dispatchCloseEvent());
-
-    const footerSlotEl = this.shadowRoot.querySelector('slot[name="footer"]');
-    footerSlotEl.addEventListener('slotchange', () => {
-      this.hasFooter = footerSlotEl.assignedElements().length > 0;
-    });
-  }
-
-  onBackdropClick(event) {
+  private onBackdropClick(event: MouseEvent) {
     if (!this.closeOnBgClick) return;
 
     if (event.target === this.getDialogElement()) {
@@ -162,29 +103,60 @@ class Dialog extends LitElement {
     }
   }
 
-  dispatchCloseEvent() {
+  private dispatchCloseEvent() {
     this.dispatchEvent(new CustomEvent('closed', {
       detail: {},
       bubbles: true,
-      composed: true
+      composed: true,
     }));
+  }
+
+  private getDialogElement(): HTMLDialogElement | null | undefined {
+    return this.shadowRoot?.querySelector('dialog');
+  }
+  
+  connectedCallback() {
+    super.connectedCallback();
+    window.addEventListener('resize', this.throttledResize);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    window.removeEventListener('resize', this.throttledResize);
+  }
+
+  firstUpdated() {
+    const dialog = this.getDialogElement();
+    if (dialog) {
+      dialog.addEventListener('click', (event) => this.onBackdropClick(event));
+      dialog.addEventListener('close', () => this.dispatchCloseEvent());
+    }
+
+    const footerSlotEl = this.shadowRoot?.querySelector('slot[name="footer"]') as HTMLSlotElement;
+    footerSlotEl?.addEventListener('slotchange', () => {
+      this.hasFooter = footerSlotEl.assignedElements().length > 0;
+    });
   }
 
   open() {
     this.isOpened = true;
-    if (this.modal) {
-      this.getDialogElement().showModal();
-    } else {
-      this.getDialogElement().show();
+    const dialog = this.getDialogElement();
+    if (dialog) {
+      if (this.modal) {
+        dialog.showModal();
+      } else {
+        dialog.show();
+      }
     }
   }
 
   close() {
     this.isOpened = false;
-    this.getDialogElement().close();
+    const dialog = this.getDialogElement();
+    dialog?.close();
   }
 
-  render() {
+  protected render() {
     return html`
       <dialog class="z-50 ${classMap(this.dialogClasses)}">
         <div class="flex flex-col w-full rounded-lg border border-b-2 border-gray-700">
@@ -220,4 +192,8 @@ class Dialog extends LitElement {
   }
 }
 
-customElements.define('lit-dialog', Dialog);
+declare global {
+  interface HTMLElementTagNameMap {
+    'lit-dialog': Dialog;
+  }
+}

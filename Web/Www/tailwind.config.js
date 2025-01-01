@@ -3,7 +3,7 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 module.exports = {
   content: [
     'Web/Www/**/*.blade.php',
-    'Web/Www/**/*.lit-component.js',
+    'Web/Www/**/*.lit-component.ts',
     'Web/Www/Shared/js/toast/*.js',
     'vendor/guardsmanpanda/larabear/src/Web/Www/**/*.php'
   ],

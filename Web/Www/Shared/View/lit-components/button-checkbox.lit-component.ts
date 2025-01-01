@@ -1,4 +1,5 @@
 import { css, html } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 
 import { ButtonBase } from './button-base.lit-component';
@@ -6,41 +7,36 @@ import { ButtonBase } from './button-base.lit-component';
 /**
  * Represents a selectable button with a checkbox.
  */
+@customElement('lit-button-checkbox')
 class ButtonCheckbox extends ButtonBase {
-  static properties = {
-    ...ButtonBase.properties,
-    /**  The label text to display on the button. */
-    label: { type: String },
-  };
+  @property({ type: String }) label!: string;
 
-  static styles = [...ButtonBase.styles, css`
-    .inner-shadow {
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6), inset 0 -2px 0 rgba(0, 0, 0, 0.6);
-    }
-    .group:active .inner-shadow {
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 -0 0 rgba(0, 0, 0, 0.6);
-    }
-    .inner-shadow-selected {
-      box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.6), inset 0 -1px 0 rgba(0, 0, 0, 0.6);
-    }
-    .group:active .inner-shadow-selected {
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6), inset 0 0 0 rgba(0, 0, 0, 0.6);
-    }
-  `];
+  static styles = [
+    ...ButtonBase.styles,
+    css`
+      .inner-shadow {
+        box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6), inset 0 -2px 0 rgba(0, 0, 0, 0.6);
+      }
+      .group:active .inner-shadow {
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 -0 0 rgba(0, 0, 0, 0.6);
+      }
+      .inner-shadow-selected {
+        box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.6), inset 0 -1px 0 rgba(0, 0, 0, 0.6);
+      }
+      .group:active .inner-shadow-selected {
+        box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6), inset 0 0 0 rgba(0, 0, 0, 0.6);
+      }
+    `
+  ];
 
-  constructor() {
-    super();
-    this.isSelectable = true;
-  }
-
-  get buttonClasses() {
+  get buttonClasses(): { [key: string]: boolean } {
     return {
       [this.heightClass]: true,
       'pointer-events-none': this.isDisabled,
     };
   }
 
-  get leftPartClasses() {
+  get leftPartClasses(): { [key: string]: boolean } {
     return {
       'w-10': this.size === 'sm',
       'w-14': this.size === 'md',
@@ -51,7 +47,7 @@ class ButtonCheckbox extends ButtonBase {
     };
   }
 
-  get checkboxClasses() {
+  get checkboxClasses(): { [key: string]: boolean } {
     return {
       'opacity-0': !this.isSelected,
       'opacity-100': this.isSelected,
@@ -61,7 +57,7 @@ class ButtonCheckbox extends ButtonBase {
     };
   }
 
-  get rightPartClasses() {
+  get rightPartClasses(): { [key: string]: boolean } {
     return {
       'bg-gray-200': !this.isSelected,
       'bg-iris-400': this.isSelected,
@@ -72,7 +68,7 @@ class ButtonCheckbox extends ButtonBase {
     };
   }
 
-  get labelClasses() {
+  get labelClasses(): { [key: string]: boolean } {
     return {
       'text-[14px]': this.size === 'xs',
       'text-sm': this.size === 'sm',
@@ -83,7 +79,7 @@ class ButtonCheckbox extends ButtonBase {
     };
   }
 
-  get backgroundOverlayClasses() {
+  get backgroundOverlayClasses(): { [key: string]: boolean } {
     return {
       'group-hover:opacity-15': this.hasMouseLeftAfterClicked,
       'group-active:opacity-30': !this.isSelected,
@@ -93,7 +89,7 @@ class ButtonCheckbox extends ButtonBase {
     };
   }
 
-  render() {
+  protected render() {
     return html`
       <button class="flex w-full relative transition-all duration-100 select-none group ${classMap(this.buttonClasses)}"
         @click="${this.onClick}"
@@ -112,4 +108,3 @@ class ButtonCheckbox extends ButtonBase {
   }
 }
 
-customElements.define('lit-button-checkbox', ButtonCheckbox);

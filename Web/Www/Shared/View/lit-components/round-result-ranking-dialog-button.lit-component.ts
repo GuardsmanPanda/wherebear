@@ -1,42 +1,50 @@
 import { css, html, LitElement, nothing } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
 
+// @ts-ignore
 import { TailwindStyles } from '../../../../../public/static/dist/lit-tailwind-css';
+import { Dialog } from './dialog.lit-component';
+
+interface Guess {
+  user_country_cca2: string;
+  detailed_points: string;
+  distance_meters: number;
+  user_flag_file_path: string;
+  user_flag_description: string;
+  map_marker_file_path: string;
+  user_level: string;
+  user_display_name: string;
+  rank: number;
+  rounded_points: string;
+  title: string;
+}
 
 /**
  * Displays a button to toggle a ranking dialog for the results of a round.
  */
-class RoundResultRankingDialogButton extends LitElement {
-  static properties = {
-    guesses: { type: Array },
-    isSelected: { type: Boolean }
-  };
+@customElement('lit-round-result-ranking-dialog-button')
+export class RoundResultRankingDialogButton extends LitElement {
+  @property({ type: Array }) guesses: Guess[] = [];
+  @property({ type: Boolean }) isSelected = false;
 
-  static styles = [
-    css`${TailwindStyles}`
-  ];
+  static styles = css`${TailwindStyles}`;
 
-  constructor() {
-    super();
-    this.guesses = [];
+  private onDialogClosed(): void {
     this.isSelected = false;
   }
 
-  onDialogClosed() {
-    this.isSelected = false;
-  }
-
-  switchDialogVisibility(e) {
-    const dialogElement = this.shadowRoot.querySelector('#dialog');
+  private switchDialogVisibility(e: CustomEvent): void {
+    const dialogElement = this.shadowRoot?.querySelector('#dialog') as Dialog;
     if (e.detail.isSelected) {
-      dialogElement.open();
+      dialogElement?.open();
       this.isSelected = true;
     } else {
-      dialogElement.close();
+      dialogElement?.close();
       this.isSelected = false;
     }
   }
 
-  render() {
+  protected render() {
     return html`
       <lit-dialog
         id="dialog"
@@ -71,17 +79,16 @@ class RoundResultRankingDialogButton extends LitElement {
         </div>
       </lit-dialog>
 
-      <lit-button-square label="Ranking" 
+      <lit-button-square 
+        label="Ranking" 
         imgPath="/static/img/icon/podium.svg"
         size="xl"
         bgColorClass="bg-gray-600"
         class="z-10"
         isSelectable="true"
         ?isSelected="${this.isSelected}"
-        @clicked="${(e) => this.switchDialogVisibility(e)}">
+        @clicked="${(e: CustomEvent) => this.switchDialogVisibility(e)}">
       </lit-button-square>
     `;
   }
 }
-
-customElements.define('lit-round-result-ranking-dialog-button', RoundResultRankingDialogButton);

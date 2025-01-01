@@ -1,20 +1,22 @@
 import { LitElement, css, html } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
 
+// @ts-ignore
 import { AppStyles } from '../../../../../public/static/dist/lit-app-css';
+// @ts-ignore
 import { TailwindStyles } from '../../../../../public/static/dist/lit-tailwind-css';
 
 /**
  * A flexible container component that provides a structured layout with a header and content area.
  * This component can be used to encapsulate and display content within a visually distinct panel.
  */
+@customElement('lit-panel')
 class Panel extends LitElement {
-  static properties = {
-    label: { type: String },
-  }
+  @property({ type: String }) label?: string
 
   static styles = css`${TailwindStyles} ${AppStyles}`;
 
-  render() {
+  protected render() {
     return html`
       <div 
         class="flex flex-col w-full h-full relative rounded"
@@ -33,5 +35,3 @@ class Panel extends LitElement {
     `;
   }
 }
-
-customElements.define('lit-panel', Panel);
