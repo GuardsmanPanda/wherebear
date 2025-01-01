@@ -38,9 +38,9 @@
             @break($key > 2)
             <div class="flex items-center gap-1 w-[148px]">
               <img
-                src="/static/img/icon/cup-{{ ['gold', 'silver', 'bronze'][$key] }}.svg"
+                src="/static/img/icon/medal-gray-{{ ['gold', 'silver', 'bronze'][$key] }}.svg"
                 alt="{{ ['Gold', 'Silver', 'Bronze'][$key] }} Cup"
-                class="h-4" 
+                class="h-5" 
               />
               <span class="text-sm text-gray-700 truncate">{{ $player->display_name }}</span>
             </div>

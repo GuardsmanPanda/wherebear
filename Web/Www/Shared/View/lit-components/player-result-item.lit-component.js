@@ -19,6 +19,7 @@ class PlayerResultItem extends LitElement {
     level: { type: Number },
     name: { type: String },
     rank: { type: Number },
+    rankIconType: { type: String },
     rankSelected: { type: Number },
     roundedPoints: { type: Number },
     userTitle: { type: String },
@@ -71,7 +72,7 @@ class PlayerResultItem extends LitElement {
   }
 
   /** Returns a template to display the player's rank. */
-  getRankTemplate() {
+  get rankTemplate() {
     if (this.rank > 3) {
       return html`
         <div class="flex justify-center items-center w-8 h-8 rounded-full bg-gray-600">
@@ -80,14 +81,25 @@ class PlayerResultItem extends LitElement {
       `;
     }
 
-    const rankIconPath1 = '/static/img/icon/cup-gold.svg';
-    const rankIconPath2 = '/static/img/icon/cup-silver.svg';
-    const rankIconPath3 = '/static/img/icon/cup-bronze.svg';
+    const rankIcons = {
+      cup: {
+        1: '/static/img/icon/cup-gold.svg',
+        2: '/static/img/icon/cup-silver.svg',
+        3: '/static/img/icon/cup-bronze.svg',
+      },
+      medal: {
+        1: '/static/img/icon/medal-gray-gold.svg',
+        2: '/static/img/icon/medal-gray-silver.svg',
+        3: '/static/img/icon/medal-gray-bronze.svg',
+      }
+    };
+
+    const rankIconFilePath = rankIcons[this.rankIconType]?.[this.rank] || '';
 
     return html`
       <div class="flex items-center">
-        <img src="${this.rank === 1 ? rankIconPath1 : this.rank === 2 ? rankIconPath2 : rankIconPath3}" alt="" class="h-8" />
-      </div>  
+        <img src="${rankIconFilePath}" alt="${this.rankIconType === 'cup' ? `${this.rank} place cup` : `${this.rank} place medal`}" class="${this.rankIconType === 'cup' ? 'h-8' : 'h-[44px]'}" />
+      </div>
     `;
   }
 
@@ -121,7 +133,7 @@ class PlayerResultItem extends LitElement {
     return html`${this.bgColor}
       <div class="flex h-14 sm:h-16 relative rounded border border-gray-700 select-none ${classMap(this.classes)}">
         <div class="flex justify-center items-center w-14 sm:w-16 rounded-l shrink-0 border-r border-gray-300
-        00 ${classMap(this.rankClasses)}">${this.getRankTemplate()}</div>
+        00 ${classMap(this.rankClasses)}">${this.rankTemplate}</div>
 
         <div class="hidden sm:flex justify-center items-center w-14 ml-2 shrink-0">
           <img src="${this.iconPath}" class="max-w-14 max-h-14" />
