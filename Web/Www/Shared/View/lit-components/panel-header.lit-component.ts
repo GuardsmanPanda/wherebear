@@ -1,17 +1,19 @@
-import { LitElement, css, html } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { LitElement, css, html } from "lit"
+import { customElement, property } from "lit/decorators.js"
 
 // @ts-ignore
-import { TailwindStyles } from '../../../../../public/static/dist/lit-tailwind-css';
+import { TailwindStyles } from "../../../../../public/static/dist/lit-tailwind-css"
 
 /**
  * A flexible rectangular area for displaying dynamic injected content.
  */
-@customElement('lit-panel-header')
+@customElement("lit-panel-header")
 class PanelHeader extends LitElement {
-  @property({ type: String }) label?: string;
+  @property({ type: String }) label?: string
 
-  static styles = css`${TailwindStyles}`;
+  static styles = css`
+    ${TailwindStyles}
+  `
 
   protected render() {
     return html`
@@ -25,6 +27,6 @@ class PanelHeader extends LitElement {
           <slot name="right"></slot>
         </div>
       </div>
-    `;
+    `
   }
 }

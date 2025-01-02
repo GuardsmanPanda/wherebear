@@ -1,22 +1,22 @@
-import { LitElement, PropertyValues, css, html, nothing } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
-import { classMap } from 'lit/directives/class-map.js';
+import { LitElement, PropertyValues, css, html, nothing } from "lit"
+import { customElement, property, state } from "lit/decorators.js"
+import { classMap } from "lit/directives/class-map.js"
 
 // @ts-ignore
-import { TailwindStyles } from '../../../../../public/static/dist/lit-tailwind-css';
-import { tooltip } from './tippy.lit-directive';
+import { TailwindStyles } from "../../../../../public/static/dist/lit-tailwind-css"
+import { tooltip } from "./tippy.lit-directive"
 
 interface Guess {
-  rank: number, 
-	detailedPoints: string,
-	countryMatch: boolean,
-	countrySubdivisionMatch: boolean,
-	roundedPoints: number,
-	distanceMeters: number,
-	countryCca2: string,
-	flagFilePath: string,
-	countryName: string
-} 
+  rank: number
+  detailedPoints: string
+  countryMatch: boolean
+  countrySubdivisionMatch: boolean
+  roundedPoints: number
+  distanceMeters: number
+  countryCca2: string
+  flagFilePath: string
+  countryName: string
+}
 
 /**
  * The header for a round result, displays:
@@ -24,17 +24,19 @@ interface Guess {
  * - The name of the country's subdivision.
  * - The user's rank and score based on their guess.
  */
-@customElement('lit-round-result-header')
+@customElement("lit-round-result-header")
 class RoundResultHeader extends LitElement {
-  @property({ type: String }) countryCca2!: string;
-  @property({ type: String }) countryName!: string;
-  @property({ type: String }) countrySubdivisionName!: string;
-  @property({ type: Object }) userGuess?: Guess;
+  @property({ type: String }) countryCca2!: string
+  @property({ type: String }) countryName!: string
+  @property({ type: String }) countrySubdivisionName!: string
+  @property({ type: Object }) userGuess?: Guess
 
-  @state() texture = '';
-  @state() textureIndex = 0;
+  @state() texture = ""
+  @state() textureIndex = 0
 
-  static styles = css`${TailwindStyles}`;
+  static styles = css`
+    ${TailwindStyles}
+  `
 
   private textures = [
     "3px-tile",
@@ -437,157 +439,174 @@ class RoundResultHeader extends LitElement {
   ]
 
   get rankOrdinalSuffix(): string {
-    if (!this.userGuess) return '';
-    return this.userGuess.rank === 1 ? 'st'
-      : this.userGuess.rank === 2 ? 'nd'
-        : this.userGuess.rank === 3 ? 'rd'
-          : 'th';
+    if (!this.userGuess) return ""
+    return this.userGuess.rank === 1 ? "st" : this.userGuess.rank === 2 ? "nd" : this.userGuess.rank === 3 ? "rd" : "th"
   }
 
   firstUpdated(_changedProperties: PropertyValues): void {
-    this.handleKeydown = this.handleKeydown.bind(this);
+    this.handleKeydown = this.handleKeydown.bind(this)
   }
 
   get distanceAndUnit() {
     if (this.userGuess && this.userGuess.distanceMeters < 1000) {
       return {
         value: Math.round(this.userGuess.distanceMeters),
-        unit: 'm'
-      };
+        unit: "m",
+      }
     } else if (this.userGuess) {
       return {
         value: Math.round(this.userGuess.distanceMeters / 1000),
-        unit: 'km'
-      };
+        unit: "km",
+      }
     }
-    return { value: 0, unit: 'm' };
+    return { value: 0, unit: "m" }
   }
 
   get distanceClasses() {
-    let mlClass = 'ml-0';
+    let mlClass = "ml-0"
 
-    if (this.distanceAndUnit.unit === 'km') {
-      const distanceCharactersCount = this.distanceAndUnit.value.toString().length;
+    if (this.distanceAndUnit.unit === "km") {
+      const distanceCharactersCount = this.distanceAndUnit.value.toString().length
       if (distanceCharactersCount > 3) {
-        mlClass = 'ml-3';
+        mlClass = "ml-3"
       } else if (distanceCharactersCount > 2) {
-        mlClass = 'ml-2';
+        mlClass = "ml-2"
       }
     }
 
     return classMap({
-      [mlClass]: true
-    });
+      [mlClass]: true,
+    })
   }
 
   private getCls() {
     const rankGapMap: Record<number, string> = {
-      1: 'gap-0',
-      2: 'gap-1',
-      3: 'gap-0.5',
-    };
+      1: "gap-0",
+      2: "gap-1",
+      3: "gap-0.5",
+    }
 
     return classMap({
-      [rankGapMap[this.userGuess?.rank || 0] || 'gap-1']: true
-    });
+      [rankGapMap[this.userGuess?.rank || 0] || "gap-1"]: true,
+    })
   }
 
   private handleKeydown(event: KeyboardEvent): void {
     return // Disable the texture switch, remove it for dev
     switch (event.code) {
-      case 'ArrowRight':
-        this.nextTexture();
-        break;
-      case 'ArrowLeft':
-        this.previousTexture();
-        break;
+      case "ArrowRight":
+        this.nextTexture()
+        break
+      case "ArrowLeft":
+        this.previousTexture()
+        break
       default:
-        break;
+        break
     }
   }
 
   private nextTexture(): void {
     if (this.textureIndex === this.textures.length - 1) {
-      this.textureIndex = 0;
+      this.textureIndex = 0
     } else {
-      this.textureIndex++;
+      this.textureIndex++
     }
-    this.texture = this.textures[this.textureIndex];
-    console.log(this.texture);
+    this.texture = this.textures[this.textureIndex]
+    console.log(this.texture)
   }
 
   private previousTexture(): void {
     if (this.textureIndex === 0) {
-      this.textureIndex = this.textures.length - 1;
+      this.textureIndex = this.textures.length - 1
     } else {
-      this.textureIndex--;
+      this.textureIndex--
     }
-    this.texture = this.textures[this.textureIndex];
-    console.log(this.texture);
+    this.texture = this.textures[this.textureIndex]
+    console.log(this.texture)
   }
 
   connectedCallback(): void {
-    super.connectedCallback();
-    window.addEventListener('keydown', this.handleKeydown);
+    super.connectedCallback()
+    window.addEventListener("keydown", this.handleKeydown)
   }
 
   disconnectedCallback(): void {
-    window.removeEventListener('keydown', this.handleKeydown);
-    super.disconnectedCallback();
+    window.removeEventListener("keydown", this.handleKeydown)
+    super.disconnectedCallback()
   }
-  
+
   protected render() {
-    return this.userGuess && Object.keys(this.userGuess).length > 0 ? html`
-      <div class="flex justify-between items-start relative z-20 bg-iris-500 border-b-2 border-gray-700"
-      style="background-image: url('https://www.transparenttextures.com/patterns/${this.texture}.png');">
-        <div class="flex gap-2 w-full relative pr-[122px]">
-          <img src="/static/flag/wavy/${this.countryCca2.toLowerCase()}.png"
-            class="h-16 absolute top-2 left-2 z-10 drop-shadow" 
-            alt="Flag of ${this.countryName}" 
-          />
-          <div class="flex flex-col gap-1 py-2 pl-[100px]">
-            <div class="text-3xl text-gray-0 font-medium text-stroke-2 text-stroke-gray-800 leading-none">${this.countryName}</div>
-            <div class="text-lg text-gray-950 font-medium">${this.countrySubdivisionName}</div>
-          </div>
-        </div>
-
-        ${this.userGuess.rank ? html`
-        <div class="absolute top-0 right-2 z-10">
-          <img class="relative bottom-[7px]" src="/static/img/ui/ribbon-emblem.png" />
-
-          <div class="flex flex-col items-center w-[114px] absolute top-[8px]">
-            <div class="flex items-end ${this.getCls()}">
-              <span class="text-5xl font-bold text-gray-0 text-stroke-2 text-stroke-gray-700 z-10">${this.userGuess.rank}</span>
-              <span class="relative bottom-[1px] text-xl font-medium text-gray-0 text-stroke-2 text-stroke-gray-700 ${this.userGuess.rank === 1 ? 'relative right-1' : ''}">${this.rankOrdinalSuffix}</span>
-            </div>
-
-            <div class="relative left-1.5 mt-1">
-              <div class="flex justify-center w-[72px] relative rounded border border-gray-700 bg-iris-500">
-                <div class="w-6 aspect-auto absolute -top-[4px] left-0 transform -translate-x-1/2">
-                  <img src="/static/img/icon/star-gold.svg" />
-                </div>
-                <span class="text-xs text-gray-0 font-medium" ${tooltip(this.userGuess.detailedPoints)}>${this.userGuess.roundedPoints}</span>
-              </div>
-
-              <div class="flex justify-center items-center mt-3 rounded border border-gray-700 bg-iris-500">
-                ${this.userGuess.countryMatch || this.userGuess.countrySubdivisionMatch ? html`
-                  <img src="/static/img/icon/clover-${this.userGuess.countrySubdivisionMatch ? 'gold' : 'green'}.svg" class="h-7 absolute left-0 transform -translate-x-1/2" />`
-          : html`
-              <lit-flag
-                cca2="${this.userGuess.countryCca2}"
-                filePath="${this.userGuess.flagFilePath}"
-                description="${this.userGuess.countryName}"
-                roundedClass="rounded-sm"
-                class="h-5 absolute ${this.userGuess.countryCca2 === 'NP' ? 'left-2' : 'left-0'} transform -translate-x-1/2">
-              </lit-flag>
-                `}
-                <span class="text-xs text-gray-50 font-medium ${this.distanceClasses}">${this.distanceAndUnit.value}<span class="text-gray-100">${this.distanceAndUnit.unit}</span></span>
+    return this.userGuess && Object.keys(this.userGuess).length > 0
+      ? html`
+          <div
+            class="flex justify-between items-start relative z-20 bg-iris-500 border-b-2 border-gray-700"
+            style="background-image: url('https://www.transparenttextures.com/patterns/${this.texture}.png');"
+          >
+            <div class="flex gap-2 w-full relative pr-[122px]">
+              <img
+                src="/static/flag/wavy/${this.countryCca2.toLowerCase()}.png"
+                class="h-16 absolute top-2 left-2 z-10 drop-shadow"
+                alt="Flag of ${this.countryName}"
+              />
+              <div class="flex flex-col gap-1 py-2 pl-[100px]">
+                <div class="text-3xl text-gray-0 font-medium text-stroke-2 text-stroke-gray-800 leading-none">${this.countryName}</div>
+                <div class="text-lg text-gray-950 font-medium">${this.countrySubdivisionName}</div>
               </div>
             </div>
+
+            ${this.userGuess.rank
+              ? html`
+                  <div class="absolute top-0 right-2 z-10">
+                    <img class="relative bottom-[7px]" src="/static/img/ui/ribbon-emblem.png" />
+
+                    <div class="flex flex-col items-center w-[114px] absolute top-[8px]">
+                      <div class="flex items-end ${this.getCls()}">
+                        <span class="text-5xl font-bold text-gray-0 text-stroke-2 text-stroke-gray-700 z-10">${this.userGuess.rank}</span>
+                        <span
+                          class="relative bottom-[1px] text-xl font-medium text-gray-0 text-stroke-2 text-stroke-gray-700 ${this.userGuess.rank === 1
+                            ? "relative right-1"
+                            : ""}"
+                          >${this.rankOrdinalSuffix}</span
+                        >
+                      </div>
+
+                      <div class="relative left-1.5 mt-1">
+                        <div class="flex justify-center w-[72px] relative rounded border border-gray-700 bg-iris-500">
+                          <div class="w-6 aspect-auto absolute -top-[4px] left-0 transform -translate-x-1/2">
+                            <img src="/static/img/icon/star-gold.svg" />
+                          </div>
+                          <span class="text-xs text-gray-0 font-medium" ${tooltip(this.userGuess.detailedPoints)}
+                            >${this.userGuess.roundedPoints}</span
+                          >
+                        </div>
+
+                        <div class="flex justify-center items-center mt-3 rounded border border-gray-700 bg-iris-500">
+                          ${this.userGuess.countryMatch || this.userGuess.countrySubdivisionMatch
+                            ? html` <img
+                                src="/static/img/icon/clover-${this.userGuess.countrySubdivisionMatch ? "gold" : "green"}.svg"
+                                class="h-7 absolute left-0 transform -translate-x-1/2"
+                              />`
+                            : html`
+                                <lit-flag
+                                  cca2="${this.userGuess.countryCca2}"
+                                  filePath="${this.userGuess.flagFilePath}"
+                                  description="${this.userGuess.countryName}"
+                                  roundedClass="rounded-sm"
+                                  class="h-5 absolute ${this.userGuess.countryCca2 === "NP" ? "left-2" : "left-0"} transform -translate-x-1/2"
+                                >
+                                </lit-flag>
+                              `}
+                          <span class="text-xs text-gray-50 font-medium ${this.distanceClasses}"
+                            >${this.distanceAndUnit.value}<span class="text-gray-100">${this.distanceAndUnit.unit}</span></span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                `
+              : nothing}
           </div>
-        </div>
-        ` : nothing}
-      </div>
-      ` : nothing;
+        `
+      : nothing
   }
 }
