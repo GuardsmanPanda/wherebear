@@ -36,7 +36,7 @@ use Illuminate\Support\Facades\App;
   <script>
     document.addEventListener('alpine:init', () => {
       Alpine.data('layoutState', () => ({
-        isDev: {{ App::isLocal() }},
+        isDev: {{ App::isLocal() ? 'true' : 'false' }},
         userId: @json(BearAuthService::getUserIdOrNull()),
         initAchievementToastNotifications(userId) {
           const webSocketClient = WebSocketClient.init();
