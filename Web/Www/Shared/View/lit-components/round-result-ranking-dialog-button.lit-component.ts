@@ -48,7 +48,7 @@ export class RoundResultRankingDialogButton extends LitElement {
 
   protected render() {
     return html`
-      <lit-dialog id="dialog" label="Ranking" iconPath="/static/img/icon/podium.svg" modal @closed="${this.onDialogClosed}">
+      <lit-dialog id="dialog" label="Ranking" iconPath="/static/img/icon/podium.svg" modal closeOnBgClick @closed="${this.onDialogClosed}">
         <div slot="content" class="flex flex-col gap-2 min-w-64">
           ${this.guesses?.length === 0
             ? html`
@@ -93,3 +93,4 @@ export class RoundResultRankingDialogButton extends LitElement {
     `
   }
 }
+
