@@ -6,17 +6,18 @@ import { TailwindStyles } from "../../../../../public/static/dist/lit-tailwind-c
 import { Dialog } from "./dialog.lit-component"
 
 interface Guess {
-  user_country_cca2: string
-  detailed_points: string
   distance_meters: number
-  user_flag_file_path: string
-  user_flag_description: string
+  detailed_points: string
   map_marker_file_path: string
-  user_level: string
-  user_display_name: string
   rank: number
   rounded_points: string
   title: string
+  user_country_cca2: string
+  user_display_name: string
+  user_flag_description: string
+  user_flag_file_path: string
+  user_id: string
+  user_level: string
 }
 
 /**
@@ -26,6 +27,7 @@ interface Guess {
 export class RoundResultRankingDialogButton extends LitElement {
   @property({ type: Array }) guesses: Guess[] = []
   @property({ type: Boolean }) isSelected = false
+  @property({ type: String }) userId!: string
 
   static styles = css`
     ${TailwindStyles}
@@ -70,6 +72,7 @@ export class RoundResultRankingDialogButton extends LitElement {
                 name="${guess.user_display_name}"
                 rank="${guess.rank}"
                 rankIconType="medal"
+                rankSelected="${guess.user_id === this.userId ? guess.rank : ""}"
                 roundedPoints="${guess.rounded_points}"
                 userTitle="${guess.title}"
               >
@@ -93,4 +96,3 @@ export class RoundResultRankingDialogButton extends LitElement {
     `
   }
 }
-

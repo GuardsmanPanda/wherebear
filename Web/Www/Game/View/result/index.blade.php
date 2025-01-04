@@ -130,6 +130,7 @@
           <div class="flex flex-col justify-end items-end gap-4 absolute bottom-0 w-full p-2">
             <lit-round-result-ranking-dialog-button class="z-10"
               :guesses="JSON.stringify(selectedRound.guesses)"
+              :userId="user.id"
             ></lit-round-result-ranking-dialog-button>
           </div>
         </div>
@@ -278,6 +279,7 @@
           <div class="flex xl:hidden justify-end gap-2 absolute bottom-0 w-full p-2">
             <lit-round-result-ranking-dialog-button class="z-10"
               :guesses="JSON.stringify(selectedRound.guesses)"
+              :userId="user.id"
             ></lit-round-result-ranking-dialog-button>
           </div>
         </div>
@@ -304,6 +306,7 @@
       // Data Properties
       game: @json($game),
       rounds: @json($rounds),
+      user: @json($user),
       gameResultElWidthPx: 0,
       isFullScreen: false,
       panoramaLng: null,
@@ -457,8 +460,7 @@
       },
 
       init() {
-        const userRank = parseInt('{{ $user->rank }}');
-        if (userRank === 1) {
+        if (this.userRank === 1) {
           setTimeout(() => {
             window.confetti({ particleCount: 150 });
           }, 500);

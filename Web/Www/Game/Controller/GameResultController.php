@@ -242,6 +242,7 @@ final class GameResultController extends Controller {
         ]
       ],
       'user' => (object) [
+        'id' => '123',
         'current_level_experience_points' => 45,
         'detailed_points' => '124.47',
         'display_name' => 'GreenMonkeyBoy',
