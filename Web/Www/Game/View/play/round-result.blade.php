@@ -21,6 +21,7 @@
       <div class="flex justify-end gap-2 absolute bottom-0 w-full p-2">
         <lit-round-result-ranking-dialog-button class="z-10 xl:hidden"
           :guesses="JSON.stringify(guesses)"
+          :userId="user.id"
         ></lit-round-result-ranking-dialog-button>
       </div>
 
@@ -65,6 +66,7 @@
           :name="guess.user_display_name"
           :rank="guess.rank"
           rankIconType="medal"
+          :rankSelected="guess.user_id === user.id ? guess.rank : ''"
           :roundedPoints="guess.rounded_points"
           :userTitle="guess.title">
         </lit-player-result-item>
@@ -74,9 +76,10 @@
 </div>
 
 <script>
-document.addEventListener('alpine:init', () => {
-  Alpine.data('roundResultState', () => ({
-    guesses: @json($guesses),
-  }));
-})
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('roundResultState', () => ({
+      guesses: @json($guesses),
+      user: @json($user)
+    }));
+  })
 </script>
