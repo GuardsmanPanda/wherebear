@@ -10,6 +10,7 @@ return new class extends Migration {
             $table->text(column: 'map_marker_enum');
             $table->text(column: 'map_style_enum');
             $table->text(column: 'user_flag_enum')->nullable();
+            $table->text(column: 'location_marker_img_path')->default(value: 'static/img/map/location-marker/black-border/pin-red.svg');
             $table->integer(column: 'experience');
             $table->integer(column: 'user_level_enum');
             $table->foreign('map_marker_enum')->references('enum')->on(table: 'map_marker');
@@ -30,6 +31,7 @@ return new class extends Migration {
             $table->dropColumn('user_flag_enum');
             $table->dropColumn('experience');
             $table->dropColumn('user_level_enum');
+            $table->dropColumn('location_marker_img_path');
         });
     }
 };

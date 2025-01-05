@@ -63,6 +63,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $created_at
  * @property string $updated_at
  * @property string $display_name
+ * @property string $location_marker_img_path
  * @property string|null $email
  * @property string|null $password
  * @property string|null $remember_token

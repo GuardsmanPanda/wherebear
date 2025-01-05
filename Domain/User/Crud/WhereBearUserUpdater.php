@@ -60,6 +60,12 @@ final readonly class WhereBearUserUpdater {
     return $this;
   }
 
+  public function setLocationMarkerImgPath(string $path): self {
+    $this->model->location_marker_img_path = $path;
+    return $this;
+  }
+  
+
   public function setLastLoginAt(CarbonInterface|null $last_login_at): self {
     if ($last_login_at?->toIso8601String() === $this->model->last_login_at?->toIso8601String()) {
       return $this;
