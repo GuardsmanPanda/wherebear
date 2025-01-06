@@ -121,12 +121,12 @@ export class Dialog extends LitElement {
 
   connectedCallback() {
     super.connectedCallback()
-    window.addEventListener("resize", this.throttledResize)
+    window.addEventListener("resize", () => this.throttledResize())
   }
 
   disconnectedCallback() {
     super.disconnectedCallback()
-    window.removeEventListener("resize", this.throttledResize)
+    window.removeEventListener("resize", () => this.throttledResize())
   }
 
   firstUpdated() {
