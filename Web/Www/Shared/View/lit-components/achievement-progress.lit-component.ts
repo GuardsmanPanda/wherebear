@@ -3,6 +3,7 @@ import { customElement, property } from "lit/decorators.js"
 
 // @ts-ignore
 import { TailwindStyles } from "../../../../../public/static/dist/lit-tailwind-css"
+import { Logger } from "../../js/logger"
 
 /**
  * Represents a player's progress on an achievement.
@@ -35,11 +36,11 @@ class AchievementProgress extends LitElement {
 
   get progressPercentage(): number {
     if (!this.currentStep) {
-      console.error(`The property 'currentStep' is missing`)
+      Logger.error(`The property 'currentStep' is missing`)
       return 0
     }
     if (!this.totalSteps) {
-      console.log(`The property 'totalSteps' is missing`)
+      Logger.error(`The property 'totalSteps' is missing`)
       return 0
     }
     return Math.floor((this.currentStep / this.totalSteps) * 100)
@@ -67,3 +68,4 @@ class AchievementProgress extends LitElement {
     `
   }
 }
+
