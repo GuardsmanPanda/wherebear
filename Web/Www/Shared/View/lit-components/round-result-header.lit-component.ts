@@ -4,6 +4,7 @@ import { classMap } from "lit/directives/class-map.js"
 
 // @ts-ignore
 import { TailwindStyles } from "../../../../../public/static/dist/lit-tailwind-css"
+import { Logger } from "../../js/logger"
 import { tooltip } from "./tippy.lit-directive"
 
 interface Guess {
@@ -512,7 +513,7 @@ class RoundResultHeader extends LitElement {
       this.textureIndex++
     }
     this.texture = this.textures[this.textureIndex]
-    console.log(this.texture)
+    Logger.info(this.texture)
   }
 
   private previousTexture(): void {
@@ -522,7 +523,7 @@ class RoundResultHeader extends LitElement {
       this.textureIndex--
     }
     this.texture = this.textures[this.textureIndex]
-    console.log(this.texture)
+    Logger.info(this.texture)
   }
 
   connectedCallback(): void {
@@ -610,3 +611,4 @@ class RoundResultHeader extends LitElement {
       : nothing
   }
 }
+

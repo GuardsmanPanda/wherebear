@@ -5,6 +5,7 @@ import { customElement, property, state } from "lit/decorators.js"
 import { TailwindStyles } from "../../../../../public/static/dist/lit-tailwind-css"
 // @ts-ignore
 import { AppStyles } from "../../../../../public/static/dist/lit-app-css"
+import { Logger } from "../../js/logger"
 import { Dialog } from "./dialog.lit-component"
 
 /**
@@ -155,11 +156,11 @@ class SelectMapStyleDialog extends LitElement {
 
   private async submit(): Promise<void> {
     if (!this.selectedMapStyle) {
-      console.error(`Could not submit because no selected map style`)
+      Logger.error(`Could not submit because no map style is selected`)
       return
     }
     // if (!this.selectedLocationMarker) {
-    //   console.error(`Could not submit because no selected location marker`)
+    //   Logger.error(`Could not submit because no location marker is selected`)
     //   return
     // }
 
@@ -176,7 +177,7 @@ class SelectMapStyleDialog extends LitElement {
       })
       this.close()
     } catch (err) {
-      console.error(err)
+      Logger.error(err)
     }
   }
 
@@ -229,7 +230,7 @@ class SelectMapStyleDialog extends LitElement {
         return map
       }, new Map<string, LocationMarker[]>())
     } catch (err) {
-      console.error(err)
+      Logger.error(err)
     }
     this.litDialogElement?.open()
   }
