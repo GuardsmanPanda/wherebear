@@ -30,13 +30,11 @@ final class WebApiUserController extends Controller {
 
   public function getMapStyles(): JsonResponse {
     $mapStyles = DB::select(query: <<<SQL
-      SELECT ms.enum, ms.name, ms.full_uri, ms.user_level_enum
+      SELECT ms.enum, ms.name, ms.full_uri, ms.user_level_enum, ms.short_name
       FROM map_style ms
-      WHERE 
-        ms.enum != 'DEFAULT'
-        AND ms.user_level_enum <= (SELECT user_level_enum FROM bear_user WHERE id = ?)
+      WHERE ms.enum != 'DEFAULT'
       ORDER BY ms.user_level_enum, ms.name
-    SQL, bindings: [BearAuthService::getUserId()]);
+    SQL, bindings: []);
 
     return Resp::json($mapStyles);
   }
