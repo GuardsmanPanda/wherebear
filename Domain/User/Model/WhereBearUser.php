@@ -63,7 +63,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $created_at
  * @property string $updated_at
  * @property string $display_name
- * @property string $location_marker_img_path
  * @property string|null $email
  * @property string|null $password
  * @property string|null $remember_token
@@ -73,11 +72,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property UserFlagEnum|null $user_flag_enum
  * @property MapMarkerEnum $map_marker_enum
  * @property UserLevelEnum $user_level_enum
+ * @property MapMarkerEnum $map_location_marker_enum
  *
  * @property BearCountry|null $countryCca2
  * @property MapStyle $mapStyle
  * @property UserFlag|null $userFlag
  * @property UserLevel $userLevel
+ * @property MapMarker $mapLocationMarker
  * @property MapMarker $mapMarker
  *
  * AUTO GENERATED FILE DO NOT MODIFY
@@ -94,6 +95,7 @@ final class WhereBearUser extends Model {
     protected $casts = [
         'country_cca2' => BearCountryEnum::class,
         'last_login_at' => 'immutable_datetime',
+        'map_location_marker_enum' => MapMarkerEnum::class,
         'map_marker_enum' => MapMarkerEnum::class,
         'map_style_enum' => MapStyleEnum::class,
         'user_flag_enum' => UserFlagEnum::class,
@@ -118,6 +120,11 @@ final class WhereBearUser extends Model {
     /** @return BelongsTo<UserLevel, $this> */
     public function userLevel(): BelongsTo {
         return $this->belongsTo(related: UserLevel::class, foreignKey: 'user_level_enum', ownerKey: 'enum');
+    }
+
+    /** @return BelongsTo<MapMarker, $this> */
+    public function mapLocationMarker(): BelongsTo {
+        return $this->belongsTo(related: MapMarker::class, foreignKey: 'map_location_marker_enum', ownerKey: 'enum');
     }
 
     /** @return BelongsTo<MapMarker, $this> */

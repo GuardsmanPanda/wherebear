@@ -38,6 +38,7 @@ final class WhereBearUserCreator {
     $model->country_cca2 = $country_cca2;
     $model->last_login_at = CarbonImmutable::now();
     $model->map_style_enum = MapStyleEnum::DEFAULT;
+    $model->map_location_marker_enum = MapMarkerEnum::SYSTEM_BLACK_BORDER_PIN_RED;
     $model->user_flag_enum = $user_flag_enum;
 
     $map_marker = DB::selectOne(query: "

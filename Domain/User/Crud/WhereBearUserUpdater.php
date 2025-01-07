@@ -40,6 +40,14 @@ final readonly class WhereBearUserUpdater {
     return $this;
   }
 
+  public function setLocationMapMarkerEnum(MapMarkerEnum $map_marker_enum): self {
+    if ($this->model->user_level_enum->value < $map_marker_enum->getUserLevelRequirement()->value) {
+      throw new BadRequestHttpException(message: "User level too low for map marker: $map_marker_enum->value");
+    }
+    $this->model->map_location_marker_enum = $map_marker_enum;
+    return $this;
+  }
+
   public function setMapStyleEnum(MapStyleEnum $map_style_enum): self {
     if ($this->model->user_level_enum->value < $map_style_enum->getUserLevelRequirement()->value) {
       throw new BadRequestHttpException(message: "User level too low for map style: $map_style_enum->value");
@@ -60,11 +68,6 @@ final readonly class WhereBearUserUpdater {
     return $this;
   }
 
-  public function setLocationMarkerImgPath(string $path): self {
-    $this->model->location_marker_img_path = $path;
-    return $this;
-  }
-  
 
   public function setLastLoginAt(CarbonInterface|null $last_login_at): self {
     if ($last_login_at?->toIso8601String() === $this->model->last_login_at?->toIso8601String()) {
