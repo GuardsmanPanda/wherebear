@@ -78,6 +78,31 @@ enum MapMarkerEnum: string implements BearDatabaseBackedEnumInterface {
 
   case MISCELLANEOUS_WINDMILL = 'MISCELLANEOUS_WINDMILL';
 
+  case SYSTEM_BLACK_BORDER_CROSS_BLUE = 'SYSTEM_BLACK_BORDER_CROSS_BLUE';
+  case SYSTEM_BLACK_BORDER_CROSS_GREEN = 'SYSTEM_BLACK_BORDER_CROSS_GREEN';
+  case SYSTEM_BLACK_BORDER_CROSS_ORANGE = 'SYSTEM_BLACK_BORDER_CROSS_ORANGE';
+  case SYSTEM_BLACK_BORDER_CROSS_PURPLE = 'SYSTEM_BLACK_BORDER_CROSS_PURPLE';
+  case SYSTEM_BLACK_BORDER_CROSS_RED = 'SYSTEM_BLACK_BORDER_CROSS_RED';
+  case SYSTEM_BLACK_BORDER_CROSS_YELLOW = 'SYSTEM_BLACK_BORDER_CROSS_YELLOW';
+  case SYSTEM_BLACK_BORDER_PIN_BLUE = 'SYSTEM_BLACK_BORDER_PIN_BLUE';
+  case SYSTEM_BLACK_BORDER_PIN_GREEN = 'SYSTEM_BLACK_BORDER_PIN_GREEN';
+  case SYSTEM_BLACK_BORDER_PIN_ORANGE = 'SYSTEM_BLACK_BORDER_PIN_ORANGE';
+  case SYSTEM_BLACK_BORDER_PIN_PURPLE = 'SYSTEM_BLACK_BORDER_PIN_PURPLE';
+  case SYSTEM_BLACK_BORDER_PIN_RED = 'SYSTEM_BLACK_BORDER_PIN_RED';
+  case SYSTEM_BLACK_BORDER_PIN_YELLOW = 'SYSTEM_BLACK_BORDER_PIN_YELLOW';
+  case SYSTEM_WHITE_BORDER_CROSS_BLUE = 'SYSTEM_WHITE_BORDER_CROSS_BLUE';
+  case SYSTEM_WHITE_BORDER_CROSS_GREEN = 'SYSTEM_WHITE_BORDER_CROSS_GREEN';
+  case SYSTEM_WHITE_BORDER_CROSS_ORANGE = 'SYSTEM_WHITE_BORDER_CROSS_ORANGE';
+  case SYSTEM_WHITE_BORDER_CROSS_PURPLE = 'SYSTEM_WHITE_BORDER_CROSS_PURPLE';
+  case SYSTEM_WHITE_BORDER_CROSS_RED = 'SYSTEM_WHITE_BORDER_CROSS_RED';
+  case SYSTEM_WHITE_BORDER_CROSS_YELLOW = 'SYSTEM_WHITE_BORDER_CROSS_YELLOW';
+  case SYSTEM_WHITE_BORDER_PIN_BLUE = 'SYSTEM_WHITE_BORDER_PIN_BLUE';
+  case SYSTEM_WHITE_BORDER_PIN_GREEN = 'SYSTEM_WHITE_BORDER_PIN_GREEN';
+  case SYSTEM_WHITE_BORDER_PIN_ORANGE = 'SYSTEM_WHITE_BORDER_PIN_ORANGE';
+  case SYSTEM_WHITE_BORDER_PIN_PURPLE = 'SYSTEM_WHITE_BORDER_PIN_PURPLE';
+  case SYSTEM_WHITE_BORDER_PIN_RED = 'SYSTEM_WHITE_BORDER_PIN_RED';
+  case SYSTEM_WHITE_BORDER_PIN_YELLOW = 'SYSTEM_WHITE_BORDER_PIN_YELLOW';
+
 
   public static function fromRequest(): self {
     return self::from(value: Req::getString(key: 'map_marker_enum'));
@@ -86,6 +111,17 @@ enum MapMarkerEnum: string implements BearDatabaseBackedEnumInterface {
 
   public function getFilePath(): string {
     $value = $this->value;
+    if ($this->getGrouping() === 'System') {
+      if (str_starts_with(haystack: $value, needle: 'SYSTEM_BLACK_BORDER_')) {
+        $file = substr(string: $value, offset: strlen(string: 'SYSTEM_BLACK_BORDER_'));
+        $file = strtolower(string: str_replace(search: '_', replace: '-', subject: $file));
+        return "/static/img/map/location-marker/black-border/$file.svg";
+      } else {
+        $file = substr(string: $value, offset: strlen(string: 'SYSTEM_WHITE_BORDER_'));
+        $file = strtolower(string: str_replace(search: '_', replace: '-', subject: $file));
+        return "/static/img/map/location-marker/white-border/$file.svg";
+      }
+    }
     $folder = strtolower(explode(separator: '_', string: $value)[0]);
     $file = substr(string: $value, offset: strlen(string: $folder) + 1);
     $file = strtolower(string: str_replace(search: '_', replace: '-', subject: $file));
@@ -104,7 +140,7 @@ enum MapMarkerEnum: string implements BearDatabaseBackedEnumInterface {
 
   public function getMapAnchor(): string {
     $value = $this->value;
-    if (str_starts_with(haystack: $value, needle: 'PLANET')) {
+    if ($this->getGrouping() === 'Planet') {
       return 'center';
     }
     return match ($this) {

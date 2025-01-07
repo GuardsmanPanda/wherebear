@@ -19,10 +19,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 final class WebApiUserController extends Controller {
   public function getMapMarkers(): JsonResponse {
     $mapMarkers = DB::select(query: <<<SQL
-      SELECT mm.enum, mm.file_path, mm.grouping, mm.map_anchor
+      SELECT 
+        mm.enum, mm.file_path, mm.grouping, mm.map_anchor
       FROM map_marker mm
-      WHERE user_level_enum <= (SELECT user_level_enum FROM bear_user WHERE id = ?)
-      ORDER BY mm.grouping = 'Miscellaneous',  mm.grouping, mm.file_path
+      WHERE 
+        user_level_enum <= (SELECT user_level_enum FROM bear_user WHERE id = ?)
+        AND mm.grouping != 'System'
+      ORDER BY mm.grouping = 'Miscellaneous', mm.grouping, mm.file_path
     SQL, bindings: [BearAuthService::getUserId()]);
 
     return Resp::json($mapMarkers);
@@ -34,7 +37,7 @@ final class WebApiUserController extends Controller {
       FROM map_style ms
       WHERE ms.enum != 'DEFAULT'
       ORDER BY ms.user_level_enum, ms.name
-    SQL, bindings: []);
+    SQL);
 
     return Resp::json($mapStyles);
   }

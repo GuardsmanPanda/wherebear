@@ -3280,16 +3280,16 @@
     },
     {
       "name": "pusher/pusher-php-server",
-      "version": "7.2.6",
+      "version": "7.2.7",
       "source": {
         "type": "git",
         "url": "https://github.com/pusher/pusher-http-php.git",
-        "reference": "d89e9997191d18fb0fe03a956fa3ccfe0af524ea"
+        "reference": "148b0b5100d000ed57195acdf548a2b1b38ee3f7"
       },
       "dist": {
         "type": "zip",
-        "url": "https://api.github.com/repos/pusher/pusher-http-php/zipball/d89e9997191d18fb0fe03a956fa3ccfe0af524ea",
-        "reference": "d89e9997191d18fb0fe03a956fa3ccfe0af524ea",
+        "url": "https://api.github.com/repos/pusher/pusher-http-php/zipball/148b0b5100d000ed57195acdf548a2b1b38ee3f7",
+        "reference": "148b0b5100d000ed57195acdf548a2b1b38ee3f7",
         "shasum": ""
       },
       "require": {
@@ -3335,9 +3335,9 @@
       ],
       "support": {
         "issues": "https://github.com/pusher/pusher-http-php/issues",
-        "source": "https://github.com/pusher/pusher-http-php/tree/7.2.6"
+        "source": "https://github.com/pusher/pusher-http-php/tree/7.2.7"
       },
-      "time": "2024-10-18T12:04:31+00:00"
+      "time": "2025-01-06T10:56:20+00:00"
     },
     {
       "name": "ralouphie/getallheaders",
@@ -6811,12 +6811,12 @@
       "source": {
         "type": "git",
         "url": "https://github.com/Roave/SecurityAdvisories.git",
-        "reference": "0739463889fe714daa685817789aef000c6774cc"
+        "reference": "19bf84017a308ac32893551b899bac74d2aba856"
       },
       "dist": {
         "type": "zip",
-        "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/0739463889fe714daa685817789aef000c6774cc",
-        "reference": "0739463889fe714daa685817789aef000c6774cc",
+        "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/19bf84017a308ac32893551b899bac74d2aba856",
+        "reference": "19bf84017a308ac32893551b899bac74d2aba856",
         "shasum": ""
       },
       "conflict": {
@@ -7060,6 +7060,7 @@
         "grumpydictator/firefly-iii": "<6.1.17",
         "gugoan/economizzer": "<=0.9.0.0-beta1",
         "guzzlehttp/guzzle": "<6.5.8|>=7,<7.4.5",
+        "guzzlehttp/oauth-subscriber": "<0.8.1",
         "guzzlehttp/psr7": "<1.9.1|>=2,<2.4.5",
         "haffner/jh_captcha": "<=2.1.3|>=3,<=3.0.2",
         "harvesthq/chosen": "<1.8.7",
@@ -7220,6 +7221,7 @@
         "neos/media-browser": "<7.3.19|>=8,<8.0.16|>=8.1,<8.1.11|>=8.2,<8.2.11|>=8.3,<8.3.9",
         "neos/neos": ">=1.1,<1.1.3|>=1.2,<1.2.13|>=2,<2.0.4|>=2.3,<3.0.20|>=3.1,<3.1.18|>=3.2,<3.2.14|>=3.3,<5.3.10|>=7,<7.0.9|>=7.1,<7.1.7|>=7.2,<7.2.6|>=7.3,<7.3.4|>=8,<8.0.2",
         "neos/swiftmailer": "<5.4.5",
+        "netcarver/textile": "<=4.1.2",
         "netgen/tagsbundle": ">=3.4,<3.4.11|>=4,<4.0.15",
         "nette/application": ">=2,<2.0.19|>=2.1,<2.1.13|>=2.2,<2.2.10|>=2.3,<2.3.14|>=2.4,<2.4.16|>=3,<3.0.6",
         "nette/nette": ">=2,<2.0.19|>=2.1,<2.1.13",
@@ -7413,6 +7415,7 @@
         "squizlabs/php_codesniffer": ">=1,<2.8.1|>=3,<3.0.1",
         "ssddanbrown/bookstack": "<24.05.1",
         "starcitizentools/citizen-skin": ">=2.6.3,<2.31",
+        "starcitizentools/tabber-neue": ">=1.9.1,<2.7.2",
         "statamic/cms": "<=5.16",
         "stormpath/sdk": "<9.9.99",
         "studio-42/elfinder": "<=2.1.64",
@@ -7568,7 +7571,7 @@
         "xpressengine/xpressengine": "<3.0.15",
         "yab/quarx": "<2.4.5",
         "yeswiki/yeswiki": "<=4.4.4",
-        "yetiforce/yetiforce-crm": "<=6.4",
+        "yetiforce/yetiforce-crm": "<6.5",
         "yidashi/yii2cmf": "<=2",
         "yii2mod/yii2-cms": "<1.9.2",
         "yiisoft/yii": "<1.1.29",
@@ -7658,7 +7661,7 @@
           "type": "tidelift"
         }
       ],
-      "time": "2025-01-03T17:04:48+00:00"
+      "time": "2025-01-07T18:06:22+00:00"
     }
   ],
   "aliases": [],

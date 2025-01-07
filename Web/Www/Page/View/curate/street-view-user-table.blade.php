@@ -124,4 +124,9 @@
       add_panorama();
     }
   });
+  document.addEventListener("keyup", function (event) {
+    if (document.getElementById('map-url').value === '') {
+      window.open('/panorama/{{$panoramas[0]->panorama_id}}/view');
+    }
+  });
 </script>
