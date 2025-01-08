@@ -82,7 +82,7 @@ final class GameLobbyController extends Controller {
 
     $user = DB::selectOne(query: <<<SQL
       SELECT 
-        bu.id, bu.display_name, bu.user_level_enum as level, bu.map_marker_enum, bu.map_style_enum,
+        bu.id, bu.display_name, bu.user_level_enum as level, bu.map_location_marker_enum, bu.map_marker_enum, bu.map_style_enum,
         bu.experience - ul.experience_requirement as current_level_experience_points,
         (SELECT ul2.experience_requirement FROM user_level ul2 WHERE ul2.enum = bu.user_level_enum + 1) - ul.experience_requirement as next_level_experience_points_requirement,
         gu.is_ready, gu.is_observer,

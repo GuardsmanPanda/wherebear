@@ -26,9 +26,16 @@ final readonly class WhereBearUserUpdater {
     return new self(model: WhereBearUser::findOrFail(id: $id));
   }
 
-
   public function setDisplayName(string $display_name): self {
     $this->model->display_name = $display_name;
+    return $this;
+  }
+
+  public function setMapLocationMarkerEnum(MapMarkerEnum $map_marker_enum): self {
+    if ($this->model->user_level_enum->value < $map_marker_enum->getUserLevelRequirement()->value) {
+      throw new BadRequestHttpException(message: "User level too low for map marker: $map_marker_enum->value");
+    }
+    $this->model->map_location_marker_enum = $map_marker_enum;
     return $this;
   }
 
@@ -37,14 +44,6 @@ final readonly class WhereBearUserUpdater {
       throw new BadRequestHttpException(message: "User level too low for map marker: $map_marker_enum->value");
     }
     $this->model->map_marker_enum = $map_marker_enum;
-    return $this;
-  }
-
-  public function setLocationMapMarkerEnum(MapMarkerEnum $map_marker_enum): self {
-    if ($this->model->user_level_enum->value < $map_marker_enum->getUserLevelRequirement()->value) {
-      throw new BadRequestHttpException(message: "User level too low for map marker: $map_marker_enum->value");
-    }
-    $this->model->map_location_marker_enum = $map_marker_enum;
     return $this;
   }
 

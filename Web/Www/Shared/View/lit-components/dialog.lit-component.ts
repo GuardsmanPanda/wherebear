@@ -97,7 +97,11 @@ export class Dialog extends LitElement {
     }
   }
 
-  private onBackdropClick(event: MouseEvent) {
+  private getDialogElement(): HTMLDialogElement | null | undefined {
+    return this.shadowRoot?.querySelector("dialog")
+  }
+
+  private handleBackgropClick(event: MouseEvent) {
     if (!this.closeOnBgClick) return
 
     if (event.target === this.getDialogElement()) {
@@ -105,7 +109,18 @@ export class Dialog extends LitElement {
     }
   }
 
-  private dispatchCloseEvent() {
+  private handleClose() {
+    const dialog = this.getDialogElement()
+    if (dialog) {
+      dialog.removeEventListener("click", this.onBackdropClickHandler)
+      dialog.removeEventListener("close", this.onCloseHandler)
+    }
+
+    const footerSlotEl = this.shadowRoot?.querySelector('slot[name="footer"]') as HTMLSlotElement
+    if (footerSlotEl) {
+      footerSlotEl.removeEventListener("slotchange", this.onSlotChangeHandler)
+    }
+
     this.dispatchEvent(
       new CustomEvent("closed", {
         detail: {},
@@ -115,13 +130,44 @@ export class Dialog extends LitElement {
     )
   }
 
-  private getDialogElement(): HTMLDialogElement | null | undefined {
-    return this.shadowRoot?.querySelector("dialog")
+  private handleSlotChange() {
+    const footerSlotEl = this.shadowRoot?.querySelector('slot[name="footer"]') as HTMLSlotElement
+    this.hasFooter = footerSlotEl?.assignedElements().length > 0 || false
   }
+
+  private onBackdropClickHandler: (event: MouseEvent) => void = this.handleBackgropClick.bind(this)
+  private onCloseHandler: () => void = this.handleClose.bind(this)
+  private onSlotChangeHandler: () => void = this.handleSlotChange.bind(this)
 
   connectedCallback() {
     super.connectedCallback()
     window.addEventListener("resize", () => this.throttledResize())
+
+    const dialog = this.getDialogElement()
+    if (dialog) {
+      dialog.addEventListener("click", (event) => {
+        if (!this.closeOnBgClick) return
+
+        if (event.target === this.getDialogElement()) {
+          this.close()
+        }
+      })
+
+      dialog.addEventListener("close", () => {
+        this.dispatchEvent(
+          new CustomEvent("closed", {
+            detail: {},
+            bubbles: true,
+            composed: true,
+          }),
+        )
+      })
+    }
+
+    const footerSlotEl = this.shadowRoot?.querySelector('slot[name="footer"]') as HTMLSlotElement
+    footerSlotEl?.addEventListener("slotchange", () => {
+      this.hasFooter = footerSlotEl.assignedElements().length > 0
+    })
   }
 
   disconnectedCallback() {
@@ -132,14 +178,14 @@ export class Dialog extends LitElement {
   firstUpdated() {
     const dialog = this.getDialogElement()
     if (dialog) {
-      dialog.addEventListener("click", (event) => this.onBackdropClick(event))
-      dialog.addEventListener("close", () => this.dispatchCloseEvent())
+      dialog.addEventListener("click", this.onBackdropClickHandler)
+      dialog.addEventListener("close", this.onCloseHandler)
     }
 
     const footerSlotEl = this.shadowRoot?.querySelector('slot[name="footer"]') as HTMLSlotElement
-    footerSlotEl?.addEventListener("slotchange", () => {
-      this.hasFooter = footerSlotEl.assignedElements().length > 0
-    })
+    if (footerSlotEl) {
+      footerSlotEl.addEventListener("slotchange", this.onSlotChangeHandler)
+    }
   }
 
   open() {

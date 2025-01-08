@@ -8,9 +8,6 @@ import { AppStyles } from "../../../../../public/static/dist/lit-app-css"
 import { Logger } from "../../js/logger"
 import { Dialog } from "./dialog.lit-component"
 
-/**
- * Interface for the map style object.
- */
 interface MapStyle {
   enum: string
   full_uri: string
@@ -20,25 +17,97 @@ interface MapStyle {
 }
 
 interface LocationMarker {
-  id: string
+  enum: string
   imgPath: string
   type: "pin" | "cross"
 }
 
 @customElement("lit-select-map-style-dialog")
-class SelectMapStyleDialog extends LitElement {
+export class SelectMapStyleDialog extends LitElement {
+  @property({ type: String }) selectedLocationMarkerEnum!: string
   @property({ type: String }) selectedMapStyleEnum!: string
-  @property({ type: String }) selectedLocationMarkerId!: string
   @property({ type: Number }) userLevel!: number
 
   @state() mapStyles: MapStyle[] = []
-  @state() locationMarkers: Map<string, LocationMarker[]> = new Map()
   @state() isWhiteBorderSelected = false
   @state() size = "xs"
 
   static styles = css`
     ${TailwindStyles} ${AppStyles}
   `
+
+  private locationMarkers: Map<string, LocationMarker[]> = new Map([
+    [
+      "pin",
+      [
+        {
+          enum: "SYSTEM_BLACK_BORDER_PIN_BLUE",
+          imgPath: "/static/img/map/location-marker/black-border/pin-blue.svg",
+          type: "pin",
+        },
+        {
+          enum: "SYSTEM_BLACK_BORDER_PIN_GREEN",
+          imgPath: "/static/img/map/location-marker/black-border/pin-green.svg",
+          type: "pin",
+        },
+        {
+          enum: "SYSTEM_BLACK_BORDER_PIN_YELLOW",
+          imgPath: "/static/img/map/location-marker/black-border/pin-yellow.svg",
+          type: "pin",
+        },
+        {
+          enum: "SYSTEM_BLACK_BORDER_PIN_ORANGE",
+          imgPath: "/static/img/map/location-marker/black-border/pin-orange.svg",
+          type: "pin",
+        },
+        {
+          enum: "SYSTEM_BLACK_BORDER_PIN_RED",
+          imgPath: "/static/img/map/location-marker/black-border/pin-red.svg",
+          type: "pin",
+        },
+        {
+          enum: "SYSTEM_BLACK_BORDER_PIN_PURPLE",
+          imgPath: "/static/img/map/location-marker/black-border/pin-purple.svg",
+          type: "pin",
+        },
+      ],
+    ],
+    [
+      "cross",
+      [
+        {
+          enum: "SYSTEM_BLACK_BORDER_CROSS_BLUE",
+          imgPath: "/static/img/map/location-marker/black-border/cross-blue.svg",
+          type: "cross",
+        },
+        {
+          enum: "SYSTEM_BLACK_BORDER_CROSS_GREEN",
+          imgPath: "/static/img/map/location-marker/black-border/cross-green.svg",
+          type: "cross",
+        },
+        {
+          enum: "SYSTEM_BLACK_BORDER_CROSS_YELLOW",
+          imgPath: "/static/img/map/location-marker/black-border/cross-yellow.svg",
+          type: "cross",
+        },
+        {
+          enum: "SYSTEM_BLACK_BORDER_CROSS_ORANGE",
+          imgPath: "/static/img/map/location-marker/black-border/cross-orange.svg",
+          type: "cross",
+        },
+        {
+          enum: "SYSTEM_BLACK_BORDER_CROSS_RED",
+          imgPath: "/static/img/map/location-marker/black-border/cross-red.svg",
+          type: "cross",
+        },
+        {
+          enum: "SYSTEM_BLACK_BORDER_CROSS_PURPLE",
+          imgPath: "/static/img/map/location-marker/black-border/cross-purple.svg",
+          type: "cross",
+        },
+      ],
+    ],
+  ])
 
   get litDialogElement(): Dialog | null {
     return this.renderRoot.querySelector("lit-dialog")
@@ -50,12 +119,17 @@ class SelectMapStyleDialog extends LitElement {
 
   get selectedLocationMarker(): LocationMarker | undefined {
     for (const markers of this.locationMarkers.values()) {
-      const marker = markers.find((marker) => marker.id === this.selectedLocationMarkerId)
+      const marker = markers.find((marker) => marker.enum === this.selectedLocationMarkerEnum)
       if (marker) {
         return marker
       }
     }
     return undefined
+  }
+
+  private cancel() {
+    this.dispatchEvent(new CustomEvent("canceled", { bubbles: true, composed: true }))
+    this.litDialogElement?.close()
   }
 
   private async fetchUserMapStyles(): Promise<MapStyle[]> {
@@ -64,77 +138,6 @@ class SelectMapStyleDialog extends LitElement {
       throw new Error(`Error: ${response.status}`)
     }
     return response.json()
-  }
-
-  private async fetUserLocationMarkers(): Promise<LocationMarker[]> {
-    // const response = await fetch(`/web-api/user/location-markers`)
-    // if (!response.ok) {
-    //     throw new Error(`Error: ${response.status}`)
-    // }
-    // const data: LocationMarker[] = await response.json()
-    // return data
-    return [
-      {
-        id: "01",
-        imgPath: "/static/img/map/location-marker/black-border/pin-blue.svg",
-        type: "pin",
-      },
-      {
-        id: "02",
-        imgPath: "/static/img/map/location-marker/black-border/pin-green.svg",
-        type: "pin",
-      },
-      {
-        id: "03",
-        imgPath: "/static/img/map/location-marker/black-border/pin-yellow.svg",
-        type: "pin",
-      },
-      {
-        id: "04",
-        imgPath: "/static/img/map/location-marker/black-border/pin-orange.svg",
-        type: "pin",
-      },
-      {
-        id: "05",
-        imgPath: "/static/img/map/location-marker/black-border/pin-red.svg",
-        type: "pin",
-      },
-      {
-        id: "06",
-        imgPath: "/static/img/map/location-marker/black-border/pin-purple.svg",
-        type: "pin",
-      },
-      {
-        id: "13",
-        imgPath: "/static/img/map/location-marker/black-border/cross-blue.svg",
-        type: "cross",
-      },
-      {
-        id: "14",
-        imgPath: "/static/img/map/location-marker/black-border/cross-green.svg",
-        type: "cross",
-      },
-      {
-        id: "15",
-        imgPath: "/static/img/map/location-marker/black-border/cross-yellow.svg",
-        type: "cross",
-      },
-      {
-        id: "16",
-        imgPath: "/static/img/map/location-marker/black-border/cross-orange.svg",
-        type: "cross",
-      },
-      {
-        id: "17",
-        imgPath: "/static/img/map/location-marker/black-border/cross-red.svg",
-        type: "cross",
-      },
-      {
-        id: "18",
-        imgPath: "/static/img/map/location-marker/black-border/cross-purple.svg",
-        type: "cross",
-      },
-    ]
   }
 
   private getFormattedMapStyleFullUri(fullUri: string): string {
@@ -159,10 +162,14 @@ class SelectMapStyleDialog extends LitElement {
       Logger.error(`Could not submit because no map style is selected`)
       return
     }
-    // if (!this.selectedLocationMarker) {
-    //   Logger.error(`Could not submit because no location marker is selected`)
-    //   return
-    // }
+    if (!this.selectedLocationMarker) {
+      Logger.error(`Could not submit because no location marker is selected`)
+      return
+    }
+
+    const selectedLocationMarkerEnum = this.isWhiteBorderSelected
+      ? this.selectedLocationMarkerEnum.replace("BLACK_BORDER", "WHITE_BORDER")
+      : this.selectedLocationMarkerEnum
 
     try {
       await fetch(`/web-api/user`, {
@@ -172,10 +179,19 @@ class SelectMapStyleDialog extends LitElement {
         },
         body: JSON.stringify({
           map_style_enum: this.selectedMapStyle.enum,
-          //   location_marker_id: this.selectedLocationMarker.id,
+          map_location_marker_enum: selectedLocationMarkerEnum,
         }),
       })
-      this.close()
+      this.dispatchEvent(
+        new CustomEvent("submitted", {
+          detail: {
+            mapLocationMarkerEnum: selectedLocationMarkerEnum,
+          },
+          bubbles: true,
+          composed: true,
+        }),
+      )
+      this.litDialogElement?.close()
     } catch (err) {
       Logger.error(err)
     }
@@ -186,7 +202,7 @@ class SelectMapStyleDialog extends LitElement {
   }
 
   private selectLocationMarker(locationMarker: LocationMarker): void {
-    this.selectedLocationMarkerId = locationMarker.id
+    this.selectedLocationMarkerEnum = locationMarker.enum
   }
 
   private updateSize = () => {
@@ -216,32 +232,25 @@ class SelectMapStyleDialog extends LitElement {
     window.removeEventListener("resize", () => this.updateSize())
   }
 
+  protected firstUpdated(): void {
+    if (this.selectedLocationMarkerEnum.includes("WHITE_BORDER")) {
+      this.isWhiteBorderSelected = true
+      this.selectedLocationMarkerEnum = this.selectedLocationMarkerEnum.replace("WHITE_BORDER", "BLACK_BORDER")
+    }
+  }
+
   async open(): Promise<void> {
     try {
-      const [mapStyles, locationMarkers] = await Promise.all([this.fetchUserMapStyles(), this.fetUserLocationMarkers()])
-
-      this.mapStyles = mapStyles
-
-      this.locationMarkers = locationMarkers.reduce((map, marker) => {
-        if (!map.has(marker.type)) {
-          map.set(marker.type, [])
-        }
-        map.get(marker.type)!.push(marker)
-        return map
-      }, new Map<string, LocationMarker[]>())
+      this.mapStyles = await this.fetchUserMapStyles()
     } catch (err) {
       Logger.error(err)
     }
     this.litDialogElement?.open()
   }
 
-  close() {
-    this.litDialogElement?.close()
-  }
-
   protected render() {
     return html`
-      <lit-dialog label="Map Style" iconPath="/static/img/icon/map-with-marker.svg" modal @closed="${this.close}">
+      <lit-dialog label="Map Style" iconPath="/static/img/icon/map-with-marker.svg" modal>
         <div id="content" slot="content" class="flex flex-col gap-2 h-full max-h-[calc(90vh-140px)] select-none">
           <div id="options" class="flex flex-col gap-2 sm:gap-4 w-full flex-1 overflow-y-auto p-2 sm:p-4 rounded border border-gray-700 bg-gray-50">
             <div class="flex items-center w-full h-6 px-2 border-b border-gray-700">
@@ -274,7 +283,7 @@ class SelectMapStyleDialog extends LitElement {
               })}
             </div>
 
-            <div class="flex flex-col gap-2 hidden">
+            <div class="flex flex-col gap-2">
               <div class="flex items-center w-full h-6 px-2 border-b border-gray-700">
                 <span class="font-heading font-semibold text-sm sm:text-base text-iris-800">Location Marker</span>
               </div>
@@ -285,16 +294,16 @@ class SelectMapStyleDialog extends LitElement {
                     ${locationMarkers.map(
                       (locationMarker) => html`
                         <div
-                          class="flex justify-center items-center w-10 sm:w-12 h-10 sm:h-12 rounded ${this.selectedLocationMarkerId ===
-                          locationMarker.id
+                          class="flex justify-center items-center w-10 sm:w-12 h-10 sm:h-12 rounded ${this.selectedLocationMarkerEnum ===
+                          locationMarker.enum
                             ? "bg-iris-400"
                             : "hover:bg-iris-200 cursor-pointer"}"
                           @click="${() => {
-                            if (this.selectedLocationMarkerId === locationMarker.imgPath) return
+                            if (this.selectedLocationMarkerEnum === locationMarker.imgPath) return
                             this.selectLocationMarker(locationMarker)
                           }}"
                         >
-                          <img src="${locationMarker.imgPath}" class="w-8 sm:w-10 h-8 sm:h-10" alt="${locationMarker.id}" />
+                          <img src="${locationMarker.imgPath}" class="w-8 sm:w-10 h-8 sm:h-10" alt="${locationMarker.enum}" />
                         </div>
                       `,
                     )}
@@ -306,6 +315,7 @@ class SelectMapStyleDialog extends LitElement {
                 label="White Border"
                 size=${["xs"].includes(this.size) ? "xs" : "sm"}
                 class="mt-2"
+                .isSelected=${this.isWhiteBorderSelected}
                 @toggled="${(e: CustomEvent) => {
                   this.isWhiteBorderSelected = e.detail.isSelected
                 }}"
@@ -346,7 +356,7 @@ class SelectMapStyleDialog extends LitElement {
             label="CANCEL"
             bgColorClass="bg-gray-500"
             size="${["xs"].includes(this.size) ? "sm" : "sm"}"
-            @clicked="${this.close}"
+            @clicked="${this.cancel}"
           ></lit-button>
           <lit-button label="CHANGE" size="${["xs"].includes(this.size) ? "sm" : "sm"}" @clicked="${this.submit}"></lit-button>
         </div>

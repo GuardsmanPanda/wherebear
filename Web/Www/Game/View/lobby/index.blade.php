@@ -1,6 +1,6 @@
 <?php declare(strict_types=1); ?>
 
-<div x-data="state('{{ $user->id }}')" class="flex flex-col w-full max-w-5xl h-screen mx-auto lg:border-x border-gray-700 select-none toast-container top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+<div x-data="state" class="flex flex-col w-full max-w-5xl h-screen mx-auto lg:border-x border-gray-700 select-none toast-container top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
   <!-- Header -->
   <div x-ref="header" class="flex h-14 shrink-0 justify-between items-center px-2 border-b border-gray-700 bg-iris-500">
     <div class="flex w-16">
@@ -26,8 +26,8 @@
     </div>
     <div class="flex justify-end w-24">
       <div class="block md:hidden w-full">
-        <lit-button label="Wait" size="md" bgColorClass="bg-gray-500" x-on:click="toggleIsReady(false)" x-show="user.is_ready"></lit-button>
-        <lit-button label="Ready" size="md" bgColorClass="bg-pistachio-400" x-on:click="toggleIsReady(true)" x-show="!user.is_ready"></lit-button>
+        <lit-button label="Wait" size="md" bgColorClass="bg-gray-500" x-on:click="toggleIsReady(false)" x-show="gameUser.is_ready"></lit-button>
+        <lit-button label="Ready" size="md" bgColorClass="bg-pistachio-400" x-on:click="toggleIsReady(true)" x-show="!gameUser.is_ready"></lit-button>
       </div>
     </div>
   </div>
@@ -43,14 +43,14 @@
             @if($user->can_observe)
             <div slot="right" class="flex md:hidden items-center gap-1">
               <span class="font-heading font-semibold text-sm text-gray-0 whitespace-nowrap">Observer Mode</span>
-              <lit-toggle size="xs" leftLabel="Off" rightLabel="On" :isSelected="user.is_observer" x-on:clicked="toggleIsObserver($event.detail.isSelected)" class="w-20"></lit-toggle>
+              <lit-toggle size="xs" leftLabel="Off" rightLabel="On" :isSelected="gameUser.is_observer" x-on:clicked="toggleIsObserver($event.detail.isSelected)" class="w-20"></lit-toggle>
             </div>
             @endif
           </div>
           <div class="py-2">
             <div class="flex gap-2 mx-2">
-              <div class="flex flex-none justify-center w-[72px] h-[72px]" :class="{ 'items-end': user.map_marker_map_anchor === 'bottom', 'items-center': user.map_marker_map_anchor === 'center' }">
-                <img :src="user.map_marker_file_path" class="max-w-full max-h-full object-contain cursor-pointer" draggable="false" x-on:click="openSelectMapMarkerDialog" />
+              <div class="flex flex-none justify-center w-[72px] h-[72px]" :class="{ 'items-end': gameUser.map_marker_map_anchor === 'bottom', 'items-center': gameUser.map_marker_map_anchor === 'center' }">
+                <img :src="gameUser.map_marker_file_path" class="max-w-full max-h-full object-contain cursor-pointer" draggable="false" x-on:click="openSelectMapMarkerDialog" />
               </div>
 
               <lit-select-map-marker-dialog x-ref="selectMapMarkerDialog"></lit-select-map-marker-dialog>
@@ -58,9 +58,9 @@
               <div class="flex flex-col justify-between w-full overflow-hidden">
                 <div class="flex flex-col">
                   <div class="flex items-center gap-2">
-                    <span x-text="user.display_name" class="leading-none font-heading font-semibold text-lg text-iris-800 truncate"></span>
+                    <span x-text="gameUser.display_name" class="leading-none font-heading font-semibold text-lg text-iris-800 truncate"></span>
                     <img src="/static/img/icon/edit-pen.svg" class="h-6 hover:brightness-90 cursor-pointer" draggable="false" x-on:click="openSelectUserProfileDialog" />
-                    <lit-select-user-profile-dialog x-ref="selectUserProfileDialog" :displayName="user.display_name" :selectedCountryFlag="user.country_cca2"></lit-select-user-profile-dialog>
+                    <lit-select-user-profile-dialog x-ref="selectUserProfileDialog" :displayName="gameUser.display_name" :selectedCountryFlag="gameUser.country_cca2"></lit-select-user-profile-dialog>
                   </div>
                   <span class="relative bottom-0.5 font-heading font-semibold text-sm text-gray-800">{{ $user->title }}</span>
                 </div>
@@ -69,13 +69,12 @@
                     <lit-button 
                       :label="lowercaseMapStyleShortName"
                       size="xs"
-                      :bgColorClass="user.map_style_enum === 'SATELLITE' ? 'bg-red-500' : 'bg-iris-500'"
+                      :bgColorClass="gameUser.map_style_enum === 'SATELLITE' ? 'bg-red-500' : 'bg-iris-500'"
                       contentAlignment="left"
                       imgPath="/static/img/icon/map.svg"
                       class="w-[100px]"
                       x-on:clicked="openSelectMapStyleDialog">
                     </lit-button>
-                    <lit-select-map-style-dialog x-ref="selectMapStyleDialog" :selectedMapStyleEnum="user.map_style_enum" :userLevel="user.level"></lit-select-map-style-dialog>
                   @endif
                 </div>
               </div>
@@ -115,7 +114,7 @@
                 :roundCount="game.number_of_rounds" 
                 :roundDurationSec="game.round_duration_seconds" 
                 :roundResultDurationSec="game.round_result_duration_seconds" 
-                :isBob="isBob">
+                :isBob="user.isBob">
               </lit-edit-game-settings-dialog>
 
               <lit-button label="Start" size="xs" bgColorClass="bg-iris-400" class="w-16" x-on:clicked="openConfirmStartGameDialog"></lit-button>
@@ -243,18 +242,18 @@
     <div class="hidden md:flex flex-col shrink-0 w-[320px] h-full overflow-hidden z-10 border-l border-gray-700"
       style="box-shadow: -2px 0 2px rgba(0, 0, 0, 0.25)">
       <lit-panel-header2 label="STATUS" noBorder noRounded class="border-b border-gray-700">
-        <lit-label slot="right" :label="user.is_ready ? 'Ready' : 'Pending...'" size="sm" :bgColorClass="user.is_ready ? 'bg-pistachio-400' : 'bg-gray-500'" widthClass="w-24"></lit-label>
+        <lit-label slot="right" :label="gameUser.is_ready ? 'Ready' : 'Pending...'" size="sm" :bgColorClass="gameUser.is_ready ? 'bg-pistachio-400' : 'bg-gray-500'" widthClass="w-24"></lit-label>
       </lit-panel-header2>
       <div class="flex justify-center">
         @if($user->can_observe)
-          <div class="flex flex-col justify-between items-center w-[168px] h-full p-2 pt-1 border-r" :class="{ 'border-gray-300 bg-gray-100': !user.is_observer, 'border-iris-500 bg-iris-300': user.is_observer }">
-            <span class="font-heading font-semibold text-sm" :class="{ 'text-iris-800': !user.is_observer, 'text-gray-900': user.is_observer }">Observer Mode</span>
-            <lit-toggle size="sm" leftLabel="Off" rightLabel="On" :isSelected="user.is_observer" x-on:clicked="toggleIsObserver($event.detail.isSelected)" class="w-full"></lit-toggle>
+          <div class="flex flex-col justify-between items-center w-[168px] h-full p-2 pt-1 border-r" :class="{ 'border-gray-300 bg-gray-100': !gameUser.is_observer, 'border-iris-500 bg-iris-300': gameUser.is_observer }">
+            <span class="font-heading font-semibold text-sm" :class="{ 'text-iris-800': !gameUser.is_observer, 'text-gray-900': gameUser.is_observer }">Observer Mode</span>
+            <lit-toggle size="sm" leftLabel="Off" rightLabel="On" :isSelected="gameUser.is_observer" x-on:clicked="toggleIsObserver($event.detail.isSelected)" class="w-full"></lit-toggle>
         </div>
         @endif
         <div class="w-full bg-iris-300 p-2">
-          <lit-button label="Wait" size="lg" bgColorClass="bg-gray-400" x-on:click="toggleIsReady(false)" x-show="user.is_ready" class="w-48"></lit-button>
-          <lit-button label="Ready" size="lg" bgColorClass="bg-pistachio-500" x-on:click="toggleIsReady(true)" x-show="!user.is_ready" class="w-48"></lit-button>
+          <lit-button label="Wait" size="lg" bgColorClass="bg-gray-400" x-on:click="toggleIsReady(false)" x-show="gameUser.is_ready" class="w-48"></lit-button>
+          <lit-button label="Ready" size="lg" bgColorClass="bg-pistachio-500" x-on:click="toggleIsReady(true)" x-show="!gameUser.is_ready" class="w-48"></lit-button>
         </div>
       </div>
 
@@ -320,7 +319,7 @@
 </div>
 
 <script>
-  function state(userId) {
+  function state() {
     return {
       animationDurationMs: 700,
       gameUserListMarginTopPx: 8,
@@ -328,7 +327,7 @@
       gameStageText: 'Waiting for players...',
       gameUsers: @json($game_users),
       handleGameStatusInterval: null,
-      isBob: @json($user).is_bob,
+      user: @json($user),
       get gameUserCount() {
         return this.gameUsers.length;
       },
@@ -337,6 +336,9 @@
       },
       get playerCount() {
         return this.gameUsers.filter(n => !n.is_observer).length;
+      },
+      get gameUser() {
+        return this.gameUsers.find(n => n.id === this.user.id);
       },
       get gameUserList() {
         const hostPlayer = this.gameUsers.find(n => n.is_host);
@@ -364,14 +366,11 @@
         return gameUsers;
       },
       get lowercaseMapStyleShortName() {
-        const name = this.user.map_style_short_name.toLowerCase();
+        const name = this.gameUser.map_style_short_name.toLowerCase();
         return name.charAt(0).toUpperCase() + name.slice(1);
       },
       get readyEntrantCount() {
         return this.gameUsers.filter(n => n.is_ready).length;
-      },
-      get user() {
-        return this.gameUsers.find(n => n.id === userId);
       },
       deleteGame() {
         fetch(`/web-api/game/${this.game.id}`, {
@@ -414,7 +413,25 @@
         this.$refs.selectMapMarkerDialog.open();
       },
       openSelectMapStyleDialog() {
-        this.$refs.selectMapStyleDialog.open();
+        let dialog = document.querySelector('lit-select-map-style-dialog');
+        if (!dialog) {
+          dialog = document.createElement('lit-select-map-style-dialog');
+          dialog.setAttribute('selectedLocationMarkerEnum', `${this.user.map_location_marker_enum}`);
+          dialog.setAttribute('selectedMapStyleEnum', `${this.gameUser.map_style_enum}`);
+          dialog.setAttribute('userLevel', `${this.gameUser.level}`);
+          document.body.appendChild(dialog);
+        }
+        dialog.addEventListener('canceled', () => {
+          dialog.remove()
+        })
+        dialog.addEventListener('submitted', (data) => {
+          this.user = { ...this.user, map_location_marker_enum: data.detail.mapLocationMarkerEnum }
+          dialog.remove()
+        })
+        dialog.addEventListener('closed', (data) => {
+          dialog.remove()
+        })
+        dialog.open();
       },
       openSelectUserProfileDialog() {
         this.$refs.selectUserProfileDialog.open();
@@ -552,7 +569,7 @@
         channel.bind('game-user.left', ({ userId }) => {
           // Because leaving the game is a request, it takes time. If I remove the user in the player list,
           // it creates bugs on the page because the user not exist anymore.
-          if (this.user.id !== userId) {
+          if (this.gameUser.id !== userId) {
             this.gameUsers = this.gameUsers.filter(n => n.id !== userId);
           }
         }); 
