@@ -5,7 +5,6 @@ namespace Domain\Map\Enum;
 use Domain\Map\Crud\MapMarkerCrud;
 use Domain\User\Enum\UserLevelEnum;
 use GuardsmanPanda\Larabear\Infrastructure\App\Interface\BearDatabaseBackedEnumInterface;
-use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 use Illuminate\Support\Str;
 
 enum MapMarkerEnum: string implements BearDatabaseBackedEnumInterface {
@@ -103,12 +102,7 @@ enum MapMarkerEnum: string implements BearDatabaseBackedEnumInterface {
   case SYSTEM_WHITE_BORDER_PIN_RED = 'SYSTEM_WHITE_BORDER_PIN_RED';
   case SYSTEM_WHITE_BORDER_PIN_YELLOW = 'SYSTEM_WHITE_BORDER_PIN_YELLOW';
 
-
-  public static function fromRequest(): self {
-    return self::from(value: Req::getString(key: 'map_marker_enum'));
-  }
-
-
+  
   public function getFilePath(): string {
     $value = $this->value;
     if ($this->getGrouping() === 'System') {
