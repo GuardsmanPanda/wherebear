@@ -17,9 +17,18 @@ interface MapStyle {
 }
 
 interface LocationMarker {
+  color: string
   enum: string
   imgPath: string
   type: "pin" | "cross"
+}
+
+interface LocationMarkerApi {
+  border_color: "black" | "white"
+  color: string
+  enum: string
+  file_path: string
+  type: "cross" | "pin"
 }
 
 @customElement("lit-select-map-style-dialog")
@@ -36,78 +45,7 @@ export class SelectMapStyleDialog extends LitElement {
     ${TailwindStyles} ${AppStyles}
   `
 
-  private locationMarkers: Map<string, LocationMarker[]> = new Map([
-    [
-      "pin",
-      [
-        {
-          enum: "SYSTEM_BLACK_BORDER_PIN_BLUE",
-          imgPath: "/static/img/map/location-marker/black-border/pin-blue.svg",
-          type: "pin",
-        },
-        {
-          enum: "SYSTEM_BLACK_BORDER_PIN_GREEN",
-          imgPath: "/static/img/map/location-marker/black-border/pin-green.svg",
-          type: "pin",
-        },
-        {
-          enum: "SYSTEM_BLACK_BORDER_PIN_YELLOW",
-          imgPath: "/static/img/map/location-marker/black-border/pin-yellow.svg",
-          type: "pin",
-        },
-        {
-          enum: "SYSTEM_BLACK_BORDER_PIN_ORANGE",
-          imgPath: "/static/img/map/location-marker/black-border/pin-orange.svg",
-          type: "pin",
-        },
-        {
-          enum: "SYSTEM_BLACK_BORDER_PIN_RED",
-          imgPath: "/static/img/map/location-marker/black-border/pin-red.svg",
-          type: "pin",
-        },
-        {
-          enum: "SYSTEM_BLACK_BORDER_PIN_PURPLE",
-          imgPath: "/static/img/map/location-marker/black-border/pin-purple.svg",
-          type: "pin",
-        },
-      ],
-    ],
-    [
-      "cross",
-      [
-        {
-          enum: "SYSTEM_BLACK_BORDER_CROSS_BLUE",
-          imgPath: "/static/img/map/location-marker/black-border/cross-blue.svg",
-          type: "cross",
-        },
-        {
-          enum: "SYSTEM_BLACK_BORDER_CROSS_GREEN",
-          imgPath: "/static/img/map/location-marker/black-border/cross-green.svg",
-          type: "cross",
-        },
-        {
-          enum: "SYSTEM_BLACK_BORDER_CROSS_YELLOW",
-          imgPath: "/static/img/map/location-marker/black-border/cross-yellow.svg",
-          type: "cross",
-        },
-        {
-          enum: "SYSTEM_BLACK_BORDER_CROSS_ORANGE",
-          imgPath: "/static/img/map/location-marker/black-border/cross-orange.svg",
-          type: "cross",
-        },
-        {
-          enum: "SYSTEM_BLACK_BORDER_CROSS_RED",
-          imgPath: "/static/img/map/location-marker/black-border/cross-red.svg",
-          type: "cross",
-        },
-        {
-          enum: "SYSTEM_BLACK_BORDER_CROSS_PURPLE",
-          imgPath: "/static/img/map/location-marker/black-border/cross-purple.svg",
-          type: "cross",
-        },
-      ],
-    ],
-  ])
+  private locationMarkers: Map<string, LocationMarker[]> = new Map()
 
   get litDialogElement(): Dialog | null {
     return this.renderRoot.querySelector("lit-dialog")
@@ -130,6 +68,14 @@ export class SelectMapStyleDialog extends LitElement {
   private cancel() {
     this.dispatchEvent(new CustomEvent("canceled", { bubbles: true, composed: true }))
     this.litDialogElement?.close()
+  }
+
+  private async fetchUserMapLocationMarkers(): Promise<LocationMarkerApi[]> {
+    const response = await fetch(`/web-api/user/map-location-markers`)
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status}`)
+    }
+    return response.json()
   }
 
   private async fetchUserMapStyles(): Promise<MapStyle[]> {
@@ -241,10 +187,48 @@ export class SelectMapStyleDialog extends LitElement {
 
   async open(): Promise<void> {
     try {
-      this.mapStyles = await this.fetchUserMapStyles()
+      const [locationMarkersApi, mapStylesApi] = await Promise.all([this.fetchUserMapLocationMarkers(), this.fetchUserMapStyles()])
+
+      this.mapStyles = mapStylesApi
+
+      // Populate the locationMarkers map
+      this.locationMarkers.clear()
+      const typeOrder: Record<string, number> = {
+        pin: 1,
+        cross: 2,
+      }
+      const colorOrder: Record<string, number> = {
+        blue: 1,
+        green: 2,
+        yellow: 3,
+        orange: 4,
+        red: 5,
+        purple: 6,
+      }
+      const locationMarkers = locationMarkersApi
+        .filter((n) => n.border_color === "black")
+        .map((locationMarkerApi) => ({
+          enum: locationMarkerApi.enum,
+          imgPath: locationMarkerApi.file_path,
+          type: locationMarkerApi.type,
+          color: locationMarkerApi.color,
+        }))
+        .sort((a, b) => {
+          if (typeOrder[a.type] !== typeOrder[b.type]) {
+            return typeOrder[a.type] - typeOrder[b.type]
+          }
+          return (colorOrder[a.color] || Infinity) - (colorOrder[b.color] || Infinity)
+        })
+      locationMarkers.forEach((locationMarker) => {
+        if (!this.locationMarkers.has(locationMarker.type)) {
+          this.locationMarkers.set(locationMarker.type, [])
+        }
+        this.locationMarkers.get(locationMarker.type)?.push(locationMarker)
+      })
     } catch (err) {
       Logger.error(err)
     }
+
     this.litDialogElement?.open()
   }
 
