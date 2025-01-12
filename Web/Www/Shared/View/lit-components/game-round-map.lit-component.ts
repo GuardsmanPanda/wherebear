@@ -19,22 +19,26 @@ interface Guess {
 
 type MapStyleEnum = "OSM" | "DEFAULT" | "STREETS" | "SATELLITE" | "SATELLITE_STREETS" | "DARK" | "NIGHT"
 
+type MarkerAnchor = "center" | "bottom"
+
 /**
  * Renders the map of a game round displaying:
  * - The panorama's location marked with a distinctive marker.
  * - Player markers indicating the guesses made by all players.
  */
 @customElement("lit-game-round-map")
-class GameRoundMap extends LitElement {
+export class GameRoundMap extends LitElement {
   @property({ type: Array }) guesses: Guess[] = []
   @property({ type: Number }) panoramaLat?: number
   @property({ type: Number }) panoramaLng?: number
+  @property({ type: String }) panoramaLocationMarkerAnchor!: MarkerAnchor
+  @property({ type: String }) panoramaLocationMarkerImgPath!: string
   @property({ type: String }) mapStyleEnum: MapStyleEnum = "DEFAULT"
   @property({ type: String }) mapStyleFullUri!: string
   @property({ type: Number }) mapStyleTileSize = 256
 
   @state() map!: MapLibre
-  @state() panoramaMarker: Marker | null = null
+  @state() panoramaLocationMarker: Marker | null = null
   @state() playerMarkers: Marker[] = []
 
   static styles = [
@@ -736,8 +740,8 @@ class GameRoundMap extends LitElement {
   }
 
   private clearPanoramaMarker() {
-    this.panoramaMarker?.remove()
-    this.panoramaMarker = null
+    this.panoramaLocationMarker?.remove()
+    this.panoramaLocationMarker = null
   }
 
   private clearPlayerMarkers() {
@@ -746,26 +750,21 @@ class GameRoundMap extends LitElement {
   }
 
   private jumpToPanoramaMarker() {
-    if (this.panoramaMarker) {
+    if (this.panoramaLocationMarker) {
       this.map.jumpTo({
-        center: this.panoramaMarker.getLngLat(),
+        center: this.panoramaLocationMarker.getLngLat(),
         zoom: 10,
       })
     }
   }
 
   private setPanoramaMarker(lng: number, lat: number) {
-    const mapStylesForWhiteBorderMarker: MapStyleEnum[] = ["SATELLITE", "SATELLITE_STREETS", "NIGHT", "DARK"]
-    const mapMarkerFilename = mapStylesForWhiteBorderMarker.includes(this.mapStyleEnum)
-      ? "map-marker-red-white-border"
-      : "map-marker-red-black-border"
-
     const mapPanoramaMarkerElement = document.createElement("div")
-    mapPanoramaMarkerElement.innerHTML = `<img src="/static/img/icon/${mapMarkerFilename}.svg" class="h-12" />`
+    mapPanoramaMarkerElement.innerHTML = `<img src="${this.panoramaLocationMarkerImgPath}" class="h-12" />`
 
-    this.panoramaMarker = new Marker({
+    this.panoramaLocationMarker = new Marker({
       element: mapPanoramaMarkerElement,
-      anchor: "center",
+      anchor: this.panoramaLocationMarkerAnchor,
     })
       .setLngLat([lng, lat])
       .addTo(this.map)

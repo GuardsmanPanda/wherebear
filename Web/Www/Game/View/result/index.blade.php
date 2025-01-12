@@ -105,12 +105,14 @@
               'z-10': currentMode === 'panorama'
             }"
           ></div>
-          
+         
           <lit-game-round-map
             x-ref="map"
             mapStyleEnum="{{ $user->map_style_enum }}"
             mapStyleTileSize="{{ $user->map_style_tile_size }}"
             mapStyleFullUri="{{ $user->map_style_full_uri }}"
+            panoramaLocationMarkerAnchor="{{ $user->map_location_marker_anchor }}"
+            panoramaLocationMarkerImgPath="{{ $user->map_location_marker_img_path }}"
             :guesses="JSON.stringify(selectedRound.guesses)"
             :panoramaLat="selectedRound.panorama.lat"
             :panoramaLng="selectedRound.panorama.lng"
@@ -260,6 +262,8 @@
             mapStyleEnum="{{ $user->map_style_enum }}"
             mapStyleTileSize="{{ $user->map_style_tile_size }}"
             mapStyleFullUri="{{ $user->map_style_full_uri }}"
+            panoramaLocationMarkerAnchor="{{ $user->map_location_marker_anchor }}"
+            panoramaLocationMarkerImgPath="{{ $user->map_location_marker_img_path }}"
             :guesses="JSON.stringify(selectedRound.guesses)"
             :panoramaLat="selectedRound.panorama.lat"
             :panoramaLng="selectedRound.panorama.lng"

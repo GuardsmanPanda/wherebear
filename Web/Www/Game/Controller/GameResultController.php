@@ -86,6 +86,8 @@ final class GameResultController extends Controller {
         u.map_style_enum,
         mm.file_path as map_marker_file_path,
         mm.map_anchor as map_marker_map_anchor,
+        mm1.map_anchor as map_location_marker_anchor,
+        mm1.file_path as map_location_marker_img_path,
         ms.tile_size as map_style_tile_size,
         ms.full_uri as map_style_full_uri,
         round(gu.points)::integer as rounded_points,
@@ -95,6 +97,7 @@ final class GameResultController extends Controller {
       FROM bear_user u
       LEFT JOIN game_user gu ON gu.user_id = u.id
       LEFT JOIN map_marker mm ON mm.enum = u.map_marker_enum
+      LEFT JOIN map_marker mm1 ON mm1.enum = u.map_location_marker_enum
       LEFT JOIN map_style ms ON ms.enum = u.map_style_enum
       LEFT JOIN user_level ul ON ul.enum = u.user_level_enum
       LEFT JOIN user_level ul2 ON ul2.enum = u.user_level_enum + 1
@@ -249,6 +252,8 @@ final class GameResultController extends Controller {
         'is_player' => true,
         'level' => 2,
         'level_percentage' => 25,
+        'map_location_marker_anchor' => 'center',
+        'map_location_marker_img_path' => '/static/img/map/location-marker/black-border/cross-green.svg',
         'map_marker_file_path' => '/static/img/map-marker/monster/1.png',
         'map_marker_map_anchor' => 'bottom',
         'map_style_enum' => 'OSM',

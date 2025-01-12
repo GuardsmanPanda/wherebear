@@ -64,6 +64,8 @@ final class GamePlayController extends Controller {
       SELECT
           u.id, u.map_marker_enum, u.map_style_enum,
           mm.file_path as map_marker_file_path,
+          mm1.map_anchor as map_location_marker_anchor,
+          mm1.file_path as map_location_marker_img_path,
           ms.tile_size as map_style_tile_size,
           ms.zoom_offset as map_style_zoom_offset,
           ms.full_uri as map_style_full_uri,
@@ -73,6 +75,7 @@ final class GamePlayController extends Controller {
       FROM bear_user u
       LEFT JOIN game_user gu ON gu.user_id = u.id
       LEFT JOIN map_marker mm ON mm.enum = u.map_marker_enum
+      LEFT JOIN map_marker mm1 ON mm1.enum = u.map_location_marker_enum
       LEFT JOIN map_style ms ON ms.enum = u.map_style_enum
       WHERE u.id = ? AND gu.game_id = ?
     SQL, bindings: [BearAuthService::getUserId(), $gameId]);
@@ -386,6 +389,8 @@ final class GamePlayController extends Controller {
       'isDev' => true,
       'user' => (object) [
         'id' => '0',
+        'map_location_marker_anchor' => 'center',
+        'map_location_marker_img_path' => '/static/img/map/location-marker/black-border/cross-blue.svg',
         'map_style_enum' => 'OSM',
         'map_style_full_uri' => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
         'map_style_tile_size' => 256
