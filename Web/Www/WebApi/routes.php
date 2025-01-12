@@ -28,6 +28,7 @@ Route::prefix('panorama')->group(callback: function () {
 
 Route::prefix('user')->group(callback: function () {
   Route::get(uri: 'flags', action: [WebApiUserController::class, 'getFlags']);
+  Route::get(uri: 'map-location-markers', action: [WebApiUserController::class, 'getMapLocationMarkers']);
   Route::get(uri: 'map-markers', action: [WebApiUserController::class, 'getMapMarkers']);
   Route::get(uri: 'map-styles', action: [WebApiUserController::class, 'getMapStyles']);
   Route::patch(uri: '', action: [WebApiUserController::class, 'patch']);

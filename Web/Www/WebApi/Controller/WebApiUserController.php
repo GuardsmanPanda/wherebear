@@ -17,6 +17,36 @@ use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 final class WebApiUserController extends Controller {
+  public function getMapLocationMarkers(): JsonResponse {
+    $locationMarkers = DB::select(query: <<<SQL
+      SELECT 
+        mm.enum, mm.file_path,
+        CASE 
+          WHEN mm.enum LIKE '%_PIN_%' THEN 'pin'
+          WHEN mm.enum LIKE '%_CROSS_%' THEN 'cross'
+        END AS type,
+        CASE 
+          WHEN mm.enum LIKE '%_BLUE%' THEN 'blue'
+          WHEN mm.enum LIKE '%_GREEN%' THEN 'green'
+          WHEN mm.enum LIKE '%_YELLOW%' THEN 'yellow'
+          WHEN mm.enum LIKE '%_ORANGE%' THEN 'orange'
+          WHEN mm.enum LIKE '%_RED%' THEN 'red'
+          WHEN mm.enum LIKE '%_PURPLE%' THEN 'purple'
+        END AS color,
+        CASE 
+          WHEN mm.enum LIKE '%_BLACK_BORDER_%' THEN 'black'
+          WHEN mm.enum LIKE '%_WHITE_BORDER_%' THEN 'white'
+        END AS border_color
+      FROM 
+        map_marker mm
+      WHERE 
+        mm.grouping = 'System'
+        AND user_level_enum <= (SELECT user_level_enum FROM bear_user WHERE id = ?)
+    SQL, bindings: [BearAuthService::getUserId()]);
+
+    return Resp::json($locationMarkers);
+  }
+
   public function getMapMarkers(): JsonResponse {
     $mapMarkers = DB::select(query: <<<SQL
       SELECT 
