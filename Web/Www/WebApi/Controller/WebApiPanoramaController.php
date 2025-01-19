@@ -8,6 +8,7 @@ use Domain\Panorama\Enum\PanoramaTagEnum;
 use Domain\Panorama\Model\Panorama;
 use GuardsmanPanda\Larabear\Infrastructure\App\Service\BearRegexService;
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
+use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Htmx;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Json;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 use Illuminate\Routing\Controller;
@@ -24,6 +25,10 @@ final class WebApiPanoramaController extends Controller {
         field_of_view: Req::getFloat(key: 'field_of_view')
       );
     }
+    if (Req::has(key: 'retired')) {
+      $updater->setRetiredStatus(retired: Req::getBool(key: 'retired'), retired_reason: Req::getStringOrNull(key: 'retired_reason'));
+    }
+    Htmx::refresh();
     return Json::fromModel(model: $updater->update());
   }
 

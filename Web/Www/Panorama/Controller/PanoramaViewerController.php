@@ -13,7 +13,9 @@ final class PanoramaViewerController extends Controller {
   public function view(string $panoramaId): View|RedirectResponse {
     $data = DB::selectOne(query: "
       SELECT 
-        jpg_path, heading, pitch, field_of_view
+        heading, pitch, field_of_view,
+        jpg_path,
+        retired_at
       FROM panorama
       WHERE id = ?
     ", bindings: [$panoramaId]);
@@ -34,7 +36,8 @@ final class PanoramaViewerController extends Controller {
       'panorama_url' => App::isProduction() ? "https://panorama.wherebear.fun/$data->jpg_path" : "https://panorama.gman.bot/$data->jpg_path",
       'heading' => $data->heading,
       'pitch' => $data->pitch,
-      'field_of_view' => $data->field_of_view
+      'field_of_view' => $data->field_of_view,
+      'retired' => $data->retired_at !== null
     ]);
   }
 }

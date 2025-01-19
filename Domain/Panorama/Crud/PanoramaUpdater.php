@@ -91,6 +91,24 @@ final readonly class PanoramaUpdater {
   }
 
 
+  public function setRetiredStatus(bool $retired, ?string $retired_reason): self {
+    if ($retired) {
+      $this->model->retired_at = now();
+      if ($retired_reason === null) {
+        throw new RuntimeException(message: 'Retired panoramas must have a reason.');
+      }
+    } else {
+      $this->model->retired_at = null;
+
+      if ($retired_reason !== null) {
+        throw new RuntimeException(message: 'Unretired panoramas must not have a reason.');
+      }
+    }
+    $this->model->retired_reason = $retired_reason;
+    return $this;
+  }
+
+
   private function calculatedNewHeading(float $heading, int $north_rotation_degrees): float {
     $heading += $north_rotation_degrees - 180;
     while ($heading < -180) {

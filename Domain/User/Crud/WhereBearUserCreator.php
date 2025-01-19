@@ -44,7 +44,7 @@ final class WhereBearUserCreator {
     $map_marker = DB::selectOne(query: "
       SELECT enum
       FROM map_marker
-      WHERE user_level_enum <= ?
+      WHERE user_level_enum <= ? AND grouping != 'System'
       ORDER BY random()
       LIMIT 1
     ", bindings: [$user_level_enum->value]);
