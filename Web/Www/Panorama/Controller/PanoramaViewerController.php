@@ -14,6 +14,7 @@ final class PanoramaViewerController extends Controller {
     $data = DB::selectOne(query: "
       SELECT 
         heading, pitch, field_of_view,
+        ST_Y(location::geometry) as lat, ST_X(location::geometry) as lng,
         jpg_path,
         retired_at
       FROM panorama
@@ -31,13 +32,20 @@ final class PanoramaViewerController extends Controller {
       }
     }
 
+    $sv_url = null;
+    if (str_starts_with(haystack: $panoramaId, needle: 'CAoSL')) {
+      $id = ""; // Should probably calculate to proper image id here, but in most cases this will work as is.
+      $sv_url = "https://www.google.com/maps/@$data->lat,$data->lng,0a,73.7y,90t/data=!3m4!1e1!3m2!1s$id!2e10";
+    }
+
     return Resp::view(view: 'panorama::viewer', data: [
       'panorama_id' => $panoramaId,
       'panorama_url' => App::isProduction() ? "https://panorama.wherebear.fun/$data->jpg_path" : "https://panorama.gman.bot/$data->jpg_path",
       'heading' => $data->heading,
       'pitch' => $data->pitch,
       'field_of_view' => $data->field_of_view,
-      'retired' => $data->retired_at !== null
+      'retired' => $data->retired_at !== null,
+      'sv_url' => $sv_url,
     ]);
   }
 }

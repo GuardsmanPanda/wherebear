@@ -3,13 +3,23 @@
 
 @section('content')
   <div id="panorama">
-    <button class="absolute text-black z-10 button" onclick="saveViewport()">Save Viewport</button>
+    <div class="absolute z-10 top-1 left-1">
+      <button class="text-black button" onclick="saveViewport()">Save Viewport</button>
+      @if($sv_url !== null)
+        <button class="text-black button" onclick="window.open('{{$sv_url}}', 'sv', 'popup')">Open StreetView</button>
+      @endif
+    </div>
     <div class="absolute left-5 bottom-4 z-10" hx-patch="/web-api/panorama/{{$panorama_id}}"
          hx-vals='{"retired":"{{$retired ? 'false' : 'true'}}", "retired_reason": "{{$retired ? '' : 'Manual Retirement'}}"}'>
       @if($retired)
-        <button type="button" class="text-white bg-red-600 hover:bg-red-800 font-bold rounded-md text-lg px-3 py-1.5 border-2 border-red-100">Retired !!</button>
+        <button type="button" class="text-white bg-red-600 hover:bg-red-800 font-bold rounded-md text-lg px-3 py-1.5 border-2 border-red-100">Retired
+          !!
+        </button>
       @else
-        <button type="button" class="py-1 px-2 text-sm font-bold text-gray-900 bg-gray-50 rounded-md border border-red-200 hover:bg-red-100 hover:text-red-600">Retire</button>
+        <button type="button"
+                class="py-1 px-2 text-sm font-bold text-gray-900 bg-gray-50 rounded-md border border-red-200 hover:bg-red-100 hover:text-red-600">
+          Retire
+        </button>
       @endif
     </div>
   </div>
