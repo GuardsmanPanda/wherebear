@@ -104,7 +104,7 @@ final class WebApiUserController extends Controller {
       $updater->setMapLocationMarkerEnum(map_marker_enum: MapMarkerEnum::from(value: Req::getString(key: 'map_location_marker_enum')));
     }
     if (Req::has(key: 'map_marker_enum')) {
-      $updater->setMapMarkerEnum(map_marker_enum: MapMarkerEnum::from(value: Req::getString(key: 'map_location_marker_enum')));
+      $updater->setMapMarkerEnum(map_marker_enum: MapMarkerEnum::from(value: Req::getString(key: 'map_marker_enum')));
     }
     if (Req::has(key: 'map_style_enum')) {
       $updater->setMapStyleEnum(map_style_enum: MapStyleEnum::fromRequest());

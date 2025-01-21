@@ -1291,16 +1291,16 @@
     },
     {
       "name": "laravel/framework",
-      "version": "v11.38.2",
+      "version": "v11.39.0",
       "source": {
         "type": "git",
         "url": "https://github.com/laravel/framework.git",
-        "reference": "9d290aa90fcad44048bedca5219d2b872e98772a"
+        "reference": "996c96955f78e8a2b26a24c490a1721cfb14574f"
       },
       "dist": {
         "type": "zip",
-        "url": "https://api.github.com/repos/laravel/framework/zipball/9d290aa90fcad44048bedca5219d2b872e98772a",
-        "reference": "9d290aa90fcad44048bedca5219d2b872e98772a",
+        "url": "https://api.github.com/repos/laravel/framework/zipball/996c96955f78e8a2b26a24c490a1721cfb14574f",
+        "reference": "996c96955f78e8a2b26a24c490a1721cfb14574f",
         "shasum": ""
       },
       "require": {
@@ -1501,7 +1501,7 @@
         "issues": "https://github.com/laravel/framework/issues",
         "source": "https://github.com/laravel/framework"
       },
-      "time": "2025-01-15T00:06:46+00:00"
+      "time": "2025-01-21T15:02:43+00:00"
     },
     {
       "name": "laravel/prompts",
@@ -6654,16 +6654,16 @@
   "packages-dev": [
     {
       "name": "phpstan/phpstan",
-      "version": "2.1.1",
+      "version": "2.1.2",
       "source": {
         "type": "git",
         "url": "https://github.com/phpstan/phpstan.git",
-        "reference": "cd6e973e04b4c2b94c86e8612b5a65f0da0e08e7"
+        "reference": "7d08f569e582ade182a375c366cbd896eccadd3a"
       },
       "dist": {
         "type": "zip",
-        "url": "https://api.github.com/repos/phpstan/phpstan/zipball/cd6e973e04b4c2b94c86e8612b5a65f0da0e08e7",
-        "reference": "cd6e973e04b4c2b94c86e8612b5a65f0da0e08e7",
+        "url": "https://api.github.com/repos/phpstan/phpstan/zipball/7d08f569e582ade182a375c366cbd896eccadd3a",
+        "reference": "7d08f569e582ade182a375c366cbd896eccadd3a",
         "shasum": ""
       },
       "require": {
@@ -6708,7 +6708,7 @@
           "type": "github"
         }
       ],
-      "time": "2025-01-05T16:43:48+00:00"
+      "time": "2025-01-21T14:54:06+00:00"
     },
     {
       "name": "phpstan/phpstan-deprecation-rules",
@@ -6759,16 +6759,16 @@
     },
     {
       "name": "phpstan/phpstan-strict-rules",
-      "version": "2.0.2",
+      "version": "2.0.3",
       "source": {
         "type": "git",
         "url": "https://github.com/phpstan/phpstan-strict-rules.git",
-        "reference": "02277ce4b0dd03d74f15282064f8f027d1dec9cc"
+        "reference": "8b88b5f818bfa301e0c99154ab622dace071c3ba"
       },
       "dist": {
         "type": "zip",
-        "url": "https://api.github.com/repos/phpstan/phpstan-strict-rules/zipball/02277ce4b0dd03d74f15282064f8f027d1dec9cc",
-        "reference": "02277ce4b0dd03d74f15282064f8f027d1dec9cc",
+        "url": "https://api.github.com/repos/phpstan/phpstan-strict-rules/zipball/8b88b5f818bfa301e0c99154ab622dace071c3ba",
+        "reference": "8b88b5f818bfa301e0c99154ab622dace071c3ba",
         "shasum": ""
       },
       "require": {
@@ -6801,9 +6801,9 @@
       "description": "Extra strict and opinionated rules for PHPStan",
       "support": {
         "issues": "https://github.com/phpstan/phpstan-strict-rules/issues",
-        "source": "https://github.com/phpstan/phpstan-strict-rules/tree/2.0.2"
+        "source": "https://github.com/phpstan/phpstan-strict-rules/tree/2.0.3"
       },
-      "time": "2025-01-19T13:03:11+00:00"
+      "time": "2025-01-21T10:52:14+00:00"
     },
     {
       "name": "roave/security-advisories",
