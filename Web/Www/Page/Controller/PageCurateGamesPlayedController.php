@@ -30,13 +30,17 @@ final class PageCurateGamesPlayedController extends Controller {
           p.id,
           p.panorama_tag_array,
           p.captured_date,
+          p.created_at::date as panorama_created_at,
+          p.retired_at as panorama_retired_at,
           gr.round_number,
           c.name as country_name,
-          cs.name as country_subdivision_name
+          cs.name as country_subdivision_name,
+          isvup.id as import_street_view_user_panorama_id
         FROM game_round gr
         LEFT JOIN panorama p ON gr.panorama_id = p.id
         LEFT JOIN bear_country c ON p.country_cca2 = c.cca2
         LEFT JOIN bear_country_subdivision cs ON cs.iso_3166 = p.country_subdivision_iso_3166
+        LEFT JOIN import_street_view_user_panorama isvup on p.id = isvup.panorama_id
         WHERE gr.game_id = ?
         ORDER BY gr.round_number
       SQL, bindings: [$gameId]),
