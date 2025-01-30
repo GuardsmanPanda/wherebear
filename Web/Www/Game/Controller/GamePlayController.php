@@ -86,7 +86,7 @@ final class GamePlayController extends Controller {
     $rounds = DB::select(query: <<<SQL
       SELECT
         bc.cca2 as country_cca2, bc.name as country_name,
-        gru.rank as user_rank,
+        COALESCE(gru.rank, 0) as user_rank,
         p.country_cca2 = gru.country_cca2 as country_match_user_guess,
         p.country_subdivision_iso_3166 = gru.country_subdivision_iso_3166 as country_subdivision_match_user_guess
       FROM game_round gr
