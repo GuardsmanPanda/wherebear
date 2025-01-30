@@ -10,7 +10,7 @@
   const channel = webSocketClient2.subscribeToChannel('game.{{$game->id}}');
 
   channel.bind('game.round.updated', function (data) {
-    if (data.GameStateEnum === '{{GameStateEnum::IN_PROGRESS_CALCULATING->value}}') {
+    if (data.gameStateEnum === '{{GameStateEnum::IN_PROGRESS_CALCULATING->value}}') {
       // Todo: Hide the map to guesses can't be made.
     } else {
       location.reload();
