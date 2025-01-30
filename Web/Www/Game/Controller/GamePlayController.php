@@ -137,7 +137,7 @@ final class GamePlayController extends Controller {
       $user_guess = null;
       if ($user->is_player) {
         foreach ($guesses as $guess) {
-          if ($guess->user_id === $user->id) {
+          if ($guess->user_id === $user->id && $guess->rank !== null) {
             $user_guess = $guess;
             break;
           }
