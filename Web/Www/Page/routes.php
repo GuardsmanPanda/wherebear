@@ -14,6 +14,7 @@ use Web\Www\Page\Controller\PageTemplateController;
 
 Route::prefix('discovery')->middleware([BearPermissionMiddleware::using(permission: BearPermissionEnum::PANORAMA_CONTRIBUTE)])->group(callback: function () {
   Route::get(uri: '', action: [PageDiscoveryController::class, 'index']);
+  Route::get(uri: 'panorama-location', action: [PageDiscoveryController::class, 'getPanoramas']);
 });
 
 Route::prefix('achievement-location')->middleware([])->group(callback: function () {

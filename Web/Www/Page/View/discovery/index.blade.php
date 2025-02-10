@@ -67,6 +67,22 @@
     window.open('https://google.com/maps/@' + e.lngLat.lat + ',' + e.lngLat.lng + ',' + (map.getZoom() + 1) + 'z', '', 'width=1300,height=800');
   });
 
+  let markers = []
+  map.on('zoomend', function (e) {
+    const bounds = map.getBounds();
+    const url = '/page/discovery/panorama-location?' + 'north=' + bounds.getNorth() + '&south=' + bounds.getSouth() + '&east=' + bounds.getEast() + '&west=' + bounds.getWest();
+    markers.forEach(marker => marker.remove());
+    fetch(url).then(resp => resp.json()).then(json => {
+      json.forEach(panorama => {
+        markers.push(
+          new window.maplibregl.Marker({scale: 0.5, color:'purple'})
+            .setLngLat([panorama.longitude, panorama.latitude])
+            .addTo(map)
+        );
+      });
+    });
+  });
+
   const add_panorama = function () {
     let tag_elements = document.getElementById('tags').querySelectorAll('input[type="checkbox"]');
     let tags_unchecked = [];

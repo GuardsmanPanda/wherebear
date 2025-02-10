@@ -2,11 +2,15 @@
 
 namespace Web\Www\Page\Controller;
 
+
 use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService;
+use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Json;
+use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Resp;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 final class PageDiscoveryController extends Controller {
   public function index(): View {
@@ -23,5 +27,17 @@ final class PageDiscoveryController extends Controller {
         WHERE u.id = ?
       ", bindings: [BearAuthService::getUserId()]),
     ]);
+  }
+
+  public function getPanoramas(): JsonResponse {
+    return Json::fromSql(sql: "
+      SELECT
+        ST_Y(location::geometry) as latitude,
+        ST_X(location::geometry) as longitude
+      FROM panorama p
+      WHERE 
+        st_within(p.location::geometry, ST_MakeEnvelope(?, ?, ?, ?, 4326))
+        AND p.retired_at IS NULL
+    ", data: [Req::getFloat(key: 'west'), Req::getFloat(key: 'south'), Req::getFloat(key: 'east'), Req::getFloat(key: 'north')]);
   }
 }
