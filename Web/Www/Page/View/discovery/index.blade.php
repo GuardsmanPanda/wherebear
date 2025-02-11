@@ -73,6 +73,7 @@
     const url = '/page/discovery/panorama-location?' + 'north=' + bounds.getNorth() + '&south=' + bounds.getSouth() + '&east=' + bounds.getEast() + '&west=' + bounds.getWest();
     markers.forEach(marker => marker.remove());
     fetch(url).then(resp => resp.json()).then(json => {
+      if (json.length > 2000) return;
       json.forEach(panorama => {
         markers.push(
           new window.maplibregl.Marker({scale: 0.5, color:'purple'})
