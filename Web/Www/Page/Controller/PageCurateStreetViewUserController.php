@@ -93,6 +93,8 @@ final class PageCurateStreetViewUserController extends Controller {
     }
 
     return Resp::view(view: 'page::curate.street-view-user-table', data: [
+      'cca2' => Req::getStringOrNull(key: 'cca2'),
+      'iso_3166' => Req::getStringOrNull(key: 'iso-3166'),
       'panoramas' => $panoramas,
       'userId' => $userId,
     ]);

@@ -59,7 +59,7 @@
         </button>
         <button type="button"
                 class="text-red-500 hover:text-white border border-red-500 hover:bg-red-500 font-medium rounded-md text-sm ml-4 px-2.5 py-0.5 hover:scale-110 transition-all duration-75 text-center"
-                hx-post="/page/curate/street-view-user/{{$userId}}/panorama/{{$panorama->id}}/reject">Reject
+                hx-post="/page/curate/street-view-user/{{$userId}}/panorama/{{$panorama->id}}/reject?cca2={{$cca2}}&iso-3166={{$iso_3166}}">Reject
         </button>
       </td>
     </tr>
