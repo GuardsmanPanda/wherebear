@@ -44,7 +44,7 @@ final class PageCurateStreetViewUserController extends Controller {
         FROM import_street_view_user_panorama up
         LEFT JOIN bear_country c ON up.country_cca2 = c.cca2
         LEFT JOIN bear_country_subdivision cs ON cs.iso_3166 = up.country_subdivision_iso_3166
-        WHERE up.import_street_view_user_id = ?
+        WHERE up.import_street_view_user_id = ? AND up.import_status_enum = 'LOCATION_ADDED'
         GROUP BY c.cca2, c.name, cs.iso_3166, cs.name
         ORDER BY c.name, cs.name
       SQL, bindings: [$userId]),
