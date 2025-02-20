@@ -44,7 +44,7 @@ Route::prefix('curate')->middleware([BearRoleMiddleware::using(BearRoleEnum::ADM
   Route::get(uri: 'games-played/game/{gameId}', action: [PageCurateGamesPlayedController::class, 'table']);
   Route::get(uri: 'street-view-user', action: [PageCurateStreetViewUserController::class, 'index']);
   Route::post(uri: 'street-view-user', action: [PageCurateStreetViewUserController::class, 'create']);
-  Route::get(uri: 'street-view-user/{userId}', action: [PageCurateStreetViewUserController::class, 'table']);
-  Route::post(uri: 'street-view-user/{userId}/panorama/{id}/accept', action: [PageCurateStreetViewUserController::class, 'table']);
+  Route::get(uri: 'street-view-user/{userId}', action: [PageCurateStreetViewUserController::class, 'streetViewUser']);
+  Route::get(uri: 'street-view-user/{userId}/table', action: [PageCurateStreetViewUserController::class, 'table']);
   Route::post(uri: 'street-view-user/{userId}/panorama/{id}/reject', action: [PageCurateStreetViewUserController::class, 'reject']);
 });

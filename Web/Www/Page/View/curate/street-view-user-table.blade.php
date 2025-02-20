@@ -61,10 +61,6 @@
                 class="text-red-500 hover:text-white border border-red-500 hover:bg-red-500 font-medium rounded-md text-sm ml-4 px-2.5 py-0.5 hover:scale-110 transition-all duration-75 text-center"
                 hx-post="/page/curate/street-view-user/{{$userId}}/panorama/{{$panorama->id}}/reject">Reject
         </button>
-        <button type="button"
-                class="text-green-500 hover:text-white border border-green-500 hover:bg-green-500 font-medium rounded-md text-sm ml-1 px-2.5 py-0.5 hover:scale-110 transition-all duration-75 text-center"
-                hx-post="/page/curate/street-view-user/{{$userId}}/panorama/{{$panorama->id}}/accept">Accept
-        </button>
       </td>
     </tr>
   @endforeach
