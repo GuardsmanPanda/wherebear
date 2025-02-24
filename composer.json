@@ -7,7 +7,7 @@
     "php": "^8.4",
     "guardsmanpanda/larabear": "dev-main",
     "guzzlehttp/guzzle": "^7.9",
-    "laravel/framework": "^v11.33",
+    "laravel/framework": "^v12.0",
     "laravel/reverb": "^v1.4"
   },
   "require-dev": {
