@@ -113,6 +113,7 @@ final class PageCurateStreetViewUserController extends Controller {
           up.panorama_id,
           up.captured_date, 
           c.name as country_name,
+          ST_Y(p.location::geometry) as lat, ST_X(p.location::geometry) as lng,
           (SELECT COUNT(*) FROM panorama p2 WHERE p2.country_cca2 = up.country_cca2) as country_panoramas_count, 
           cs.name as country_subdivision_name,
           (SELECT COUNT(*) FROM panorama p2 WHERE p2.country_subdivision_iso_3166 = up.country_subdivision_iso_3166) as country_subdivision_panoramas_count
@@ -120,10 +121,12 @@ final class PageCurateStreetViewUserController extends Controller {
         LEFT JOIN panorama p ON p.id = up.panorama_id
         LEFT JOIN bear_country c ON p.country_cca2 = c.cca2
         LEFT JOIN bear_country_subdivision cs ON p.country_subdivision_iso_3166 = cs.iso_3166
-        WHERE up.import_status_enum = 'IMPORTED_PANORAMA' AND p.retired_at IS NULL
+        WHERE 
+          up.import_status_enum = 'IMPORTED_PANORAMA'
+          AND p.retired_at IS NULL
+          AND up.import_street_view_user_id = ?
         ORDER BY c.name, cs.name, up.id
-      SQL
-      ),
+      SQL, bindings: [$userId]),
     ]);
   }
 

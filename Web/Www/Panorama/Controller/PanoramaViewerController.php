@@ -34,7 +34,7 @@ final class PanoramaViewerController extends Controller {
 
     $sv_url = null;
     if (str_starts_with(haystack: $panoramaId, needle: 'CAoSL')) {
-      $id = ""; // Should probably calculate to proper image id here, but in most cases this will work as is.
+      $id = ""; //TODO: Should probably calculate to proper image id here, but in most cases this will work as is.
       $sv_url = "https://www.google.com/maps/@$data->lat,$data->lng,0a,73.7y,90t/data=!3m4!1e1!3m2!1s$id!2e10";
     }
 
