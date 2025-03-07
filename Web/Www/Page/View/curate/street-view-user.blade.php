@@ -36,9 +36,15 @@
       <td class="px-4 py-3 text-right">{{$user->rejected_count}}</td>
       <td class="px-4 py-3">{{$user->last_sync_at}}</td>
       <td class="px-4 py-2">
-        @if($user->location_added_count > 0)
+        @if($user->imported_count > 0)
           <button type="button"
                   class="text-blue-500 hover:text-white border border-blue-500 hover:bg-blue-500 font-medium rounded-md text-sm ml-1 px-2.5 py-0.5 hover:scale-110 transition-all duration-75 text-center"
+                  hx-get="/page/curate/street-view-user/{{$user->id}}/imported" hx-push-url="true">See Imported
+          </button>
+        @endif
+        @if($user->location_added_count > 0)
+          <button type="button"
+                  class="text-green-500 hover:text-white border border-green-500 hover:bg-green-500 font-medium rounded-md text-sm ml-1 px-2.5 py-0.5 hover:scale-110 transition-all duration-75 text-center"
                   hx-get="/page/curate/street-view-user/{{$user->id}}" hx-push-url="true">Curate Panoramas
           </button>
         @endif
