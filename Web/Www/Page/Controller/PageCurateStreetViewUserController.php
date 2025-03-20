@@ -114,9 +114,9 @@ final class PageCurateStreetViewUserController extends Controller {
           up.captured_date, 
           c.name as country_name,
           ST_Y(p.location::geometry) as lat, ST_X(p.location::geometry) as lng,
-          (SELECT COUNT(*) FROM panorama p2 WHERE p2.country_cca2 = up.country_cca2) as country_panoramas_count, 
+          (SELECT COUNT(*) FROM panorama p2 WHERE p2.country_cca2 = p.country_cca2) as country_panoramas_count, 
           cs.name as country_subdivision_name,
-          (SELECT COUNT(*) FROM panorama p2 WHERE p2.country_subdivision_iso_3166 = up.country_subdivision_iso_3166) as country_subdivision_panoramas_count
+          (SELECT COUNT(*) FROM panorama p2 WHERE p2.country_subdivision_iso_3166 = p.country_subdivision_iso_3166) as country_subdivision_panoramas_count
         FROM import_street_view_user_panorama up
         LEFT JOIN panorama p ON p.id = up.panorama_id
         LEFT JOIN bear_country c ON p.country_cca2 = c.cca2

@@ -122,11 +122,12 @@ final class GameRoundCalculateResultAction {
       DB::update(query: "
         UPDATE game_round_user gru SET
           points = (100 * pow(0.90, rr_rank.round_rank - 1) + 
-            CASE 
-              WHEN gru.country_cca2 = p.country_cca2 THEN 20 
+            CASE
+              WHEN gru.country_cca2 = p.country_cca2 AND gru.country_subdivision_iso_3166 = p.country_subdivision_iso_3166 THEN 35 
+              WHEN gru.country_cca2 = p.country_cca2 THEN 20
               ELSE 0
             END)
-        FROM 
+        FROM
           panorama p,
           (SELECT
             ru2.game_id, ru2.round_number, ru2.user_id, g2.number_of_rounds,
