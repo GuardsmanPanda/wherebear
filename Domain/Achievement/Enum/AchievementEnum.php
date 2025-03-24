@@ -24,6 +24,7 @@ enum AchievementEnum: string implements BearDatabaseBackedEnumInterface {
 
   // CUSTOM ACHIEVEMENTS
   case CUSTOM_666 = 'CUSTOM_666';
+  case CUSTOM_777 = 'CUSTOM_777';
 
 
   // COUNTRY GROUP ACHIEVEMENTS
@@ -74,6 +75,7 @@ enum AchievementEnum: string implements BearDatabaseBackedEnumInterface {
 
       // CUSTOM ACHIEVEMENTS
       self::CUSTOM_666 => AchievementData::custom(title: "The Number of the Beast", name: "666"),
+      self::CUSTOM_777 => AchievementData::custom(title: "Triple-7", name: "777"),
 
 
       // COUNTRY GROUP ACHIEVEMENTS

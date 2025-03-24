@@ -26,7 +26,9 @@
             />
             <div class="absolute inset-0 top-px flex gap-px justify-center items-center">
               <span class="z-10 font-heading font-semibold text-2xl text-gray-0 text-stroke-2 text-stroke-gray-700">{{ $round->user_rank }}</span>
-              <span class="relative top-0.5 z-10 font-heading font-semibold text-sm text-gray-0 text-stroke-2 text-stroke-gray-700">{{ GameUtil::getOrdinalSuffix($round->user_rank) }}</span>
+              <span class="relative top-0.5 z-10 font-heading font-semibold text-sm text-gray-0 text-stroke-2 text-stroke-gray-700">
+                {{ $round->user_rank === null ? '-' : GameUtil::getOrdinalSuffix($round->user_rank) }}
+              </span>
             </div>
           </div>
         </div>
