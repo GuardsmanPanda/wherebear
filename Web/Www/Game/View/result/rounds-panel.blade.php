@@ -36,17 +36,18 @@
       <div class="flex gap-2">
         <img src="/static/flag/wavy/{{ strtolower($round->country_cca2) }}.png" alt="Flag of {{ $round->country_name }}" draggable="false" class="h-16" />
         <div class="flex flex-col gap-1">
-          @foreach ($players as $key => $player)
-            @break($key > 2)
-            <div class="flex items-center gap-1 w-[148px]">
-              <img
-                src="/static/img/icon/medal-gray-{{ ['gold', 'silver', 'bronze'][$key] }}.svg"
-                alt="{{ ['Gold', 'Silver', 'Bronze'][$key] }} Cup"
-                class="h-5" 
-              />
-              <span class="text-sm text-gray-700 truncate">{{ $player->display_name }}</span>
-            </div>
-          @endforeach
+          <div class="flex items-center gap-1 w-[148px]">
+            <img src="/static/img/icon/medal-gray-gold.svg" alt="Gold Cup" class="h-5"/>
+            <span class="text-sm text-gray-700 truncate {{ $round->rank1_name === $user->display_name ? 'font-bold' : ''}}">{{ $round->rank1_name }}</span>
+          </div>
+          <div class="flex items-center gap-1 w-[148px]">
+            <img src="/static/img/icon/medal-gray-silver.svg" alt="Silver Cup" class="h-5"/>
+            <span class="text-sm text-gray-700 truncate {{ $round->rank2_name === $user->display_name ? 'font-bold' : ''}}">{{ $round->rank2_name }} </span>
+          </div>
+          <div class="flex items-center gap-1 w-[148px]">
+            <img src="/static/img/icon/medal-gray-bronze.svg" alt="Bronze Cup" class="h-5"/>
+            <span class="text-sm text-gray-700 truncate {{ $round->rank3_name === $user->display_name ? 'font-bold' : ''}}">{{ $round->rank3_name }}</span>
+          </div>
         </div>
       </div>
     </div>

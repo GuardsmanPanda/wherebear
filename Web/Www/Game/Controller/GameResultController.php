@@ -38,12 +38,19 @@ final class GameResultController extends Controller {
         bc.cca2 as country_cca2, bc.name as country_name,
         gru.rank as user_rank,
         p.country_cca2 = gru.country_cca2 as country_match_user_guess,
-        p.country_subdivision_iso_3166 = gru.country_subdivision_iso_3166 as country_subdivision_match_user_guess
+        p.country_subdivision_iso_3166 = gru.country_subdivision_iso_3166 as country_subdivision_match_user_guess,
+        bu1.display_name as rank1_name, bu2.display_name as rank2_name, bu3.display_name as rank3_name 
       FROM game_round gr
       LEFT JOIN panorama p ON p.id = gr.panorama_id
       LEFT JOIN bear_country bc ON bc.cca2 = p.country_cca2
       LEFT JOIN bear_country_subdivision bcs ON bcs.iso_3166 = p.country_subdivision_iso_3166
       LEFT JOIN game_round_user gru ON gru.game_id = gr.game_id AND gru.user_id = ? AND gru.round_number = gr.round_number
+      LEFT JOIN game_round_user gru1 ON gru1.game_id = gr.game_id AND gru1.round_number = gr.round_number AND gru1.rank = 1
+      LEFT JOIN bear_user bu1 ON bu1.id = gru1.user_id
+      LEFT JOIN game_round_user gru2 ON gru2.game_id = gr.game_id AND gru2.round_number = gr.round_number AND gru2.rank = 2
+      LEFT JOIN bear_user bu2 ON bu2.id = gru2.user_id
+      LEFT JOIN game_round_user gru3 ON gru3.game_id = gr.game_id AND gru3.round_number = gr.round_number AND gru3.rank = 3
+      LEFT JOIN bear_user bu3 ON bu3.id = gru3.user_id
       WHERE gr.game_id = ?
       ORDER BY gr.round_number
     SQL, bindings: [BearAuthService::getUserId(), $gameId]);
