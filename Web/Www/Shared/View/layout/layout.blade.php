@@ -68,6 +68,33 @@ use Illuminate\Support\Facades\App;
           }
         }
       }));
+
+      /**
+       * Custom directive for dynamically updating Tippy tooltips.
+       *
+       * This directive allows tooltips to automatically update their content 
+       * based on reactive Alpine.js state changes.
+       *
+       * Usage:
+       *   <span x-tippy="gameUser.is_observer ? 'Disable spectator mode' : 'Enable spectator mode'">
+       *       Hover me
+       *   </span>
+       */
+      Alpine.directive("tippy", (el, { expression }, { evaluateLater, effect }) => {
+        let getContent = evaluateLater(expression);
+        let instance = tippy(el, { content: "", trigger: "mouseenter focus" });
+
+        effect(() => {
+            getContent((value) => {
+                if (value.trim() === "") {
+                    instance.disable(); // Disable tooltip when content is empty
+                } else {
+                    instance.setContent(value);
+                    instance.enable(); // Enable tooltip when content is valid
+                }
+            });
+        });
+      });
     });
   </script>
 </body>

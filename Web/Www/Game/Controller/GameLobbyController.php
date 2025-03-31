@@ -24,7 +24,7 @@ final class GameLobbyController extends Controller {
         g.id, g.number_of_rounds, g.round_duration_seconds, g.created_by_user_id, g.name,
         g.game_state_enum, g.game_public_status_enum, g.game_public_status_enum = 'PUBLIC' as is_public,
         g.current_round, g.round_result_duration_seconds, g.short_code,
-        CASE WHEN g.templated_by_game_id IS NOT NULL THEN 'templated' ELSE 'normal' END as type,
+        CASE WHEN g.templated_by_game_id IS NOT NULL THEN 'template' ELSE 'normal' END as type,
         round((g.number_of_rounds * (g.round_duration_seconds + g.round_result_duration_seconds + 1) + 90) / 60)::integer as total_game_time_mn
       FROM game g
       WHERE g.id = ?
