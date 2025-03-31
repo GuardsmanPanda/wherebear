@@ -1,39 +1,47 @@
-import maplibregl from 'maplibre-gl';
-import { Notyf } from 'notyf';
-import Pusher from 'pusher-js';
-import tippy from 'tippy.js';
+import maplibregl from "maplibre-gl"
+import { Notyf } from "notyf"
+import Pusher from "pusher-js"
+import tippy from "tippy.js"
+import { Tippy } from "./tippy"
 
-require('pannellum/build/pannellum.js');
+require("pannellum/build/pannellum.js")
 
-window.htmx = require('htmx.org/dist/htmx.cjs.js');
-window.confetti = require('canvas-confetti');
-window.maplibregl = maplibregl;
-window.pusher = Pusher;
-window.tippy = tippy;
+window.htmx = require("htmx.org/dist/htmx.cjs.js")
+window.confetti = require("canvas-confetti")
+window.maplibregl = maplibregl
+window.pusher = Pusher
+window.tippy = tippy
 
 window.pusher_data = {
-  cluster: 'eu', wsHost: 'socket.wherebear.fun', wsPort: 80, wssPort: 443, enabledTransports: ['ws', 'wss']
+  cluster: "eu",
+  wsHost: "socket.wherebear.fun",
+  wsPort: 80,
+  wssPort: 443,
+  enabledTransports: ["ws", "wss"],
 }
 
+// Old Tippy configuration. For the new way to use Tippy, use Tippy in tippy.ts
 const tippyFunction = function (el) {
-  const inDialog = document.getElementById('dialog')?.contains(el);
+  const inDialog = document.getElementById("dialog")?.contains(el)
   tippy(el, {
-    content: el.getAttribute('tippy'),
-    appendTo: () => inDialog ? document.getElementById('dialog') : document.body,
+    content: el.getAttribute("tippy"),
+    appendTo: () => (inDialog ? document.getElementById("dialog") : document.body),
     duration: [250, 250],
     hideOnClick: false,
     inertia: true,
-  });
+  })
 }
-window.tippyFunction = tippyFunction;
+window.tippyFunction = tippyFunction
 
-htmx.config.historyCacheSize = 0;
+htmx.config.historyCacheSize = 0
 window.onload = () => {
   // ----------------------------------------------------------------------------------
   // Check to see if an element with id 'dialog' doesn't exist, and inject it if it doesn't.
   // ----------------------------------------------------------------------------------
-  if (!document.getElementById('dialog')) {
-    document.body.insertAdjacentHTML('beforeend', `
+  if (!document.getElementById("dialog")) {
+    document.body.insertAdjacentHTML(
+      "beforeend",
+      `
         <dialog id="dialog" class="shadow-xl" style="padding: 0; border-radius: 0.125rem;">
             <div class="shadow-sm" style="display: grid; grid-template-columns: auto 3rem; align-items: center; height: 3rem; padding-left: 1rem; border-bottom-width: 2px; gap: 1rem; color: rgb(31 41 55); font-weight: 700; text-transform: capitalize; font-size: 1.125rem;">
                 <h3 id="dialog-title">Dialog</h3>
@@ -45,48 +53,59 @@ window.onload = () => {
             </div>
             <div id="dialog-content" style="padding: 0.75rem 1.25rem 0.75rem 1.25rem;"></div>
         </dialog>
-    `);
+    `,
+    )
 
     // ----------------------------------------------------------------------------------
     // Add event listener to open and close the dialog element.
     // ----------------------------------------------------------------------------------
-    document.body.addEventListener('dialog:open', function (evt) {
-      const title = document.getElementById('dialog-title');
-      title.innerHTML = decodeURIComponent(evt.detail.value);
-      const el = document.getElementById('dialog');
-      if (!el.hasAttribute('open')) {
-        el.showModal();
+    document.body.addEventListener("dialog:open", function (evt) {
+      const title = document.getElementById("dialog-title")
+      title.innerHTML = decodeURIComponent(evt.detail.value)
+      const el = document.getElementById("dialog")
+      if (!el.hasAttribute("open")) {
+        el.showModal()
       }
-    });
+    })
 
-    document.querySelectorAll('[tippy]').forEach(tippyFunction);
+    // Old Tippy usage. For the new way to use Tippy, use Tippy in tippy.ts
+    document.querySelectorAll("[tippy]").forEach(tippyFunction)
+
+    // New Tippy usage
+    Tippy.init()
   }
 
   window.notify = new Notyf({
     duration: 4000,
     ripple: true,
-    position: { x: 'right', y: 'top' },
+    position: { x: "right", y: "top" },
     dismissible: true,
-    types: [{ type: 'success', background: 'rgb(16 185 129)' }, { type: 'error', background: 'rgb(182,40,40)' }, {
-      type: 'info',
-      background: 'rgb(31 41 55)'
-    }, {
-      type: 'warning', background: 'rgb(251 191 36)'
-    },]
-  });
+    types: [
+      { type: "success", background: "rgb(16 185 129)" },
+      { type: "error", background: "rgb(182,40,40)" },
+      {
+        type: "info",
+        background: "rgb(31 41 55)",
+      },
+      {
+        type: "warning",
+        background: "rgb(251 191 36)",
+      },
+    ],
+  })
 }
 
-
-htmx.on("htmx:afterRequest", event => {
+htmx.on("htmx:afterRequest", (event) => {
   if (event.detail.successful) {
-    if (event.detail.elt.hasAttribute('hx-dialog-close')) {
-      document.getElementById('dialog').close();
+    if (event.detail.elt.hasAttribute("hx-dialog-close")) {
+      document.getElementById("dialog").close()
     }
   } else {
     //toast('error', 'Something went wrong');
   }
-});
+})
 
-htmx.on('htmx:afterProcessNode', event => {
-  event.target.querySelectorAll('[tippy]').forEach(tippyFunction);
-});
+htmx.on("htmx:afterProcessNode", (event) => {
+  // Old Tippy usage. For the new way to use Tippy, use Tippy in tippy.ts
+  event.target.querySelectorAll("[tippy]").forEach(tippyFunction)
+})
