@@ -8,15 +8,15 @@ import { Logger } from "../../js/logger"
 import { tooltip } from "./tippy.lit-directive"
 
 interface Guess {
-  rank: number
-  detailedPoints: string
-  countryMatch: boolean
-  countrySubdivisionMatch: boolean
-  roundedPoints: number
-  distanceMeters: number
   countryCca2: string
-  flagFilePath: string
+  countryMatch: boolean
   countryName: string
+  countrySubdivisionMatch: boolean
+  detailedPoints: string
+  flagFilePath: string
+  distanceMeters: number
+  rank: number
+  roundedPoints: number
 }
 
 /**
@@ -537,78 +537,70 @@ class RoundResultHeader extends LitElement {
   }
 
   protected render() {
-    return this.userGuess && Object.keys(this.userGuess).length > 0
-      ? html`
-          <div
-            class="flex justify-between items-start relative z-20 bg-iris-500 border-b-2 border-gray-700"
-            style="background-image: url('https://www.transparenttextures.com/patterns/${this.texture}.png');"
-          >
-            <div class="flex gap-2 w-full relative pr-[122px]">
-              <img
-                src="/static/flag/wavy/${this.countryCca2.toLowerCase()}.png"
-                class="h-16 absolute top-2 left-2 z-10 drop-shadow"
-                alt="Flag of ${this.countryName}"
-              />
-              <div class="flex flex-col gap-1 py-2 pl-[100px]">
-                <div class="text-3xl text-gray-0 font-medium text-stroke-2 text-stroke-gray-800 leading-none">${this.countryName}</div>
-                <div class="text-lg text-gray-950 font-medium">${this.countrySubdivisionName}</div>
-              </div>
-            </div>
+    return html`
+      <div class="flex justify-between items-start relative z-20 bg-iris-500 border-b-2 border-gray-700">
+        <div class="flex gap-2 w-full relative pr-[122px]">
+          <img
+            src="/static/flag/wavy/${this.countryCca2.toLowerCase()}.png"
+            class="h-16 absolute top-2 left-2 z-10 drop-shadow"
+            alt="Flag of ${this.countryName}"
+          />
+          <div class="flex flex-col gap-1 py-2 pl-[100px]">
+            <div class="text-3xl text-gray-0 font-medium text-stroke-2 text-stroke-gray-800 leading-none">${this.countryName}</div>
+            <div class="text-lg text-gray-950 font-medium">${this.countrySubdivisionName}</div>
+          </div>
+        </div>
 
-            ${this.userGuess.rank
-              ? html`
-                  <div class="absolute top-0 right-2 z-10">
-                    <img class="relative bottom-[7px]" src="/static/img/ui/ribbon-emblem.png" />
+        ${this.userGuess
+          ? html`
+              <div class="absolute top-0 right-2 z-50">
+                <img class="relative bottom-[7px]" src="/static/img/ui/ribbon-emblem.png" />
 
-                    <div class="flex flex-col items-center w-[114px] absolute top-[8px]">
-                      <div class="flex items-end ${this.getCls()}">
-                        <span class="text-5xl font-bold text-gray-0 text-stroke-2 text-stroke-gray-700 z-10">${this.userGuess.rank}</span>
-                        <span
-                          class="relative bottom-[1px] text-xl font-medium text-gray-0 text-stroke-2 text-stroke-gray-700 ${this.userGuess.rank === 1
-                            ? "relative right-1"
-                            : ""}"
-                          >${this.rankOrdinalSuffix}</span
-                        >
+                <div class="flex flex-col items-center w-[114px] absolute top-[8px]">
+                  <div class="flex items-end ${this.getCls()}">
+                    <span class="text-5xl font-bold text-gray-0 text-stroke-2 text-stroke-gray-700 z-10">${this.userGuess.rank}</span>
+                    <span
+                      class="relative bottom-[1px] text-xl font-medium text-gray-0 text-stroke-2 text-stroke-gray-700 ${this.userGuess.rank === 1
+                        ? "relative right-1"
+                        : ""}"
+                      >${this.rankOrdinalSuffix}</span
+                    >
+                  </div>
+
+                  <div class="relative left-1.5 mt-1">
+                    <div class="flex justify-center w-[72px] relative rounded border border-gray-700 bg-iris-500">
+                      <div class="w-6 aspect-auto absolute -top-[4px] left-0 transform -translate-x-1/2">
+                        <img src="/static/img/icon/star-gold.svg" />
                       </div>
+                      <span class="text-xs text-gray-0 font-medium" ${tooltip(this.userGuess.detailedPoints)}>${this.userGuess.roundedPoints}</span>
+                    </div>
 
-                      <div class="relative left-1.5 mt-1">
-                        <div class="flex justify-center w-[72px] relative rounded border border-gray-700 bg-iris-500">
-                          <div class="w-6 aspect-auto absolute -top-[4px] left-0 transform -translate-x-1/2">
-                            <img src="/static/img/icon/star-gold.svg" />
-                          </div>
-                          <span class="text-xs text-gray-0 font-medium" ${tooltip(this.userGuess.detailedPoints)}
-                            >${this.userGuess.roundedPoints}</span
-                          >
-                        </div>
-
-                        <div class="flex justify-center items-center mt-3 rounded border border-gray-700 bg-iris-500">
-                          ${this.userGuess.countryMatch || this.userGuess.countrySubdivisionMatch
-                            ? html` <img
-                                src="/static/img/icon/clover-${this.userGuess.countrySubdivisionMatch ? "gold" : "green"}.svg"
-                                class="h-7 absolute left-0 transform -translate-x-1/2"
-                              />`
-                            : html`
-                                <lit-flag
-                                  cca2="${this.userGuess.countryCca2}"
-                                  filePath="${this.userGuess.flagFilePath}"
-                                  description="${this.userGuess.countryName}"
-                                  roundedClass="rounded-sm"
-                                  class="h-5 absolute ${this.userGuess.countryCca2 === "NP" ? "left-2" : "left-0"} transform -translate-x-1/2"
-                                >
-                                </lit-flag>
-                              `}
-                          <span class="text-xs text-gray-50 font-medium ${this.distanceClasses}"
-                            >${this.distanceAndUnit.value}<span class="text-gray-100">${this.distanceAndUnit.unit}</span></span
-                          >
-                        </div>
-                      </div>
+                    <div class="flex justify-center items-center mt-3 rounded border border-gray-700 bg-iris-500">
+                      ${this.userGuess.countryMatch || this.userGuess.countrySubdivisionMatch
+                        ? html` <img
+                            src="/static/img/icon/clover-${this.userGuess.countrySubdivisionMatch ? "gold" : "green"}.svg"
+                            class="h-7 absolute left-0 transform -translate-x-1/2"
+                          />`
+                        : html`
+                            <lit-flag
+                              cca2="${this.userGuess.countryCca2}"
+                              filePath="${this.userGuess.flagFilePath}"
+                              description="${this.userGuess.countryName}"
+                              roundedClass="rounded-sm"
+                              class="h-5 absolute ${this.userGuess.countryCca2 === "NP" ? "left-2" : "left-0"} transform -translate-x-1/2"
+                            >
+                            </lit-flag>
+                          `}
+                      <span class="text-xs text-gray-50 font-medium ${this.distanceClasses}"
+                        >${this.distanceAndUnit.value}<span class="text-gray-100">${this.distanceAndUnit.unit}</span></span
+                      >
                     </div>
                   </div>
-                `
-              : nothing}
-          </div>
-        `
-      : nothing
+                </div>
+              </div>
+            `
+          : nothing}
+      </div>
+    `
   }
 }
-

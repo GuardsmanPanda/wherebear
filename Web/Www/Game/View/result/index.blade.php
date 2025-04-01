@@ -34,22 +34,25 @@
     </div>
   </div>
 
-  <lit-round-result-header x-show="currentPage === 'round'" class="block xl:hidden" x-cloak
-    :countryCca2="selectedRound.round?.country_cca2"
-    :countryName="selectedRound.round?.country_name"
-    :countrySubdivisionName="selectedRound.round?.country_subdivision_name"
-    :countryMatch="selectedRound.userGuess?.country_match"
-    :countrySubdivisionMatch="selectedRound.userGuess?.country_subdivision_match"
-    :userGuess="JSON.stringify({
-      detailedPoints: selectedRound.userGuess?.detailed_points,
-      distanceMeters: selectedRound.userGuess?.distance_meters,
-      flagFilePath: selectedRound.userGuess?.flag_file_path,
-      countryCca2: selectedRound.userGuess?.country_cca2,
-      countryName: selectedRound.userGuess?.country_name,
-      roundedPoints: selectedRound.userGuess?.rounded_points,
-      rank: selectedRound.userGuess?.rank
-    })">
-  </lit-round-result-header>
+  <template x-if="selectedRound.round">
+    <lit-round-result-header x-show="currentPage === 'round'" class="block xl:hidden"
+      :countryCca2="selectedRound.round?.country_cca2"
+      :countryName="selectedRound.round?.country_name"
+      :countrySubdivisionName="selectedRound.round?.country_subdivision_name"
+      :userGuess="selectedRound.userGuess ? JSON.stringify({
+        countryCca2: selectedRound.userGuess?.country_cca2,
+        countryName: selectedRound.userGuess?.country_name,
+        countryMatch: selectedRound.userGuess?.country_match,
+        countrySubdivisionMatch: selectedRound.userGuess?.country_subdivision_match,
+        detailedPoints: selectedRound.userGuess?.detailed_points,
+        distanceMeters: selectedRound.userGuess?.distance_meters,
+        flagFilePath: selectedRound.userGuess?.flag_file_path,
+        roundedPoints: selectedRound.userGuess?.rounded_points,
+        rank: selectedRound.userGuess?.rank
+      }) : null">
+    </lit-round-result-header>
+  </template>
+
 
   <div class="flex flex-1 gap-2 min-h-0 xl:p-2">
     <!-- Left Column -->
@@ -80,23 +83,25 @@
         </div>
       </div>
 
-      <div class="flex flex-col w-full">
-        <lit-round-result-header
-          :countryCca2="selectedRound.round?.country_cca2"
-          :countryName="selectedRound.round?.country_name"
-          :countrySubdivisionName="selectedRound.round?.country_subdivision_name"
-          :countryMatch="selectedRound.userGuess?.country_match"
-          :countrySubdivisionMatch="selectedRound.userGuess?.country_subdivision_match"
-          :userGuess="JSON.stringify({
-            detailedPoints: selectedRound.userGuess?.detailed_points,
-            distanceMeters: selectedRound.userGuess?.distance_meters,
-            flagFilePath: selectedRound.userGuess?.flag_file_path,
-            countryCca2: selectedRound.userGuess?.country_cca2,
-            countryName: selectedRound.userGuess?.country_name,
-            roundedPoints: selectedRound.userGuess?.rounded_points,
-            rank: selectedRound.userGuess?.rank
-          })">
-        </lit-round-result-header>
+      <div class="flex flex-col w-full z-50">
+        <template x-if="selectedRound.round" class="z-50">
+          <lit-round-result-header
+            :countryCca2="selectedRound.round?.country_cca2"
+            :countryName="selectedRound.round?.country_name"
+            :countrySubdivisionName="selectedRound.round?.country_subdivision_name"
+            :userGuess="selectedRound.userGuess ? JSON.stringify({
+              countryCca2: selectedRound.userGuess?.country_cca2,
+              countryName: selectedRound.userGuess?.country_name,
+              countryMatch: selectedRound.userGuess?.country_match,
+              countrySubdivisionMatch: selectedRound.userGuess?.country_subdivision_match,
+              detailedPoints: selectedRound.userGuess?.detailed_points,
+              distanceMeters: selectedRound.userGuess?.distance_meters,
+              flagFilePath: selectedRound.userGuess?.flag_file_path,
+              roundedPoints: selectedRound.userGuess?.rounded_points,
+              rank: selectedRound.userGuess?.rank
+            }) : null">
+          </lit-round-result-header>
+        </template>
 
         <div class="w-full h-full relative">
           <div id="panoramaLargeScreen" class="w-full h-full absolute transition-opacity duration-500 ease-in-out"
@@ -423,10 +428,10 @@
 
         this.updateViewerScene(viewer, roundNumber, selectedRoundData);
       },
-      async selectRoundForSmallScreen(roundNumber) {
+      {{-- async selectRoundForSmallScreen(roundNumber) {
         this.currentPage = 'round';
         await this.selectRoundForViewer(roundNumber, this.viewerSmallScreen, 'small');
-      },
+      }, --}}
       async selectRoundForLargeScreen(roundNumber) {
         await this.selectRoundForViewer(roundNumber, this.viewerLargeScreen, 'large');
       },
@@ -485,7 +490,7 @@
           scenes: {}
         });
 
-        this.selectRoundForLargeScreen(1);
+        this.selectRoundForLargeScreen(1).catch(err => console.error(err));
 
         const gameResultElement = this.$refs.gameResult;
         this.gameResultWidthPx = gameResultElement.offsetWidth;

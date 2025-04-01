@@ -7,15 +7,19 @@
         countryCca2="{{ strtolower($game->country_cca2) }}"
         countryName="{{ $game->country_name }}"
         countrySubdivisionName="{{ $game->country_subdivision_name }}"
-        userGuess='{
-          "detailedPoints": {{ $user_guess->detailed_points }},
-          "distanceMeters": {{ $user_guess->distance_meters }},
-          "flagFilePath": "{{ $user_guess->flag_file_path }}",
-          "rank": {{ $user_guess->rank }},
-          "roundedPoints": {{ $user_guess->rounded_points }},
-          "countryMatch": {{ $user_guess->country_match ? 'true' : 'false' }},
-          "countrySubdivisionMatch": {{ $user_guess->country_subdivision_match ? 'true' : 'false' }}
-        }'>
+        @if ($user_guess)
+          userGuess='{
+            "countryMatch": {{ $user_guess->country_match ? 'true' : 'false' }},
+            "countryName": "{{ $user_guess->country_name }}",
+            "countrySubdivisionMatch": {{ $user_guess->country_subdivision_match ? 'true' : 'false' }},
+            "detailedPoints": {{ $user_guess->detailed_points }},
+            "distanceMeters": {{ $user_guess->distance_meters }},
+            "flagFilePath": "{{ $user_guess->flag_file_path }}",
+            "rank": {{ $user_guess->rank }},
+            "roundedPoints": {{ $user_guess->rounded_points }}
+          }'
+        @endif
+        >
       </lit-round-result-header>
 
       <div class="flex justify-end gap-2 absolute bottom-0 w-full p-2">
