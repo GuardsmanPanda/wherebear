@@ -98,7 +98,7 @@
   </div>
 
   <!-- Main -->
-  <div class="flex flex-1 overflow-hidden">
+  <div class="flex flex-1 overflow-hidden bg-iris-200">
     <!-- Left Column -->
     <div class="flex flex-col w-full overflow-hidden">
       <!-- Not Logged In Warning -->
@@ -123,7 +123,7 @@
           <div class="py-2">
             <div class="flex gap-2 mx-2">
               <!-- Map Marker -->
-              <div class="flex flex-none justify-center w-[72px] h-[72px]" :class="{ 'items-end': gameUser.map_marker_map_anchor === 'bottom', 'items-center': gameUser.map_marker_map_anchor === 'center' }">
+              <div data-tippy-content="Select Map Marker" class="flex flex-none justify-center w-[72px] h-[72px]" :class="{ 'items-end': gameUser.map_marker_map_anchor === 'bottom', 'items-center': gameUser.map_marker_map_anchor === 'center' }">
                 <img :src="gameUser.map_marker_file_path" class="max-w-full max-h-full object-contain cursor-pointer" draggable="false" x-on:click="openSelectMapMarkerDialog" />
               </div>
 
@@ -257,7 +257,7 @@
     </div>
 
     <!-- Right Column -->
-    <div class="hidden md:flex flex-col shrink-0 w-[320px] h-full overflow-y-auto z-10 border-l border-gray-700 bg-iris-200" style="box-shadow: -2px 0 2px rgba(0, 0, 0, 0.25)">
+    <div class="hidden md:flex flex-col shrink-0 w-[320px] h-full overflow-y-auto z-10 border-l border-gray-700 bg-iris-400" style="box-shadow: -2px 0 2px rgba(0, 0, 0, 0.25)">
       <!-- Player List -->
       <lit-panel-header2 label="PLAYERS" noBorder noRounded class="mt-2 border-y border-gray-700">
         <div slot="right">
@@ -365,8 +365,8 @@
 
   <!-- Host Control Bar -->
   @if ($user->is_host)
-    <div class="flex sm:hidden justify-center items-center gap-2 absolute bottom-14 left-1/2 -translate-x-1/2 w-56 h-12 border-t border-gray-700 bg-gray-500">
-      <div class="absolute top-0 -left-2 z-10 w-6 h-12 -skew-x-12 border-l border-gray-700 rounded-tl bg-gray-500"></div>
+    <div class="flex sm:hidden justify-center items-center gap-2 absolute bottom-14 left-1/2 -translate-x-1/2 w-56 h-12 border-t border-gray-700 bg-gray-600">
+      <div class="absolute top-0 -left-2 z-10 w-6 h-12 -skew-x-12 border-l border-gray-700 rounded-tl bg-gray-600"></div>
 
       <span data-tippy-content="Edit game settings" class="z-20">
         <lit-button label="EDIT" size="md" imgPath="/static/img/icon/gear.svg" x-on:clicked="openEditGameSettingsDialog"></lit-button>
@@ -375,20 +375,24 @@
         <lit-button label="START" size="md" imgPath="/static/img/icon/arrow-right.svg" x-on:clicked="openConfirmStartGameDialog"></lit-button>
       </span>
 
-      <div class="absolute -top-px -right-2 z-10 w-6 h-12 skew-x-12 border-t border-r border-gray-700 rounded-tr bg-gray-500"></div>
+      <div class="absolute -top-px -right-2 z-10 w-6 h-12 skew-x-12 border-t border-r border-gray-700 rounded-tr bg-gray-600"></div>
     </div>
   @endif
 
   <!-- Footer -->
-  <div class="flex justify-between items-center w-full h-14 px-2 relative border-t border-gray-700 bg-gray-600">
+  <div class="flex justify-between items-center w-full h-14 px-2 relative border-t border-gray-700 bg-iris-500">
     <!-- Back/Delete Game button -->
     <div class="flex items-center gap-2">
       @if($user->is_host)
         <span data-tippy-content="Delete the game">
-          <lit-button imgPath="/static/img/icon/cross.svg" size="md" bgColorClass="bg-poppy-500" class="w-10" x-on:clicked="openConfirmDeleteGameDialog"></lit-button>
+          <lit-button imgPath="/static/img/icon/cross.svg" size="md" bgColorClass="bg-poppy-500" class="flex sm:hidden w-10" x-on:clicked="openConfirmDeleteGameDialog"></lit-button>
+          <lit-button label="DELETE" size="md" bgColorClass="bg-poppy-500" class="hidden sm:flex md:hidden w-20" x-on:clicked="openConfirmDeleteGameDialog"></lit-button>
+          <lit-button label="DELETE" imgPath="/static/img/icon/cross.svg" size="md" bgColorClass="bg-poppy-500" class="hidden md:flex w-32" x-on:clicked="openConfirmDeleteGameDialog"></lit-button>
         </span>
       @else
-        <lit-button x-on:click="leave" imgPath="/static/img/icon/arrow-back.svg" size="md" bgColorClass="bg-gray-300" data-tippy-content="Leave the game" class="w-10"></lit-button>
+        <lit-button x-on:click="leave" imgPath="/static/img/icon/arrow-back.svg" size="md" bgColorClass="bg-gray-500" data-tippy-content="Leave the game" class="flex sm:hidden w-10"></lit-button>
+        <lit-button label="LEAVE" x-on:click="leave" size="md" bgColorClass="bg-gray-500" data-tippy-content="Leave the game" class="hidden sm:flex md:hidden w-20"></lit-button>
+        <lit-button label="LEAVE" x-on:click="leave" imgPath="/static/img/icon/arrow-back.svg" size="md" bgColorClass="bg-gray-500" data-tippy-content="Leave the game" class="hidden md:flex w-32"></lit-button>
       @endif
     </div>
 
@@ -469,10 +473,10 @@
       <!-- Edit Button -->
       <span data-tippy-content="Edit game settings">
         <div x-show="user.is_host" class="flex relative cursor-pointer group" x-on:click="openEditGameSettingsDialog">
-          <div class="absolute top-[2px] left-[79px] w-[4px] h-[36px] z-40 bg-iris-500 group-hover:bg-iris-600 transition-colors duration-300 ease-in-out"></div>
+          <div class="absolute top-[2px] left-[79px] w-[4px] h-[36px] z-40 bg-iris-600 group-hover:bg-iris-700 transition-colors duration-300 ease-in-out"></div>
 
           <div
-            class="flex justify-center items-center w-20 h-10 z-20 border-y-2 border-l-2 border-gray-0 rounded-l bg-iris-500 group-hover:bg-iris-600 transition-colors duration-300 ease-in-out"
+            class="flex justify-center items-center w-20 h-10 z-20 border-y-2 border-l-2 border-gray-0 rounded-l bg-iris-600 group-hover:bg-iris-700 transition-colors duration-300 ease-in-out"
             style="box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.5)">
             <div class="flex flex-col justify-center items-center relative left-1 group-active:top-[2px] z-50">
               <span class="font-heading font-semibold text-xl text-gray-0 text-stroke-2 text-stroke-gray-700 leading-none">EDIT</span>
@@ -480,7 +484,7 @@
           </div>
 
           <div
-            class="z-10 w-4 h-10 -ml-1 -skew-x-12 border-2 border-gray-0 rounded-r bg-iris-500 group-hover:bg-iris-600 transition-colors duration-300 ease-in-out"
+            class="z-10 w-4 h-10 -ml-1 -skew-x-12 border-2 border-gray-0 rounded-r bg-iris-600 group-hover:bg-iris-700 transition-colors duration-300 ease-in-out"
             style="box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.5)">
           </div>
         </div>
@@ -498,7 +502,7 @@
         <div class="absolute top-[2px] right-[16px] w-[4px] h-[52px] z-40 transition-colors duration-300 ease-in-out" :class="[playButtonBgColor]"></div>
 
         <div
-          class="flex justify-center items-center w-40 min-[400px]:w-[200px] h-14 z-20 border-y-2 border-gray-0 transition-colors duration-300 ease-in-out"
+          class="flex justify-center items-center w-40 min-[400px]:w-[196px] h-14 z-20 border-y-2 border-gray-0 transition-colors duration-300 ease-in-out"
           :class="[playButtonBgColor]"
           style="box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.5)">
           <div class="flex flex-col justify-center items-center relative z-50" :class="[gameUser.is_observer ? '' : 'group-active:top-[2px]']">
@@ -530,15 +534,15 @@
       <!-- Start Button -->
       <span data-tippy-content="Force the game to start">
         <div x-show="user.is_host" class="flex relative cursor-pointer group" x-on:click="openConfirmStartGameDialog">
-          <div class="absolute top-[2px] right-[79px] w-[4px] h-[36px] z-40 bg-iris-500 group-hover:bg-iris-600 transition-colors duration-300 ease-in-out"></div>
+          <div class="absolute top-[2px] right-[79px] w-[4px] h-[36px] z-40 bg-iris-600 group-hover:bg-iris-700 transition-colors duration-300 ease-in-out"></div>
 
           <div
-            class="z-10 w-4 h-10 -mr-1 skew-x-12 border-2 border-gray-0 rounded-l bg-iris-500 group-hover:bg-iris-600 transition-colors duration-300 ease-in-out"
+            class="z-10 w-4 h-10 -mr-1 skew-x-12 border-2 border-gray-0 rounded-l bg-iris-600 group-hover:bg-iris-700 transition-colors duration-300 ease-in-out"
             style="box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.5)">
           </div>
 
           <div
-            class="flex justify-center items-center w-20 h-10 z-20 border-y-2 border-r-2 border-gray-0 rounded-r bg-iris-500 group-hover:bg-iris-600 transition-colors duration-300 ease-in-out"
+            class="flex justify-center items-center w-20 h-10 z-20 border-y-2 border-r-2 border-gray-0 rounded-r bg-iris-600 group-hover:bg-iris-700 transition-colors duration-300 ease-in-out"
             style="box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.5)">
             <div class="flex flex-col justify-center items-center relative right-1 group-active:top-[2px] z-50">
               <span class="font-heading font-semibold text-xl text-gray-0 text-stroke-2 text-stroke-gray-700 leading-none">START</span>
@@ -549,10 +553,12 @@
     </div>
 
     <!-- Spectate Button -->
-    <span x-tippy="gameUser.is_observer ? 'Do not spectate the game' : 'Spectate the game'" class="hidden sm:flex">
-      <lit-button label="SPECTATE" isSelectable :isSelected="gameUser.is_observer" size="md" bgColorClass="bg-gray-400" class="flex md:hidden w-24" x-on:click="toggleUserObserverStatus"></lit-button>
-      <lit-button label="SPECTATE" imgPath="/static/img/icon/eye.svg" isSelectable :isSelected="gameUser.is_observer" size="md" bgColorClass="bg-gray-400" class="hidden md:flex w-32" x-on:click="toggleUserObserverStatus"></lit-button>
-    </span>
+    @if($user->can_observe)
+      <span x-tippy="gameUser.is_observer ? 'Do not spectate the game' : 'Spectate the game'" class="hidden sm:flex">
+        <lit-button label="SPECTATE" isSelectable :isSelected="gameUser.is_observer" size="md" bgColorClass="bg-gray-500" class="flex md:hidden w-20" x-on:click="toggleUserObserverStatus"></lit-button>
+        <lit-button label="SPECTATE" imgPath="/static/img/icon/eye.svg" isSelectable :isSelected="gameUser.is_observer" size="md" bgColorClass="bg-gray-500" class="hidden md:flex w-32" x-on:click="toggleUserObserverStatus"></lit-button>
+      </span>
+    @endif
   </div>
 </div>
 
