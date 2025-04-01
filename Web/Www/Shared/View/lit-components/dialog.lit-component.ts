@@ -110,12 +110,6 @@ export class Dialog extends LitElement {
   }
 
   private handleClose() {
-    const dialog = this.getDialogElement()
-    if (dialog) {
-      dialog.removeEventListener("click", this.onBackdropClickHandler)
-      dialog.removeEventListener("close", this.onCloseHandler)
-    }
-
     const footerSlotEl = this.shadowRoot?.querySelector('slot[name="footer"]') as HTMLSlotElement
     if (footerSlotEl) {
       footerSlotEl.removeEventListener("slotchange", this.onSlotChangeHandler)
