@@ -853,7 +853,7 @@
         return `{{ config('app.url') }}/g/${this.game.short_code}`.replace(/^https?:\/\//, '');
       },
       copyUrlToClipboard() {
-        navigator.clipboard.writeText(this.getGameLink());
+        navigator.clipboard.writeText(`https://${this.getGameLink()}`);
         this.iconTooltipText = 'Copied';
         this.refreshTooltip();
       },
