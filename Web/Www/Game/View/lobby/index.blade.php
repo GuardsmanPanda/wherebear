@@ -432,7 +432,7 @@
         </span>
       @endif
 
-      <!-- Play Button Small -->
+      <!-- Ready Button Small -->
       <div class="flex pl-1 relative left-4 group" :class="{ 'cursor-pointer': !gameUser.is_observer }" x-tippy="gameUser.is_observer ? '' : gameUser.is_ready ? 'Cancel readiness' : 'Join the game when ready'" x-on:click="toggleUserReadyStatus()">
         <div
           class="z-10 w-6 h-12 -mr-1.5 -skew-x-12 border-2 border-gray-0 rounded-l transition-colors duration-300 ease-in-out"
@@ -449,7 +449,7 @@
 
           <div class="flex flex-col justify-center items-center relative z-50" :class="[gameUser.is_observer ? '' : 'group-active:top-[2px]']">
             <span
-              x-text="gameUser.is_observer ? 'READY TO SPECTATE' : gameUser.is_ready ? 'CANCEL' : 'PLAY!'"
+              x-text="gameUser.is_observer ? 'READY TO SPECTATE' : gameUser.is_ready ? 'CANCEL' : 'READY!'"
               class="font-heading font-bold text-gray-0 text-stroke-2 text-stroke-gray-700 leading-none"
               :class="[gameUser.is_observer ? 'text-lg' : gameUser.is_ready ? 'text-2xl' : 'text-4xl']">
             </span>
@@ -490,7 +490,7 @@
         </div>
       </span>
 
-      <!-- Play Button -->
+      <!-- Ready Button -->
       <div class="flex relative group" :class="{ 'cursor-pointer': !gameUser.is_observer }" x-tippy="gameUser.is_observer ? '' : gameUser.is_ready ? 'Cancel readiness' : 'Join the game when ready'" x-on:click="toggleUserReadyStatus()">
         <div
           class="z-10 w-6 h-14 -mr-1.5 -skew-x-12 border-2 border-gray-0 rounded-l transition-colors duration-300 ease-in-out"
@@ -507,7 +507,7 @@
           style="box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.5)">
           <div class="flex flex-col justify-center items-center relative z-50" :class="[gameUser.is_observer ? '' : 'group-active:top-[2px]']">
             <span
-              x-text="gameUser.is_observer ? 'READY TO SPECTATE' : gameUser.is_ready ? 'CANCEL' : 'PLAY!'"
+              x-text="gameUser.is_observer ? 'READY TO SPECTATE' : gameUser.is_ready ? 'CANCEL' : 'READY!'"
               class="font-heading font-bold text-gray-0 text-stroke-2 text-stroke-gray-700 leading-none"
               :class="[gameUser.is_observer ? 'text-xl' : gameUser.is_ready ? 'text-2xl' : 'text-4xl']">
             </span>
