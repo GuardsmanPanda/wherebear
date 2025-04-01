@@ -850,7 +850,6 @@
       game: @json($game),
       iconTooltipText: 'Copy game invite link',
       getGameLink() {
-        return 'wherebear.fun/g/sG2HQ'
         return `{{ config('app.url') }}/g/${this.game.short_code}`.replace(/^https?:\/\//, '');
       },
       copyUrlToClipboard() {
