@@ -37,7 +37,7 @@
             `
 
             flag.src = '/static/flag/svg/' + json.country.cca2  + '.svg'
-            flag.classList.add('shadow');
+            flag.classList.add('shadow-sm');
             flag.classList.add('border');
             flag.classList.add('border-black');
             flag.style.height = '26px';

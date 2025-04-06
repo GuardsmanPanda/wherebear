@@ -126,7 +126,7 @@ class AchievementProgressList extends LitElement {
   protected render() {
     return html`
       <div class="flex flex-col w-full">
-        <div class="flex flex-col gap-2 w-full p-2 rounded border-gray-700 bg-gray-600">
+        <div class="flex flex-col gap-2 w-full p-2 rounded-sm border-gray-700 bg-gray-600">
           <div class="flex justify-between w-full">
             <span class="text-sm font-medium text-gray-50"
               >EARNED ACHIEVEMENTS: ${this.completedAchievements.length}/${this.achievementTotalNumber}</span
@@ -181,7 +181,7 @@ class AchievementProgressList extends LitElement {
                                 cca2="${country.cca2}"
                                 description="${country.name}"
                                 filePath="/static/flag/svg/${country.cca2}.svg"
-                                roundedClass="rounded-sm"
+                                roundedClass="rounded-xs"
                                 class="h-4"
                               ></lit-flag>
                               <span class="text-sm font-medium text-gray-500">${country.name}</span>

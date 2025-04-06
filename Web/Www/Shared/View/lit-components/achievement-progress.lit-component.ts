@@ -48,7 +48,7 @@ class AchievementProgress extends LitElement {
 
   protected render() {
     return html`
-      <div class="flex flex-col min-h-24 relative border border-gray-200 rounded p-2 bg-gray-0">
+      <div class="flex flex-col min-h-24 relative border border-gray-200 rounded-sm p-2 bg-gray-0">
         <span class="mr-8 font-medium text-base text-iris-600">${this.name}</span>
         <span class="mr-8 text-sm text-gray-700">${this.description}</span>
 
@@ -68,4 +68,3 @@ class AchievementProgress extends LitElement {
     `
   }
 }
-

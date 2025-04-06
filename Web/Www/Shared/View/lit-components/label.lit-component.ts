@@ -34,7 +34,7 @@ export class Label extends LitElement {
       "pl-2": !this.iconPath,
       "-skew-x-6": !this.isPill && this.size !== "xs",
       "-skew-x-12": !this.isPill && this.size === "xs",
-      rounded: !this.isPill,
+      "rounded-sm": !this.isPill,
       "rounded-full": this.isPill,
       "bg-pistachio-500": this.type === "success",
       "bg-poppy-500": this.type === "error",

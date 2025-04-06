@@ -49,7 +49,7 @@ class ButtonCheckbox extends ButtonBase {
       "w-10": this.size === "sm",
       "w-14": this.size === "md",
       "rounded-l-md": this.size !== "xs",
-      "rounded-l": this.size === "xs",
+      "rounded-l-sm": this.size === "xs",
       "inner-shadow": !this.isSelected,
       "inner-shadow-selected": this.isSelected,
     }
@@ -70,7 +70,7 @@ class ButtonCheckbox extends ButtonBase {
       "bg-gray-200": !this.isSelected,
       "bg-iris-400": this.isSelected,
       "rounded-r-md": this.size !== "xs",
-      "rounded-r": this.size === "xs",
+      "rounded-r-sm": this.size === "xs",
       "inner-shadow": !this.isSelected,
       "inner-shadow-selected": this.isSelected,
     }
@@ -93,14 +93,14 @@ class ButtonCheckbox extends ButtonBase {
       "group-active:opacity-30": !this.isSelected,
       "group-active:opacity-0": this.isSelected,
       "rounded-md": this.size !== "xs",
-      rounded: this.size === "xs",
+      "rounded-sm": this.size === "xs",
     }
   }
 
   protected render() {
     return html`
       <button
-        class="flex w-full relative transition-all duration-100 select-none group ${classMap(this.buttonClasses)}"
+        class="flex w-full relative transition-all duration-100 select-none cursor-pointer group ${classMap(this.buttonClasses)}"
         @click="${this.onClick}"
         @mouseenter="${this.onMouseEnter}"
         @mouseleave="${this.onMouseLeave}"

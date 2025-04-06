@@ -21,7 +21,7 @@
 </head>
 <body class="min-h-screen bg-gray-950 text-gray-300" hx-target="#primary">
 <div style="display: grid; grid-template-columns: 16rem auto;" class="min-h-screen">
-  <div class="flex md:w-64 flex-col shadow bg-gray-800">
+  <div class="flex md:w-64 flex-col shadow-sm bg-gray-800">
     <div class="flex flex-col flex-grow pt-2 overflow-y-auto">
       <div class="flex-grow flex flex-col">
         <nav class="flex-1 px-2 pb-4">

@@ -43,7 +43,7 @@ window.onload = () => {
       "beforeend",
       `
         <dialog id="dialog" class="shadow-xl" style="padding: 0; border-radius: 0.125rem;">
-            <div class="shadow-sm" style="display: grid; grid-template-columns: auto 3rem; align-items: center; height: 3rem; padding-left: 1rem; border-bottom-width: 2px; gap: 1rem; color: rgb(31 41 55); font-weight: 700; text-transform: capitalize; font-size: 1.125rem;">
+            <div class="shadow-xs" style="display: grid; grid-template-columns: auto 3rem; align-items: center; height: 3rem; padding-left: 1rem; border-bottom-width: 2px; gap: 1rem; color: rgb(31 41 55); font-weight: 700; text-transform: capitalize; font-size: 1.125rem;">
                 <h3 id="dialog-title">Dialog</h3>
                 <form method="dialog">
                     <button class="hover:bg-red-500 hover:text-red-100" style="height: 3rem; width: 3rem; vertical-align: middle; color: rgb(185 28 28); transition-duration: 75ms; transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;">

@@ -77,7 +77,7 @@ class ProgressBar extends LitElement {
     return {
       "h-3": this.size === "xs",
       "h-4": this.size !== "xs",
-      rounded: !this.sideFlated,
+      "rounded-sm": !this.sideFlated,
       "border-x": !this.sideUnbordered,
     }
   }
@@ -86,7 +86,7 @@ class ProgressBar extends LitElement {
     return {
       invisible: !this.showInnerBar,
       "border-r": this.percentage < 100,
-      "rounded-r": this.percentage < 100,
+      "rounded-r-sm": this.percentage < 100,
       [this.innerBgColorClass ?? ""]: !!this.innerBgColorClass,
     }
   }

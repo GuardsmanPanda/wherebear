@@ -1,3 +1,110 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@plugin "@tailwindcss/forms";
+
+@config '../../tailwind.config.js';
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+  dialog {
+    margin: auto;
+  }
+}
+
+.button {
+  @apply bg-blue-500 text-white font-bold py-2 px-4 rounded hover:scale-105 transition-all duration-75;
+}
+
+@theme {
+  --font-body: Roboto;
+  --font-heading: Baloo;
+
+  --color-gray-0: oklch(1 0 0);
+  --color-gray-50: oklch(0.98 0.0054 297.73);
+  --color-gray-100: oklch(0.91 0.0097 273.35);
+  --color-gray-200: oklch(0.83 0.0176 267.76);
+  --color-gray-300: oklch(0.74 0.0267 271.04);
+  --color-gray-400: oklch(0.66 0.0358 268.48);
+  --color-gray-500: oklch(0.57 0.0449 269.56);
+  --color-gray-600: oklch(0.46 0.0358 268.63);
+  --color-gray-700: oklch(0.34 0.0272 270.5);
+  --color-gray-800: oklch(0.23 0.0181 270.5);
+  --color-gray-900: oklch(0.17 0.0134 264.13);
+
+  --color-honey-50: oklch(0.98 0.0126 86.83);
+  --color-honey-100: oklch(0.97 0.0252 86.87);
+  --color-honey-200: oklch(0.93 0.0498 88.08);
+  --color-honey-300: oklch(0.89 0.0742 87.6);
+  --color-honey-400: oklch(0.86 0.1002 87.83);
+  --color-honey-500: oklch(0.83 0.1247 87.74);
+  --color-honey-600: oklch(0.74 0.1117 87.07);
+  --color-honey-700: oklch(0.66 0.1003 88.28);
+  --color-honey-800: oklch(0.58 0.0875 87.79);
+  --color-honey-900: oklch(0.5 0.0742 87.09);
+  --color-honey-950: oklch(0.41 0.062 88.15);
+
+  --color-pistachio-50: oklch(0.97 0.0211 127.38);
+  --color-pistachio-100: oklch(0.92 0.0522 127.54);
+  --color-pistachio-200: oklch(0.87 0.085 128.38);
+  --color-pistachio-300: oklch(0.83 0.1181 129);
+  --color-pistachio-400: oklch(0.79 0.1425 129.77);
+  --color-pistachio-500: oklch(0.75 0.1626 130.5);
+  --color-pistachio-600: oklch(0.7 0.1553 131.38);
+  --color-pistachio-700: oklch(0.64 0.1467 133.01);
+  --color-pistachio-800: oklch(0.58 0.1366 134.66);
+  --color-pistachio-900: oklch(0.47 0.1212 138.27);
+  --color-pistachio-950: oklch(0.39 0.109 138.63);
+
+  --color-poppy-50: oklch(0.96 0.02 28.9);
+  --color-poppy-100: oklch(0.92 0.0403 31.19);
+  --color-poppy-200: oklch(0.85 0.0836 29.83);
+  --color-poppy-300: oklch(0.77 0.1261 29.75);
+  --color-poppy-400: oklch(0.69 0.1675 29.77);
+  --color-poppy-500: oklch(0.62 0.2098 29.68);
+  --color-poppy-600: oklch(0.56 0.1889 29.66);
+  --color-poppy-700: oklch(0.49 0.1675 29.64);
+  --color-poppy-800: oklch(0.43 0.1474 29.59);
+  --color-poppy-900: oklch(0.37 0.1257 29.89);
+  --color-poppy-950: oklch(0.31 0.104 29.81);
+
+  --color-iris-50: oklch(0.96 0.0157 266.28);
+  --color-iris-100: oklch(0.93 0.0305 265.33);
+  --color-iris-200: oklch(0.85 0.062 266.85);
+  --color-iris-300: oklch(0.78 0.0936 266.69);
+  --color-iris-400: oklch(0.71 0.1245 266.85);
+  --color-iris-500: oklch(0.63 0.1557 267.01);
+  --color-iris-600: oklch(0.57 0.1405 267.26);
+  --color-iris-700: oklch(0.51 0.1238 266.6);
+  --color-iris-800: oklch(0.44 0.1089 267.04);
+  --color-iris-900: oklch(0.38 0.0921 266.9);
+  --color-iris-950: oklch(0.32 0.0777 267.12);
+
+  --color-rank-first-lighter: oklch(0.95 0.0677 98.42);
+  --color-rank-first-light: oklch(0.93 0.1002 98.14);
+  --color-rank-first-default: oklch(0.91 0.1335 98.31);
+  --color-rank-first-dark: oklch(0.88 0.1668 98.19);
+
+  --color-rank-second-lighter: oklch(0.94 0.0194 240.74);
+  --color-rank-second-light: oklch(0.91 0.0296 240.2);
+  --color-rank-second-default: oklch(0.88 0.0392 241.09);
+  --color-rank-second-dark: oklch(0.85 0.0496 240.88);
+
+  --color-rank-third-lighter: oklch(0.92 0.0488 62.15);
+  --color-rank-third-light: oklch(0.88 0.0733 61.93);
+  --color-rank-third-default: oklch(0.84 0.0975 62.33);
+  --color-rank-third-dark: oklch(0.79 0.1215 62.17);
+}

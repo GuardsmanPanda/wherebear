@@ -37,7 +37,7 @@
     </div>
     <div>
       @foreach($templates as $template)
-        <button class="block w-full bg-blue-200 rounded shadow py-1 mt-2 hover:scale-105 duration-75"
+        <button class="block w-full bg-blue-200 rounded-sm shadow-sm py-1 mt-2 hover:scale-105 duration-75"
                 hx-post="/game/create-from-template/{{$template->id}}">
           <div class="font-bold opacity-70">{{$template->name}}</div>
           <div class="text-sm -mt-1 opacity-50">

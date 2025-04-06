@@ -37,7 +37,7 @@
   <div class="flex flex-col h-24 bg-[url('/static/img/ui/mountain-cartoon.png')] bg-cover bg-center relative">
     <div class="flex w-full relative">
       <div class="flex w-full overflow-hidden">
-        <div class="flex justify-center items-center w-full sm:w-min h-8 px-2 sm:rounded-br bg-gradient-to-t from-iris-400 to-iris-500 sm:border-r border-b border-gray-700 shadow-lg overflow-hidden">
+        <div class="flex justify-center items-center w-full sm:w-min h-8 px-2 sm:rounded-br-sm bg-gradient-to-t from-iris-400 to-iris-500 sm:border-r border-b border-gray-700 shadow-lg overflow-hidden">
           <span x-text="game.name" class="font-heading font-semibold text-base text-gray-0 text-stroke-2 text-stroke-gray-700 truncate"></span>
         </div>
       </div>
@@ -56,10 +56,10 @@
 
       <div class="hidden sm:flex gap-2 p-2">
         <div x-data="gameTinyUrlState" x-ref="clipboardIcon" x-on:click="copyUrlToClipboard()" class="hidden sm:flex h-6 hover:cursor-pointer group">
-          <div class="flex items-center w-full h-full px-2 rounded-l border border-r-0 border-iris-800 bg-iris-200 group-hover:bg-iris-300">
+          <div class="flex items-center w-full h-full px-2 rounded-l-sm border border-r-0 border-iris-800 bg-iris-200 group-hover:bg-iris-300">
             <span x-text="getGameLink()" class="text-xs text-gray-800 text-nowrap"></span>
           </div>
-          <div  class="w-8 shrink-0 rounded-r border border-iris-800 py-0.5 bg-iris-400 group-hover:bg-iris-500">
+          <div  class="w-8 shrink-0 rounded-r-sm border border-iris-800 py-0.5 bg-iris-400 group-hover:bg-iris-500">
             <img src="/static/img/icon/copy.svg" class="w-full h-full"/>
           </div>
         </div>
@@ -196,7 +196,7 @@
             <div class="grid grid-cols-3 min-[420px]:grid-cols-4 min-[520px]:grid-cols-5 min-[622px]:grid-cols-6 gap-4">
               <template x-for="gameUser in playerList">
                 <div class="flex flex-col w-20 justify-center items-center">
-                  <div class="flex w-full h-4 justify-center items-center px-0.5 rounded-t border border-b-0 border-gray-700 bg-gray-600" :data-tippy-content="gameUser.display_name">
+                  <div class="flex w-full h-4 justify-center items-center px-0.5 rounded-t-sm border border-b-0 border-gray-700 bg-gray-600" :data-tippy-content="gameUser.display_name">
                     <span x-text="gameUser.display_name" class="font-heading font-medium text-xs text-gray-0 truncate"></span>
                   </div>
                   <div class="flex flex-none justify-center w-20 h-16 relative border-x border-gray-700 bg-gradient-to-t"
@@ -212,8 +212,8 @@
                       'max-h-16 relative top-[4px]': gameUser.map_marker_map_anchor === 'bottom'
                     }" />
                   </div>
-                  <div class="flex flex-none w-full h-[10px] relative rounded-b border border-gray-700 bg-gray-600">
-                    <lit-flag :cca2="gameUser.country_cca2" :filePath="gameUser.flag_file_path" :description="gameUser.flag_description" roundedClass="rounded-sm" class="absolute bottom-[2px] right-[3px] h-4" draggable="false"></lit-flag>
+                  <div class="flex flex-none w-full h-[10px] relative rounded-b-sm border border-gray-700 bg-gray-600">
+                    <lit-flag :cca2="gameUser.country_cca2" :filePath="gameUser.flag_file_path" :description="gameUser.flag_description" roundedClass="rounded-xs" class="absolute bottom-[2px] right-[3px] h-4" draggable="false"></lit-flag>
                     <lit-level-emblem :level="gameUser.level" size="xs" class="absolute left-0.5 bottom-0.5"></lit-level-emblem>
                   </div>
                 </div>
@@ -230,7 +230,7 @@
             <div class="grid grid-cols-3 min-[420px]:grid-cols-4 min-[520px]:grid-cols-5 min-[622px]:grid-cols-6 gap-4">
               <template x-for="gameUser in observerList">
                 <div class="flex flex-col w-20 justify-center items-center">
-                  <div class="flex w-full h-4 justify-center items-center px-0.5 rounded-t border border-b-0 border-gray-700 bg-gray-600" :data-tippy-content="gameUser.display_name">
+                  <div class="flex w-full h-4 justify-center items-center px-0.5 rounded-t-sm border border-b-0 border-gray-700 bg-gray-600" :data-tippy-content="gameUser.display_name">
                     <span x-text="gameUser.display_name" class="font-heading font-medium text-xs text-gray-0 truncate"></span>
                   </div>
                   <div class="flex flex-none justify-center w-20 h-16 relative border-x border-gray-700 bg-gradient-to-t from-gray-100 to-gray-200"
@@ -244,8 +244,8 @@
                       'max-h-16 relative top-[4px]': gameUser.map_marker_map_anchor === 'bottom'
                     }" />
                   </div>
-                  <div class="flex flex-none w-full h-[10px] relative rounded-b border border-gray-700 bg-gray-600">
-                    <lit-flag :cca2="gameUser.country_cca2" :filePath="gameUser.flag_file_path" :description="gameUser.flag_description" roundedClass="rounded-sm" class="absolute bottom-[2px] right-[3px] h-4" draggable="false"></lit-flag>
+                  <div class="flex flex-none w-full h-[10px] relative rounded-b-sm border border-gray-700 bg-gray-600">
+                    <lit-flag :cca2="gameUser.country_cca2" :filePath="gameUser.flag_file_path" :description="gameUser.flag_description" roundedClass="rounded-xs" class="absolute bottom-[2px] right-[3px] h-4" draggable="false"></lit-flag>
                     <lit-level-emblem :level="gameUser.level" size="xs" class="absolute left-0.5 bottom-0.5"></lit-level-emblem>
                   </div>
                 </div>
@@ -308,7 +308,7 @@
             </div>
             <div class="flex flex-col justify-between items-end">
               <div class="flex items-center w-8 h-6">
-                <lit-flag :cca2="gameUser.country_cca2" :filePath="gameUser.flag_file_path" :description="gameUser.flag_description" roundedClass="rounded-sm" maxHeightClass="max-h-6" class="w-8" draggable="false"></lit-flag>
+                <lit-flag :cca2="gameUser.country_cca2" :filePath="gameUser.flag_file_path" :description="gameUser.flag_description" roundedClass="rounded-xs" maxHeightClass="max-h-6" class="w-8" draggable="false"></lit-flag>
               </div>
               <lit-level-emblem :level="gameUser.level" size="sm"></lit-level-emblem>
             </div>
@@ -353,7 +353,7 @@
             </div>
             <div class="flex flex-col justify-between items-end">
               <div class="flex items-center w-8 h-6">
-                <lit-flag :cca2="gameUser.country_cca2" :filePath="gameUser.flag_file_path" :description="gameUser.flag_description" roundedClass="rounded-sm" maxHeightClass="max-h-6" class="w-8" draggable="false"></lit-flag>
+                <lit-flag :cca2="gameUser.country_cca2" :filePath="gameUser.flag_file_path" :description="gameUser.flag_description" roundedClass="rounded-xs" maxHeightClass="max-h-6" class="w-8" draggable="false"></lit-flag>
               </div>
               <lit-level-emblem :level="gameUser.level" size="sm"></lit-level-emblem>
             </div>
@@ -366,7 +366,7 @@
   <!-- Host Control Bar -->
   @if ($user->is_host)
     <div class="flex sm:hidden justify-center items-center gap-2 absolute bottom-14 left-1/2 -translate-x-1/2 w-56 h-12 border-t border-gray-700 bg-gray-600">
-      <div class="absolute top-0 -left-2 z-10 w-6 h-12 -skew-x-12 border-l border-gray-700 rounded-tl bg-gray-600"></div>
+      <div class="absolute top-0 -left-2 z-10 w-6 h-12 -skew-x-12 border-l border-gray-700 rounded-tl-sm bg-gray-600"></div>
 
       <span data-tippy-content="Edit game settings" class="z-20">
         <lit-button label="EDIT" size="md" imgPath="/static/img/icon/gear.svg" x-on:clicked="openEditGameSettingsDialog"></lit-button>
@@ -375,7 +375,7 @@
         <lit-button label="START" size="md" imgPath="/static/img/icon/arrow-right.svg" x-on:clicked="openConfirmStartGameDialog"></lit-button>
       </span>
 
-      <div class="absolute -top-px -right-2 z-10 w-6 h-12 skew-x-12 border-t border-r border-gray-700 rounded-tr bg-gray-600"></div>
+      <div class="absolute -top-px -right-2 z-10 w-6 h-12 skew-x-12 border-t border-r border-gray-700 rounded-tr-sm bg-gray-600"></div>
     </div>
   @endif
 
@@ -409,7 +409,7 @@
               }"></div>
 
             <div
-              class="flex justify-center items-center w-20 h-10 z-20 border-y-2 border-l-2 border-gray-0 rounded-l"
+              class="flex justify-center items-center w-20 h-10 z-20 border-y-2 border-l-2 border-gray-0 rounded-l-sm"
               :class="{ 
                 'bg-gray-500 group-hover:bg-gray-600': !gameUser.is_observer, 
                 'bg-gray-600 group-hover:bg-gray-500': gameUser.is_observer 
@@ -421,7 +421,7 @@
             </div>
 
             <div
-              class="z-10 w-4 h-10 -ml-1 -skew-x-12 border-2 border-gray-0 rounded-r"
+              class="z-10 w-4 h-10 -ml-1 -skew-x-12 border-2 border-gray-0 rounded-r-sm"
               :class="{ 
                 'bg-gray-500 group-hover:bg-gray-600': !gameUser.is_observer, 
                 'bg-gray-600 group-hover:bg-gray-500': gameUser.is_observer 
@@ -435,7 +435,7 @@
       <!-- Ready Button Small -->
       <div class="flex pl-1 relative left-4 group" :class="{ 'cursor-pointer': !gameUser.is_observer }" x-tippy="gameUser.is_observer ? '' : gameUser.is_ready ? 'Cancel readiness' : 'Join the game when ready'" x-on:click="toggleUserReadyStatus()">
         <div
-          class="z-10 w-6 h-12 -mr-1.5 -skew-x-12 border-2 border-gray-0 rounded-l transition-colors duration-300 ease-in-out"
+          class="z-10 w-6 h-12 -mr-1.5 -skew-x-12 border-2 border-gray-0 rounded-l-sm transition-colors duration-300 ease-in-out"
           :class="[playButtonBgColor]"
           style="box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.5)">
         </div>
@@ -443,7 +443,7 @@
         <div class="absolute top-[2px] left-[32px] w-[2px] h-[44px] z-40 transition-colors duration-300 ease-in-out" :class="[playButtonBgColor]"></div>
 
         <div
-          class="flex justify-center items-center w-[196px] h-12 z-20 pr-2 border-2 border-l-0 border-gray-0 rounded-r transition-colors duration-300 ease-in-out"
+          class="flex justify-center items-center w-[196px] h-12 z-20 pr-2 border-2 border-l-0 border-gray-0 rounded-r-sm transition-colors duration-300 ease-in-out"
           :class="[playButtonBgColor]"
           style="box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.5)">
 
@@ -476,7 +476,7 @@
           <div class="absolute top-[2px] left-[79px] w-[4px] h-[36px] z-40 bg-iris-600 group-hover:bg-iris-700 transition-colors duration-300 ease-in-out"></div>
 
           <div
-            class="flex justify-center items-center w-20 h-10 z-20 border-y-2 border-l-2 border-gray-0 rounded-l bg-iris-600 group-hover:bg-iris-700 transition-colors duration-300 ease-in-out"
+            class="flex justify-center items-center w-20 h-10 z-20 border-y-2 border-l-2 border-gray-0 rounded-l-sm bg-iris-600 group-hover:bg-iris-700 transition-colors duration-300 ease-in-out"
             style="box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.5)">
             <div class="flex flex-col justify-center items-center relative left-1 group-active:top-[2px] z-50">
               <span class="font-heading font-semibold text-xl text-gray-0 text-stroke-2 text-stroke-gray-700 leading-none">EDIT</span>
@@ -484,7 +484,7 @@
           </div>
 
           <div
-            class="z-10 w-4 h-10 -ml-1 -skew-x-12 border-2 border-gray-0 rounded-r bg-iris-600 group-hover:bg-iris-700 transition-colors duration-300 ease-in-out"
+            class="z-10 w-4 h-10 -ml-1 -skew-x-12 border-2 border-gray-0 rounded-r-sm bg-iris-600 group-hover:bg-iris-700 transition-colors duration-300 ease-in-out"
             style="box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.5)">
           </div>
         </div>
@@ -493,7 +493,7 @@
       <!-- Ready Button -->
       <div class="flex relative group" :class="{ 'cursor-pointer': !gameUser.is_observer }" x-tippy="gameUser.is_observer ? '' : gameUser.is_ready ? 'Cancel readiness' : 'Join the game when ready'" x-on:click="toggleUserReadyStatus()">
         <div
-          class="z-10 w-6 h-14 -mr-1.5 -skew-x-12 border-2 border-gray-0 rounded-l transition-colors duration-300 ease-in-out"
+          class="z-10 w-6 h-14 -mr-1.5 -skew-x-12 border-2 border-gray-0 rounded-l-sm transition-colors duration-300 ease-in-out"
           :class="[playButtonBgColor]"
           style="box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.5)">
         </div>
@@ -525,24 +525,25 @@
         </div>
 
         <div
-          class="z-10 w-6 h-14 -ml-1.5 skew-x-12 border-2 border-gray-0 rounded-r transition-colors duration-300 ease-in-out"
+          class="z-10 w-6 h-14 -ml-1.5 skew-x-12 border-2 border-gray-0 rounded-r-sm transition-colors duration-300 ease-in-out"
           :class="[playButtonBgColor]"
           style="box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.5)">
         </div>
       </div>
 
       <!-- Start Button -->
+      <div class="button">Custom Button</div>
       <span data-tippy-content="Force the game to start">
         <div x-show="user.is_host" class="flex relative cursor-pointer group" x-on:click="openConfirmStartGameDialog">
           <div class="absolute top-[2px] right-[79px] w-[4px] h-[36px] z-40 bg-iris-600 group-hover:bg-iris-700 transition-colors duration-300 ease-in-out"></div>
 
           <div
-            class="z-10 w-4 h-10 -mr-1 skew-x-12 border-2 border-gray-0 rounded-l bg-iris-600 group-hover:bg-iris-700 transition-colors duration-300 ease-in-out"
+            class="z-10 w-4 h-10 -mr-1 skew-x-12 border-2 border-gray-0 rounded-l-sm bg-iris-600 group-hover:bg-iris-700 transition-colors duration-300 ease-in-out"
             style="box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.5)">
           </div>
 
           <div
-            class="flex justify-center items-center w-20 h-10 z-20 border-y-2 border-r-2 border-gray-0 rounded-r bg-iris-600 group-hover:bg-iris-700 transition-colors duration-300 ease-in-out"
+            class="flex justify-center items-center w-20 h-10 z-20 border-y-2 border-r-2 border-gray-0 rounded-r-sm bg-iris-600 group-hover:bg-iris-700 transition-colors duration-300 ease-in-out"
             style="box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.5)">
             <div class="flex flex-col justify-center items-center relative right-1 group-active:top-[2px] z-50">
               <span class="font-heading font-semibold text-xl text-gray-0 text-stroke-2 text-stroke-gray-700 leading-none">START</span>

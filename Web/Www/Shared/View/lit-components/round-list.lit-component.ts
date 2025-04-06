@@ -271,14 +271,14 @@ class RoundList extends LitElement {
   private getRoundIconTemplate(args: { isPlaceHolder: boolean; countryCca2: string; userRank: number | null; isSelected: boolean }) {
     return html`
       <div
-        class="flex flex-col w-[40px] h-[28px] rounded bg-gray-50 border border-gray-700 relative z-30"
+        class="flex flex-col w-[40px] h-[28px] rounded-sm bg-gray-50 border border-gray-700 relative z-30"
         style="${styleMap(this.getRoundIconStyles(args.isPlaceHolder, args.countryCca2))}"
       >
         ${args.userRank && args.userRank >= 1 && args.userRank <= 3
           ? html`<img class="w-[22px] absolute -top-[3px] -right-[3px]" src="/static/img/icon/${this.getUserRankIcon(args.userRank)}.svg" />`
           : nothing}
         ${args.isPlaceHolder
-          ? html` <div class="flex justify-center items-center h-[24px] relative bottom-[2px] ${classMap({ rounded: args.isSelected })}}">
+          ? html` <div class="flex justify-center items-center h-[24px] relative bottom-[2px] ${classMap({ "rounded-sm": args.isSelected })}}">
               <span class="text-xl font-medium text-gray-600">?</span>
             </div>`
           : ""}

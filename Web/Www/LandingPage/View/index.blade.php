@@ -11,7 +11,7 @@
 @endsection
 @section('content')
   <div>
-    <div class="backdrop-blur-sm backdrop-brightness-[.3]  rounded shadow-md mx-2 my-2 w-[28rem] text-gray-300">
+    <div class="backdrop-blur-xs backdrop-brightness-[.3]  rounded-sm shadow-md mx-2 my-2 w-[28rem] text-gray-300">
       <div class="flex justify-between select-none">
         <img height="33" width="166" class="my-auto ml-4" src="/static/img/logo/top.png" alt="Awesome Funtime Game">
         <div class="flex">
@@ -50,7 +50,7 @@
     </div>
 
     @if(count($previous_games) > 0)
-      <div class="backdrop-blur-sm backdrop-brightness-[.3] rounded shadow-md mx-2 mt-8 mb-2 w-[28rem] text-gray-300">
+      <div class="backdrop-blur-xs backdrop-brightness-[.3] rounded-sm shadow-md mx-2 mt-8 mb-2 w-[28rem] text-gray-300">
         <div class="flex justify-between select-none">
           <h2 class="my-2 ml-4 font-medium text-2xl text-blue-500">Completed Games</h2>
         </div>

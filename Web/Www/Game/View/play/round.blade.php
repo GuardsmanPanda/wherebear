@@ -2,14 +2,14 @@
 
 <div x-data="state({{ $isDev }})" class="flex flex-col h-screen">
   <div class="relative flex-1 overflow-hidden">
-    <div class="flex flex-col min-w-16 absolute top-2 left-2 z-10 rounded border border-gray-700">
+    <div class="flex flex-col min-w-16 absolute top-2 left-2 z-10 rounded-sm border border-gray-700">
       <div class="w-[6px] h-4 absolute -top-[10px] left-[8px] z-10 rounded-b-md border  border-gray-700 bg-gray-50"
         style="box-shadow: 0 2px 1px rgb(0 0 0 / 0.4)"></div>
       <div class="w-[6px] h-4 absolute -top-[10px] right-[8px] z-10 rounded-b-md border border-gray-700 bg-gray-50"
         style="box-shadow: 0 2px 1px rgb(0 0 0 / 0.4)"></div>
-      <div class="flex justify-center items-center px-1 py-0 rounded-t border-b border-gray-700 bg-iris-500 font-heading text-sm font-medium text-white"
+      <div class="flex justify-center items-center px-1 py-0 rounded-t-sm border-b border-gray-700 bg-iris-500 font-heading text-sm font-medium text-white"
         style="box-shadow: inset 0 2px 1px rgb(255 255 255 / 0.4)">{{ $game->captured_year }}</div>
-      <div class="flex justify-center items-center px-1 py-0.5 rounded-b bg-white font-heading text-sm font-medium text-gray-800"
+      <div class="flex justify-center items-center px-1 py-0.5 rounded-b-sm bg-white font-heading text-sm font-medium text-gray-800"
         style="box-shadow: inset 0 -2px 1px rgb(0 0 0 / 0.4)">{{ $game->captured_month }}</div>
     </div>
 
@@ -33,7 +33,7 @@
 
           @if($user->is_guess_indicator_allowed)
           <div class="absolute -bottom-px left-0 max-w-full h-8">
-            <div class="flex justify-center items-center h-4 absolute -top-[8px] left-[10px] z-10 rounded pl-3 pr-1 border border-gray-800 bg-gray-700">
+            <div class="flex justify-center items-center h-4 absolute -top-[8px] left-[10px] z-10 rounded-sm pl-3 pr-1 border border-gray-800 bg-gray-700">
               <img src="/static/img/icon/marker-red.svg" width="28" height="28" class="absolute -top-[10px] left-0 transform -translate-x-1/2" />
               <span class="text-xs text-gray-50 font-medium">Your Guess</span>
             </div>
@@ -70,9 +70,9 @@
 
     @if($user->is_player && $user->is_guess_indicator_allowed)
     <div class="absolute bottom-2 right-0 z-10 mr-[10px] min-w-40 px-3 py-1 flex justify-center items-center
-      before:absolute before:-z-10 before:-skew-x-12 before:w-full before:h-full before:rounded before:border before:border-gray-700 before:bg-gray-50"
+      before:absolute before:-z-10 before:-skew-x-12 before:w-full before:h-full before:rounded-sm before:border before:border-gray-700 before:bg-gray-50"
       :class="{ hidden: isMiniMapShowed }">
-        <div class="flex justify-center items-center h-4 absolute -top-[8px] right-2 rounded pl-3 pr-1 border border-gray-800 bg-gray-700">
+        <div class="flex justify-center items-center h-4 absolute -top-[8px] right-2 rounded-sm pl-3 pr-1 border border-gray-800 bg-gray-700">
           <img src="/static/img/icon/marker-red.svg" width="28" height="28" class="absolute -top-[10px] left-0 transform -translate-x-1/2" />
           <span class="text-xs text-gray-50 font-medium">Your Guess</span>
         </div>

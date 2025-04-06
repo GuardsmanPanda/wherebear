@@ -123,11 +123,11 @@ class MapMarker extends LitElement {
                     description="${this.flagDescription}"
                     filePath="${this.flagFilePath}"
                     class="h-[18px] bg-gray-50 cursor-auto"
-                    roundedClass="rounded-sm"
+                    roundedClass="rounded-xs"
                   ></lit-flag>
 
                   <div
-                    class="flex justify-center items-center min-w-10 h-4 px-1 pt-0.5 rounded-r border border-l-0 border-gray-700 ${classMap(
+                    class="flex justify-center items-center min-w-10 h-4 px-1 pt-0.5 rounded-r-sm border border-l-0 border-gray-700 ${classMap(
                       this.distanceClasses,
                     )}"
                   >
@@ -144,14 +144,16 @@ class MapMarker extends LitElement {
                 ></div>
 
                 <div
-                  class="flex items-center min-w-[120px] h-6 overflow-hidden z-10 rounded border border-b-2 border-gray-700 cursor-auto ${classMap(
+                  class="flex items-center min-w-[120px] h-6 overflow-hidden z-10 rounded-sm border border-b-2 border-gray-700 cursor-auto ${classMap(
                     this.nameClasses,
                   )}"
                 >
-                  <div class="flex shrink-0 justify-center items-center w-6 h-full border-r border-gray-700 rounded-l ${classMap(this.rankClasses)}">
+                  <div
+                    class="flex shrink-0 justify-center items-center w-6 h-full border-r border-gray-700 rounded-l-sm ${classMap(this.rankClasses)}"
+                  >
                     <span class="font-heading text-base text-gray-800 font-medium">${this.rank}</span>
                   </div>
-                  <div class="flex justify-center items-center flex-grow w-full max-w-32 h-full rounded-r">
+                  <div class="flex justify-center items-center flex-grow w-full max-w-32 h-full rounded-r-sm">
                     <span class="relative top-[1px] ml-2 font-heading font-medium text-base text-gray-800 truncate" ${tooltip(this.playerName)}
                       >${this.playerName}</span
                     >

@@ -84,7 +84,7 @@ export class Toggle extends LitElement {
         style="box-shadow: inset 0 -3px 1px 0 rgba(0, 0, 0, 0.25)"
       >
         <div
-          class="w-1/2 absolute -top-px -left-px z-10 rounded border border-gray-700 bg-iris-500 ${classMap(this.selectedOptionClasses)}"
+          class="w-1/2 absolute -top-px -left-px z-10 rounded-sm border border-gray-700 bg-iris-500 ${classMap(this.selectedOptionClasses)}"
           style="box-shadow: -2px 0 1px 0 rgba(0, 0, 0, 0.4), 2px 0 1px 0 rgba(0, 0, 0, 0.4), inset 0 -3px 1px 0 rgba(0, 0, 0, 0.40), inset 0 2px 1px 0 rgba(255, 255, 255, 0.25)"
         ></div>
         <div class="flex justify-center items-center w-full z-10">

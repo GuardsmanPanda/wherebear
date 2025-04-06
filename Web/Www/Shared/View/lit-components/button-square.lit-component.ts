@@ -61,7 +61,7 @@ class ButtonSquare extends ButtonBase {
     return html`
       <button
         class="flex flex-col justify-start items-center relative rounded-md 
-          transition-all duration-100 border border-gray-700
+          transition-all duration-100 border border-gray-700 cursor-pointer
           group ${classMap(this.buttonClasses)}"
         @click="${this.onClick}"
         @mouseenter="${this.onMouseEnter}"

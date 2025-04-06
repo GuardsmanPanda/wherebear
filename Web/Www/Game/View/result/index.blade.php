@@ -70,7 +70,7 @@
     </div>
 
     <!-- Middle Column -->
-    <div x-ref="middleColumn" class="hidden xl:flex w-full overflow-hidden rounded border border-gray-700 bg-iris-200">
+    <div x-ref="middleColumn" class="hidden xl:flex w-full overflow-hidden rounded-sm border border-gray-700 bg-iris-200">
       <div x-show="isFullScreen" x-cloak class="flex flex-col w-[280px] shrink-0 z-50 border-r border-gray-700">
       
         <lit-button label="FULLSCREEN" imgPath="/static/img/icon/fullscreen.svg" type="primary" size="lg" :isSelected="isFullScreen" x-on:click="toggleFullScreen" class="m-2"></lit-button>
@@ -207,17 +207,17 @@
         </div>
 
         <!-- Stats -->
-        <div class="flex justify-around m-2 p-2 rounded border border-iris-500 bg-iris-100">
+        <div class="flex justify-around m-2 p-2 rounded-sm border border-iris-500 bg-iris-100">
           <div class="flex flex-col items-center">
             <span class="font-heading text-base font-bold text-iris-800">Points</span>
-            <div class="flex justify-center items-center w-32 h-6 relative rounded bg-iris-500">
+            <div class="flex justify-center items-center w-32 h-6 relative rounded-sm bg-iris-500">
               <img src="/static/img/icon/star-gold.svg" class="w-8 aspect-auto absolute -top-[6px] left-0 transform -translate-x-1/2" />
               <span class="font-heading text-lg font-bold text-white text-stroke-2 text-stroke-iris-900" tippy="{{ $user->detailed_points }}">{{ $user->rounded_points}}</span>
             </div>
           </div>
           <div class="flex flex-col items-center">
             <span class="font-heading text-base font-bold text-iris-800">Experience</span>
-            <div class="flex justify-center items-center w-32 h-6 relative rounded bg-iris-500">
+            <div class="flex justify-center items-center w-32 h-6 relative rounded-sm bg-iris-500">
               <div class="flex justify-center items-center absolute left-0 transform -translate-x-1/2">
                 <span class="absolute text-white font-heading text-xl font-bold text-stroke-2 text-stroke-iris-900">XP</span>
                 <img class="w-8" src="/static/img/icon/emblem.svg" />
