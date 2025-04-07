@@ -542,7 +542,7 @@ class RoundResultHeader extends LitElement {
         <div class="flex gap-2 w-full relative pr-[122px]">
           <img
             src="/static/flag/wavy/${this.countryCca2.toLowerCase()}.png"
-            class="h-16 absolute top-2 left-2 z-10 drop-shadow"
+            class="h-16 absolute top-2 left-2 z-10 drop-shadow-sm"
             alt="Flag of ${this.countryName}"
           />
           <div class="flex flex-col gap-1 py-2 pl-[100px]">
@@ -568,14 +568,14 @@ class RoundResultHeader extends LitElement {
                   </div>
 
                   <div class="relative left-1.5 mt-1">
-                    <div class="flex justify-center w-[72px] relative rounded border border-gray-700 bg-iris-500">
+                    <div class="flex justify-center w-[72px] relative rounded-sm border border-gray-700 bg-iris-500">
                       <div class="w-6 aspect-auto absolute -top-[4px] left-0 transform -translate-x-1/2">
                         <img src="/static/img/icon/star-gold.svg" />
                       </div>
                       <span class="text-xs text-gray-0 font-medium" ${tooltip(this.userGuess.detailedPoints)}>${this.userGuess.roundedPoints}</span>
                     </div>
 
-                    <div class="flex justify-center items-center mt-3 rounded border border-gray-700 bg-iris-500">
+                    <div class="flex justify-center items-center mt-3 rounded-sm border border-gray-700 bg-iris-500">
                       ${this.userGuess.countryMatch || this.userGuess.countrySubdivisionMatch
                         ? html` <img
                             src="/static/img/icon/clover-${this.userGuess.countrySubdivisionMatch ? "gold" : "green"}.svg"
@@ -586,7 +586,7 @@ class RoundResultHeader extends LitElement {
                               cca2="${this.userGuess.countryCca2}"
                               filePath="${this.userGuess.flagFilePath}"
                               description="${this.userGuess.countryName}"
-                              roundedClass="rounded-sm"
+                              roundedClass="rounded-xs"
                               class="h-5 absolute ${this.userGuess.countryCca2 === "NP" ? "left-2" : "left-0"} transform -translate-x-1/2"
                             >
                             </lit-flag>

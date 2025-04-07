@@ -81,11 +81,13 @@ export class LabelWithValue extends LitElement {
     return html`
       <div class="flex ${classMap(this.classes)}">
         <div
-          class="flex w-full justify-center items-center border border-r-0 border-gray-700 rounded-l bg-gray-0 -mr-px ${classMap(this.labelClasses)}"
+          class="flex w-full justify-center items-center border border-r-0 border-gray-700 rounded-l-sm bg-gray-0 -mr-px ${classMap(
+            this.labelClasses,
+          )}"
         >
           <span class="font-heading font-semibold text-gray-800">${this.label}</span>
         </div>
-        <div class="flex justify-center items-center border border-l-0 border-gray-700 rounded-r ${classMap(this.valueClasses)}">
+        <div class="flex justify-center items-center border border-l-0 border-gray-700 rounded-r-sm ${classMap(this.valueClasses)}">
           <span class="font-heading font-semibold text-gray-0 text-stroke-2 text-stroke-gray-700">${this.value}</span>
         </div>
       </div>

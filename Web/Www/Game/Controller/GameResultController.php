@@ -39,7 +39,7 @@ final class GameResultController extends Controller {
         gru.rank as user_rank,
         p.country_cca2 = gru.country_cca2 as country_match_user_guess,
         p.country_subdivision_iso_3166 = gru.country_subdivision_iso_3166 as country_subdivision_match_user_guess,
-        bu1.display_name as rank1_name, bu2.display_name as rank2_name, bu3.display_name as rank3_name 
+        bu1.display_name as rank1_player_display_name, bu2.display_name as rank2_player_display_name, bu3.display_name as rank3_player_display_name 
       FROM game_round gr
       LEFT JOIN panorama p ON p.id = gr.panorama_id
       LEFT JOIN bear_country bc ON bc.cca2 = p.country_cca2
@@ -152,7 +152,10 @@ final class GameResultController extends Controller {
           'user_rank' => 1,
           'country_match_user_guess' => true,
           'country_subdivision_match' => false,
-          'number' => 1
+          'number' => 1,
+          'rank1_player_display_name' => 'KingMonkeyBoy',
+          'rank2_player_display_name' => 'QueenMonkeyBoy',
+          'rank3_player_display_name' => 'JackMonkeyBoy',
         ],
         (object) [
           'country_cca2' => 'UA',
@@ -160,7 +163,11 @@ final class GameResultController extends Controller {
           'user_rank' => 2,
           'country_match_user_guess' => true,
           'country_subdivision_match' => true,
-          'number' => 2
+          'number' => 2,
+          'rank1_player_display_name' => 'KingMonkeyBoy',
+          'rank2_player_display_name' => 'QueenMonkeyBoy',
+          'rank3_player_display_name' => 'JackMonkeyBoy',
+
         ],
         (object) [
           'country_cca2' => 'DE',
@@ -168,7 +175,11 @@ final class GameResultController extends Controller {
           'user_rank' => 3,
           'country_match_user_guess' => false,
           'country_subdivision_match' => false,
-          'number' => 3
+          'number' => 3,
+          'rank1_player_display_name' => 'KingMonkeyBoy',
+          'rank2_player_display_name' => 'QueenMonkeyBoy',
+          'rank3_player_display_name' => 'JackMonkeyBoy',
+
         ],
         (object) [
           'country_cca2' => 'KR',
@@ -176,7 +187,11 @@ final class GameResultController extends Controller {
           'user_rank' => 4,
           'country_match_user_guess' => true,
           'country_subdivision_match' => true,
-          'number' => 4
+          'number' => 4,
+          'rank1_player_display_name' => 'KingMonkeyBoy',
+          'rank2_player_display_name' => 'QueenMonkeyBoy',
+          'rank3_player_display_name' => 'JackMonkeyBoy',
+
         ],
       ],
       'players' => [

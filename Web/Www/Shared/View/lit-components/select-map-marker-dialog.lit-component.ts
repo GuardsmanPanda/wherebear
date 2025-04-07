@@ -98,7 +98,7 @@ export class SelectMapMarkerDialog extends LitElement {
                             <img
                               src="${mapMarker.file_path}"
                               draggable="false"
-                              class="max-w-full max-h-full object-contain drop-shadow hover:scale-110 transition-transform duration-75 cursor-pointer"
+                              class="max-w-full max-h-full object-contain drop-shadow-sm hover:scale-110 transition-transform duration-75 cursor-pointer"
                               @click="${() => this.selectMapMarker(mapMarker.enum)}"
                             />
                           </div>

@@ -133,14 +133,14 @@ export class PlayerResultItem extends LitElement {
   get scoreAndDistanceTemplate() {
     return html`
       <div class="flex flex-col gap-2 sm:gap-1.5 p-2">
-        <div class="flex justify-center items-center w-16 sm:w-20 h-4 sm:h-5 relative rounded bg-iris-500 border border-gray-700">
+        <div class="flex justify-center items-center w-16 sm:w-20 h-4 sm:h-5 relative rounded-sm bg-iris-500 border border-gray-700">
           <div class="w-5 sm:w-6 aspect-auto absolute -top-[4px] left-0 transform -translate-x-1/2">
             <img src="/static/img/icon/star-gold.svg" />
           </div>
           <span class="text-sm text-gray-50 font-medium" ${tooltip(this.detailedPoints || "")}>${this.roundedPoints}</span>
         </div>
 
-        <div class="flex justify-center items-center w-16 sm:w-20 h-4 sm:h-5 relative rounded border border-gray-800 ${this.distanceClasses}">
+        <div class="flex justify-center items-center w-16 sm:w-20 h-4 sm:h-5 relative rounded-sm border border-gray-800 ${this.distanceClasses}">
           <span class="text-xs font-medium">${this.distanceWithUnit.value}${this.distanceWithUnit.unit}</span>
         </div>
       </div>
@@ -149,8 +149,8 @@ export class PlayerResultItem extends LitElement {
 
   protected render() {
     return html`
-      <div class="flex h-14 sm:h-16 relative rounded border border-gray-700 select-none ${classMap(this.classes)}">
-        <div class="flex justify-center items-center w-14 sm:w-16 rounded-l shrink-0 border-r border-gray-300 ${classMap(this.rankClasses)}">
+      <div class="flex h-14 sm:h-16 relative rounded-sm border border-gray-700 select-none ${classMap(this.classes)}">
+        <div class="flex justify-center items-center w-14 sm:w-16 rounded-l-sm shrink-0 border-r border-gray-300 ${classMap(this.rankClasses)}">
           ${this.rankTemplate}
         </div>
 
@@ -166,7 +166,7 @@ export class PlayerResultItem extends LitElement {
                   cca2="${this.countryCca2}"
                   filePath="${this.flagFilePath}"
                   description="${this.flagDescription}"
-                  roundedClass="rounded-sm"
+                  roundedClass="rounded-xs"
                   maxHeightClass="max-h-5"
                   class="w-5"
                 ></lit-flag>

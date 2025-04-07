@@ -40,7 +40,7 @@ class Button extends ButtonBase {
       "justify-center": this.contentAlignment !== "left",
       "aspect-square": !this.label,
       "rounded-md": !this.isPill && this.size !== "xs",
-      rounded: !this.isPill && this.size === "xs",
+      "rounded-sm": !this.isPill && this.size === "xs",
       "rounded-full": this.isPill,
       "inner-shadow": !this.isSelected,
       "inner-shadow-selected": this.isSelected,
@@ -97,7 +97,7 @@ class Button extends ButtonBase {
     return html`
       <button
         class="
-          flex relative items-center w-full
+          flex relative items-center w-full cursor-pointer
           transition-all duration-100 border border-gray-700 select-none
           group ${classMap(this.buttonClasses)}"
         @click="${this.onClick}"

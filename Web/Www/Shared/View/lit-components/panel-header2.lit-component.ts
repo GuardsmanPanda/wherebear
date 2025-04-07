@@ -25,7 +25,7 @@ class PanelHeader extends LitElement {
   get classes() {
     return {
       border: !this.noBorder,
-      "rounded-t": !this.noRounded,
+      "rounded-t-sm": !this.noRounded,
       "from-iris-600": this.color === "blue",
       "to-iris-400": this.color === "blue",
       "from-gray-600": this.color === "gray",

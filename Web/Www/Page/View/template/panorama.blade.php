@@ -1,6 +1,6 @@
 <?php declare(strict_types=1); ?>
 @php use Domain\User\Enum\BearPermissionEnum;use GuardsmanPanda\Larabear\Infrastructure\Auth\Service\BearAuthService; @endphp
-<div class="pb-4 mb-4 px-4 pt-2 shadow border-b border-gray-700">
+<div class="pb-4 mb-4 px-4 pt-2 shadow-sm border-b border-gray-700">
   <div class="flex items-center">
     <div class="flex-auto">
       <h1 class="text-3xl font-semibold">Game Templates > {{$template->name}}</h1>

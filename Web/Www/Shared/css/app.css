@@ -1,7 +1,7 @@
 @import "maplibre-gl/dist/maplibre-gl.css";
 @import "pannellum/build/pannellum.css";
 @import "tippy.js/dist/tippy.css";
-@import "fonts.css";
+@import "./fonts.css";
 
 html {
   box-sizing: border-box;
@@ -17,123 +17,119 @@ body {
   font-family: system-ui, sans-serif;
 }
 
-.button {
-  @apply bg-blue-500 text-white font-bold py-2 px-4 rounded hover:scale-105 transition-all duration-75;
-}
-
 @-webkit-keyframes notyf-fadeinup {
   0% {
     opacity: 0;
-    transform: translateY(25%)
+    transform: translateY(25%);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0)
+    transform: translateY(0);
   }
 }
 
 @keyframes notyf-fadeinup {
   0% {
     opacity: 0;
-    transform: translateY(25%)
+    transform: translateY(25%);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0)
+    transform: translateY(0);
   }
 }
 
 @-webkit-keyframes notyf-fadeinleft {
   0% {
     opacity: 0;
-    transform: translateX(25%)
+    transform: translateX(25%);
   }
 
   to {
     opacity: 1;
-    transform: translateX(0)
+    transform: translateX(0);
   }
 }
 
 @keyframes notyf-fadeinleft {
   0% {
     opacity: 0;
-    transform: translateX(25%)
+    transform: translateX(25%);
   }
 
   to {
     opacity: 1;
-    transform: translateX(0)
+    transform: translateX(0);
   }
 }
 
 @-webkit-keyframes notyf-fadeoutright {
   0% {
     opacity: 1;
-    transform: translateX(0)
+    transform: translateX(0);
   }
 
   to {
     opacity: 0;
-    transform: translateX(25%)
+    transform: translateX(25%);
   }
 }
 
 @keyframes notyf-fadeoutright {
   0% {
     opacity: 1;
-    transform: translateX(0)
+    transform: translateX(0);
   }
 
   to {
     opacity: 0;
-    transform: translateX(25%)
+    transform: translateX(25%);
   }
 }
 
 @-webkit-keyframes notyf-fadeoutdown {
   0% {
     opacity: 1;
-    transform: translateY(0)
+    transform: translateY(0);
   }
 
   to {
     opacity: 0;
-    transform: translateY(25%)
+    transform: translateY(25%);
   }
 }
 
 @keyframes notyf-fadeoutdown {
   0% {
     opacity: 1;
-    transform: translateY(0)
+    transform: translateY(0);
   }
 
   to {
     opacity: 0;
-    transform: translateY(25%)
+    transform: translateY(25%);
   }
 }
 
 @-webkit-keyframes ripple {
   0% {
-    transform: scale(0) translateY(-45%) translateX(13%)
+    transform: scale(0) translateY(-45%) translateX(13%);
   }
 
   to {
-    transform: scale(1) translateY(-45%) translateX(13%)
+    transform: scale(1) translateY(-45%) translateX(13%);
   }
 }
 
 @keyframes ripple {
   0% {
-    transform: scale(0) translateY(-45%) translateX(13%)
+    transform: scale(0) translateY(-45%) translateX(13%);
   }
 
   to {
-    transform: scale(1) translateY(-45%) translateX(13%)
+    transform: scale(1) translateY(-45%) translateX(13%);
   }
 }
 
@@ -151,7 +147,7 @@ body {
   justify-content: flex-end;
   pointer-events: none;
   box-sizing: border-box;
-  padding: 20px
+  padding: 20px;
 }
 
 .notyf__icon--error,
@@ -162,7 +158,7 @@ body {
   border-radius: 50%;
   display: block;
   margin: 0 auto;
-  position: relative
+  position: relative;
 }
 
 .notyf__icon--error:after,
@@ -175,15 +171,15 @@ body {
   border-radius: 3px;
   left: 9px;
   height: 12px;
-  top: 5px
+  top: 5px;
 }
 
 .notyf__icon--error:after {
-  transform: rotate(-45deg)
+  transform: rotate(-45deg);
 }
 
 .notyf__icon--error:before {
-  transform: rotate(45deg)
+  transform: rotate(45deg);
 }
 
 .notyf__icon--success:after,
@@ -193,77 +189,77 @@ body {
   display: block;
   position: absolute;
   width: 3px;
-  border-radius: 3px
+  border-radius: 3px;
 }
 
 .notyf__icon--success:after {
   height: 6px;
   transform: rotate(-45deg);
   top: 9px;
-  left: 6px
+  left: 6px;
 }
 
 .notyf__icon--success:before {
   height: 11px;
   transform: rotate(45deg);
   top: 5px;
-  left: 10px
+  left: 10px;
 }
 
 .notyf__toast {
   display: block;
   overflow: hidden;
   pointer-events: auto;
-  -webkit-animation: notyf-fadeinup .3s ease-in forwards;
-  animation: notyf-fadeinup .3s ease-in forwards;
-  box-shadow: 0 3px 7px 0 rgba(0, 0, 0, .25);
+  -webkit-animation: notyf-fadeinup 0.3s ease-in forwards;
+  animation: notyf-fadeinup 0.3s ease-in forwards;
+  box-shadow: 0 3px 7px 0 rgba(0, 0, 0, 0.25);
   position: relative;
   padding: 0 15px;
   border-radius: 2px;
   max-width: 300px;
   transform: translateY(25%);
   box-sizing: border-box;
-  flex-shrink: 0
+  flex-shrink: 0;
 }
 
 .notyf__toast--disappear {
   transform: translateY(0);
-  -webkit-animation: notyf-fadeoutdown .3s forwards;
-  animation: notyf-fadeoutdown .3s forwards;
-  -webkit-animation-delay: .25s;
-  animation-delay: .25s
+  -webkit-animation: notyf-fadeoutdown 0.3s forwards;
+  animation: notyf-fadeoutdown 0.3s forwards;
+  -webkit-animation-delay: 0.25s;
+  animation-delay: 0.25s;
 }
 
 .notyf__toast--disappear .notyf__icon,
 .notyf__toast--disappear .notyf__message {
-  -webkit-animation: notyf-fadeoutdown .3s forwards;
-  animation: notyf-fadeoutdown .3s forwards;
+  -webkit-animation: notyf-fadeoutdown 0.3s forwards;
+  animation: notyf-fadeoutdown 0.3s forwards;
   opacity: 1;
-  transform: translateY(0)
+  transform: translateY(0);
 }
 
 .notyf__toast--disappear .notyf__dismiss {
-  -webkit-animation: notyf-fadeoutright .3s forwards;
-  animation: notyf-fadeoutright .3s forwards;
+  -webkit-animation: notyf-fadeoutright 0.3s forwards;
+  animation: notyf-fadeoutright 0.3s forwards;
   opacity: 1;
-  transform: translateX(0)
+  transform: translateX(0);
 }
 
 .notyf__toast--disappear .notyf__message {
-  -webkit-animation-delay: .05s;
-  animation-delay: .05s
+  -webkit-animation-delay: 0.05s;
+  animation-delay: 0.05s;
 }
 
 .notyf__toast--upper {
-  margin-bottom: 20px
+  margin-bottom: 20px;
 }
 
 .notyf__toast--lower {
-  margin-top: 20px
+  margin-top: 20px;
 }
 
 .notyf__toast--dismissible .notyf__wrapper {
-  padding-right: 30px
+  padding-right: 30px;
 }
 
 .notyf__ripple {
@@ -276,8 +272,8 @@ body {
   border-radius: 50%;
   transform: scale(0) translateY(-51%) translateX(13%);
   z-index: 5;
-  -webkit-animation: ripple .4s ease-out forwards;
-  animation: ripple .4s ease-out forwards
+  -webkit-animation: ripple 0.4s ease-out forwards;
+  animation: ripple 0.4s ease-out forwards;
 }
 
 .notyf__wrapper {
@@ -288,7 +284,7 @@ body {
   padding-right: 15px;
   border-radius: 3px;
   position: relative;
-  z-index: 10
+  z-index: 10;
 }
 
 .notyf__icon {
@@ -296,11 +292,11 @@ body {
   text-align: center;
   font-size: 1.3em;
   opacity: 0;
-  -webkit-animation: notyf-fadeinup .3s forwards;
-  animation: notyf-fadeinup .3s forwards;
-  -webkit-animation-delay: .3s;
-  animation-delay: .3s;
-  margin-right: 13px
+  -webkit-animation: notyf-fadeinup 0.3s forwards;
+  animation: notyf-fadeinup 0.3s forwards;
+  -webkit-animation-delay: 0.3s;
+  animation-delay: 0.3s;
+  margin-right: 13px;
 }
 
 .notyf__dismiss {
@@ -310,22 +306,24 @@ body {
   height: 100%;
   width: 26px;
   margin-right: -15px;
-  -webkit-animation: notyf-fadeinleft .3s forwards;
-  animation: notyf-fadeinleft .3s forwards;
-  -webkit-animation-delay: .35s;
-  animation-delay: .35s;
-  opacity: 0
+  -webkit-animation: notyf-fadeinleft 0.3s forwards;
+  animation: notyf-fadeinleft 0.3s forwards;
+  -webkit-animation-delay: 0.35s;
+  animation-delay: 0.35s;
+  opacity: 0;
 }
 
 .notyf__dismiss-btn {
-  background-color: rgba(0, 0, 0, .25);
+  background-color: rgba(0, 0, 0, 0.25);
   border: none;
   cursor: pointer;
-  transition: opacity .2s ease, background-color .2s ease;
+  transition:
+    opacity 0.2s ease,
+    background-color 0.2s ease;
   outline: none;
-  opacity: .35;
+  opacity: 0.35;
   height: 100%;
-  width: 100%
+  width: 100%;
 }
 
 .notyf__dismiss-btn:after,
@@ -337,58 +335,58 @@ body {
   border-radius: 3px;
   position: absolute;
   left: calc(50% - 1px);
-  top: calc(50% - 5px)
+  top: calc(50% - 5px);
 }
 
 .notyf__dismiss-btn:after {
-  transform: rotate(-45deg)
+  transform: rotate(-45deg);
 }
 
 .notyf__dismiss-btn:before {
-  transform: rotate(45deg)
+  transform: rotate(45deg);
 }
 
 .notyf__dismiss-btn:hover {
-  opacity: .7;
-  background-color: rgba(0, 0, 0, .15)
+  opacity: 0.7;
+  background-color: rgba(0, 0, 0, 0.15);
 }
 
 .notyf__dismiss-btn:active {
-  opacity: .8
+  opacity: 0.8;
 }
 
 .notyf__message {
   vertical-align: middle;
   position: relative;
   opacity: 0;
-  -webkit-animation: notyf-fadeinup .3s forwards;
-  animation: notyf-fadeinup .3s forwards;
-  -webkit-animation-delay: .25s;
-  animation-delay: .25s;
-  line-height: 1.5em
+  -webkit-animation: notyf-fadeinup 0.3s forwards;
+  animation: notyf-fadeinup 0.3s forwards;
+  -webkit-animation-delay: 0.25s;
+  animation-delay: 0.25s;
+  line-height: 1.5em;
 }
 
 @media only screen and (max-width: 480px) {
   .notyf {
-    padding: 0
+    padding: 0;
   }
 
   .notyf__ripple {
     height: 600px;
     width: 600px;
-    -webkit-animation-duration: .5s;
-    animation-duration: .5s
+    -webkit-animation-duration: 0.5s;
+    animation-duration: 0.5s;
   }
 
   .notyf__toast {
     max-width: none;
     border-radius: 0;
-    box-shadow: 0 -2px 7px 0 rgba(0, 0, 0, .13);
-    width: 100%
+    box-shadow: 0 -2px 7px 0 rgba(0, 0, 0, 0.13);
+    width: 100%;
   }
 
   .notyf__dismiss {
-    width: 56px
+    width: 56px;
   }
 }
 
@@ -400,20 +398,20 @@ body {
 
 *::-webkit-scrollbar-track {
   border-radius: 0px;
-  background-color: rgba(0, 0, 0, .10);
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 *::-webkit-scrollbar-track:hover {
-  background-color: rgba(0, 0, 0, .20);
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 *::-webkit-scrollbar-track:active {
-  background-color: rgba(0, 0, 0, .20);
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 *::-webkit-scrollbar-thumb {
   border-radius: 8px;
-  background-color: #4F576C;
+  background-color: #4f576c;
 }
 
 *::-webkit-scrollbar-thumb:hover {

@@ -236,7 +236,10 @@ export class SelectMapStyleDialog extends LitElement {
     return html`
       <lit-dialog label="Map Style" iconPath="/static/img/icon/map-with-marker.svg" modal>
         <div id="content" slot="content" class="flex flex-col gap-2 h-full max-h-[calc(90vh-140px)] select-none">
-          <div id="options" class="flex flex-col gap-2 sm:gap-4 w-full flex-1 overflow-y-auto p-2 sm:p-4 rounded border border-gray-700 bg-gray-50">
+          <div
+            id="options"
+            class="flex flex-col gap-2 sm:gap-4 w-full flex-1 overflow-y-auto p-2 sm:p-4 rounded-sm border border-gray-700 bg-gray-50"
+          >
             <div class="flex items-center w-full h-6 px-2 border-b border-gray-700">
               <span class="font-heading font-semibold text-sm sm:text-base text-iris-800">Map Style</span>
             </div>
@@ -258,7 +261,7 @@ export class SelectMapStyleDialog extends LitElement {
                 }
 
                 return html`
-                    <div class="flex justify-center items-center gap-2 h-8 sm:h-10 rounded border border-gray-700 bg-gray-400">
+                    <div class="flex justify-center items-center gap-2 h-8 sm:h-10 rounded-sm border border-gray-700 bg-gray-400">
                       <img src="/static/img/icon/lock-gold.svg" class="w-4 sm:w-5" />
                         <span class="font-heading font-semibold text-sm sm:text-base text-gray-0 text-stroke-2 text-stroke-700">Level ${mapStyle.user_level_enum}</span>
                       </div>
@@ -278,7 +281,7 @@ export class SelectMapStyleDialog extends LitElement {
                     ${locationMarkers.map(
                       (locationMarker) => html`
                         <div
-                          class="flex justify-center items-center w-10 sm:w-12 h-10 sm:h-12 rounded ${this.selectedLocationMarkerEnum ===
+                          class="flex justify-center items-center w-10 sm:w-12 h-10 sm:h-12 rounded-sm ${this.selectedLocationMarkerEnum ===
                           locationMarker.enum
                             ? "bg-iris-400"
                             : "hover:bg-iris-200 cursor-pointer"}"
@@ -307,8 +310,8 @@ export class SelectMapStyleDialog extends LitElement {
             </div>
           </div>
 
-          <div id="preview" class="w-full h-32 sm:h-48 shrink-0 rounded relative overflow-hidden border-4 border-gray-0">
-            <div class="flex justify-center items-center w-20 h-8 rounded-br absolute top-0 left-0 z-10 bg-gray-0">
+          <div id="preview" class="w-full h-32 sm:h-48 shrink-0 rounded-sm relative overflow-hidden border-4 border-gray-0">
+            <div class="flex justify-center items-center w-20 h-8 rounded-br-sm absolute top-0 left-0 z-10 bg-gray-0">
               <span class="font-heading font-medium text-gray-700">Preview</span>
             </div>
 

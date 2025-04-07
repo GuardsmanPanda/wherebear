@@ -144,7 +144,7 @@
         document.getElementById('map-url').value = '';
         const icon = document.createElement('img');
         icon.src = '{{$user->map_marker_file_path}}'
-        icon.classList.add('drop-shadow');
+        icon.classList.add('drop-shadow-sm');
         icon.style.height = '32px';
         new window.maplibregl.Marker({element: icon})
           .setLngLat([json['panorama']['location']['longitude'], json['panorama']['location']['latitude']])

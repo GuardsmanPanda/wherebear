@@ -47,7 +47,7 @@
       for (let i = 0; i < flagsToShow; i++) {
         const imgNode = document.createElement('img');
         imgNode.src = '/static/flag/svg/' + countries[i].cca2 + '.svg';
-        imgNode.classList.add('shadow');
+        imgNode.classList.add('shadow-sm');
         imgNode.classList.add('h-12');
         document.getElementById('flagSelector').appendChild(imgNode);
       }
@@ -92,7 +92,7 @@
             `
 
           flag.src = '/static/flag/svg/' + json.country.cca2 + '.svg'
-          flag.classList.add('shadow');
+          flag.classList.add('shadow-sm');
           flag.classList.add('border');
           flag.classList.add('border-black');
           flag.style.height = '26px';
@@ -105,11 +105,11 @@
           const el = document.createElement('div');
           el.innerHTML = `
             <div class="flex flex-col items-center gap-1 relative bottom-8">
-              <div class="flex flex-col items-center p-1 rounded bg-gray-800">
+              <div class="flex flex-col items-center p-1 rounded-sm bg-gray-800">
                 <span class="text-xl font-bold">${json.country.name}</span>
                 ${json.data.iso_3166 ? `<span class="text-xs">${json.data.subdivision_name}</span>` : ``} 
               </div>
-              <img class="w-min h-[26px] rounded border border-gray-900" src="/static/flag/svg/${json.country.cca2}.svg" />
+              <img class="w-min h-[26px] rounded-sm border border-gray-900" src="/static/flag/svg/${json.country.cca2}.svg" />
             </div>
           `;
           

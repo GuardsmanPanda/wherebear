@@ -11,16 +11,16 @@
     <input id="anonymous" type="checkbox" name="anonymous" value="true">
   </div>
   <button
-    class="whitespace-nowrap font-medium inline-flex rounded transition-all hover:scale-105 items-center shadow hover:shadow-md duration-75 focus:outline-none focus:ring-2 focus:ring-offset-2 border px-5 h-9 text-indigo-50 bg-indigo-600 border-indigo-600 shadow-indigo-600/20 focus:ring-indigo-700 mx-auto mt-2"
+    class="whitespace-nowrap font-medium inline-flex rounded-sm transition-all hover:scale-105 items-center shadow-sm hover:shadow-md duration-75 focus:outline-hidden focus:ring-2 focus:ring-offset-2 border px-5 h-9 text-indigo-50 bg-indigo-600 border-indigo-600 shadow-indigo-600/20 focus:ring-indigo-700 mx-auto mt-2"
     hx-post="/auth/social-redirect" hx-include="#anonymous" hx-vals='{"oauth2_client": "GOOGLE", "game_id": "{{$game->id}}"}'>
     Sign In With Google
   </button>
   <button
-    class="whitespace-nowrap font-medium inline-flex rounded transition-all hover:scale-105 items-center shadow hover:shadow-md duration-75 focus:outline-none focus:ring-2 focus:ring-offset-2 border px-5 h-9 text-indigo-50 bg-indigo-600 border-indigo-600 shadow-indigo-600/20 focus:ring-indigo-700 mx-auto mt-2"
+    class="whitespace-nowrap font-medium inline-flex rounded-sm transition-all hover:scale-105 items-center shadow-sm hover:shadow-md duration-75 focus:outline-hidden focus:ring-2 focus:ring-offset-2 border px-5 h-9 text-indigo-50 bg-indigo-600 border-indigo-600 shadow-indigo-600/20 focus:ring-indigo-700 mx-auto mt-2"
     hx-post="/auth/social-redirect" hx-include="#anonymous" hx-vals='{"oauth2_client": "TWITCH", "game_id": "{{$game->id}}"}'>
     Sign In With Twitch
   </button>
-  <button class="mx-auto ring-1 font-medium shadow shadow-gray-700 ring-gray-700 px-4 py-1 mt-2 hover:scale-110 rounded duration-75 transition-all"
+  <button class="mx-auto ring-1 font-medium shadow-sm shadow-gray-700 ring-gray-700 px-4 py-1 mt-2 hover:scale-110 rounded-sm duration-75 transition-all"
           hx-post="/auth/guest" hx-vals='{"game_id": "{{$game->id}}"}' hx-include="#anonymous">
     Continue as Guest
   </button>
