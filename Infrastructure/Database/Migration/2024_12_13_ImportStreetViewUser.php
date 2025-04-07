@@ -9,6 +9,7 @@ return new class extends Migration {
   public function up(): void {
     Schema::create(table: 'import_street_view_user', callback: static function (Blueprint $table): void {
       $table->text(column: 'id')->primary();
+      $table->text(column: 'name');
       $table->timestampTz(column: 'last_sync_at')->nullable();
       $table->text(column: 'continue_token')->nullable();
       $table->timestampTz(column: 'created_at')->default(value: DB::raw(value: 'CURRENT_TIMESTAMP'));
