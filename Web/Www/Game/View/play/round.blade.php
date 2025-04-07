@@ -1,11 +1,11 @@
 <?php declare(strict_types=1); ?>
 
 <div x-data="state({{ $isDev }})" class="flex flex-col h-screen">
-  <div class="relative flex-1 overflow-hidden">
-    <div class="flex flex-col min-w-16 absolute top-2 left-2 z-10 rounded-sm border border-gray-700">
-      <div class="w-[6px] h-4 absolute -top-[10px] left-[8px] z-10 rounded-b-md border  border-gray-700 bg-gray-50"
+  <div class="flex w-full h-full relative flex-1 overflow-hidden">
+    <div class="flex flex-col min-w-16 absolute top-2 left-2 z-20 rounded-sm border border-gray-700 select-none">
+      <div class="w-[6px] h-4 absolute -top-[10px] left-[8px] rounded-b-md border  border-gray-700 bg-gray-50"
         style="box-shadow: 0 2px 1px rgb(0 0 0 / 0.4)"></div>
-      <div class="w-[6px] h-4 absolute -top-[10px] right-[8px] z-10 rounded-b-md border border-gray-700 bg-gray-50"
+      <div class="w-[6px] h-4 absolute -top-[10px] right-[8px] rounded-b-md border border-gray-700 bg-gray-50"
         style="box-shadow: 0 2px 1px rgb(0 0 0 / 0.4)"></div>
       <div class="flex justify-center items-center px-1 py-0 rounded-t-sm border-b border-gray-700 bg-iris-500 font-heading text-sm font-medium text-white"
         style="box-shadow: inset 0 2px 1px rgb(255 255 255 / 0.4)">{{ $game->captured_year }}</div>
@@ -13,23 +13,37 @@
         style="box-shadow: inset 0 -2px 1px rgb(0 0 0 / 0.4)">{{ $game->captured_month }}</div>
     </div>
 
-    <div id="panorama"></div>
-
     @if($user->is_player)
-    <div>
-      <div x-data="slidePanelState" x-ref="slidePanel" id="slidePanel" tabIndex="-1"
-        class="absolute top-0 w-full h-full z-10 transition-all duration-300"
-        :class="{ 'right-0': isOpened, 'right-full': !isOpened }"
+      <div 
+        x-data="slidePanelState"
+        x-ref="slidePanel" 
         x-on:slide-panel-opened.window="open"
-        @keyup.esc="close">
+        tabIndex="-1" @keyup.esc="close"
+        class="w-full h-full absolute top-0 z-30 transition-all duration-300"
+        :class="{ 'right-0': isOpened, 'right-full': !isOpened }">
+        <div id="slidePanel" class="w-full h-full"></div>
       </div>
 
-      <div x-data="mapState" x-ref="map" class="block" :class="{ hidden: !isMiniMapShowed }">
-        <div x-ref="mapBg" 
+      <lit-button-square label="GUESS" 
+        imgPath="/static/img/icon/map-with-marker.svg"
+        bgColorClass="bg-iris-400"
+        isSelectable
+        :isSelected="isGuessButtonSelected"
+        x-on:clicked="openSlidePanel()"
+        class="block absolute top-1/2 right-0 z-20 mr-2"
+        :class="{ hidden: isMiniMapShowed }"
+      ></lit-button-square>
+
+      <div 
+        x-data="mapState"
+        class="absolute top-0 right-0 z-20"
+        :class="{ hidden: !isMiniMapShowed }"
+        style="pointer-events: none;">
+        <div
           class="absolute top-0 right-0 z-30 rounded-bl-md border-b-4 border-l-4 transition-all duration-300 ease-in-out"
           :class="{ 'border-gray-100': !isExpanded, 'border-gray-50': isExpanded }"
           :style="mapBackgroundStyle"
-          style="pointer-events: none;">
+          style="">
 
           @if($user->is_guess_indicator_allowed)
           <div class="absolute -bottom-px left-0 max-w-full h-8">
@@ -48,38 +62,18 @@
           @endif
         </div>
 
-        <div id="map"
-          class="absolute top-0 right-0 z-20 transition-all duration-300 ease-in-out"
+        <div
+          id="map"
+          class="transition-all duration-300 ease-in-out"
+          style="pointer-events: auto;"
           :style="mapStyle" 
           x-on:mouseenter="expandMap"
           x-on:mouseleave="minifyMap">
         </div>
       </div>
-    </div>
     @endif
 
-    @if($user->is_player)
-    <lit-button-square label="GUESS" 
-      imgPath="/static/img/icon/map-with-marker.svg"
-      bgColorClass="bg-iris-400"
-      class="block absolute top-1/2 right-0 mr-2"
-      :class="{ hidden: isMiniMapShowed }"
-      x-on:clicked="openSlidePanel()"
-    ></lit-button-square>
-    @endif
-
-    @if($user->is_player && $user->is_guess_indicator_allowed)
-    <div class="absolute bottom-2 right-0 z-10 mr-[10px] min-w-40 px-3 py-1 flex justify-center items-center
-      before:absolute before:-z-10 before:-skew-x-12 before:w-full before:h-full before:rounded-sm before:border before:border-gray-700 before:bg-gray-50"
-      :class="{ hidden: isMiniMapShowed }">
-        <div class="flex justify-center items-center h-4 absolute -top-[8px] right-2 rounded-sm pl-3 pr-1 border border-gray-800 bg-gray-700">
-          <img src="/static/img/icon/marker-red.svg" width="28" height="28" class="absolute -top-[10px] left-0 transform -translate-x-1/2" />
-          <span class="text-xs text-gray-50 font-medium">Your Guess</span>
-        </div>
-        <span x-text="guessedCountry" class="text-lg text-gray-700 font-medium"></span>
-        <span x-show="!guessedCountry" class="text-lg text-gray-700 font-medium">...</span>
-    </div>
-    @endif
+    <div id="panorama" class="w-full h-full absolute top-0 right-0 z-10"></div> 
   </div>
 
   <x-play-footer
@@ -92,26 +86,6 @@
 </div>
 
 <script>
-  class MapLibreCloseButtonControl {
-    onAdd(map) {
-      this._map = map;
-      this._container = document.createElement('lit-button');
-      this._container.setAttribute('imgPath', '/static/img/icon/cross.svg');
-      this._container.setAttribute('size', 'sm');
-      this._container.setAttribute('bgColorClass', 'bg-gray-400');
-      this._container.setAttribute('x-on:click', 'close()');
-      
-      this._container.className = 'maplibregl-ctrl';
-
-      return this._container;
-    }
-
-    onRemove() {
-      this._container.parentNode.removeChild(this._container);
-      this._map = undefined;
-    }
-  }
-
   pannellum.viewer('panorama', {
     type: "equirectangular",
     panorama: "{{ $panorama_url }}",
@@ -123,10 +97,11 @@
     minHfov: window.innerWidth < 1000 ? 30 : 50,
   });
 
-  document.addEventListener('alpine:init', () => {
-    // The global state of the page
+  document.addEventListener('alpine:init', () => {  
+     // The global state of the page
     Alpine.data('state', (isDev) => ({
       guessedCountry: null,
+      isGuessButtonSelected: false,
       isMiniMapShowed: false,
       panoramaWidthPx: null,
       panoramaHeightPx: null,
@@ -179,7 +154,8 @@
         }));
       },
       openSlidePanel() {
-         window.dispatchEvent(new CustomEvent('slide-panel-opened'));
+        this.isGuessButtonSelected = true;
+        window.dispatchEvent(new CustomEvent('slide-panel-opened'));
       },
       saveMapMarkerLocation(lngLat, callback) {
         if (isDev) {
@@ -218,6 +194,26 @@
       }
     }));
 
+    class MapLibreCloseButtonControl {
+      onAdd(map) {
+        this._map = map;
+        this._container = document.createElement('lit-button');
+        this._container.setAttribute('imgPath', '/static/img/icon/cross.svg');
+        this._container.setAttribute('size', 'sm');
+        this._container.setAttribute('bgColorClass', 'bg-gray-400');
+        this._container.setAttribute('x-on:click', 'close()');
+        
+        this._container.className = 'maplibregl-ctrl';
+
+        return this._container;
+      }
+
+      onRemove() {
+        this._container.parentNode.removeChild(this._container);
+        this._map = undefined;
+      }
+    }
+
     /** The state of the slide panel containing the map for small screens. */
     Alpine.data('slidePanelState', (isDev) => ({
       closeTimeout: null,
@@ -229,6 +225,7 @@
       mapMarkerElement: null,
       close() {
         this.isOpened = false;
+        this.isGuessButtonSelected = false;
       },
       open() {
         this.isOpened = true;
@@ -252,7 +249,7 @@
       scheduleClose() {
         this.interruptScheduledClose();
         this.closeTimeout = setTimeout(() => {
-          this.isOpened = false;
+          this.close()
         }, 1600);
       },
       init() {
@@ -277,7 +274,7 @@
       }
     }));
 
-    /** The state of the map and its minified version for large screens. */
+     /** The state of the map and its minified version for large screens. */
     Alpine.data('mapState', (isDev) => ({
       isFirstGuessMade: false,
       isExpanded: false,
