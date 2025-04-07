@@ -532,7 +532,6 @@
       </div>
 
       <!-- Start Button -->
-      <div class="button">Custom Button</div>
       <span data-tippy-content="Force the game to start">
         <div x-show="user.is_host" class="flex relative cursor-pointer group" x-on:click="openConfirmStartGameDialog">
           <div class="absolute top-[2px] right-[79px] w-[4px] h-[36px] z-40 bg-iris-600 group-hover:bg-iris-700 transition-colors duration-300 ease-in-out"></div>
