@@ -538,7 +538,7 @@ class RoundResultHeader extends LitElement {
 
   protected render() {
     return html`
-      <div class="flex justify-between items-start relative z-20 bg-iris-500 border-b-2 border-gray-700">
+      <div class="flex justify-between items-start relative z-20 bg-iris-500 border-b border-gray-700">
         <div class="flex gap-2 w-full relative pr-[122px]">
           <img
             src="/static/flag/wavy/${this.countryCca2.toLowerCase()}.png"
