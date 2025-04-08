@@ -38,6 +38,7 @@
   <div class="flex flex-col flex-1 relative min-h-0 bg-blue-200">
     <!-- Small Layout -->
     <div class="flex flex-col w-full h-full xl:hidden min-h-0">
+      <!-- Game Page -->
       <div x-show="currentPage === 'game'" class="flex flex-col flex-1 min-h-0">
         <!-- Stats Panel -->
         <div class="mt-2 mx-2">
@@ -54,7 +55,7 @@
 
       <!-- Round Page -->
       <div x-show="currentPage === 'round'" class="w-full h-full">
-        <div class="flex w-full h-full relative overflow-hidden rounded-sm border border-gray-700 bg-iris-200">
+        <div class="flex w-full h-full relative overflow-hidden bg-iris-200">
           <!-- Header -->
           <template x-if="selectedRound.round">
             @include('game::result.components.round-header')
