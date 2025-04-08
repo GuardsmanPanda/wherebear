@@ -13,6 +13,8 @@ final class MapCountryBoundaryCrud {
   public static array $ignoreRelationErrors = [
     3791785, // Area C
     3969434, // United Kingdom
+    270009,  // Guernsey
+    367988,  // Jersey
   ];
 
 
@@ -35,6 +37,8 @@ final class MapCountryBoundaryCrud {
     }
     self::syncOsmRelationForCountry(country: BearCountryEnum::PS, osmRelationId: 3791785);
     self::syncOsmRelationForCountry(country: BearCountryEnum::GB, osmRelationId: 3969434);
+    self::syncOsmRelationForCountry(country: BearCountryEnum::GB, osmRelationId: 270009); // Guernsey
+    self::syncOsmRelationForCountry(country: BearCountryEnum::GB, osmRelationId: 367988); // Jersey
   }
 
   private static function syncOsmRelationForCountry(BearCountryEnum $country, int $osmRelationId): void {
