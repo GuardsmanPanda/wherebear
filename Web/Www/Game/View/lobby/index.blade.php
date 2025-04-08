@@ -895,12 +895,11 @@
           }
 
           this.updatePlayer(gameUser); 
-         
         });
         channel.bind('game-user.left', ({ userId }) => {
           // Because leaving the game is a request, it takes time. If I remove the user in the player list,
           // it creates bugs on the page because the user not exist anymore.
-           if (this.gameUser.id !== userId) {
+          if (this.gameUser.id !== userId) {
             const deletedGameUser = this.gameUsers.find(n => n.id === userId);
 
             this.gameUsers = this.gameUsers.filter(n => n.id !== userId);
@@ -909,7 +908,7 @@
               type: 'player-left',
               date: new Date(),
               text: `${deletedGameUser.display_name} left the game.`
-            })
+            }) 
           }
         }); 
 
