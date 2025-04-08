@@ -257,14 +257,14 @@
     </div>
 
     <!-- Right Column -->
-    <div class="hidden md:flex flex-col shrink-0 w-[320px] h-full overflow-y-auto z-10 border-l border-gray-700 bg-iris-400" style="box-shadow: -2px 0 2px rgba(0, 0, 0, 0.25)">
+    <div class="hidden md:flex flex-col shrink-0 w-[320px] h-full z-10 border-l border-gray-700 bg-iris-400" style="box-shadow: -2px 0 2px rgba(0, 0, 0, 0.25)">
       <!-- Player List -->
       <lit-panel-header2 label="PLAYERS" noBorder noRounded class="mt-2 border-y border-gray-700">
         <div slot="right">
           @include('game::lobby.player-header-right')
         </div>
       </lit-panel-header2>
-      <div>
+      <div class="min-h-[81px] overflow-y-auto mb-auto">
         <template x-for="gameUser in playerList">
           <div class="flex gap-2 relative overflow-hidden p-2 border-b border-gray-300 bg-gradient-to-t" :class="{ 
             'from-pistachio-400 to-pistachio-500': gameUser.is_ready, 
@@ -322,7 +322,7 @@
           <span x-text="observerCount"></span>
         </div>
       </lit-panel-header2>
-      <div>
+      <div x-show="observerCount > 0" class="min-h-[81px] overflow-y-auto">
         <template x-for="gameUser in observerList">
           <div class="flex gap-2 relative overflow-hidden p-2 border-b border-gray-300 bg-gradient-to-t from-gray-50 to-gray-100">
             <div x-show="gameUser.is_host" class="flex justify-center items-center w-16 h-4 absolute top-2 -left-4 border border-gray-700 -rotate-45 bg-gradient-to-t from-yellow-300 to-yellow-400">
@@ -359,6 +359,27 @@
             </div>
           </div>
         </template>
+      </div>
+
+      <lit-panel-header2 label="ACTIVITY FEED" noBorder noRounded class="border-y border-gray-700" :class="{}"></lit-panel-header2>
+      <div x-ref="activityFeed" class="flex flex-col flex-1 min-h-[160px] max-h-[240px] shrink-0 overflow-y-auto bg-gray-50">
+        <div class="flex flex-col justify-end grow">
+          <template x-for="message in activityFeedMessages">
+            <div class="flex flex-col p-2 odd:bg-iris-50 even:bg-iris-100">
+              <div class="flex justify-between">
+                <lit-label
+                  :label="activityFeedLabelMap[message.type] || 'UNKNOWN'"
+                  size="xs"
+                  class="w-[108px]"
+                  :color="activityFeedLabelColorMap[message.type]">
+                </lit-label>
+                <span x-text="message.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });" class="font-heading font-medium text-sm text-gray-500"></span>
+              </div>
+              <span x-text="message.text" class="text-sm text-gray-800 select-text"></span>
+            </div>
+          </template>
+        </div>
+        <div x-ref="endOfFeed"></div>
       </div>
     </div>
   </div>
@@ -571,6 +592,19 @@
 
   function state() {
     return {
+      activityFeedMessages: [],
+      activityFeedLabelMap: {
+        'game-update': 'GAME UPDATE',
+        'player-join': 'PLAYER JOIN',
+        'player-left': 'PLAYER LEFT',
+        'player-update': 'PLAYER UPDATE',
+      },
+      activityFeedLabelColorMap: {
+        'game-update': 'orange',
+        'player-join': 'green',
+        'player-left': 'gray',
+        'player-update': 'blue',   
+      },
       animationDurationMs: 700,
       gameUserListMarginTopPx: 8,
       game: @json($game),
@@ -769,6 +803,16 @@
         }   
       },
       init() {
+        // Auto scroll to the bottom of the Activity Feed panel
+        this.$watch('activityFeedMessages', () => {
+          this.$nextTick(() => {
+            const container = this.$refs.activityFeed
+            if (container) {
+              container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' })
+            }
+          })
+        })
+
         // Websockets
         const webSocketClient = WebSocketClient.init();
         const channel = webSocketClient.subscribeToChannel(`game.${this.game.id}`);
@@ -777,6 +821,37 @@
           window.location.href = '/';
         });
         channel.bind('game.updated', ({ game }) => {
+          const currentGame = this.game
+
+          if (currentGame.number_of_rounds !== game.number_of_rounds) {
+            this.activityFeedMessages.push({
+              type: 'game-update',
+              date: new Date(),
+              text: `Round count set to ${game.number_of_rounds}.`
+            })
+          }
+          if (currentGame.round_duration_seconds !== game.round_duration_seconds){
+            this.activityFeedMessages.push({
+              type: 'game-update',
+              date: new Date(),
+              text: `Round duration set to ${game.round_duration_seconds} seconds.`
+            })
+          }
+          if (currentGame.round_result_duration_seconds !== game.round_result_duration_seconds){
+            this.activityFeedMessages.push({
+              type: 'game-update',
+              date: new Date(),
+              text: `Round result duration set to ${game.round_result_duration_seconds} seconds.`
+            })
+          }
+          if (currentGame.is_public !== game.is_public) {
+            this.activityFeedMessages.push({
+              type: 'game-update',
+              date: new Date(),
+              text: `Game access set to ${game.is_public ? 'Public' : 'Private' }.`
+            })
+          }
+
           this.game = game;
         });
         channel.bind('game.stage.updated', ({ message, stage }) => {
@@ -800,16 +875,41 @@
         channel.bind('game-user.joined', ({ gameUser }) => {
           if (!this.gameUsers.find(n => n.id === gameUser.id)) {
             this.gameUsers.push(gameUser);
+            
+            this.activityFeedMessages.push({
+              type: 'player-join',
+              date: new Date(),
+              text: `${gameUser.display_name} joined the game.`
+            })
           }
         });
         channel.bind('game-user.updated', ({ gameUser }) => {
-          this.updatePlayer(gameUser);    
+          const currentGameUser = this.gameUsers.find(n => n.id === gameUser.id)
+
+          if (currentGameUser.display_name !== gameUser.display_name) {
+            this.activityFeedMessages.push({
+              type: 'player-update',
+              date: new Date(),
+              text: `${currentGameUser.display_name} renamed themselves to ${gameUser.display_name}.`
+            })  
+          }
+
+          this.updatePlayer(gameUser); 
+         
         });
         channel.bind('game-user.left', ({ userId }) => {
           // Because leaving the game is a request, it takes time. If I remove the user in the player list,
           // it creates bugs on the page because the user not exist anymore.
-          if (this.gameUser.id !== userId) {
+           if (this.gameUser.id !== userId) {
+            const deletedGameUser = this.gameUsers.find(n => n.id === userId);
+
             this.gameUsers = this.gameUsers.filter(n => n.id !== userId);
+
+            this.activityFeedMessages.push({
+              type: 'player-left',
+              date: new Date(),
+              text: `${deletedGameUser.display_name} left the game.`
+            })
           }
         }); 
 
