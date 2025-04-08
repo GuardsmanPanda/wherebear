@@ -28,8 +28,8 @@
     </div>
     <div class="flex-1">
       <div class="hidden lg:flex justify-end gap-4">
-        <lit-label label="{{ $game->type === 'template' ? 'TEMPLATE' : 'CLASSIC' }}" size="sm" type="dark" class="w-[88px]"></lit-label>
-        <lit-label label="{{ $game->total_game_time_mn }} MN" iconPath="/static/img/icon/chronometer.svg" size="sm" type="dark" class="w-[88px]"></lit-label>
+        <lit-label label="{{ $game->type === 'template' ? 'TEMPLATE' : 'CLASSIC' }}" size="sm" color="gray" class="w-[88px]"></lit-label>
+        <lit-label label="{{ $game->total_game_time_mn }} MN" iconPath="/static/img/icon/chronometer.svg" size="sm" color="gray" class="w-[88px]"></lit-label>
       </div>
     </div>
   </div>
