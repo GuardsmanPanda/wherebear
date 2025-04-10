@@ -306,7 +306,7 @@
               url: 'https://pannellum.org/images/alma.jpg',
               heading: 0,
               pitch: 0,
-              field_of_view: 100,
+              field_of_view: 120,
             }
           };
         }
@@ -364,7 +364,7 @@
           panorama: roundData.panorama.url,
           yaw: roundData.panorama.heading,
           pitch: roundData.panorama.pitch,
-          hfov: roundData.panorama.field_of_view
+          hfov: 120
         });
         viewer.loadScene(roundNumber);
         if (currentSceneId) {

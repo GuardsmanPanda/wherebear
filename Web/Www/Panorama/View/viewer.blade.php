@@ -31,7 +31,7 @@
       autoLoad: true,
       yaw: {{ $heading }},
       pitch: {{ $pitch }},
-      hfov: {{ $field_of_view }},
+      hfov: 120,
       minHfov: window.innerWidth < 1000 ? 30 : 50,
     });
 
