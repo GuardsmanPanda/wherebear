@@ -141,7 +141,7 @@
                           </div>
                           <div class="flex items-center gap-1 w-[148px]">
                             <img src="/static/img/icon/medal-gray-bronze.svg" alt="Bronze Cup" class="h-5"/>
-                            <span class="text-sm text-gray-700 truncate {{ $round->rank2_player_display_name === $user->display_name ? 'font-bold' : ''}}">{{ $round->rank2_player_display_name }}</span>
+                            <span class="text-sm text-gray-700 truncate {{ $round->rank3_player_display_name === $user->display_name ? 'font-bold' : ''}}">{{ $round->rank3_player_display_name }}</span>
                           </div>
                         </div>
                       </div>
