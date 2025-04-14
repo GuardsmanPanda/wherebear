@@ -16,7 +16,7 @@ export class ButtonBase extends LitElement {
   @property({ type: String }) iconPosition: IconPosition = "left"
   @property({ type: Boolean }) isDisabled = false
   /** Whether the button is full rounded. */
-  @property({ type: Boolean }) isPill = false
+  @property({ type: Boolean }) pill = false
   /** Determines if the button is selectable (the button can stay pressed down) */
   @property({ type: Boolean }) isSelectable = false
   @property({ type: Boolean }) isSelected = false
@@ -38,18 +38,43 @@ export class ButtonBase extends LitElement {
       .inner-shadow:active {
         box-shadow:
           inset 0 1px 0 rgba(255, 255, 255, 0.6),
-          inset 0 -1px 0 rgba(0, 0, 0, 0.6);
+          inset 0 -0px 0 rgba(0, 0, 0, 0.6);
+      }
+      .inner-shadow-xs {
+        box-shadow:
+          inset 0 1px 1px rgba(255, 255, 255, 0.6),
+          inset 0 -2px 0 rgba(0, 0, 0, 0.6);
+      }
+      .inner-shadow-sm {
+        box-shadow:
+          inset 0 1px 1px rgba(255, 255, 255, 0.6),
+          inset 0 -2px 0 rgba(0, 0, 0, 0.6);
+      }
+      .inner-shadow-md {
+        box-shadow:
+          inset 0 1px 1px rgba(255, 255, 255, 0.6),
+          inset 0 -3px 0 rgba(0, 0, 0, 0.6);
+      }
+      .inner-shadow-lg {
+        box-shadow:
+          inset 0 1px 1px rgba(255, 255, 255, 0.6),
+          inset 0 -3px 0 rgba(0, 0, 0, 0.6);
+      }
+      .inner-shadow-xl {
+        box-shadow:
+          inset 0 1px 1px rgba(255, 255, 255, 0.6),
+          inset 0 -3px 0 rgba(0, 0, 0, 0.6);
       }
 
       .inner-shadow-selected {
         box-shadow:
           inset 0 1px 1px rgba(255, 255, 255, 0.6),
-          inset 0 -2px 0 rgba(0, 0, 0, 0.6);
+          inset 0 -0px 0 rgba(0, 0, 0, 0.6);
       }
       .inner-shadow-selected:active {
         box-shadow:
           inset 0 1px 1px rgba(255, 255, 255, 0.6),
-          inset 0 -1px 0 rgba(0, 0, 0, 0.6);
+          inset 0 -0px 0 rgba(0, 0, 0, 0.6);
       }
     `,
   ]
@@ -66,6 +91,19 @@ export class ButtonBase extends LitElement {
   /** The height class corresponding to the current button size. */
   protected get heightClass(): string {
     return this.heightClasses[this.size]
+  }
+
+  /**
+   * Checks if the button's current size matches any of the provided sizes.
+   *
+   * @param sizes - One or more size values to compare against the current size.
+   * @returns True if the current size matches any of the provided sizes.
+   *
+   * @example
+   * this.isSize("sm", "md") // true if size is "sm" or "md"
+   */
+  isSize(...sizes: Size[]) {
+    return sizes.includes(this.size)
   }
 
   /** Event handler for when the button is clicked. */
