@@ -12,17 +12,19 @@ enum ImportStatusEnum: string implements BearDatabaseBackedEnumInterface {
   case IMPORTED_PANORAMA = 'IMPORTED_PANORAMA';
   case IMPORTED_LOCATION = 'IMPORTED_LOCATION';
   case LOCATION_ADDED = 'LOCATION_ADDED';
+  case PLACE_ID = 'PLACE_ID';
   case REJECTED_PANORAMA = 'REJECTED_PANORAMA';
 
 
   public function getDescription(): string {
     return match ($this) {
-      self::PENDING => 'Pending, not yet processed',
-      self::IMPORTED_PANORAMA => 'Imported Panorama',
-      self::IMPORTED_LOCATION => 'Imported Location, usually means that the panorama did not exist.',
       self::ERROR => 'There was an error during the import process',
-      self::REJECTED_PANORAMA => 'Rejected Panorama, usually means that the panorama was not very good, or a near duplicate.',
+      self::IMPORTED_LOCATION => 'Imported Location, usually means that the panorama did not exist.',
+      self::IMPORTED_PANORAMA => 'Imported Panorama',
       self::LOCATION_ADDED => 'Location Added, information about the panorama location.',
+      self::PENDING => 'Pending, not yet processed.',
+      self::PLACE_ID => 'Panorama ID, currently not used for importing.',
+      self::REJECTED_PANORAMA => 'Rejected Panorama, usually means that the panorama was not very good, or a near duplicate.',
     };
   }
 
