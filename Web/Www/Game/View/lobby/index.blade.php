@@ -617,14 +617,32 @@
         return this.gameUser.is_observer ? 'bg-gray-600' : this.gameUser.is_ready ? 'bg-gray-500 group-hover:bg-gray-600' : 'bg-pistachio-500 group-hover:bg-pistachio-600'
       },
       get playerPanelHeaderReadyBgColor() {
-        const readyPlayerPercentage = Math.floor(this.readyPlayerCount * 100 / this.playerCount);
+        const { playerCount, readyPlayerCount, gameUsers } = this;
 
-        if (this.playerCount === 0 || readyPlayerPercentage < 50) {
-          return 'bg-poppy-500'
-        } else if (readyPlayerPercentage < 100) {
-          return 'bg-yellow-400'
+        if (playerCount === 0) {
+          return 'bg-poppy-500';
         }
-        return 'bg-pistachio-500'
+
+        const readyPercentage = Math.floor(readyPlayerCount * 100 / playerCount);
+        const allPlayersReady = readyPlayerCount === playerCount;
+        const oneNotReady = readyPlayerCount === playerCount - 1;
+        const host = gameUsers.find(n => n.is_host);
+        const hostIsLastNotReady = oneNotReady && host && !host.is_ready;
+
+        if (allPlayersReady || hostIsLastNotReady) {
+          return 'bg-pistachio-500';
+        }
+
+        if (readyPercentage < 50) {
+          return 'bg-poppy-500';
+        }
+
+        if (readyPercentage < 100) {
+          return 'bg-yellow-400';
+        }
+
+        // Default fallback, shouldn't really hit this
+        return 'bg-pistachio-500';
       },
       get gameUserCount() {
         return this.gameUsers.length;
