@@ -10,7 +10,7 @@ return new class extends Migration {
     Schema::create(table: 'import_street_view_user_panorama', callback: static function (Blueprint $table): void {
       $table->text(column: 'id')->primary();
       $table->text(column: 'import_street_view_user_id');
-      $table->text(column: 'panorama_id')->unique();
+      $table->text(column: 'panorama_id')->unique()->nullable();
       $table->text(column: 'import_status_enum')->index();
       $table->date(column: 'captured_date')->index()->nullable();
       $table->text(column: 'country_cca2')->index()->nullable();
