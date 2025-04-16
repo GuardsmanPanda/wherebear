@@ -168,8 +168,8 @@ export class Button extends ButtonBase {
    */
   get svgClasses() {
     return {
-      "drop-shadow-[0_1px_0px_rgba(25_28_37_/_1)]": this.isSize("xs", "sm", "md"),
-      "drop-shadow-[0_2px_0px_rgba(25_28_37_/_1)]": this.isSize("lg", "xl"),
+      "drop-shadow-[0_1px_0px_rgba(25_28_37_/_1)]": this.isSize("xs"),
+      "drop-shadow-[0_2px_0px_rgba(25_28_37_/_1)]": this.isSize("sm", "md", "lg", "xl"),
     }
   }
 
