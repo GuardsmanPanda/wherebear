@@ -113,8 +113,8 @@
           <span class="text-xs sm:text-sm text-gray-700">Log in to earn XP and rewards.</span>
         </div>
         <div class="flex justify-center items-center p-2">
-          <lit-button label="Log in" size="sm" bgColorClass="bg-yellow-400" class="block sm:hidden w-20" x-on:clicked="openLoginDialog"></lit-button>
-          <lit-button label="Log in" size="md" bgColorClass="bg-yellow-400" class="hidden sm:block w-24" x-on:clicked="openLoginDialog"></lit-button>
+          <lit-button label="Log in" size="sm" color="yellow" class="block sm:hidden w-20" x-on:clicked="openLoginDialog"></lit-button>
+          <lit-button label="Log in" size="md" color="yellow" class="hidden sm:block w-24" x-on:clicked="openLoginDialog"></lit-button>
         </div>
       </div>
 
@@ -146,18 +146,11 @@
                   @if(!$user->is_guest)
                     <span data-tippy-content="Select Map Style">
                       <lit-button 
-                        size="sm"
-                        contentAlignment="left"
-                        imgPath="/static/img/icon/map.svg"
-                        class="block sm:hidden w-8"
-                        x-on:clicked="openSelectMapStyleDialog">
-                      </lit-button>
-                      <lit-button 
                         :label="lowercaseMapStyleShortName"
                         size="sm"
+                        icon="map"
                         contentAlignment="left"
-                        imgPath="/static/img/icon/map.svg"
-                        class="hidden sm:block w-[112px]"
+                        class="flex w-28"
                         x-on:clicked="openSelectMapStyleDialog">
                       </lit-button>
                     </span>
@@ -390,10 +383,10 @@
       <div class="absolute top-0 -left-2 z-10 w-6 h-12 -skew-x-12 border-l border-gray-700 rounded-tl-sm bg-gray-600"></div>
 
       <span data-tippy-content="Edit game settings" class="z-20">
-        <lit-button label="EDIT" size="md" imgPath="/static/img/icon/gear.svg" x-on:clicked="openEditGameSettingsDialog"></lit-button>
+        <lit-button label="EDIT" size="md" icon="gear" class="flex w-24" x-on:clicked="openEditGameSettingsDialog"></lit-button>
       </span>
       <span data-tippy-content="Force the game to start" class="z-20">
-        <lit-button label="START" size="md" imgPath="/static/img/icon/arrow-right.svg" x-on:clicked="openConfirmStartGameDialog"></lit-button>
+        <lit-button label="START" size="md" icon="arrow_right" class="flex w-24" x-on:clicked="openConfirmStartGameDialog"></lit-button>
       </span>
 
       <div class="absolute -top-px -right-2 z-10 w-6 h-12 skew-x-12 border-t border-r border-gray-700 rounded-tr-sm bg-gray-600"></div>
@@ -406,14 +399,13 @@
     <div class="flex items-center gap-2">
       @if($user->is_host)
         <span data-tippy-content="Delete the game">
-          <lit-button imgPath="/static/img/icon/cross.svg" size="md" bgColorClass="bg-poppy-500" class="flex sm:hidden w-10" x-on:clicked="openConfirmDeleteGameDialog"></lit-button>
-          <lit-button label="DELETE" size="md" bgColorClass="bg-poppy-500" class="hidden sm:flex md:hidden w-20" x-on:clicked="openConfirmDeleteGameDialog"></lit-button>
-          <lit-button label="DELETE" imgPath="/static/img/icon/cross.svg" size="md" bgColorClass="bg-poppy-500" class="hidden md:flex w-32" x-on:clicked="openConfirmDeleteGameDialog"></lit-button>
+          <lit-button icon="cross" size="md" color="red" class="flex md:hidden w-10" x-on:clicked="openConfirmDeleteGameDialog"></lit-button>
+          <lit-button label="DELETE" size="md" color="red" class="hidden md:flex w-32" x-on:clicked="openConfirmDeleteGameDialog"></lit-button>
         </span>
       @else
-        <lit-button x-on:click="leave" imgPath="/static/img/icon/arrow-back.svg" size="md" bgColorClass="bg-gray-500" data-tippy-content="Leave the game" class="flex sm:hidden w-10"></lit-button>
-        <lit-button label="LEAVE" x-on:click="leave" size="md" bgColorClass="bg-gray-500" data-tippy-content="Leave the game" class="hidden sm:flex md:hidden w-20"></lit-button>
-        <lit-button label="LEAVE" x-on:click="leave" imgPath="/static/img/icon/arrow-back.svg" size="md" bgColorClass="bg-gray-500" data-tippy-content="Leave the game" class="hidden md:flex w-32"></lit-button>
+        <lit-button x-on:click="leave" icon="arrow_back" size="md" color="gray" data-tippy-content="Leave the game" class="flex sm:hidden w-10"></lit-button>
+        <lit-button label="LEAVE" x-on:click="leave" size="md"color="gray" data-tippy-content="Leave the game" class="hidden sm:flex md:hidden w-20"></lit-button>
+        <lit-button label="LEAVE" x-on:click="leave" icon="arrow_back" size="md" color="gray" data-tippy-content="Leave the game" class="hidden md:flex w-32"></lit-button>
       @endif
     </div>
 
@@ -576,8 +568,7 @@
     <!-- Spectate Button -->
     @if($user->can_observe)
       <span x-tippy="gameUser.is_observer ? 'Do not spectate the game' : 'Spectate the game'" class="hidden sm:flex">
-        <lit-button label="SPECTATE" isSelectable :isSelected="gameUser.is_observer" size="md" bgColorClass="bg-gray-500" class="flex md:hidden w-20" x-on:click="toggleUserObserverStatus"></lit-button>
-        <lit-button label="SPECTATE" imgPath="/static/img/icon/eye.svg" isSelectable :isSelected="gameUser.is_observer" size="md" bgColorClass="bg-gray-500" class="hidden md:flex w-32" x-on:click="toggleUserObserverStatus"></lit-button>
+        <lit-button label="SPECTATE" isSelectable :isSelected="gameUser.is_observer" size="md" color="gray" class="hidden md:flex w-32" x-on:click="toggleUserObserverStatus"></lit-button>
       </span>
     @endif
   </div>
