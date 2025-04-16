@@ -5,7 +5,7 @@ import { classMap } from "lit/directives/class-map.js"
 // @ts-ignore
 import { TailwindStyles } from "../../../../../public/static/dist/lit-tailwind-css"
 
-export type IconName = "arrow_back" | "check_green" | "copy" | "cross" | "edit" | "eye" | "map" | "test"
+export type IconName = "arrow_back" | "check_green" | "copy" | "cross" | "edit" | "eye" | "fullscreen" | "map" | "test"
 
 /**
  * Renders an SVG icon based on its name.
@@ -228,6 +228,59 @@ export class Icon extends LitElement {
     </svg> `
   }
 
+  private fullscreen() {
+    return html`<svg class="${classMap(this.classes)}" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M32 25V31C32 31.5523 31.5523 32 31 32H25H19C18.4477 32 18 31.5523 18 31V26C18 25.4477 18.4477 25 19 25H24C24.5523 25 25 24.5523 25 24V19C25 18.4477 25.4477 18 26 18H31C31.5523 18 32 18.4477 32 19V25Z"
+        fill="#FAF9FD"
+      />
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M31 31H19V26H24C25.1046 26 26 25.1046 26 24V19H31V31ZM32 31V19C32 18.4477 31.5523 18 31 18H26C25.4477 18 25 18.4477 25 19V24C25 24.5523 24.5523 25 24 25H19C18.4477 25 18 25.4477 18 26V31C18 31.5523 18.4477 32 19 32H31C31.5523 32 32 31.5523 32 31Z"
+        fill="#333847"
+      />
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M25 0H31C31.5523 0 32 0.447715 32 1V7V13C32 13.5523 31.5523 14 31 14H26C25.4477 14 25 13.5523 25 13V8C25 7.44772 24.5523 7 24 7H19C18.4477 7 18 6.55228 18 6V1C18 0.447716 18.4477 0 19 0H25Z"
+        fill="#FAF9FD"
+      />
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M31 1V13H26V8C26 6.89543 25.1046 6 24 6H19V1H31ZM31 0H19C18.4477 0 18 0.447716 18 1V6C18 6.55228 18.4477 7 19 7H24C24.5523 7 25 7.44772 25 8V13C25 13.5523 25.4477 14 26 14H31C31.5523 14 32 13.5523 32 13V1C32 0.447715 31.5523 0 31 0Z"
+        fill="#333847"
+      />
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M7 32H1C0.447715 32 0 31.5523 0 31V25V19C0 18.4477 0.447715 18 1 18H6C6.55228 18 7 18.4477 7 19V24C7 24.5523 7.44772 25 8 25H13C13.5523 25 14 25.4477 14 26V31C14 31.5523 13.5523 32 13 32H7Z"
+        fill="#FAF9FD"
+      />
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M1 31V19H6V24C6 25.1046 6.89543 26 8 26H13V31H1ZM1 32H13C13.5523 32 14 31.5523 14 31V26C14 25.4477 13.5523 25 13 25H8C7.44772 25 7 24.5523 7 24V19C7 18.4477 6.55228 18 6 18H1C0.447715 18 0 18.4477 0 19V31C0 31.5523 0.447715 32 1 32Z"
+        fill="#333847"
+      />
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M0 7V1C0 0.447715 0.447715 0 1 0H7H13C13.5523 0 14 0.447715 14 1V6C14 6.55228 13.5523 7 13 7H8C7.44772 7 7 7.44772 7 8V13C7 13.5523 6.55228 14 6 14H1C0.447716 14 0 13.5523 0 13V7Z"
+        fill="#FAF9FD"
+      />
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M1 1H13V6H8C6.89543 6 6 6.89543 6 8V13H1V1ZM0 1V13C0 13.5523 0.447716 14 1 14H6C6.55228 14 7 13.5523 7 13V8C7 7.44772 7.44772 7 8 7H13C13.5523 7 14 6.55228 14 6V1C14 0.447715 13.5523 0 13 0H1C0.447715 0 0 0.447715 0 1Z"
+        fill="#333847"
+      />
+    </svg> `
+  }
+
   private map() {
     return html`<svg class="${classMap(this.classes)}" viewBox="0 0 42 34" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -294,6 +347,8 @@ export class Icon extends LitElement {
         return this.edit()
       case "eye":
         return this.eye()
+      case "fullscreen":
+        return this.fullscreen()
       case "map":
         return this.map()
       case "cross":
