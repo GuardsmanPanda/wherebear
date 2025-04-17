@@ -7,17 +7,19 @@
   <div class="flex h-14 z-30 justify-between items-center px-2 border-b border-gray-700 bg-iris-500">
     <div class="flex flex-1 w-16">
       <lit-button 
-        imgPath="/static/img/icon/cross.svg"
+        icon="cross"
         size="md"
-        bgColorClass="bg-gray-400"
+        color="gray"
+        class="flex w-10"
         x-cloak
         x-show="isLargeScreen || currentPage === 'game'"
         x-on:click="navigateToHome">
       </lit-button>
       <lit-button
-        imgPath="/static/img/icon/arrow-back.svg"
+        icon="arrow_back"
         size="md"
-        bgColorClass="bg-gray-400"
+        color="gray"
+        class="flex w-10"
         x-cloak
         x-show="isSmallScreen && currentPage !== 'game'"
         x-on:click="navigateToGame">
@@ -91,7 +93,7 @@
       <div x-ref="largeScreenLeftAndMiddleColumn" class="flex w-full gap-2 bg-iris-200" :class="{ 'p-2': isFullScreen }">
         <!-- Left Column -->
         <div class="flex flex-col shrink-0 gap-2">
-          <lit-button label="FULLSCREEN" imgPath="/static/img/icon/fullscreen.svg" type="primary" size="lg" :isSelected="isFullScreen" x-on:click="toggleFullScreen"></lit-button>
+          <lit-button label="FULLSCREEN" icon="fullscreen" color="blue" size="lg" :isSelected="isFullScreen" x-on:click="toggleFullScreen"></lit-button>
 
           <div class="flex flex-col flex-1 w-[280px] min-h-0">
             <lit-panel label="ROUNDS" class="w-full min-h-0">
