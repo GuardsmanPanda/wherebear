@@ -12,4 +12,8 @@ final class PlaygroundController extends Controller {
   public function buttons(): View {
     return Resp::view(view: 'playground::buttons');
   }
+
+  public function labels(): View {
+    return Resp::view(view: 'playground::labels');
+  }
 }
