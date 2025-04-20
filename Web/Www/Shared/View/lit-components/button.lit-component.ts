@@ -141,7 +141,8 @@ export class Button extends ButtonBase {
   get labelClasses() {
     return {
       hidden: !this.label,
-      "text-base": this.isSize("xs", "sm"),
+      "text-base": this.isSize("xs"),
+      "text-lg": this.isSize("sm"),
       "text-xl": this.isSize("md"),
       "text-2xl": this.isSize("lg"),
       "text-3xl": this.isSize("xl"),
@@ -242,3 +243,4 @@ export class Button extends ButtonBase {
     `
   }
 }
+
