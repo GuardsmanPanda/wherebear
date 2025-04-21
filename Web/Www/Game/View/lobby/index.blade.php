@@ -63,13 +63,13 @@
             <img src="/static/img/icon/copy.svg" class="w-full h-full"/>
           </div>
         </div>
-        <lit-label x-show="game.type === 'template'" label="Template" size="sm" color="gray" class="w-16" data-tippy-content="Game type: Fixed panoramas"></lit-label>
-        <lit-label x-show="game.type === 'normal'" label="Normal" size="sm" color="gray" class="w-16"  data-tippy-content="Game type: Randomized panoramas"></lit-label>
+        <lit-label x-show="game.type === 'template'" label="Template" size="sm" color="gray" class="w-20" data-tippy-content="Game type: Fixed panoramas"></lit-label>
+        <lit-label x-show="game.type === 'normal'" label="Normal" size="sm" color="gray" class="w-20"  data-tippy-content="Game type: Randomized panoramas"></lit-label>
         <lit-label  
           :label="game.is_public ? 'Public' : 'Private'"  
           size="sm"  
           :color="game.is_public ? 'gray' : 'red'"  
-          class="w-16"  
+          class="w-20"  
           x-tippy="game.is_public ? 'Game access: Everyone can join' : 'Game access: Invite-only'"  
         ></lit-label> 
       </div>
@@ -93,8 +93,8 @@
     <lit-label-with-value label="Guessing Time" :value="`${game.round_duration_seconds}s`" widthClass="w-full" class="hidden sm:block w-full max-w-32" data-tippy-content="Time limit to make a guess per round"></lit-label-with-value>
     <lit-label-with-value label="Result" :value="`${game.round_result_duration_seconds}s`" widthClass="w-full" class="block sm:hidden w-full max-w-32" data-tippy-content="Duration of result display after each round"></lit-label-with-value>
     <lit-label-with-value label="Result Time" :value="`${game.round_result_duration_seconds}s`" widthClass="w-full" class="hidden sm:block w-full max-w-32" data-tippy-content="Duration of result display after each round"></lit-label-with-value>
-    <lit-label :label="`${game.total_game_time_mn} min`" color="orange" iconPath="/static/img/icon/chronometer.svg" class="flex sm:hidden shrink-0" data-tippy-content="Estimated total game duration"></lit-label>
-    <lit-label :label="`${game.total_game_time_mn} minute${game.total_game_time_mn > 1 ? 's' : ''}`" color="orange" iconPath="/static/img/icon/chronometer.svg" class="hidden sm:flex" data-tippy-content="Estimated total game duration"></lit-label>
+    <lit-label :label="`${game.total_game_time_mn} min`" color="orange" class="flex min-w-16 sm:hidden" data-tippy-content="Estimated total game duration"></lit-label>
+    <lit-label :label="`${game.total_game_time_mn} minute${game.total_game_time_mn > 1 ? 's' : ''}`" size="sm" color="orange" icon="chronometer" class="hidden sm:flex" data-tippy-content="Estimated total game duration"></lit-label>
   </div>
 
   <!-- Main -->
@@ -286,7 +286,6 @@
                   :label="gameUser.map_style_short_name"
                   size="xs"
                   color="gray"
-                  iconPath="/static/img/icon/map.svg"
                   class="w-[80px] ml-1">
                 </lit-label>
 
@@ -294,7 +293,6 @@
                   label="Observer"
                   size="xs"
                   color="blue"
-                  iconPath="/static/img/icon/eye.svg"
                   class="ml-1">
                 </lit-label>
               </div>
@@ -338,8 +336,7 @@
                 <lit-label
                   :label="gameUser.map_style_short_name"
                   size="xs"
-                  color="orange"
-                  iconPath="/static/img/icon/map.svg"
+                  color="gray"
                   class="w-[80px] ml-1">
                 </lit-label>
               </div>
