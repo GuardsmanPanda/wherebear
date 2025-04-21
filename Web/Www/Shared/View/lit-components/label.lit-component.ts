@@ -128,7 +128,7 @@ export class Label extends LitElement {
       "text-[18px]": this.isSize("md"),
       "font-semibold": this.isSize("xs"),
       "font-bold": this.isSize("sm", "md"),
-      "text-shadow-[0_2px_0_rgb(51_56_71_/_1)]": this.isSize("xs", "sm", "md"),
+      "text-shadow-[0_2px_0_rgb(51_56_71_/_1)]": this.isSize("sm", "md"),
       "skew-x-12": !this.pill,
       "pl-3": this.icon !== undefined && this.isSize("xs"),
       "pl-4": this.icon !== undefined && this.isSize("sm"),

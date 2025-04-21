@@ -57,7 +57,7 @@
                 label="LABEL"
                 :size="size"
                 :color="color"
-                icon="map"
+                icon="chronometer"
                 class="w-24"
               ></lit-label>
             </div>
@@ -80,7 +80,7 @@
                 label="LABEL"
                 :size="size"
                 :color="color"
-                icon="map"
+                icon="chronometer"
                 pill
                 class="w-24"
               ></lit-label>
