@@ -8,5 +8,6 @@ use Web\Www\Playground\Controller\PlaygroundController;
 
 Route::middleware(BearHtmxMiddleware::using(layout_location: 'layout.playground-layout'))->group(callback: function () {
   Route::get(uri: "buttons", action: [PlaygroundController::class, 'buttons']);
+  Route::get(uri: "headings", action: [PlaygroundController::class, 'headings']);
   Route::get(uri: "labels", action: [PlaygroundController::class, 'labels']);
 });

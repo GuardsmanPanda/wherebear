@@ -44,5 +44,31 @@ module.exports = {
         ["responsive", "hover"],
       )
     },
+    function ({ matchUtilities, theme }) {
+      const colors = theme("colors")
+
+      function flattenColors(colors, prefix = "") {
+        return Object.entries(colors).reduce((acc, [key, value]) => {
+          if (typeof value === "string") {
+            acc[`${prefix}${key}`] = value
+          } else {
+            Object.assign(acc, flattenColors(value, `${prefix}${key}-`))
+          }
+          return acc
+        }, {})
+      }
+
+      matchUtilities(
+        {
+          heading: (value) => ({
+            "--heading-shadow-color": value,
+          }),
+        },
+        {
+          values: flattenColors(colors),
+          type: ["color"],
+        },
+      )
+    },
   ],
 }
