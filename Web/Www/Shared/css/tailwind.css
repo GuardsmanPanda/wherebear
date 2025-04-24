@@ -32,6 +32,7 @@
 @theme {
   --font-body: Roboto;
   --font-heading: Baloo;
+  --heading-shadow-color: var(--color-gray-700);
 
   --color-gray-0: oklch(1 0 0);
   --color-gray-50: oklch(0.98 0.0054 297.73);
@@ -107,4 +108,85 @@
   --color-rank-third-light: oklch(0.88 0.0733 61.93);
   --color-rank-third-default: oklch(0.84 0.0975 62.33);
   --color-rank-third-dark: oklch(0.79 0.1215 62.17);
+}
+
+.heading-xs {
+  @apply font-heading font-bold text-xs;
+  text-shadow:
+    -0.08em -0.08em 0 #333847,
+    0.08em -0.08em 0 #333847,
+    -0.08em 0.08em 0 #333847,
+    0.08em 0.08em 0 #333847,
+    -0.08em 0.12em 0 #333847,
+    0.08em 0.12em 0 #333847;
+}
+.heading-sm {
+  @apply font-heading font-bold text-sm;
+  text-shadow:
+    -0.04em -0.04em 0 var(--heading-shadow-color),
+    0.04em -0.04em 0 var(--heading-shadow-color),
+    -0.04em 0.04em 0 var(--heading-shadow-color),
+    0.04em 0.04em 0 var(--heading-shadow-color),
+    -0.04em 0.12em 0 var(--heading-shadow-color),
+    0.04em 0.12em 0 var(--heading-shadow-color);
+}
+.heading-md {
+  @apply font-heading font-bold text-base;
+  text-shadow:
+    -0.04em -0.04em 0 #333847,
+    0.04em -0.04em 0 #333847,
+    -0.04em 0.04em 0 #333847,
+    0.04em 0.04em 0 #333847,
+    -0.04em 0.12em 0 #333847,
+    0.04em 0.12em 0 #333847;
+}
+.heading-lg {
+  @apply font-heading font-bold text-lg;
+  text-shadow:
+    -0.04em -0.04em 0 #333847,
+    0.04em -0.04em 0 #333847,
+    -0.04em 0.04em 0 #333847,
+    0.04em 0.04em 0 #333847,
+    -0.04em 0.12em 0 #333847,
+    0.04em 0.12em 0 #333847;
+}
+.heading-xl {
+  @apply font-heading font-bold text-xl;
+  text-shadow:
+    -0.04em -0.04em 0 #333847,
+    0.04em -0.04em 0 #333847,
+    -0.04em 0.04em 0 #333847,
+    0.04em 0.04em 0 #333847,
+    -0.04em 0.12em 0 #333847,
+    0.04em 0.12em 0 #333847;
+}
+.heading-2xl {
+  @apply font-heading font-bold text-2xl;
+  text-shadow:
+    -0.04em -0.04em 0 #333847,
+    0.04em -0.04em 0 #333847,
+    -0.04em 0.04em 0 #333847,
+    0.04em 0.04em 0 #333847,
+    -0.04em 0.12em 0 #333847,
+    0.04em 0.12em 0 #333847;
+}
+.heading-3xl {
+  @apply font-heading font-bold text-3xl;
+  text-shadow:
+    -0.04em -0.04em 0 #333847,
+    0.04em -0.04em 0 #333847,
+    -0.04em 0.04em 0 #333847,
+    0.04em 0.04em 0 #333847,
+    -0.04em 0.12em 0 #333847,
+    0.04em 0.12em 0 #333847;
+}
+.heading-4xl {
+  @apply font-heading font-bold text-4xl;
+  text-shadow:
+    -0.04em -0.04em 0 #333847,
+    0.04em -0.04em 0 #333847,
+    -0.04em 0.04em 0 #333847,
+    0.04em 0.04em 0 #333847,
+    -0.04em 0.1em 0 #333847,
+    0.04em 0.1em 0 #333847;
 }
