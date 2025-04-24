@@ -37,11 +37,16 @@ class PanelHeader extends LitElement {
     return html`
       <div class="flex w-full h-8 justify-between items-center relative px-2 border-gray-700 bg-gradient-to-r ${classMap(this.classes)}">
         <div class="flex items-center gap-2 z-10">
-          <span class="font-heading font-semibold text-base text-gray-0 text-stroke-2 text-stroke-gray-700">${this.label}</span>
+          <span class="font-heading font-bold text-base text-gray-0 text-stroke-2 text-stroke-gray-700 text-shadow-[0_2px_0_rgb(25_28_37_/_1)]"
+            >${this.label}</span
+          >
           <slot name="left" class=""></slot>
         </div>
         <div class="z-10">
-          <slot name="right" class="font-heading font-semibold text-base text-gray-0 text-stroke-2 text-stroke-gray-700"></slot>
+          <slot
+            name="right"
+            class="font-heading font-bold text-base text-gray-0 text-stroke-2 text-stroke-gray-700 text-shadow-[0_2px_0_rgb(25_28_37_/_1)]"
+          ></slot>
         </div>
       </div>
     `
