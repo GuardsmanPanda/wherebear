@@ -33,8 +33,56 @@
     x-on:confirmed="startGame">
   </lit-confirm-dialog>
 
+  <!-- Game Starting Dialog -->
+  <dialog x-ref="gameStartingDialog" class="hidden fixed inset-0 w-full h-full pointer-events-none transition-opacity duration-300 p-4 bg-gray-900/50 items-center justify-center z-20">
+    <div class="@container flex flex-col w-full relative max-w-2xl overflow-hidden animate-pop rounded border-2 border-gray-700 bg-gray-700">
+      <!-- Header SM -->
+      <div class="flex @lg:hidden items-center w-full h-14 z-10 px-2 rounded-t border-b border-gray-700 bg-gradient-to-r from-iris-400 to-iris-300 shadow-sm/60"></div>
+
+      <!-- Top Left Corner LG -->
+      <div class="hidden @lg:block">
+        <img src="/static/img/ui/game-starting-dialog/top-left-corner.png" class="absolute -top-px -left-px drop-shadow-sm/60" />
+      </div>
+
+      <!-- Text -->
+      <div class="flex flex-col justify-center gap-1 absolute top-1.5 left-2">
+        <span class="heading-2xl text-gray-0 uppercase z-10 leading-none">STARTING GAME...</span>
+        <span x-text="gameStartingText" class="font-heading font-regular text-base text-gray-800 z-10 leading-none"></span>
+      </div>
+
+      <!-- Background Image -->
+      <div class="w-full h-32 bg-[url('/static/img/ui/game-starting-dialog/background-mountain.png')] bg-center animate-[backgroundScrollX_48s_linear_1_forwards]"></div>
+
+      <!-- Labels -->
+      <div class="flex justify-end items-center gap-4 w-full absolute top-14 @lg:top-0 right-0 p-2">
+        <lit-label :label="`${playerCount} player${playerCount === 1 ? '' : 's'}`" size="sm" color="gray" icon="person" class="w-[114px] drop-shadow-sm/60"></lit-label>
+        <lit-label :label="`${game.total_game_time_mn} min`" size="sm" color="gray" icon="chronometer" class="w-28 drop-shadow-sm/60"></lit-label>
+      </div>
+
+    <!-- Road -->
+    <div class="w-[728px] h-[42px] relative z-10 bg-[url('/static/img/ui/game-starting-dialog/road.png')] bg-repeat-x animate-[backgroundScrollX_4s_linear_infinite_reverse]"></div>
+
+    <!-- Car -->
+    <img x-ref="gameStartingDialogVehicle" src="/static/img/ui/game-starting-dialog/van.png" class="absolute bottom-[54px] @lg:bottom-[46px] -left-24 z-10" />
+
+    <!-- Tip -->
+    <div class="flex h-12 @lg:h-10 relative bg-gray-600 border-t border-gray-700" style="box-shadow: inset 0px 2px 2px rgba(0, 0, 0, 0.25)">
+      <img src="/static/img/ui/game-starting-dialog/bottom-left-corner-lg.png" class="block @lg:hidden absolute -bottom-[2px] -left-[2px] z-10" />
+      <img src="/static/img/ui/game-starting-dialog/bottom-left-corner-sm.png" class="hidden @lg:block absolute -bottom-[2px] -left-[2px] z-10" />
+      
+      <div class="flex w-20 h-full justify-center items-center gap-1.5 absolute bottom-[3px] left-[3px] z-20">
+        <lit-icon name="info" class="flex h-8 drop-shadow-[0_1px_0px_rgba(25_28_37_/_1)]"></lit-icon>
+        <span class="heading-2xl text-gray-0">TIP</span>
+      </div>
+      <div class="flex items-center ml-[104px] px-2 leading-none">
+        <span class="font-heading font-regular text-sm/3 @lg:text-sm text-gray-0">Pay attention to which side of the road the cars are driving on — it might just point you in the right direction!</span>
+      </div>
+    </div>
+  </dialog>
+
+
   <!-- Header -->
-  <div class="flex flex-col h-24 bg-[url('/static/img/ui/mountain-cartoon.png')] bg-cover bg-center relative">
+  <div class="flex flex-col h-24 bg-iris-500 relative">
     <div class="flex w-full relative">
       <div class="flex w-full overflow-hidden">
         <div class="flex justify-center items-center w-full sm:w-min h-8 px-2 sm:rounded-br-sm bg-gradient-to-t from-iris-400 to-iris-500 sm:border-r border-b border-gray-700 shadow-lg overflow-hidden">
@@ -74,17 +122,7 @@
         ></lit-label> 
       </div>
     </div>
-
-
-    <div class="absolute -bottom-[2px] left-2 sm:left-1/2 sm:-translate-x-1/2">
-      <img src="/static/img/ui/road-sign.svg" class="w-[184px]" />
-      <span x-text="gameStartText" class="absolute top-[4px] left-1/2 -translate-x-1/2 whitespace-nowrap font-heading font-semibold text-center text-orange-400 text-base text-stroke-1 text-stroke-gray-800"></span>
-    </div>
   </div>
-
-  <!-- Road -->
-  <div class="w-full h-[42px] bg-[url('/static/img/ui/road.png')] bg-repeat-x"></div>
-
   
   <!-- Sub Header -->
   <div class="flex justify-center gap-2 w-full p-1 bg-gray-600 border-b border-gray-700">
@@ -572,12 +610,6 @@
 </div>
 
 <script>
-  const GameStartStatus = Object.freeze({
-    WAITING_FOR_PLAYERS: 0,
-    QUEUED: 1,
-    SELECTING_PANORAMAS: 2
-  });
-
   function state() {
     return {
       activityFeedMessages: [],
@@ -598,8 +630,7 @@
       game: @json($game),
       gameUsers: @json($game_users),
       handleGameStatusInterval: null,
-      gameStartStatus: GameStartStatus.WAITING_FOR_PLAYERS,
-      gameStartText: 'Waiting for players...',
+      gameStartingText: 'The game is queued',
       user: @json($user),
       get playButtonBgColor() {
         return this.gameUser.is_observer ? 'bg-gray-600' : this.gameUser.is_ready ? 'bg-gray-500 group-hover:bg-gray-600' : 'bg-pistachio-500 group-hover:bg-pistachio-600'
@@ -808,6 +839,22 @@
           }
         }   
       },
+      openGameStartingDialog() {
+        const dialog = this.$refs.gameStartingDialog
+        dialog.classList.remove('hidden')
+        dialog.classList.add('flex')
+        dialog.classList.remove('pointer-events-none')
+        dialog.classList.add('pointer-events-auto')
+      },
+      startVehicleEnterAnimation() {
+        const car = this.$refs.gameStartingDialogVehicle
+        car.classList.add('animate-vehicle-enter')
+      },
+      startVehicleExitAnimation() {
+        const car = (this.$refs.gameStartingDialogVehicle)
+        car.classList.remove('animate-vehicle-enter')
+        car.classList.add('animate-vehicle-exit')
+      },
       init() {
         // Auto scroll to the bottom of the Activity Feed panel
         this.$watch('activityFeedMessages', () => {
@@ -861,19 +908,25 @@
           this.game = game;
         });
         channel.bind('game.stage.updated', ({ message, stage }) => {
-          if (stage === -1) {
-            this.gameStartStatus = GameStartStatus.WAITING_FOR_PLAYERS
-            this.gameStartText = 'Waiting for players...'
+          console.log(new Date(), stage, message)
+          if (stage === 0) {
+            this.gameStartingText = 'The game is queued'
+            this.openGameStartingDialog() 
+            this.startVehicleEnterAnimation()
           } else if (stage === 1) {
-            this.gameStartStatus = GameStartStatus.QUEUED
-            this.gameStartText = 'The game is queued!'
-          } else if (stage === 2) {
-            this.gameStartStatus = GameStartStatus.SELECTING_PANORAMAS
-          } else if (stage === 3) {
-            // Selecting panorama one by one
-            this.gameStartStatus = GameStartStatus.SELECTING_PANORAMAS
-            this.gameStartText = message
-          }
+            this.gameStartingText = 'Confirming players...'
+          } else if (stage >= 3) {
+            const numbers = message.match(/\d+/g); // finds all sequences of digits
+            if (numbers) {
+              const [firstNumber, secondNumber] = numbers
+        
+              this.gameStartingText = `Selecting Panorama... ${firstNumber}/${secondNumber}`
+              
+              if (firstNumber >= secondNumber - 2) {
+                this.startVehicleExitAnimation()
+              } 
+            }
+          } 
         });
         channel.bind('game.round.updated', ({ roundNumber, gameStateEnum }) => {
           window.location.href = `/game/${this.game.id}/play`;
