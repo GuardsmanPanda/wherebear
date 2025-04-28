@@ -108,6 +108,75 @@
   --color-rank-third-light: oklch(0.88 0.0733 61.93);
   --color-rank-third-default: oklch(0.84 0.0975 62.33);
   --color-rank-third-dark: oklch(0.79 0.1215 62.17);
+
+  /** Animates the background to scroll horizontally to the right. */
+  @keyframes backgroundScrollX {
+    0% {
+      background-position-x: 0;
+    }
+    100% {
+      background-position-x: 100%;
+    }
+  }
+
+  /** Combines the vehicle movement from left to center with a continuous bounce. */
+  --animate-vehicle-enter: moveVehicleFromLeftToCenter 6s ease-out forwards, vehicleBounce 4s ease-in-out infinite;
+
+  /** Combines the vehicle movement from center to right with a continuous bounce. */
+  --animate-vehicle-exit: moveVehicleFromCenterToRight 2s ease-in forwards, vehicleBounce 4s ease-in-out infinite;
+
+  --animate-pop: bouncePopIn 300ms ease-out forwards;
+
+  /** Creates a gentle bounce effect to simulate vehicle movement. */
+  @keyframes vehicleBounce {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-4px);
+    }
+  }
+
+  /** Moves the vehicle from off-screen left to the center of the screen. */
+  @keyframes moveVehicleFromLeftToCenter {
+    0% {
+      left: -140px;
+    }
+    100% {
+      left: calc(50% - 37px);
+      transform: translateX(-50%);
+    }
+  }
+
+  /** Moves the vehicle from the center of the screen to off-screen right. */
+  @keyframes moveVehicleFromCenterToRight {
+    0% {
+      left: calc(50% - 37px);
+    }
+    100% {
+      left: calc(100% + 74px);
+      transform: translateX(-100%);
+    }
+  }
+
+  /** Fades in the element while bouncing slightly scaling up and down before settling at full size. */
+  @keyframes bouncePopIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.7);
+    }
+    60% {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+    80% {
+      transform: scale(0.95);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
 }
 
 .heading-xs {
