@@ -13,6 +13,7 @@ enum ImportStatusEnum: string implements BearDatabaseBackedEnumInterface {
   case IMPORTED_LOCATION = 'IMPORTED_LOCATION';
   case LOCATION_ADDED = 'LOCATION_ADDED';
   case PLACE_ID = 'PLACE_ID';
+  case UNKNOWN_ID = 'UNKNOWN_ID';
   case REJECTED_PANORAMA = 'REJECTED_PANORAMA';
 
 
@@ -24,6 +25,7 @@ enum ImportStatusEnum: string implements BearDatabaseBackedEnumInterface {
       self::LOCATION_ADDED => 'Location Added, information about the panorama location.',
       self::PENDING => 'Pending, not yet processed.',
       self::PLACE_ID => 'Panorama ID, currently not used for importing.',
+      self::UNKNOWN_ID => 'Unknown ID, to be determined later.',
       self::REJECTED_PANORAMA => 'Rejected Panorama, usually means that the panorama was not very good, or a near duplicate.',
     };
   }

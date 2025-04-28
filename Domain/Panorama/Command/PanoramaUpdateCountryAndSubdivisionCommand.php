@@ -23,6 +23,9 @@ final class PanoramaUpdateCountryAndSubdivisionCommand extends BearTransactionCo
         OR p.country_subdivision_iso_3166 != wherebear_subdivision(p.location)
     ");
     if ($this->option(key: 'apply') !== true) {
+      foreach ($toUpdate as $panorama) {
+        $this->info(string: "Want to change panorama $panorama->id, from $panorama->old_country_cca2/$panorama->old_country_subdivision_iso_3166 to $panorama->country_cca2/$panorama->country_subdivision_iso_3166");
+      }
       $this->info(string: "Found " . count($toUpdate) . " panoramas to update, but not applying changes. Use --apply to apply changes.");
     } else {
       $this->info(string: "Found " . count($toUpdate) . " panoramas to update");
