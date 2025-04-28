@@ -7,7 +7,7 @@ use Domain\Panorama\Model\PanoramaTag;
 use GuardsmanPanda\Larabear\Infrastructure\App\Interface\BearDatabaseBackedEnumInterface;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Req;
 
-enum PanoramaTagEnum : string implements BearDatabaseBackedEnumInterface {
+enum PanoramaTagEnum: string implements BearDatabaseBackedEnumInterface {
   // Special Feature Tags
   case BROKEN = 'BROKEN';
   case HIDDEN = 'HIDDEN';
@@ -19,6 +19,7 @@ enum PanoramaTagEnum : string implements BearDatabaseBackedEnumInterface {
   case FUNNY = 'FUNNY';
   case GREAT = 'GREAT';
   case LANDSCAPE = 'LANDSCAPE';
+  case LANDMARK = 'LANDMARK';
 
 
   public static function fromRequest(): self {
@@ -33,12 +34,13 @@ enum PanoramaTagEnum : string implements BearDatabaseBackedEnumInterface {
     return match ($this) {
       self::BROKEN => 'Broken panoramas, should be removed.',
       self::HIDDEN => 'Hidden panoramas, they will not be chosen in random games.',
-      self::DAILY => 'For use in the daily challenges.',
-      self::FUNNY => 'At least amusing.',
       self::GOOGLE => 'Google Office.',
+      self::DAILY => 'For use in the daily challenges.',
+      self::ANIMAL => 'Panorama contains animals as the focus.',
+      self::FUNNY => 'At least amusing.',
       self::GREAT => 'Great Panorama, should be prioritized.',
       self::LANDSCAPE => 'The landscape is the only clue to the location.',
-      self::ANIMAL => 'Panorama contains animals as the focus.',
+      self::LANDMARK => 'A well known landmark.',
     };
   }
 
