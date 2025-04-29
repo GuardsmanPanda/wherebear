@@ -17,6 +17,10 @@ final class PlaygroundController extends Controller {
     return Resp::view(view: 'playground::headings');
   }
 
+  public function icons(): View {
+    return Resp::view(view: 'playground::icons');
+  }
+
   public function labels(): View {
     return Resp::view(view: 'playground::labels');
   }
