@@ -29,10 +29,14 @@
   @apply bg-blue-500 text-white font-bold py-2 px-4 rounded hover:scale-105 transition-all duration-75;
 }
 
+:root {
+  --heading-shadow-color: var(--color-gray-700);
+  --shadow-color: var(--color-gray-700);
+}
+
 @theme {
   --font-body: Roboto;
   --font-heading: Baloo;
-  --heading-shadow-color: var(--color-gray-700);
 
   --color-gray-0: oklch(1 0 0);
   --color-gray-50: oklch(0.98 0.0054 297.73);
@@ -177,6 +181,16 @@
       transform: scale(1);
     }
   }
+}
+
+@utility solid-shadow-xs {
+  filter: drop-shadow(0 1px 0 var(--shadow-color));
+}
+@utility solid-shadow-sm {
+  filter: drop-shadow(0 2px 0 var(--shadow-color));
+}
+@utility solid-shadow-md {
+  filter: drop-shadow(0 3px 0 var(--shadow-color));
 }
 
 .heading-xs {
