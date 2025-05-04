@@ -21,6 +21,10 @@
         </div>
       @endif
       <div class="flex items-center">
+        <label class="mr-2 font-medium text-gray-400" for="LANDMARK">LANDMARK</label>
+        <input id="LANDMARK" type="checkbox" name="tag" value="LANDMARK">
+      </div>
+      <div class="flex items-center">
         <label class="mr-2 font-medium text-gray-400" for="ANIMAL">ANIMAL</label>
         <input id="ANIMAL" type="checkbox" name="tag" value="ANIMAL">
       </div>

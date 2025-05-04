@@ -22,6 +22,34 @@
         </button>
       @endif
     </div>
+    <div class="absolute right-5 bottom-4 z-10 grid gap-2">
+      @if(in_array(needle: 'LANDMARK', haystack: $tags))
+        <button type="button"
+                class="py-1 px-2 text-sm font-bold text-blue-900 bg-blue-500 rounded-md border border-blue-800 hover:bg-blue-600 hover:text-blue-900"
+                hx-patch="/web-api/panorama/{{$panorama_id}}"
+                hx-vals='{"tag_remove": ["LANDMARK"]}'>Remove Landmark
+        </button>
+      @else
+        <button type="button"
+                class="py-1 px-2 text-sm font-bold text-gray-900 bg-gray-50 rounded-md border border-blue-200 hover:bg-blue-100 hover:text-blue-600"
+                hx-patch="/web-api/panorama/{{$panorama_id}}"
+                hx-vals='{"tag_add": ["LANDMARK"]}'>Add Landmark
+        </button>
+      @endif
+      @if(in_array(needle: 'DAILY', haystack: $tags))
+        <button type="button"
+                class="py-1 px-2 text-sm font-bold text-yellow-900 bg-yellow-500 rounded-md border border-yellow-800 hover:bg-yellow-600 hover:text-yellow-900"
+                hx-patch="/web-api/panorama/{{$panorama_id}}"
+                hx-vals='{"tag_remove": ["DAILY"]}'>Remove DAILY
+        </button>
+      @else
+        <button type="button"
+                class="py-1 px-2 text-sm font-bold text-gray-900 bg-gray-50 rounded-md border border-red-200 hover:bg-red-100 hover:text-red-600"
+                hx-patch="/web-api/panorama/{{$panorama_id}}"
+                hx-vals='{"tag_add": ["DAILY"]}'>Add DAILY
+        </button>
+      @endif
+    </div>
   </div>
   <script>
     const viewer = pannellum.viewer('panorama', {

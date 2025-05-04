@@ -2,6 +2,7 @@
 
 namespace Web\Www\Panorama\Controller;
 
+use GuardsmanPanda\Larabear\Infrastructure\Database\Service\BearDatabaseService;
 use GuardsmanPanda\Larabear\Infrastructure\Http\Service\Resp;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\App;
@@ -13,7 +14,7 @@ final class PanoramaViewerController extends Controller {
   public function view(string $panoramaId): View|RedirectResponse {
     $data = DB::selectOne(query: "
       SELECT 
-        heading, pitch, field_of_view,
+        heading, pitch, field_of_view, panorama_tag_array,
         ST_Y(location::geometry) as lat, ST_X(location::geometry) as lng,
         jpg_path,
         retired_at
@@ -46,6 +47,7 @@ final class PanoramaViewerController extends Controller {
       'field_of_view' => $data->field_of_view,
       'retired' => $data->retired_at !== null,
       'sv_url' => $sv_url,
+      'tags' => BearDatabaseService::postgresTextArrayToArrayObject(text: $data->panorama_tag_array)->toArray(),
     ]);
   }
 }

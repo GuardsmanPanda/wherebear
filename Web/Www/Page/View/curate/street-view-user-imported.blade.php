@@ -21,6 +21,10 @@
         </div>
       @endif
       <div class="flex items-center">
+        <label class="mr-2 font-medium text-gray-400" for="LANDMARK">LANDMARK</label>
+        <input id="LANDMARK" type="checkbox" name="tag" value="LANDMARK">
+      </div>
+      <div class="flex items-center">
         <label class="mr-2 font-medium text-gray-400" for="ANIMAL">ANIMAL</label>
         <input id="ANIMAL" type="checkbox" name="tag" value="ANIMAL">
       </div>
@@ -49,7 +53,8 @@
       <td class="px-4 py-2">
         <button type="button"
                 class="text-blue-500 hover:text-white border border-blue-500 hover:bg-blue-500 font-medium rounded-md text-sm ml-1 px-2.5 py-0.5 hover:scale-110 transition-all duration-75 text-center"
-                onclick="window.open('https://www.google.com/maps/{{'@' . $panorama->lat}},{{$panorama->lng}},0a,73.7y,90t/data=!3m4!1e1!3m2!1s{{$panorama->id}}!2e10', 'sv', 'popup')">Open Street View
+                onclick="window.open('https://www.google.com/maps/{{'@' . $panorama->lat}},{{$panorama->lng}},0a,73.7y,90t/data=!3m4!1e1!3m2!1s{{$panorama->id}}!2e10', 'sv', 'popup')">
+          Open Street View
         </button>
         <button type="button"
                 class="text-green-500 hover:text-white border border-green-500 hover:bg-green-500 font-medium rounded-md text-sm ml-1 px-2.5 py-0.5 hover:scale-110 transition-all duration-75 text-center"

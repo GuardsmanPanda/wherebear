@@ -56,9 +56,9 @@ final class GameRunJob implements ShouldQueue, ShouldBeUnique {
 
 
   private function confirmReady(Game $game): Game {
-    sleep(seconds: 3); // Wait for all players to confirm they are ready.
+    sleep(seconds: 2); // Wait for all players to confirm they are ready.
     GameBroadcast::gameStageUpdate(gameId: $game->id, message: 'Confirming Players', stage: 1);
-    sleep(seconds: 6); // Wait for all players to confirm they are ready.
+    sleep(seconds: 5); // Wait for all players to confirm they are ready.
     if (GameService::canGameStart(gameId: $game->id, expectState: GameStateEnum::CONFIRMING)) {
       return GameService::setGameState(gameId: $game->id, state: GameStateEnum::SELECTING);
     }

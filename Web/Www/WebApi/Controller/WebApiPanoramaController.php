@@ -28,6 +28,13 @@ final class WebApiPanoramaController extends Controller {
     if (Req::has(key: 'retired')) {
       $updater->setRetiredStatus(retired: Req::getBool(key: 'retired'), retired_reason: Req::getStringOrNull(key: 'retired_reason'));
     }
+    if (Req::has(key: 'tag_add')) {
+      $updater->addPanoramaTag(tag: PanoramaTagEnum::from(value: Req::getString(key: 'tag_add')));
+
+    }
+    if (Req::has(key: 'tag_remove')) {
+      $updater->removePanoramaTag(tag: PanoramaTagEnum::from(value: Req::getString(key: 'tag_remove')));
+    }
     Htmx::refresh();
     return Json::fromModel(model: $updater->update());
   }
