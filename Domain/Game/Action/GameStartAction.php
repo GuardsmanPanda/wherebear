@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Domain\Game\Action;
 
 use Domain\Game\Broadcast\GameBroadcast;
+use Domain\Game\Constants\GameConstants;
 use Domain\Game\Crud\GameUpdater;
 use Domain\Game\Enum\GameStateEnum;
 use Domain\Game\Job\GameRunJob;
@@ -23,6 +24,6 @@ final class GameStartAction {
     $updater->setGameStateEnum(enum: GameStateEnum::QUEUED);
     $updater->update();
     GameRunJob::dispatch($gameId);
-    GameBroadcast::gameStageUpdate(gameId: $gameId, message: 'Game Queued', stage: 0);
+    GameBroadcast::gameStageUpdate(gameId: $gameId, message: 'Game Queued', stage: 0, meta: ['countdownSec' => GameConstants::GAME_START_DELAY_SEC]);
   }
 }
