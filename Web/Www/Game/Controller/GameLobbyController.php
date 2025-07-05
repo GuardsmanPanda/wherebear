@@ -91,17 +91,23 @@ final class GameLobbyController extends Controller {
         COALESCE(uf.description, bc.name) as flag_description,
         bu.user_level_enum = 0 as is_guest,
         g.created_by_user_id = bu.id as is_host,
+        g.created_by_user_id = bu.id OR :is_bob as can_edit, 
         'Digital Guinea Pig' as title,
-        CASE WHEN ? IS TRUE THEN true ELSE false END::boolean as is_bob
+        CASE WHEN :is_bob IS TRUE THEN true ELSE false END::boolean as is_bob
       FROM bear_user bu
-      LEFT JOIN game_user gu ON gu.user_id = bu.id AND gu.game_id = ?
+      LEFT JOIN game_user gu ON gu.user_id = bu.id AND gu.game_id = :game_id
       LEFT JOIN game g ON g.id = gu.game_id
       LEFT JOIN map_marker mm ON mm.enum = bu.map_marker_enum
       LEFT JOIN bear_country bc ON bc.cca2 = bu.country_cca2
       LEFT JOIN user_level ul ON ul.enum = bu.user_level_enum
       LEFT JOIN user_flag uf ON uf.enum = bu.user_flag_enum
-      WHERE bu.id = ?
-    SQL, bindings: [BearAuthService::hasPermission(permission: BearPermissionEnum::IS_BOB), $game->id, $user_id]);
+      WHERE bu.id = :user_id
+    SQL, bindings: [
+      'is_bob' => BearAuthService::hasPermission(permission: BearPermissionEnum::IS_BOB),
+      'game_id' => $game->id,
+      'user_id' => $user_id
+    ]
+    );
 
     $user->can_observe = $game->created_by_user_id === BearAuthService::getUserId(); // TODO: add observer ability to db to db
     $user->level_percentage = $user->current_level_experience_points * 100 / $user->next_level_experience_points_requirement;

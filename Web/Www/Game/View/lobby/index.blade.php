@@ -532,7 +532,7 @@
     <div class="hidden sm:flex items-end gap-2 absolute -top-2 left-1/2 -translate-x-1/2 z-10">
       <!-- Edit Button -->
       <span data-tippy-content="Edit game settings">
-        <div x-show="user.is_host" class="flex relative cursor-pointer group" x-on:click="openEditGameSettingsDialog">
+        <div x-show="user.can_edit" class="flex relative cursor-pointer group" x-on:click="openEditGameSettingsDialog">
           <div class="absolute top-[2px] left-[79px] w-[4px] h-[36px] z-40 bg-iris-600 group-hover:bg-iris-700 transition-colors duration-300 ease-in-out"></div>
 
           <div
