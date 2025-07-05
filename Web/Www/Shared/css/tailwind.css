@@ -127,9 +127,11 @@
   --animate-vehicle-enter: moveVehicleFromLeftToCenter 6s ease-out forwards, vehicleBounce 4s ease-in-out infinite;
 
   /** Combines the vehicle movement from center to right with a continuous bounce. */
-  --animate-vehicle-exit: moveVehicleFromCenterToRight 2s ease-in forwards, vehicleBounce 4s ease-in-out infinite;
+  --animate-vehicle-exit: moveVehicleFromCenterToRight 1400ms ease-in forwards, vehicleBounce 4s ease-in-out infinite;
 
   --animate-pop: bouncePopIn 300ms ease-out forwards;
+
+  --animate-countdown-pop: bouncePopIn 1s ease-out infinite;
 
   /** Creates a gentle bounce effect to simulate vehicle movement. */
   @keyframes vehicleBounce {
@@ -273,3 +275,4 @@
     -0.04em 0.1em 0 #333847,
     0.04em 0.1em 0 #333847;
 }
+

@@ -9,7 +9,6 @@ enum GameStateEnum: string {
   case TEMPLATE = 'TEMPLATE';
   case WAITING_FOR_PLAYERS = 'WAITING_FOR_PLAYERS';
   case QUEUED = 'QUEUED';
-  case CONFIRMING = 'CONFIRMING';
   case SELECTING = 'SELECTING';
   case IN_PROGRESS = 'IN_PROGRESS';
   case IN_PROGRESS_CALCULATING = 'IN_PROGRESS_CALCULATING';
@@ -25,7 +24,6 @@ enum GameStateEnum: string {
       self::TEMPLATE => 'Template',
       self::WAITING_FOR_PLAYERS => 'Waiting for players',
       self::QUEUED => 'Queued',
-      self::CONFIRMING => 'Confirming players are ready',
       self::SELECTING => 'Selecting panoramas',
       self::IN_PROGRESS => 'In progress',
       self::IN_PROGRESS_CALCULATING => 'In progress calculating',
@@ -39,11 +37,11 @@ enum GameStateEnum: string {
 
 
   public function isMultiplayer(): bool {
-    return $this === self::WAITING_FOR_PLAYERS || $this === self::QUEUED || $this === self::CONFIRMING || $this === self::SELECTING || $this === self::IN_PROGRESS || $this === self::IN_PROGRESS_CALCULATING || $this === self::IN_PROGRESS_RESULT || $this === self::FINISHED;
+    return $this === self::WAITING_FOR_PLAYERS || $this === self::QUEUED || $this === self::SELECTING || $this === self::IN_PROGRESS || $this === self::IN_PROGRESS_CALCULATING || $this === self::IN_PROGRESS_RESULT || $this === self::FINISHED;
   }
 
   public function isLobby(): bool {
-    return $this === self::WAITING_FOR_PLAYERS || $this === self::QUEUED || $this === self::CONFIRMING || $this === self::SELECTING;
+    return $this === self::WAITING_FOR_PLAYERS || $this === self::QUEUED || $this === self::SELECTING;
   }
 
   public function isPlaying(): bool {

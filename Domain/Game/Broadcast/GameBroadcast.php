@@ -68,13 +68,17 @@ final class GameBroadcast {
     );
   }
 
-  public static function gameStageUpdate(string $gameId, string $message, int $stage): void {
+  /**
+   * @param array<string, mixed> $meta
+   */
+  public static function gameStageUpdate(string $gameId, string $message, int $stage, array $meta = []): void {
     BearBroadcastService::broadcastNow(
       channel: 'game.' . $gameId,
       event: 'game.stage.updated',
       data: [
-        'message' => $message,
         'stage' => $stage,
+        'message' => $message,
+        'meta' => $meta
       ]
     );
   }

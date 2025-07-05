@@ -15,7 +15,7 @@
     :isBob="user.isBob">
   </lit-edit-game-settings-dialog>
 
-  <lit-confirm-dialog id="abc" x-ref="confirmDeleteGameDialog" 
+  <lit-confirm-dialog x-ref="confirmDeleteGameDialog" 
     label="Delete the game"
     message="Are you sure to delete the game?"
     cancelBtnText="No, Cancel"
@@ -34,13 +34,13 @@
   </lit-confirm-dialog>
 
   <!-- Game Starting Dialog -->
-  <dialog x-ref="gameStartingDialog" class="hidden fixed inset-0 w-full h-full pointer-events-none transition-opacity duration-300 p-4 bg-gray-900/50 items-center justify-center z-20">
+  <dialog x-ref="gameStartingDialog" class="hidden fixed inset-0 w-full h-full pointer-events-none transition-opacity duration-300 p-4 bg-gray-900/50 items-center justify-center z-50">
     <div class="@container flex flex-col w-full relative max-w-2xl overflow-hidden animate-pop rounded border-2 border-gray-700 bg-gray-700">
       <!-- Header SM -->
-      <div class="flex @lg:hidden items-center w-full h-14 z-10 px-2 rounded-t border-b border-gray-700 bg-gradient-to-r from-iris-400 to-iris-300 shadow-sm/60"></div>
+      <div class="flex @xl:hidden justify-end items-center w-full h-14 z-10 px-2 rounded-t border-b border-gray-700 bg-gradient-to-r from-iris-400 to-iris-300 shadow-sm/60"></div>
 
       <!-- Top Left Corner LG -->
-      <div class="hidden @lg:block">
+      <div class="hidden @xl:block">
         <img src="/static/img/ui/game-starting-dialog/top-left-corner.png" class="absolute -top-px -left-px drop-shadow-sm/60" />
       </div>
 
@@ -51,31 +51,43 @@
       </div>
 
       <!-- Background Image -->
-      <div class="w-full h-32 bg-[url('/static/img/ui/game-starting-dialog/background-mountain.png')] bg-center animate-[backgroundScrollX_48s_linear_1_forwards]"></div>
+      <div x-ref="gameStartingDialogBackgroundImage" class="w-full h-32 bg-[url('/static/img/ui/game-starting-dialog/background-mountain.png')] bg-center animate-[backgroundScrollX_48s_linear_1_forwards]"></div>
 
       <!-- Labels -->
-      <div class="flex justify-end items-center gap-4 w-full absolute top-14 @lg:top-0 right-0 p-2">
+      <div class="flex justify-end @xl:justify-center items-center gap-4 absolute top-14 @xl:top-0 @xl:left-[256px] right-0 @xl:right-[64px] p-2">
         <lit-label :label="`${playerCount} player${playerCount === 1 ? '' : 's'}`" size="sm" color="gray" icon="person" class="w-[114px] drop-shadow-sm/60"></lit-label>
         <lit-label :label="`${game.total_game_time_mn} min`" size="sm" color="gray" icon="chronometer" class="w-28 drop-shadow-sm/60"></lit-label>
       </div>
 
-    <!-- Road -->
-    <div class="w-[728px] h-[42px] relative z-10 bg-[url('/static/img/ui/game-starting-dialog/road.png')] bg-repeat-x animate-[backgroundScrollX_4s_linear_infinite_reverse]"></div>
+      <!-- Top Right Circle LG -->
+      <div class="hidden @xl:flex size-[112px] absolute top-0 translate-x-[calc(50%-10px)] right-0 -translate-y-1/2 z-10 rounded-full border border-gray-700 bg-radial from-iris-400 to-iris-300 shadow-sm/60"></div>
 
-    <!-- Car -->
-    <img x-ref="gameStartingDialogVehicle" src="/static/img/ui/game-starting-dialog/van.png" class="absolute bottom-[54px] @lg:bottom-[46px] -left-24 z-10" />
-
-    <!-- Tip -->
-    <div class="flex h-12 @lg:h-10 relative bg-gray-600 border-t border-gray-700" style="box-shadow: inset 0px 2px 2px rgba(0, 0, 0, 0.25)">
-      <img src="/static/img/ui/game-starting-dialog/bottom-left-corner-lg.png" class="block @lg:hidden absolute -bottom-[2px] -left-[2px] z-10" />
-      <img src="/static/img/ui/game-starting-dialog/bottom-left-corner-sm.png" class="hidden @lg:block absolute -bottom-[2px] -left-[2px] z-10" />
-      
-      <div class="flex w-20 h-full justify-center items-center gap-1.5 absolute bottom-[3px] left-[3px] z-20">
-        <lit-icon name="info" class="flex h-8 drop-shadow-[0_1px_0px_rgba(25_28_37_/_1)]"></lit-icon>
-        <span class="heading-2xl text-gray-0">TIP</span>
+      <!-- Top Right Countdown -->
+      <div class="flex w-10 absolute top-2 @xl:top-1 z-20" :class="{ '-right-0.5': gameStartingDialogCountdownSec <= 9, 'right-1': gameStartingDialogCountdownSec >= 10 }">
+        <span x-ref="gameStartingDialogCountdown" x-text="gameStartingDialogCountdownSec" class="heading-4xl text-gray-0" :class="animateCountdownPop ? 'animate-countdown-pop' : ''"></span>
       </div>
-      <div class="flex items-center ml-[104px] px-2 leading-none">
-        <span class="font-heading font-regular text-sm/3 @lg:text-sm text-gray-0">Pay attention to which side of the road the cars are driving on — it might just point you in the right direction!</span>
+
+      <!-- Road -->
+      <div x-ref="gameStartingDialogRoad" class="w-[728px] h-[42px] relative z-10 bg-[url('/static/img/ui/game-starting-dialog/road.png')] bg-repeat-x animate-[backgroundScrollX_4s_linear_infinite_reverse]"></div>
+
+      <!-- Car -->
+      <img x-ref="gameStartingDialogVehicle" src="/static/img/ui/game-starting-dialog/van.png" class="absolute bottom-[54px] @xl:bottom-[46px] -left-24 z-20" />
+
+      <!-- Start Road Sign -->
+      <img x-ref="gameStartingDialogRoadSignStart" src="/static/img/ui/game-starting-dialog/road-sign-start.png" class="absolute top-[154px] @xl:top-[98px] -right-[160px] z-10" />
+
+      <!-- Tip -->
+      <div class="flex h-12 @xl:h-10 relative bg-gray-600 border-t border-gray-700" style="box-shadow: inset 0px 2px 2px rgba(0, 0, 0, 0.25)">
+        <img src="/static/img/ui/game-starting-dialog/bottom-left-corner-lg.png" class="block @xl:hidden absolute -bottom-[2px] -left-[2px] z-10" />
+        <img src="/static/img/ui/game-starting-dialog/bottom-left-corner-sm.png" class="hidden @xl:block absolute -bottom-[2px] -left-[2px] z-10" />
+        
+        <div class="flex w-20 h-full justify-center items-center gap-1.5 absolute bottom-[3px] left-[3px] z-20">
+          <lit-icon name="info" class="flex h-8 drop-shadow-[0_1px_0px_rgba(25_28_37_/_1)]"></lit-icon>
+          <span class="heading-2xl text-gray-0">TIP</span>
+        </div>
+        <div class="flex items-center ml-[104px] px-2 leading-none">
+          <span class="font-heading font-regular text-sm/3 @xl:text-sm text-gray-0">Pay attention to which side of the road the cars are driving on — it might just point you in the right direction!</span>
+        </div>
       </div>
     </div>
   </dialog>
@@ -625,12 +637,14 @@
         'player-left': 'gray',
         'player-update': 'blue',   
       },
+      animateCountdownPop: false,
       animationDurationMs: 700,
       gameUserListMarginTopPx: 8,
       game: @json($game),
       gameUsers: @json($game_users),
       handleGameStatusInterval: null,
       gameStartingText: 'The game is queued',
+      gameStartingDialogCountdownSec: 0,
       user: @json($user),
       get playButtonBgColor() {
         return this.gameUser.is_observer ? 'bg-gray-600' : this.gameUser.is_ready ? 'bg-gray-500 group-hover:bg-gray-600' : 'bg-pistachio-500 group-hover:bg-pistachio-600'
@@ -839,18 +853,58 @@
           }
         }   
       },
-      openGameStartingDialog() {
+      openGameStartingDialog(durationSec) {
         const dialog = this.$refs.gameStartingDialog
         dialog.classList.remove('hidden')
         dialog.classList.add('flex')
         dialog.classList.remove('pointer-events-none')
         dialog.classList.add('pointer-events-auto')
+
+        this.startGameStartingDialogVehicleEnterAnimation()
+        this.startGameStartingDialogCountdown(durationSec)
       },
-      startVehicleEnterAnimation() {
+      startGameStartingDialogCountdown(durationSec) {
+        this.gameStartingDialogCountdownSec = durationSec;
+
+        const interval = setInterval(() => {
+          this.gameStartingDialogCountdownSec--;
+
+          // Trigger pulse animation for last 5 seconds
+          if (this.gameStartingDialogCountdownSec > 0 && this.gameStartingDialogCountdownSec <= 5) {
+            this.animateCountdownPop = true;
+          }
+
+          if (this.gameStartingDialogCountdownSec === 3) {
+            this.startGameStartingDialogRoadSignStartAnimation()
+          }
+
+          if (this.gameStartingDialogCountdownSec === 1) {
+            this.startGameStartingDialogVehicleExitAnimation()
+            this.$refs.gameStartingDialogRoad.style.animationPlayState = 'paused';
+            this.$refs.gameStartingDialogBackgroundImage.style.animationPlayState = 'paused'
+          }
+
+          // Countdown reached 0, stop everything
+          if (this.gameStartingDialogCountdownSec <= 0) {
+            clearInterval(interval);
+
+            // The timeout is required to stop the animation, I don't know why
+            setTimeout(() => {
+              this.animateCountdownPop = false;
+            }, 500);
+          }
+        }, 1000);
+      },
+      startGameStartingDialogRoadSignStartAnimation() {
+        const roadSignStart = this.$refs.gameStartingDialogRoadSignStart
+        roadSignStart.style.transition = 'transform 2000ms linear';
+        roadSignStart.style.transform = 'translateX(-280px)';
+      },
+      startGameStartingDialogVehicleEnterAnimation() {
         const car = this.$refs.gameStartingDialogVehicle
         car.classList.add('animate-vehicle-enter')
       },
-      startVehicleExitAnimation() {
+      startGameStartingDialogVehicleExitAnimation() {
         const car = (this.$refs.gameStartingDialogVehicle)
         car.classList.remove('animate-vehicle-enter')
         car.classList.add('animate-vehicle-exit')
@@ -907,25 +961,36 @@
 
           this.game = game;
         });
-        channel.bind('game.stage.updated', ({ message, stage }) => {
-          console.log(new Date(), stage, message)
+        channel.bind('game.stage.updated', ({ message, stage, meta }) => {
+          /** The delay in seconds from when the state was marked complete. */
+          const postCompletionDelaySec = 3
+
+          // QUEUE stage
           if (stage === 0) {
             this.gameStartingText = 'The game is queued'
-            this.openGameStartingDialog() 
-            this.startVehicleEnterAnimation()
-          } else if (stage === 1) {
-            this.gameStartingText = 'Confirming players...'
-          } else if (stage >= 3) {
-            const numbers = message.match(/\d+/g); // finds all sequences of digits
-            if (numbers) {
-              const [firstNumber, secondNumber] = numbers
-        
-              this.gameStartingText = `Selecting Panorama... ${firstNumber}/${secondNumber}`
-              
-              if (firstNumber >= secondNumber - 2) {
-                this.startVehicleExitAnimation()
-              } 
-            }
+            countdownSec = meta?.countdownSec || 100
+            this.openGameStartingDialog(countdownSec) 
+
+            setTimeout(() => {
+              this.gameStartingText = `Preparation complete`
+            }, (countdownSec - postCompletionDelaySec) * 1000)
+          } 
+          // SELECTING stage
+          else if (stage === 1) {
+            let round = 1
+            this.gameStartingText = `Selecting Panorama...${round}/${this.game.number_of_rounds}`
+
+            setInterval(() => {
+              if (round < this.game.number_of_rounds) {
+                round++;
+                this.gameStartingText = `Selecting Panorama...${round}/${this.game.number_of_rounds}`
+              }
+            }, ((this.gameStartingDialogCountdownSec - postCompletionDelaySec - 0.5) * 1000) / this.game.number_of_rounds)
+           
+          }
+          // START STAGE
+          else if (stage === 2) {
+            this.startGameStartingDialogVehicleExitAnimation()
           } 
         });
         channel.bind('game.round.updated', ({ roundNumber, gameStateEnum }) => {

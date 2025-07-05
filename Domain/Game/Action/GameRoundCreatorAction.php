@@ -297,9 +297,6 @@ final class GameRoundCreatorAction {
         panorama_pick_strategy: $strategy,
         panorama_id: $id
       );
-
-      GameBroadcast::gameStageUpdate(gameId: $this->game->id, message: "Round $i of $rounds selected", stage: 2 + $i);
-      usleep(microseconds: self::DELAY_PER_ROUND_MS * 1000);
     }
   }
 
