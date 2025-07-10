@@ -66,14 +66,9 @@ final class GameRunJob implements ShouldQueue, ShouldBeUnique {
   }
 
 
-  private function startGame(Game $game): Game {    
-    /**
-     * Total delay in microseconds caused by time spent waiting in the queue and processing earlier stages before this point.
-     */
-    $preExecutionDelayUs = (int) now()->diffInMicroseconds($this->createdAt, true);
-
+  private function startGame(Game $game): Game {
     // Add half a second (500,000 µs) to keep the countdown at 0 visible a bit longer
-    usleep(microseconds: GameConstants::GAME_START_DELAY_SEC * 1000000 - $preExecutionDelayUs + 500000); 
+    usleep(microseconds: GameConstants::GAME_START_DELAY_SEC * 1000000 + 500000);
 
     GameBroadcast::gameStageUpdate(gameId: $game->id, message: 'Starting first round...', stage: 2);
     return GameService::nextGameRound(game: $game);
