@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\App;
   <link rel="stylesheet" href="{!! config('bear.ui.tailwind_css') !!}">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Outfit" />
-  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="https://unpkg.com/alpinejs"></script>
 </head>
 
 <body>
